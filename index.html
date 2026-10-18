@@ -1054,21 +1054,6 @@
             align-items: center;
             box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
         }
-        .free-play-stadium-box {
-            width: 100%;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .free-play-select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1.5px solid #cbd5e0;
-            background: #f8fafc;
-            color: #1a202c;
-            font-weight: bold;
-            font-size: 14px;
-        }
         .free-play-arena {
             width: 100%;
             display: flex;
@@ -1452,22 +1437,13 @@
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
 
-    <!-- 자유 플레이 화면 (X버튼 오른쪽 배치, 1v1 대결, 공밑에 변경하기 버튼 & 볼 이름 표기) -->
+    <!-- 자유 플레이 화면 (경기장 선택 UI 삭제 완료, 1v1 대결, 공밑에 변경하기 버튼 & 볼 이름 표기) -->
     <div class="container hidden free-play-container" id="free-play-screen">
         <div class="free-play-header">
             <h2>자유 플레이</h2>
             <button class="free-play-close-btn" onclick="showLobby()">X</button>
         </div>
         <div class="version-text">1대1 자유 매치</div>
-
-        <!-- 경기장 선택 -->
-        <div class="free-play-stadium-box">
-            <select class="free-play-select" id="free-play-stadium">
-                <option>경기장: 기본 아레나</option>
-                <option>경기장: 네온 코트</option>
-                <option>경기장: 스타디움 파크</option>
-            </select>
-        </div>
 
         <!-- 1대1 대결 구도 영역 -->
         <div class="free-play-arena">
@@ -3073,6 +3049,8 @@
                     gameStarted = true;
                     p1.lastSkillTime = Date.now();
                     p1.lastProjTime = Date.now();
+                    p2.lastSkillTime = Date.now();
+                    p2.lastProjTime = Date.now();
                 }
             }, 1000);
         }
@@ -3285,6 +3263,8 @@
                 p2.vx = v2.vx; p2.vy = v2.vy;
             }
             
+            p2.lastSkillTime = Date.now();
+            p2.lastProjTime = Date.now();
             p2.freezeTimer = 0;
             projectiles = [];
             iceFallBlocks = [];
@@ -3326,6 +3306,87 @@
             }
         }
 
+        function triggerBallLogic(attacker, target, isPlayer1) {
+            let now = Date.now();
+            let pType = attacker.type;
+
+            if (pType === 'fire' && now - attacker.lastProjTime > 2000) {
+                attacker.lastProjTime = now;
+                projectiles.push({ type: 'fireball', x: attacker.x, y: attacker.y, vx: (target.x - attacker.x)*0.03, vy: (target.y - attacker.y)*0.03, radius: attacker.radius * 0.7, damage: 15, target: target });
+            } else if (pType === 'ice' && now - attacker.lastProjTime > 3000) {
+                attacker.lastProjTime = now;
+                projectiles.push({ type: 'iceball', x: attacker.x, y: attacker.y, vx: (target.x - attacker.x)*0.03, vy: (target.y - attacker.y)*0.03, radius: attacker.radius, damage: 15, target: target });
+            } else if (pType === 'pokemon' && now - attacker.lastProjTime > 2000) {
+                attacker.lastProjTime = now;
+                projectiles.push({ type: 'pokeball', x: attacker.x, y: attacker.y, vx: (target.x - attacker.x)*0.04, vy: (target.y - attacker.y)*0.04, radius: 14, damage: 20, target: target });
+            } else if (pType === 'dongryong' && now - attacker.lastProjTime > 2500) {
+                attacker.lastProjTime = now;
+                projectiles.push({ type: 'dongryong_basic', x: attacker.x, y: attacker.y, vx: (target.x - attacker.x)*0.03, vy: (target.y - attacker.y)*0.03, radius: 15, damage: 20, target: target });
+            }
+
+            let skillInterval = 8000;
+            if (pType === 'fire') skillInterval = 6000;
+            else if (pType === 'ice') skillInterval = 8000;
+            else if (pType === 'pokemon') skillInterval = 9000;
+            else if (pType === 'dongryong') skillInterval = 8000;
+            else if (pType === 'mrbeast') skillInterval = 7000;
+            else if (pType === 'sangsampany') skillInterval = 6000;
+
+            if (now - attacker.lastSkillTime > skillInterval) {
+                attacker.lastSkillTime = now;
+
+                if (pType === 'fire') {
+                    let hugeR = (attacker.radius * 4) / 2.5; 
+                    fireFallBlocks.push({ x: canvas.width * 0.25, y: -100, radius: hugeR, speed: 3, damage: 20, targetPlayer: target });
+                    fireFallBlocks.push({ x: canvas.width * 0.50, y: -100, radius: hugeR, speed: 3, damage: 20, targetPlayer: target });
+                    fireFallBlocks.push({ x: canvas.width * 0.75, y: -100, radius: hugeR, speed: 3, damage: 20, targetPlayer: target });
+                } 
+                else if (pType === 'ice') {
+                    let hugeIceR = 50;
+                    iceFallBlocks.push({ x: 100, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true, targetPlayer: target });
+                    iceFallBlocks.push({ x: 270, y: -120, radius: hugeIceR, speed: 3, damage: 25, freeze: true, targetPlayer: target });
+                    iceFallBlocks.push({ x: 440, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true, targetPlayer: target });
+                } 
+                else if (pType === 'pokemon') {
+                    for(let i=0; i<42; i++) {
+                        specialAttackEntities.push({
+                            type: 'pokeball_storm',
+                            x: Math.random() * canvas.width,
+                            y: -10 - Math.random() * 400,
+                            speed: (4 + Math.random() * 5) * speedMultiplier,
+                            radius: 10,
+                            damage: 2,
+                            targetPlayer: target
+                        });
+                    }
+                } 
+                else if (pType === 'dongryong') {
+                    specialAttackEntities.push({
+                        type: 'vent_assassinate',
+                        x: target.x, y: target.y - 80,
+                        targetPlayer: target,
+                        damage: 90,
+                        timer: 40
+                    });
+                } 
+                else if (pType === 'mrbeast') {
+                    specialAttackEntities.push({
+                        type: 'mrbeast_slam',
+                        targetPlayer: target,
+                        timer: 30,
+                        damage: 95
+                    });
+                }
+                else if (pType === 'sangsampany') {
+                    specialAttackEntities.push({
+                        type: 'sangsampany_combo',
+                        targetPlayer: target,
+                        timer: 40
+                    });
+                }
+            }
+        }
+
         function update() {
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (!gameStarted) return;
@@ -3334,82 +3395,10 @@
             if (defenseAlertTimer > 0) defenseAlertTimer--;
 
             if (!isBossMode) {
-                let now = Date.now();
-
-                if (p1.type === 'fire' && now - p1.lastProjTime > 2000) {
-                    p1.lastProjTime = now;
-                    projectiles.push({ type: 'fireball', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.03, vy: (p2.y - p1.y)*0.03, radius: p1.radius * 0.7, damage: 15, target: p2 });
-                } else if (p1.type === 'ice' && now - p1.lastProjTime > 3000) {
-                    p1.lastProjTime = now;
-                    projectiles.push({ type: 'iceball', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.03, vy: (p2.y - p1.y)*0.03, radius: p1.radius, damage: 15, target: p2 });
-                } else if (p1.type === 'pokemon' && now - p1.lastProjTime > 2000) {
-                    p1.lastProjTime = now;
-                    projectiles.push({ type: 'pokeball', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.04, vy: (p2.y - p1.y)*0.04, radius: 14, damage: 20, target: p2 });
-                } else if (p1.type === 'dongryong' && now - p1.lastProjTime > 2500) {
-                    p1.lastProjTime = now;
-                    projectiles.push({ type: 'dongryong_basic', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.03, vy: (p2.y - p1.y)*0.03, radius: 15, damage: 20, target: p2 });
-                }
-
-                let skillInterval = 8000;
-                if (p1.type === 'fire') skillInterval = 6000;
-                else if (p1.type === 'ice') skillInterval = 8000;
-                else if (p1.type === 'pokemon') skillInterval = 9000;
-                else if (p1.type === 'dongryong') skillInterval = 8000;
-                else if (p1.type === 'mrbeast') skillInterval = 7000;
-                else if (p1.type === 'sangsampany') skillInterval = 6000;
-
-                if (now - p1.lastSkillTime > skillInterval) {
-                    p1.lastSkillTime = now;
-
-                    if (p1.type === 'fire') {
-                        let hugeR = (p1.radius * 4) / 2.5; 
-                        fireFallBlocks.push({ x: canvas.width * 0.25, y: -100, radius: hugeR, speed: 3, damage: 20 });
-                        fireFallBlocks.push({ x: canvas.width * 0.50, y: -100, radius: hugeR, speed: 3, damage: 20 });
-                        fireFallBlocks.push({ x: canvas.width * 0.75, y: -100, radius: hugeR, speed: 3, damage: 20 });
-                    } 
-                    else if (p1.type === 'ice') {
-                        let hugeIceR = 50;
-                        iceFallBlocks.push({ x: 100, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
-                        iceFallBlocks.push({ x: 270, y: -120, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
-                        iceFallBlocks.push({ x: 440, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
-                    } 
-                    else if (p1.type === 'pokemon') {
-                        for(let i=0; i<42; i++) {
-                            specialAttackEntities.push({
-                                type: 'pokeball_storm',
-                                x: Math.random() * canvas.width,
-                                y: -10 - Math.random() * 400,
-                                speed: (4 + Math.random() * 5) * speedMultiplier,
-                                radius: 10,
-                                damage: 2,
-                                targetPlayer: p2
-                            });
-                        }
-                    } 
-                    else if (p1.type === 'dongryong') {
-                        specialAttackEntities.push({
-                            type: 'vent_assassinate',
-                            x: p2.x, y: p2.y - 80,
-                            targetPlayer: p2,
-                            damage: 90,
-                            timer: 40
-                        });
-                    } 
-                    else if (p1.type === 'mrbeast') {
-                        specialAttackEntities.push({
-                            type: 'mrbeast_slam',
-                            targetPlayer: p2,
-                            timer: 30,
-                            damage: 95
-                        });
-                    }
-                    else if (p1.type === 'sangsampany') {
-                        specialAttackEntities.push({
-                            type: 'sangsampany_combo',
-                            targetPlayer: p2,
-                            timer: 40
-                        });
-                    }
+                // 1P 및 2P 양쪽 모두 공 고유 기술 호출
+                triggerBallLogic(p1, p2, true);
+                if (nextGameMode === 'free') {
+                    triggerBallLogic(p2, p1, false);
                 }
 
                 if (p1.freezeTimer > 0) {
@@ -3467,10 +3456,10 @@
                 for (let i = fireFallBlocks.length - 1; i >= 0; i--) {
                     let fb = fireFallBlocks[i];
                     fb.y += fb.speed * speedMultiplier;
-                    let dx = fb.x - p2.x;
-                    let dy = fb.y - p2.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < fb.radius + p2.radius) {
-                        p2.hp = Math.max(0, p2.hp - fb.damage);
+                    let dx = fb.x - fb.targetPlayer.x;
+                    let dy = fb.y - fb.targetPlayer.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < fb.radius + fb.targetPlayer.radius) {
+                        fb.targetPlayer.hp = Math.max(0, fb.targetPlayer.hp - fb.damage);
                         fireFallBlocks.splice(i, 1);
                         updateHpBars();
                         checkGameOver();
@@ -3482,11 +3471,11 @@
                 for (let i = iceFallBlocks.length - 1; i >= 0; i--) {
                     let ib = iceFallBlocks[i];
                     ib.y += ib.speed * speedMultiplier;
-                    let dx = ib.x - p2.x;
-                    let dy = ib.y - p2.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < ib.radius + p2.radius) {
-                        p2.hp = Math.max(0, p2.hp - ib.damage);
-                        if (ib.freeze) p2.freezeTimer = 90; 
+                    let dx = ib.x - ib.targetPlayer.x;
+                    let dy = ib.y - ib.targetPlayer.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < ib.radius + ib.targetPlayer.radius) {
+                        ib.targetPlayer.hp = Math.max(0, ib.targetPlayer.hp - ib.damage);
+                        if (ib.freeze) ib.targetPlayer.freezeTimer = 90; 
                         iceFallBlocks.splice(i, 1);
                         updateHpBars();
                         checkGameOver();
@@ -3499,10 +3488,10 @@
                     let pr = projectiles[i];
                     pr.x += pr.vx * speedMultiplier;
                     pr.y += pr.vy * speedMultiplier;
-                    let dx = pr.x - p2.x;
-                    let dy = pr.y - p2.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < pr.radius + p2.radius) {
-                        p2.hp = Math.max(0, p2.hp - pr.damage);
+                    let dx = pr.x - pr.target.x;
+                    let dy = pr.y - pr.target.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < pr.radius + pr.target.radius) {
+                        pr.target.hp = Math.max(0, pr.target.hp - pr.damage);
                         projectiles.splice(i, 1);
                         updateHpBars();
                         checkGameOver();
@@ -3737,7 +3726,8 @@
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.lineWidth = 3;
-            ctx.strokeStyle = isPlayer1 ? "#3498db" : "#c0392b";
+            // 요청하신 상대 공(2P) 외곽 빨간색 테두리 강조 적용
+            ctx.strokeStyle = isPlayer1 ? "#3498db" : "#ff0000";
             ctx.stroke();
             ctx.closePath();
 
@@ -4006,4 +3996,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+                        </html>
