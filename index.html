@@ -133,7 +133,6 @@
             width: 100%;
             justify-content: center;
         }
-        /* 🟢 실시간 접속자 표시 태그 스타일 */
         .online-count-tag {
             font-size: 11px;
             font-weight: bold;
@@ -1221,7 +1220,6 @@
 
     <div class="container hidden" id="lobby-screen">
         <div class="top-nav-bar">
-            <!-- 🔵 프로필 버튼 영역 (아래에 접속자 수 태그 추가) -->
             <div class="nav-column">
                 <button class="profile-btn" onclick="openProfileModal()">👤 프로필</button>
                 <div class="online-count-tag">
@@ -1409,11 +1407,12 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const STORAGE_KEY = 'lily_ball_fight_permanent_v44';
-        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v44';
-        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v44';
-        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v44';
-        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v44';
+        // 통합 글로벌 저장소 키
+        const STORAGE_KEY = 'lily_ball_fight_permanent_global';
+        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users';
+        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts';
+        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts';
+        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice';
         
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "123kpq";
@@ -1505,14 +1504,18 @@
         let isHost = false; 
         let friendName = "친구";
 
-        // 🟢 실시간 온라인 플레이어 수 집계 세션 설정
-        const userStatusRef = db.ref('presence/' + Math.random().toString(36).substring(2, 9));
+        // 🌐 실시간 온라인 접속자 집계 및 동기화
+        const userSessionId = Math.random().toString(36).substring(2, 9);
+        const userStatusRef = db.ref('presence/' + userSessionId);
         const connectedRef = db.ref('.info/connected');
 
         connectedRef.on('value', (snap) => {
             if (snap.val() === true) {
                 userStatusRef.onDisconnect().remove();
-                userStatusRef.set(true);
+                userStatusRef.set({
+                    username: savedUsername || "손님",
+                    time: Date.now()
+                });
             }
         });
 
@@ -1566,6 +1569,7 @@
             isDragging = false;
         });
 
+        // 🌐 전역 유저 DB 동기화
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1608,6 +1612,7 @@
                 }
 
                 db.ref('users/' + savedUsername.replace(/[.#$/\[\]]/g, "_")).set(userData);
+                userStatusRef.update({ username: savedUsername });
             }
         }
 
@@ -3676,4 +3681,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+    </html>
