@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1377,11 +1376,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const STORAGE_KEY = 'lily_ball_fight_permanent_v40';
-        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v40';
-        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v40';
-        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v40';
-        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v40';
+        const STORAGE_KEY = 'lily_ball_fight_permanent_v41';
+        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v41';
+        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v41';
+        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v41';
+        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v41';
         
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "123kpq";
@@ -2256,7 +2255,6 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        // 미스터 비스트 볼을 동룡쓰 볼 밑으로 이동 및 설명 수정 완료
         let ballsData = [
             { id: 'standard', name: '기본 볼', desc: '체력: 200, 데미지 없음', price: 0, hp: 200, damage: 0, owned: true, equipped: true },
             { id: 'fire', name: '화염 볼', desc: '체력: 200, 2초마다 화염구 & 6초마다 거대 화염볼 3개 폭격', price: 50, hp: 200, damage: 15, owned: false, equipped: false },
@@ -2706,6 +2704,9 @@
                     clearInterval(countdownInterval);
                     isCountingDown = false;
                     gameStarted = true;
+                    // 게임 시작 시각 리셋으로 대기 시간 동안 스킬 게이지가 쌓이지 않도록 처리
+                    p1.lastSkillTime = Date.now();
+                    p1.lastProjTime = Date.now();
                 }
             }, 1000);
         }
@@ -3065,7 +3066,7 @@
                             let hitDmg = se.type === 'amongus_assassinate' ? 75 : (se.type === 'sangsampany_combo' ? 190 : 40);
                             se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - hitDmg);
                             if (se.type === 'mrbeast_slam') {
-                                se.targetPlayer.vy += 12; // 내려찍기 타격 효과
+                                se.targetPlayer.vy += 12;
                             }
                             specialAttackEntities.splice(i, 1);
                             updateHpBars();
@@ -3351,6 +3352,7 @@
                 ctx.closePath();
             }
 
+            // 기술 게이지 바 위치를 공 밑이 아닌 좌우(오른쪽/왼쪽)로 변경
             if (isPlayer1 && !isDefending && !isBossMode) {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius + 3, 0, Math.PI * 2);
@@ -3363,11 +3365,12 @@
                 if (p.type === 'fire') skillInterval = 6000;
                 else if (p.type === 'pokemon') skillInterval = 9000;
 
-                let timePassed = Date.now() - p.lastSkillTime;
+                let timePassed = gameStarted ? (Date.now() - p.lastSkillTime) : 0;
                 let progress = Math.min(1, timePassed / skillInterval);
 
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius + 7, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * progress));
+                // 아래쪽(Math.PI / 2)을 피해 왼쪽/오른쪽 영역(예: 0 ~ Math.PI * 2 * progress)으로 게이지 호(arc) 그리기
+                ctx.arc(p.x, p.y, p.radius + 7, 0, Math.PI * 2 * progress);
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "#f1c40f";
                 ctx.stroke();
@@ -3473,7 +3476,7 @@
                     ctx.font = "bold 20px sans-serif";
                     ctx.fillStyle = "#3498db";
                     ctx.textAlign = "center";
-                    ctx.fillText("🧽 쓱싹쓱싹 행주 & 미용티슈 폭발!", canvas.width / 2, 50);
+                    ctx.fillText("🧽 쓱싹쓱싹 행주 & 미용티슈 소환 폭발!", canvas.width / 2, 50);
                     ctx.restore();
                 } else if (se.type === 'mrbeast_slam') {
                     ctx.save();
