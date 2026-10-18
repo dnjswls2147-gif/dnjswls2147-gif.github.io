@@ -1011,6 +1011,85 @@
         }
 
         .label { font-size: 12px; font-weight: bold; text-align: left; margin-bottom: 2px; }
+
+        /* 자유 플레이 전용 스타일 (흰색 배경 및 1대1 대결 구도) */
+        .free-play-container {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+            border-color: #cccccc !important;
+        }
+        .free-play-container h2 {
+            color: #111111 !important;
+            text-shadow: none !important;
+        }
+        .free-play-container .version-text {
+            color: #666666 !important;
+        }
+        .free-play-stadium-box {
+            width: 100%;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .free-play-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            background: #fff;
+            color: #111;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .free-play-arena {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #fdfdfd;
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 25px 10px;
+            margin-bottom: 15px;
+        }
+        .free-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 120px;
+        }
+        .free-ball-box {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #f1f2f6;
+            border: 2px solid #dcdde1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .free-add-btn {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed #333;
+            background: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .free-ball-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111;
+            min-height: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -1049,6 +1128,19 @@
             <div class="error" id="admin-auth-error"></div>
             <input type="password" id="admin-password-input" placeholder="비밀번호 입력" onkeyup="if(event.key==='Enter') checkAdminPassword()">
             <button class="btn btn-ai" onclick="checkAdminPassword()">확인</button>
+        </div>
+    </div>
+
+    <!-- 모든 볼 선택 모달 (자유 플레이 추가하기 클릭 시 사용) -->
+    <div class="modal-overlay hidden" id="free-ball-picker-modal">
+        <div class="modal-box" style="max-width: 380px; background:#fff; color:#111; border-color:#ccc;">
+            <div class="header-row">
+                <h2 style="color:#111;">사용할 볼 선택</h2>
+                <button class="btn-close-x" onclick="closeFreeBallPicker()">X</button>
+            </div>
+            <div class="shop-list" id="free-ball-grid-container" style="max-height: 300px; margin-top:15px;">
+                <!-- 동적으로 볼 리스트가 생성됩니다 -->
+            </div>
         </div>
     </div>
 
@@ -1247,13 +1339,55 @@
             <div class="myball-btn-box" onclick="showMyBallShop()">⚽ 나의 공</div>
         </div>
 
-        <button class="btn btn-ai" onclick="startAI()" style="margin-top: 10px;">AI 자동 매칭</button>
+        <div style="display: flex; gap: 6px;">
+            <button class="btn btn-ai" onclick="startAI()" style="flex: 1; margin-top: 10px;">AI 자동 매칭</button>
+            <button class="btn btn-ai" onclick="showFreePlay()" style="flex: 1; margin-top: 10px; background-color: #3498db;">자유 플레이</button>
+        </div>
         <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">😈 보스 피하기</button>
         <div style="display: flex; gap: 6px;">
             <button class="btn btn-friend" onclick="showFriendMenu()" style="flex: 2; margin-top: 6px;">친구 플레이</button>
             <button class="btn btn-group" onclick="openGroupMenu()" style="flex: 1; margin-top: 6px;">👥 그룹</button>
         </div>
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
+    </div>
+
+    <!-- 자유 플레이 화면 (흰색 배경, 지정된 필수 요소만 남기고 불필요한 이모티콘/텍스트 제거) -->
+    <div class="container hidden free-play-container" id="free-play-screen">
+        <div class="header-row">
+            <h2>자유 플레이</h2>
+            <button class="btn-close-x" onclick="showLobby()" style="position:static;">X</button>
+        </div>
+        <div class="version-text">1대1 자유 매치</div>
+
+        <!-- 경기장 선택 -->
+        <div class="free-play-stadium-box">
+            <select class="free-play-select" id="free-play-stadium">
+                <option>경기장: 기본 아레나</option>
+                <option>경기장: 네온 코트</option>
+                <option>경기장: 스타디움 파크</option>
+            </select>
+        </div>
+
+        <!-- 1대1 대결 구도 영역 (왼쪽 추가하기 / 오른쪽 추가하기) -->
+        <div class="free-play-arena">
+            <div class="free-slot">
+                <div class="free-ball-box" id="free-slot-left">
+                    <button class="free-add-btn" onclick="openFreeBallPicker('left')">추가하기</button>
+                </div>
+                <div class="free-ball-name" id="free-name-left"></div>
+            </div>
+
+            <div style="font-weight:900; font-size:18px; color:#555;">VS</div>
+
+            <div class="free-slot">
+                <div class="free-ball-box" id="free-slot-right">
+                    <button class="free-add-btn" onclick="openFreeBallPicker('right')">추가하기</button>
+                </div>
+                <div class="free-ball-name" id="free-name-right"></div>
+            </div>
+        </div>
+
+        <button class="btn btn-back" onclick="showLobby()" style="background:#333; color:#fff;">로비로 가기</button>
     </div>
 
     <div class="container hidden" id="mailbox-screen">
@@ -1407,7 +1541,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 통합 글로벌 저장소 키
         const STORAGE_KEY = 'lily_ball_fight_permanent_global';
         const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users';
         const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts';
@@ -1504,7 +1637,9 @@
         let isHost = false; 
         let friendName = "친구";
 
-        // 🌐 실시간 온라인 접속자 집계 및 동기화
+        // 자유 플레이 관련 변수
+        let currentFreeSide = null;
+
         const userSessionId = Math.random().toString(36).substring(2, 9);
         const userStatusRef = db.ref('presence/' + userSessionId);
         const connectedRef = db.ref('.info/connected');
@@ -1550,26 +1685,6 @@
             isDragging = false;
         });
 
-        adminHeaderDrag.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            let touch = e.touches[0];
-            dragOffsetX = touch.clientX - adminPanel.offsetLeft;
-            dragOffsetY = touch.clientY - adminPanel.offsetTop;
-            adminPanel.style.transform = 'none';
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            let touch = e.touches[0];
-            adminPanel.style.left = (touch.clientX - dragOffsetX) + 'px';
-            adminPanel.style.top = (touch.clientY - dragOffsetY) + 'px';
-        });
-
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-
-        // 🌐 전역 유저 DB 동기화
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1649,6 +1764,7 @@
                 document.getElementById('myball-screen').classList.add('hidden');
                 document.getElementById('mailbox-screen').classList.add('hidden');
                 document.getElementById('ranking-screen').classList.add('hidden');
+                document.getElementById('free-play-screen').classList.add('hidden');
             } else {
                 screen.classList.add('hidden');
                 
@@ -1661,7 +1777,8 @@
                         !document.getElementById('char-select-screen').classList.contains('hidden') ||
                         !document.getElementById('myball-screen').classList.contains('hidden') ||
                         !document.getElementById('mailbox-screen').classList.contains('hidden') ||
-                        !document.getElementById('ranking-screen').classList.contains('hidden');
+                        !document.getElementById('ranking-screen').classList.contains('hidden') ||
+                        !document.getElementById('free-play-screen').classList.contains('hidden');
 
                     if (!isAnyGameScreenActive) {
                         document.getElementById('lobby-screen').classList.remove('hidden');
@@ -2558,6 +2675,47 @@
             showCharacterSelect();
         }
 
+        // --- 자유 플레이 관련 함수 추가 ---
+        function showFreePlay() {
+            if (!checkUserHasName()) return;
+            document.getElementById('lobby-screen').classList.add('hidden');
+            document.getElementById('free-play-screen').classList.remove('hidden');
+        }
+
+        function openFreeBallPicker(side) {
+            currentFreeSide = side;
+            const container = document.getElementById('free-ball-grid-container');
+            container.innerHTML = '';
+
+            // 모든 볼을 자유 플레이에서 사용 가능하도록 표시
+            ballsData.forEach(ball => {
+                let div = document.createElement('div');
+                div.className = 'shop-item';
+                div.style.cursor = 'pointer';
+                div.innerHTML = `<div class="shop-info"><div class="shop-name" style="color:#111;">${ball.name}</div><div class="shop-desc" style="color:#666;">${ball.desc}</div></div>`;
+                div.onclick = () => selectFreeBall(ball.name);
+                container.appendChild(div);
+            });
+
+            document.getElementById('free-ball-picker-modal').classList.remove('hidden');
+        }
+
+        function closeFreeBallPicker() {
+            document.getElementById('free-ball-picker-modal').classList.add('hidden');
+        }
+
+        function selectFreeBall(ballName) {
+            if (!currentFreeSide) return;
+            const slot = document.getElementById(`free-slot-${currentFreeSide}`);
+            const nameLabel = document.getElementById(`free-name-${currentFreeSide}`);
+
+            // 추가하기 버튼을 없애고 오직 볼 이름만 밑에 표시
+            slot.innerHTML = `<div style="font-weight:bold; font-size:13px; color:#111; text-align:center;">장착됨</div>`;
+            nameLabel.innerText = ballName; // 볼 이름만 단독 표기
+
+            closeFreeBallPicker();
+        }
+
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
@@ -2708,6 +2866,7 @@
             document.getElementById('myball-screen').classList.add('hidden');
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
+            document.getElementById('free-play-screen').classList.add('hidden');
             document.getElementById('char-select-screen').classList.remove('hidden');
 
             let equipped = getEquippedBall();
@@ -2879,6 +3038,7 @@
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
+            document.getElementById('free-play-screen').classList.add('hidden');
             
             if (!isServerUnderMaintenance || isAdminLoggedIn || isBypassedByPassword) {
                 document.getElementById('lobby-screen').classList.remove('hidden');
