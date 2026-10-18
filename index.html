@@ -1405,9 +1405,17 @@
         const dongryongImg = new Image();
         dongryongImg.src = "dongryong.png";
 
-        // 🟢 포켓몬 볼 프로필 이미지 연결
+        // 포켓몬 볼 프로필 이미지
         const pokemonImg = new Image();
-        pokemonImg.src = "pokemon.png"; // 파일명을 다르게 하셨다면 예: pokemon.jpg 로 변경하세요.
+        pokemonImg.src = "pokemon.png"; 
+
+        // 아이스 볼 프로필 이미지
+        const iceballImg = new Image();
+        iceballImg.src = "iceball.png";
+
+        // 🔥 화염 볼 프로필 이미지
+        const fireballImg = new Image();
+        fireballImg.src = "fire.jpg"; // 업로드하신 파일명(fire.jpg)에 맞춤
 
         let savedUsername = "";
         let sessionStartTime = Date.now();
@@ -3350,9 +3358,15 @@
             else if (p.type === 'dongryong' && dongryongImg.complete && dongryongImg.naturalWidth !== 0) {
                 ctx.drawImage(dongryongImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             } 
-            // 🟢 포켓몬 볼 프로필 이미지 렌더링
             else if (p.type === 'pokemon' && pokemonImg.complete && pokemonImg.naturalWidth !== 0) {
                 ctx.drawImage(pokemonImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+            }
+            else if (p.type === 'ice' && iceballImg.complete && iceballImg.naturalWidth !== 0) {
+                ctx.drawImage(iceballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+            }
+            // 🔥 화염 볼 프로필 이미지 렌더링
+            else if (p.type === 'fire' && fireballImg.complete && fireballImg.naturalWidth !== 0) {
+                ctx.drawImage(fireballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
             else {
                 ctx.fillStyle = p.color;
@@ -3610,7 +3624,7 @@
                 let textColor = "";
 
                 if (gameOverState === 'win') {
-                    resultText = isBossMode ? "🎉 보스 처치! (+1000C)" : "승리!!!";
+                    resultText = isBossMode ? "🎉 보스 처치! (+1000코인)" : "승리!!!";
                     textColor = "#2ecc71";
                 } else if (gameOverState === 'lose') {
                     resultText = "패배";
