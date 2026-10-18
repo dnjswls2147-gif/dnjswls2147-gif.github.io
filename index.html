@@ -1409,13 +1409,13 @@
         const pokemonImg = new Image();
         pokemonImg.src = "pokemon.png"; 
 
-        // 아이스 볼 프로필 이미지
+        // 🔵 아이스 볼 프로필 이미지 (iceball.png 반영)
         const iceballImg = new Image();
         iceballImg.src = "iceball.png";
 
-        // 🔥 화염 볼 프로필 이미지
+        // 화염 볼 프로필 이미지
         const fireballImg = new Image();
-        fireballImg.src = "fire.jpg"; // 업로드하신 파일명(fire.jpg)에 맞춤
+        fireballImg.src = "fire.jpg"; 
 
         let savedUsername = "";
         let sessionStartTime = Date.now();
@@ -3361,10 +3361,10 @@
             else if (p.type === 'pokemon' && pokemonImg.complete && pokemonImg.naturalWidth !== 0) {
                 ctx.drawImage(pokemonImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
+            // 🔵 아이스 볼 프로필 이미지 렌더링
             else if (p.type === 'ice' && iceballImg.complete && iceballImg.naturalWidth !== 0) {
                 ctx.drawImage(iceballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
-            // 🔥 화염 볼 프로필 이미지 렌더링
             else if (p.type === 'fire' && fireballImg.complete && fireballImg.naturalWidth !== 0) {
                 ctx.drawImage(fireballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
@@ -3624,7 +3624,7 @@
                 let textColor = "";
 
                 if (gameOverState === 'win') {
-                    resultText = isBossMode ? "🎉 보스 처치! (+1000코인)" : "승리!!!";
+                    resultText = isBossMode ? "🎉 보스 처치! (+1000C)" : "승리!!!";
                     textColor = "#2ecc71";
                 } else if (gameOverState === 'lose') {
                     resultText = "패배";
@@ -3653,4 +3653,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
