@@ -1376,11 +1376,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const STORAGE_KEY = 'lily_ball_fight_permanent_v41';
-        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v41';
-        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v41';
-        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v41';
-        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v41';
+        const STORAGE_KEY = 'lily_ball_fight_permanent_v42';
+        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v42';
+        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v42';
+        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v42';
+        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v42';
         
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "123kpq";
@@ -1393,8 +1393,13 @@
             "섹스", "자지", "보지", "성교", "19금", "야동", "유방", "음란", "조까", "엿먹어", "씹", "fuck", "sex", "bitch"
         ];
 
+        // 미스터 비스트 볼 이미지
         const characterImg = new Image();
         characterImg.src = "character.jpg"; 
+
+        // 🟢 상품컴퍼니 볼 프로필 이미지 연결
+        const sangsampanyImg = new Image();
+        sangsampanyImg.src = "sangsampany.png";
 
         let savedUsername = "";
         let sessionStartTime = Date.now();
@@ -2704,7 +2709,6 @@
                     clearInterval(countdownInterval);
                     isCountingDown = false;
                     gameStarted = true;
-                    // 게임 시작 시각 리셋으로 대기 시간 동안 스킬 게이지가 쌓이지 않도록 처리
                     p1.lastSkillTime = Date.now();
                     p1.lastProjTime = Date.now();
                 }
@@ -3326,9 +3330,15 @@
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.clip(); 
 
+            // 공 프로필 이미지 렌더링 영역
             if (p.type === 'mrbeast' && characterImg.complete && characterImg.naturalWidth !== 0) {
                 ctx.drawImage(characterImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            } else {
+            } 
+            // 🟢 상품컴퍼니 볼 프로필 이미지 렌더링
+            else if (p.type === 'sangsampany' && sangsampanyImg.complete && sangsampanyImg.naturalWidth !== 0) {
+                ctx.drawImage(sangsampanyImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+            } 
+            else {
                 ctx.fillStyle = p.color;
                 ctx.fill();
             }
@@ -3352,7 +3362,6 @@
                 ctx.closePath();
             }
 
-            // 기술 게이지 바 위치를 공 밑이 아닌 좌우(오른쪽/왼쪽)로 변경
             if (isPlayer1 && !isDefending && !isBossMode) {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius + 3, 0, Math.PI * 2);
@@ -3369,7 +3378,6 @@
                 let progress = Math.min(1, timePassed / skillInterval);
 
                 ctx.beginPath();
-                // 아래쪽(Math.PI / 2)을 피해 왼쪽/오른쪽 영역(예: 0 ~ Math.PI * 2 * progress)으로 게이지 호(arc) 그리기
                 ctx.arc(p.x, p.y, p.radius + 7, 0, Math.PI * 2 * progress);
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "#f1c40f";
