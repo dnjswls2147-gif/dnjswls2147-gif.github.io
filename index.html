@@ -107,8 +107,15 @@
         .top-nav-bar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 10px;
+            gap: 4px;
+        }
+        .nav-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
             gap: 4px;
         }
         .profile-btn {
@@ -123,8 +130,22 @@
             display: inline-flex;
             align-items: center;
             gap: 2px;
-            flex: 1;
+            width: 100%;
             justify-content: center;
+        }
+        /* 🟢 실시간 접속자 표시 태그 스타일 */
+        .online-count-tag {
+            font-size: 11px;
+            font-weight: bold;
+            color: #2ecc71;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #2ecc71;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 0 5px rgba(46, 204, 113, 0.3);
         }
         .mailbox-btn {
             position: relative;
@@ -139,7 +160,7 @@
             display: inline-flex;
             align-items: center;
             gap: 2px;
-            flex: 1;
+            width: 100%;
             justify-content: center;
         }
         .ranking-nav-btn {
@@ -154,7 +175,7 @@
             display: inline-flex;
             align-items: center;
             gap: 2px;
-            flex: 1;
+            width: 100%;
             justify-content: center;
         }
         .red-dot {
@@ -1200,12 +1221,24 @@
 
     <div class="container hidden" id="lobby-screen">
         <div class="top-nav-bar">
-            <button class="profile-btn" onclick="openProfileModal()">👤 프로필</button>
-            <button class="mailbox-btn" onclick="showMailbox()">
-                📬 우편함
-                <div class="red-dot hidden" id="mail-red-dot"></div>
-            </button>
-            <button class="ranking-nav-btn" onclick="showRankingBoard()">🏆 랭킹보드</button>
+            <!-- 🔵 프로필 버튼 영역 (아래에 접속자 수 태그 추가) -->
+            <div class="nav-column">
+                <button class="profile-btn" onclick="openProfileModal()">👤 프로필</button>
+                <div class="online-count-tag">
+                    <span>🟢</span> <span id="online-user-count">1</span>명 접속중
+                </div>
+            </div>
+            
+            <div class="nav-column">
+                <button class="mailbox-btn" onclick="showMailbox()">
+                    📬 우편함
+                    <div class="red-dot hidden" id="mail-red-dot"></div>
+                </button>
+            </div>
+
+            <div class="nav-column">
+                <button class="ranking-nav-btn" onclick="showRankingBoard()">🏆 랭킹보드</button>
+            </div>
         </div>
         <h2>🎃 릴리 볼 파이트 🎃</h2>
         <div class="version-text">v1.4 할로윈 에디션</div>
@@ -1376,11 +1409,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const STORAGE_KEY = 'lily_ball_fight_permanent_v43';
-        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v43';
-        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v43';
-        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v43';
-        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v43';
+        const STORAGE_KEY = 'lily_ball_fight_permanent_v44';
+        const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users_v44';
+        const GLOBAL_GIFT_KEY = 'lily_ball_fight_global_gifts_v44';
+        const CLAIMED_GIFT_KEY = 'lily_ball_fight_claimed_gifts_v44';
+        const GLOBAL_NOTICE_KEY = 'lily_ball_fight_global_notice_v44';
         
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "123kpq";
@@ -1393,23 +1426,12 @@
             "섹스", "자지", "보지", "성교", "19금", "야동", "유방", "음란", "조까", "엿먹어", "씹", "fuck", "sex", "bitch"
         ];
 
-        const characterImg = new Image();
-        characterImg.src = "character.jpg"; 
-
-        const sangsampanyImg = new Image();
-        sangsampanyImg.src = "sangsampany.png";
-
-        const dongryongImg = new Image();
-        dongryongImg.src = "dongryong.png";
-
-        const pokemonImg = new Image();
-        pokemonImg.src = "pokemon.png"; 
-
-        const iceballImg = new Image();
-        iceballImg.src = "iceball.png";
-
-        const fireballImg = new Image();
-        fireballImg.src = "fire.jpg"; 
+        const characterImg = new Image(); characterImg.src = "character.jpg"; 
+        const sangsampanyImg = new Image(); sangsampanyImg.src = "sangsampany.png";
+        const dongryongImg = new Image(); dongryongImg.src = "dongryong.png";
+        const pokemonImg = new Image(); pokemonImg.src = "pokemon.png"; 
+        const iceballImg = new Image(); iceballImg.src = "iceball.png";
+        const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
 
         let savedUsername = "";
         let sessionStartTime = Date.now();
@@ -1482,6 +1504,25 @@
         let conn = null;
         let isHost = false; 
         let friendName = "친구";
+
+        // 🟢 실시간 온라인 플레이어 수 집계 세션 설정
+        const userStatusRef = db.ref('presence/' + Math.random().toString(36).substring(2, 9));
+        const connectedRef = db.ref('.info/connected');
+
+        connectedRef.on('value', (snap) => {
+            if (snap.val() === true) {
+                userStatusRef.onDisconnect().remove();
+                userStatusRef.set(true);
+            }
+        });
+
+        db.ref('presence').on('value', (snap) => {
+            const onlineCount = snap.numChildren();
+            const onlineCountEl = document.getElementById('online-user-count');
+            if (onlineCountEl) {
+                onlineCountEl.innerText = Math.max(1, onlineCount);
+            }
+        });
 
         const adminPanel = document.getElementById('admin-panel');
         const adminHeaderDrag = document.getElementById('admin-header-drag');
@@ -2224,7 +2265,7 @@
             if (currentRankingType === 'trophy') {
                 sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
             } else {
-                sorted.sort((a, b) => (b.coins || 0) - (b.coins || 0)); // coins sort
+                sorted.sort((a, b) => (b.coins || 0) - (a.coins || 0));
             }
 
             let displayList = sorted.slice(0, 100);
@@ -2270,7 +2311,6 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        // 🌟 수정된 공 설명 및 능력치 데이터
         let ballsData = [
             { id: 'standard', name: '기본 볼', desc: '체력: 200, 데미지 없음', price: 0, hp: 200, damage: 0, owned: true, equipped: true },
             { id: 'fire', name: '화염 볼', desc: '체력: 200, 2초마다 기본 공격 (15 데미지) & 6초마다 거대 화염볼 폭격', price: 50, hp: 200, damage: 15, owned: false, equipped: false },
@@ -2315,7 +2355,6 @@
                             if (match) {
                                 match.owned = savedBall.owned;
                                 match.equipped = savedBall.equipped;
-                                // 최신 설명 문구 강제 동기화
                                 match.desc = ballsData.find(def => def.id === savedBall.id).desc;
                                 match.hp = ballsData.find(def => def.id === savedBall.id).hp;
                                 match.damage = ballsData.find(def => def.id === savedBall.id).damage;
@@ -2967,7 +3006,6 @@
             if (!isBossMode) {
                 let now = Date.now();
 
-                // 🌟 공별 기본 공격 (간격 및 데미지 적용)
                 if (p1.type === 'fire' && now - p1.lastProjTime > 2000) {
                     p1.lastProjTime = now;
                     projectiles.push({ type: 'fireball', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.03, vy: (p2.y - p1.y)*0.03, radius: p1.radius * 0.7, damage: 15, target: p2 });
@@ -2982,7 +3020,6 @@
                     projectiles.push({ type: 'dongryong_basic', x: p1.x, y: p1.y, vx: (p2.x - p1.x)*0.03, vy: (p2.y - p1.y)*0.03, radius: 15, damage: 20, target: p2 });
                 }
 
-                // 🌟 공별 기술(스킬) 쿨타임 및 효과 설정
                 let skillInterval = 8000;
                 if (p1.type === 'fire') skillInterval = 6000;
                 else if (p1.type === 'ice') skillInterval = 8000;
@@ -2995,21 +3032,18 @@
                     p1.lastSkillTime = now;
 
                     if (p1.type === 'fire') {
-                        // 화염볼 기술: 기존보다 2.5배 작아진 거대 화염볼 3개 낙하
                         let hugeR = (p1.radius * 4) / 2.5; 
                         fireFallBlocks.push({ x: canvas.width * 0.25, y: -100, radius: hugeR, speed: 3, damage: 20 });
                         fireFallBlocks.push({ x: canvas.width * 0.50, y: -100, radius: hugeR, speed: 3, damage: 20 });
                         fireFallBlocks.push({ x: canvas.width * 0.75, y: -100, radius: hugeR, speed: 3, damage: 20 });
                     } 
                     else if (p1.type === 'ice') {
-                        // 아이스볼 기술: 위에서 얼음 폭격 [맞으면 1.5초(90프레임) 정지]
                         let hugeIceR = 50;
                         iceFallBlocks.push({ x: 100, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
                         iceFallBlocks.push({ x: 270, y: -120, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
                         iceFallBlocks.push({ x: 440, y: -80, radius: hugeIceR, speed: 3, damage: 25, freeze: true });
                     } 
                     else if (p1.type === 'pokemon') {
-                        // 포켓몬볼 기술: 40개 이상 폭격 (1개당 2뎀)
                         for(let i=0; i<42; i++) {
                             specialAttackEntities.push({
                                 type: 'pokeball_storm',
@@ -3023,7 +3057,6 @@
                         }
                     } 
                     else if (p1.type === 'dongryong') {
-                        // 동룡쓰볼 기술: 상대 뒤에서 밴트를 타고 습격 (90 데미지)
                         specialAttackEntities.push({
                             type: 'vent_assassinate',
                             x: p2.x, y: p2.y - 80,
@@ -3033,7 +3066,6 @@
                         });
                     } 
                     else if (p1.type === 'mrbeast') {
-                        // 미스터 비스트 기술: 상대 공을 아래로 내려 찍는다 (95 데미지)
                         specialAttackEntities.push({
                             type: 'mrbeast_slam',
                             targetPlayer: p2,
@@ -3042,7 +3074,6 @@
                         });
                     }
                     else if (p1.type === 'sangsampany') {
-                        // 상품컴퍼니 기술: 대나무행주(100뎀), 미용티슈 폭탄(115뎀) 발사
                         specialAttackEntities.push({
                             type: 'sangsampany_combo',
                             targetPlayer: p2,
@@ -3051,7 +3082,6 @@
                     }
                 }
 
-                // 🌟 플레이어 1 이동 및 정지 처리 (일반 데미지로는 정지 안 됨, 기술 맞을 때만 freezeTimer 발동)
                 if (p1.freezeTimer > 0) {
                     p1.freezeTimer -= speedMultiplier;
                 } else {
@@ -3063,7 +3093,6 @@
                     if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; }
                 }
 
-                // 🌟 플레이어 2 이동 및 정지 처리
                 if (p2.freezeTimer > 0) {
                     p2.freezeTimer -= speedMultiplier;
                 } else {
@@ -3075,7 +3104,6 @@
                     if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; }
                 }
 
-                // 특수 엔티티 업데이트
                 for (let i = specialAttackEntities.length - 1; i >= 0; i--) {
                     let se = specialAttackEntities[i];
                     if (se.type === 'pokeball_storm') {
@@ -3096,7 +3124,7 @@
                         if (se.timer <= 0) {
                             let hitDmg = se.damage;
                             if (se.type === 'sangsampany_combo') {
-                                hitDmg = 215; // 대나무행주(100) + 미용티슈(115) = 215 데미지 합산 적용
+                                hitDmg = 215; 
                             }
                             se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - hitDmg);
                             specialAttackEntities.splice(i, 1);
@@ -3128,7 +3156,7 @@
                     let dy = ib.y - p2.y;
                     if (Math.sqrt(dx*dx + dy*dy) < ib.radius + p2.radius) {
                         p2.hp = Math.max(0, p2.hp - ib.damage);
-                        if (ib.freeze) p2.freezeTimer = 90; // 1.5초(90프레임) 정지 적용
+                        if (ib.freeze) p2.freezeTimer = 90; 
                         iceFallBlocks.splice(i, 1);
                         updateHpBars();
                         checkGameOver();
@@ -3156,7 +3184,6 @@
                 }
 
             } else {
-                // 보스 모드 로직
                 if (moveDirection !== 0) {
                     p1.x = Math.max(p1.radius, Math.min(canvas.width - p1.radius, p1.x + moveDirection * 6 * speedMultiplier));
                 }
@@ -3280,7 +3307,6 @@
                 }
             }
 
-            // 🌟 일반 충돌 시 데미지만 들어가고 정지(freezeTimer)는 발생하지 않도록 수정됨
             if (!isBossMode) {
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
@@ -3650,4 +3676,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
