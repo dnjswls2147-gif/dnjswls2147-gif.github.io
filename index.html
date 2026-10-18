@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 할로윈 에디션</title>
+    <title>릴리 볼 파이트 - 자유 플레이 에디션</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -257,6 +257,7 @@
         .btn-close-x {
             position: absolute;
             right: 0;
+            top: 0;
             background: #c0392b;
             color: #ffffff;
             border: 2px solid #962d22;
@@ -1012,18 +1013,46 @@
 
         .label { font-size: 12px; font-weight: bold; text-align: left; margin-bottom: 2px; }
 
-        /* 자유 플레이 전용 스타일 (흰색 배경 및 1대1 대결 구도) */
+        /* 자유 플레이 전용 스타일 (흰색 배경 및 깔끔한 라이트 테마) */
         .free-play-container {
             background-color: #ffffff !important;
             color: #111111 !important;
-            border-color: #cccccc !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+            position: relative;
         }
         .free-play-container h2 {
             color: #111111 !important;
             text-shadow: none !important;
+            font-weight: 800;
         }
         .free-play-container .version-text {
-            color: #666666 !important;
+            color: #718096 !important;
+        }
+        .free-play-header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .free-play-close-btn {
+            position: absolute;
+            right: -5px;
+            top: -5px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
         }
         .free-play-stadium-box {
             width: 100%;
@@ -1033,10 +1062,10 @@
         .free-play-select {
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #ccc;
-            background: #fff;
-            color: #111;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e0;
+            background: #f8fafc;
+            color: #1a202c;
             font-weight: bold;
             font-size: 14px;
         }
@@ -1045,50 +1074,122 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background: #fdfdfd;
-            border: 2px dashed #ddd;
-            border-radius: 12px;
-            padding: 25px 10px;
+            background: #ffffff;
+            border: 2px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 20px 10px;
             margin-bottom: 15px;
+            position: relative;
         }
         .free-slot {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             width: 120px;
         }
         .free-ball-box {
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: #f1f2f6;
-            border: 2px solid #dcdde1;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
         .free-add-btn {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px dashed #333;
-            background: #fff;
+            border: 2px dashed #4a5568;
+            background: #ffffff;
             font-size: 13px;
             font-weight: bold;
-            color: #333;
+            color: #2d3748;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+        .free-change-btn {
+            background: #edf2f7;
+            border: 1px solid #cbd5e0;
+            color: #2d3748;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+        .free-change-btn:hover {
+            background: #e2e8f0;
+        }
         .free-ball-name {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 800;
-            color: #111;
+            color: #1a202c;
             min-height: 20px;
             text-align: center;
+        }
+
+        /* 밝고 깔끔한 볼 선택 모달 스타일 */
+        .free-modal-box {
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff !important;
+            color: #1a202c !important;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 16px !important;
+            padding: 20px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+        .free-ball-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .free-ball-card:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+        .free-ball-card-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a202c;
+        }
+        .free-ball-card-desc {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        /* 시작 하기 버튼 */
+        .free-start-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            margin-bottom: 8px;
+        }
+        .free-start-btn:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
@@ -1131,15 +1232,15 @@
         </div>
     </div>
 
-    <!-- 모든 볼 선택 모달 (자유 플레이 추가하기 클릭 시 사용) -->
+    <!-- 모든 볼 선택 모달 (자유 플레이 전용 밝은 화이트 테마) -->
     <div class="modal-overlay hidden" id="free-ball-picker-modal">
-        <div class="modal-box" style="max-width: 380px; background:#fff; color:#111; border-color:#ccc;">
-            <div class="header-row">
-                <h2 style="color:#111;">사용할 볼 선택</h2>
-                <button class="btn-close-x" onclick="closeFreeBallPicker()">X</button>
+        <div class="free-modal-box">
+            <div class="header-row" style="margin-bottom:12px;">
+                <h2 style="color:#1a202c; text-shadow:none;">사용할 볼 선택</h2>
+                <button class="free-play-close-btn" onclick="closeFreeBallPicker()">X</button>
             </div>
-            <div class="shop-list" id="free-ball-grid-container" style="max-height: 300px; margin-top:15px;">
-                <!-- 동적으로 볼 리스트가 생성됩니다 -->
+            <div class="shop-list" id="free-ball-grid-container" style="max-height: 320px;">
+                <!-- 동적으로 화사한 카드 모양의 볼 리스트가 생성됩니다 -->
             </div>
         </div>
     </div>
@@ -1351,11 +1452,11 @@
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
 
-    <!-- 자유 플레이 화면 (흰색 배경, 지정된 필수 요소만 남기고 불필요한 이모티콘/텍스트 제거) -->
+    <!-- 자유 플레이 화면 (X버튼 오른쪽 배치, 1v1 대결, 공밑에 변경하기 버튼 & 볼 이름 표기) -->
     <div class="container hidden free-play-container" id="free-play-screen">
-        <div class="header-row">
+        <div class="free-play-header">
             <h2>자유 플레이</h2>
-            <button class="btn-close-x" onclick="showLobby()" style="position:static;">X</button>
+            <button class="free-play-close-btn" onclick="showLobby()">X</button>
         </div>
         <div class="version-text">1대1 자유 매치</div>
 
@@ -1368,26 +1469,33 @@
             </select>
         </div>
 
-        <!-- 1대1 대결 구도 영역 (왼쪽 추가하기 / 오른쪽 추가하기) -->
+        <!-- 1대1 대결 구도 영역 -->
         <div class="free-play-arena">
+            <!-- 왼쪽 슬롯 ( Player 1 ) -->
             <div class="free-slot">
                 <div class="free-ball-box" id="free-slot-left">
                     <button class="free-add-btn" onclick="openFreeBallPicker('left')">추가하기</button>
                 </div>
+                <button class="free-change-btn hidden" id="free-change-btn-left" onclick="openFreeBallPicker('left')">변경하기</button>
                 <div class="free-ball-name" id="free-name-left"></div>
             </div>
 
-            <div style="font-weight:900; font-size:18px; color:#555;">VS</div>
+            <div style="font-weight:900; font-size:18px; color:#a0aec0;">VS</div>
 
+            <!-- 오른쪽 슬롯 ( Player 2 ) -->
             <div class="free-slot">
                 <div class="free-ball-box" id="free-slot-right">
                     <button class="free-add-btn" onclick="openFreeBallPicker('right')">추가하기</button>
                 </div>
+                <button class="free-change-btn hidden" id="free-change-btn-right" onclick="openFreeBallPicker('right')">변경하기</button>
                 <div class="free-ball-name" id="free-name-right"></div>
             </div>
         </div>
 
-        <button class="btn btn-back" onclick="showLobby()" style="background:#333; color:#fff;">로비로 가기</button>
+        <!-- 가운데 시작 하기 버튼 -->
+        <button class="free-start-btn" onclick="startFreeMatch()">시작 하기</button>
+
+        <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px;">로비로 가기</button>
     </div>
 
     <div class="container hidden" id="mailbox-screen">
@@ -1637,8 +1745,10 @@
         let isHost = false; 
         let friendName = "친구";
 
-        // 자유 플레이 관련 변수
+        // 자유 플레이 선택된 데이터 저장 변수
         let currentFreeSide = null;
+        let selectedFreeBallLeft = null;
+        let selectedFreeBallRight = null;
 
         const userSessionId = Math.random().toString(36).substring(2, 9);
         const userStatusRef = db.ref('presence/' + userSessionId);
@@ -1851,6 +1961,10 @@
         }
 
         function handleChatButtonClick() {
+            if (nextGameMode === 'free') {
+                alert("🚫 자유 플레이 모드에서는 채팅을 이용할 수 없습니다!");
+                return;
+            }
             if (nextGameMode !== 'friend') {
                 alert("🚫 AI 매칭 및 보스전에서는 채팅을 이용할 수 없습니다!\n(친구 플레이 전용 기능)");
                 return;
@@ -2675,7 +2789,7 @@
             showCharacterSelect();
         }
 
-        // --- 자유 플레이 관련 함수 추가 ---
+        // --- 자유 플레이 기능 관련 함수 ---
         function showFreePlay() {
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
@@ -2687,14 +2801,18 @@
             const container = document.getElementById('free-ball-grid-container');
             container.innerHTML = '';
 
-            // 모든 볼을 자유 플레이에서 사용 가능하도록 표시
+            // 밝은 테마의 카드 스타일 목록으로 생성
             ballsData.forEach(ball => {
-                let div = document.createElement('div');
-                div.className = 'shop-item';
-                div.style.cursor = 'pointer';
-                div.innerHTML = `<div class="shop-info"><div class="shop-name" style="color:#111;">${ball.name}</div><div class="shop-desc" style="color:#666;">${ball.desc}</div></div>`;
-                div.onclick = () => selectFreeBall(ball.name);
-                container.appendChild(div);
+                let card = document.createElement('div');
+                card.className = 'free-ball-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="free-ball-card-title">${ball.name}</div>
+                        <div class="free-ball-card-desc">${ball.desc}</div>
+                    </div>
+                `;
+                card.onclick = () => selectFreeBall(ball);
+                container.appendChild(card);
             });
 
             document.getElementById('free-ball-picker-modal').classList.remove('hidden');
@@ -2704,16 +2822,42 @@
             document.getElementById('free-ball-picker-modal').classList.add('hidden');
         }
 
-        function selectFreeBall(ballName) {
+        function selectFreeBall(ballObj) {
             if (!currentFreeSide) return;
             const slot = document.getElementById(`free-slot-${currentFreeSide}`);
             const nameLabel = document.getElementById(`free-name-${currentFreeSide}`);
+            const changeBtn = document.getElementById(`free-change-btn-${currentFreeSide}`);
 
-            // 추가하기 버튼을 없애고 오직 볼 이름만 밑에 표시
-            slot.innerHTML = `<div style="font-weight:bold; font-size:13px; color:#111; text-align:center;">장착됨</div>`;
-            nameLabel.innerText = ballName; // 볼 이름만 단독 표기
+            if (currentFreeSide === 'left') {
+                selectedFreeBallLeft = ballObj;
+            } else {
+                selectedFreeBallRight = ballObj;
+            }
+
+            // 공 상자 안 문구 변경 & [변경하기] 버튼 표시 & 하단 볼 이름만 표기
+            slot.innerHTML = `<div style="font-weight:800; font-size:13px; color:#2d3748; text-align:center;">장착됨</div>`;
+            changeBtn.classList.remove('hidden');
+            nameLabel.innerText = ballObj.name; // 공 이름만 표시
 
             closeFreeBallPicker();
+        }
+
+        function startFreeMatch() {
+            if (!selectedFreeBallLeft || !selectedFreeBallRight) {
+                alert("양쪽에 사용할 공을 모두 선택해주세요!");
+                return;
+            }
+            isBossMode = false;
+            nextGameMode = 'free';
+
+            document.getElementById('free-play-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            document.getElementById('p1-label').innerText = `1P (${selectedFreeBallLeft.name}) (블루)`;
+            document.getElementById('p2-label').innerText = `2P (${selectedFreeBallRight.name}) (레드)`;
+            document.getElementById('boss-joystick-panel').classList.add('hidden');
+
+            startCountdownAndGame();
         }
 
         function startBossMode() {
@@ -3075,12 +3219,27 @@
         function resetGameState() {
             let equipped = getEquippedBall();
 
-            p1.type = equipped.id;
-            p1.maxHp = equipped.hp;
-            p1.hp = equipped.hp;
-            p1.damage = equipped.damage;
+            if (nextGameMode === 'free') {
+                if (selectedFreeBallLeft) {
+                    p1.type = selectedFreeBallLeft.id;
+                    p1.maxHp = selectedFreeBallLeft.hp;
+                    p1.hp = selectedFreeBallLeft.hp;
+                    p1.damage = selectedFreeBallLeft.damage;
+                }
+                if (selectedFreeBallRight) {
+                    p2.type = selectedFreeBallRight.id;
+                    p2.maxHp = selectedFreeBallRight.hp;
+                    p2.hp = selectedFreeBallRight.hp;
+                    p2.damage = selectedFreeBallRight.damage;
+                }
+            } else {
+                p1.type = equipped.id;
+                p1.maxHp = equipped.hp;
+                p1.hp = equipped.hp;
+                p1.damage = equipped.damage;
+            }
+
             p1.radius = isBossMode ? 20 : 36;
-            
             p1.x = 270; 
             p1.y = isBossMode ? 460 : 380; 
             
@@ -3108,11 +3267,17 @@
                 roundTwoActive = false;
                 defenseCount = 4;
                 defenseCooldown = 0;
-            } else {
+            } else if (nextGameMode !== 'free') {
                 p2.type = 'standard';
                 p2.maxHp = 200;
                 p2.hp = 200;
                 p2.damage = 0;
+                p2.x = 270; 
+                p2.y = 160; 
+                p2.radius = 36;
+                let v2 = getRandomVelocity();
+                p2.vx = v2.vx; p2.vy = v2.vy;
+            } else {
                 p2.x = 270; 
                 p2.y = 160; 
                 p2.radius = 36;
@@ -3146,7 +3311,7 @@
                     gameOverState = 'win';
                     if (isBossMode) {
                         userCoins += 1000; 
-                    } else {
+                    } else if (nextGameMode !== 'free') {
                         userCoins += 1;
                         userTrophies += 1;
                     }
