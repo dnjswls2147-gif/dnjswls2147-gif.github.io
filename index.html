@@ -871,6 +871,7 @@
             padding-bottom: 6px;
             margin-bottom: 8px;
             cursor: grab;
+            touch-action: none;
         }
         .admin-header:active {
             cursor: grabbing;
@@ -1804,21 +1805,49 @@
         let dragOffsetX = 0;
         let dragOffsetY = 0;
 
-        adminHeaderDrag.addEventListener('mousedown', (e) => {
+        function startAdminDrag(clientX, clientY) {
             isDragging = true;
-            dragOffsetX = e.clientX - adminPanel.offsetLeft;
-            dragOffsetY = e.clientY - adminPanel.offsetTop;
+            dragOffsetX = clientX - adminPanel.offsetLeft;
+            dragOffsetY = clientY - adminPanel.offsetTop;
             adminPanel.style.transform = 'none';
+        }
+
+        function moveAdminDrag(clientX, clientY) {
+            if (!isDragging) return;
+            adminPanel.style.left = (clientX - dragOffsetX) + 'px';
+            adminPanel.style.top = (clientY - dragOffsetY) + 'px';
+        }
+
+        function endAdminDrag() {
+            isDragging = false;
+        }
+
+        adminHeaderDrag.addEventListener('mousedown', (e) => {
+            startAdminDrag(e.clientX, e.clientY);
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            adminPanel.style.left = (e.clientX - dragOffsetX) + 'px';
-            adminPanel.style.top = (e.clientY - dragOffsetY) + 'px';
+            moveAdminDrag(e.clientX, e.clientY);
         });
 
         document.addEventListener('mouseup', () => {
-            isDragging = false;
+            endAdminDrag();
+        });
+
+        adminHeaderDrag.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                startAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                moveAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', () => {
+            endAdminDrag();
         });
 
         db.ref('users').on('value', (snapshot) => {
@@ -1988,6 +2017,7 @@
 
         function openAdminAuth() {
             if (isAdminLoggedIn) {
+                resetAdminPos();
                 renderAdminUserList();
                 renderAdminGiftUserSelect();
                 document.getElementById('admin-panel').classList.remove('hidden');
@@ -2010,6 +2040,7 @@
                 isAdminLoggedIn = true;
                 closeAdminAuth();
                 applyMaintenanceUI(); 
+                resetAdminPos();
                 renderAdminUserList();
                 renderAdminGiftUserSelect();
                 document.getElementById('admin-panel').classList.remove('hidden');
