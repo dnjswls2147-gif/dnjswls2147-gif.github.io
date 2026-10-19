@@ -62,6 +62,39 @@
         }
         .hidden { display: none !important; }
 
+        /* 실시간 밴(추방) 당했을 때 뜨는 전체 화면 스타일 */
+        #ban-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999999;
+            text-align: center;
+            padding: 20px;
+        }
+        #ban-screen.hidden {
+            display: none !important;
+            pointer-events: none !important;
+        }
+        #ban-screen h1 {
+            color: #ff0000;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 900;
+        }
+        #ban-screen p {
+            font-size: 16px;
+            color: #ffcccc;
+            line-height: 1.6;
+        }
+
         #maintenance-screen {
             position: fixed;
             top: 0;
@@ -74,7 +107,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 99999999;
+            z-index: 99999998;
             text-align: center;
             padding: 20px;
         }
@@ -198,7 +231,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100000000;
+            z-index: 10000000;
             padding: 20px;
         }
         .modal-overlay.hidden {
@@ -825,7 +858,7 @@
             padding: 12px;
             color: #ffffff;
             box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-            z-index: 100000001;
+            z-index: 10000001;
         }
         .admin-window.hidden {
             display: none !important;
@@ -1179,6 +1212,12 @@
     </style>
 </head>
 <body>
+
+    <!-- 실시간 밴 화면 (검은 배경, 빨간 글씨, 시간/분 및 정지 사유 표시) -->
+    <div id="ban-screen" class="hidden">
+        <h1 id="ban-title-text">[0시간 0분] 정지 되었습니다.<br>다시 들어와주세요</h1>
+        <p id="ban-reason-text" style="font-size: 15px; color: #ff9999; margin-top: 10px;">정지 사유: 없음</p>
+    </div>
 
     <div id="top-notice-banner" class="notice-banner hidden">
         <span>📢 [공지]</span>
@@ -1779,6 +1818,14 @@
                 renderAdminUserList();
                 renderRankingList();
                 renderAdminGiftUserSelect();
+                
+                // 실시간으로 내 계정 밴 상태 체크
+                if (savedUsername) {
+                    let me = registeredUsers.find(u => u.name === savedUsername);
+                    if (me) {
+                        checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                    }
+                }
             }
         });
 
@@ -1802,13 +1849,17 @@
                     status: "온라인",
                     lastAccess: "지금 접속 중",
                     banUntil: 0,
-                    banReason: ""
+                    banReason: "",
+                    banHours: 0,
+                    banMins: 0
                 };
                 
                 let match = registeredUsers.find(u => u.name === savedUsername);
                 if (match) {
                     userData.banUntil = match.banUntil || 0;
                     userData.banReason = match.banReason || "";
+                    userData.banHours = match.banHours || 0;
+                    userData.banMins = match.banMins || 0;
                     if (match.uid) window.userUniqueId = match.uid;
                 }
 
@@ -2199,8 +2250,8 @@
                     <div class="admin-user-sub">친구 ${u.friendsCount || 0}명 · 플레이 타임 ${playTimeMinutes}분</div>
                     
                     <div class="admin-time-row">
-                        <input type="number" id="ban-time-${index}" value="0" min="0"> 시간
-                        <input type="number" id="ban-min-${index}" value="0" min="0"> 분
+                        <input type="number" id="ban-time-${index}" value="${u.banHours || 0}" min="0"> 시간
+                        <input type="number" id="ban-min-${index}" value="${u.banMins || 0}" min="0"> 분
                     </div>
                     <input type="text" id="ban-reason-${index}" class="admin-reason-input" placeholder="추방 사유 (선택)" value="${u.banReason || ''}">
                     
@@ -2228,7 +2279,8 @@
             let totalMs = (hoursInput * 3600 + minsInput * 60) * 1000;
 
             if (totalMs <= 0) {
-                totalMs = 7 * 24 * 3600 * 1000;
+                totalMs = 24 * 3600 * 1000; // 기본 24시간 정지
+                hoursInput = 24;
             }
 
             let targetUser = registeredUsers[index];
@@ -2236,7 +2288,9 @@
 
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: banTime,
-                banReason: reasonInput
+                banReason: reasonInput,
+                banHours: hoursInput,
+                banMins: minsInput
             });
 
             alert(`[${targetUser.name}] 님이 정지되었습니다.`);
@@ -2246,10 +2300,43 @@
             let targetUser = registeredUsers[index];
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: 0,
-                banReason: ""
+                banReason: "",
+                banHours: 0,
+                banMins: 0
             });
 
             alert(`[${targetUser.name}] 님의 밴이 해제되었습니다!`);
+        }
+
+        function checkAndApplyBanScreen(banUntil, reason, hours, mins) {
+            const banScreen = document.getElementById('ban-screen');
+            if (banUntil && banUntil > Date.now()) {
+                let h = hours || 0;
+                let m = mins || 0;
+                if (h === 0 && m === 0) {
+                    let diffMs = banUntil - Date.now();
+                    h = Math.floor(diffMs / (1000 * 3600));
+                    m = Math.floor((diffMs % (1000 * 3600)) / (1000 * 60));
+                }
+
+                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분] 정지 되었습니다.<br>다시 들어와주세요`;
+                document.getElementById('ban-reason-text').innerText = `정지 사유: ${reason ? reason : "없음"}`;
+                banScreen.classList.remove('hidden');
+
+                // 모든 화면 숨기기
+                document.getElementById('name-modal').classList.add('hidden');
+                document.getElementById('lobby-screen').classList.add('hidden');
+                document.getElementById('game-screen').classList.add('hidden');
+                document.getElementById('friend-screen').classList.add('hidden');
+                document.getElementById('group-screen').classList.add('hidden');
+                document.getElementById('char-select-screen').classList.add('hidden');
+                document.getElementById('myball-screen').classList.add('hidden');
+                document.getElementById('mailbox-screen').classList.add('hidden');
+                document.getElementById('ranking-screen').classList.add('hidden');
+                document.getElementById('free-play-screen').classList.add('hidden');
+            } else {
+                banScreen.classList.add('hidden');
+            }
         }
 
         function renderAdminGiftUserSelect() {
@@ -2601,7 +2688,10 @@
                 document.getElementById('lobby-screen').classList.add('hidden');
             } else {
                 syncGlobalUsers();
-                if (!checkUserBanStatus(savedUsername)) {
+                let me = registeredUsers.find(u => u.name === savedUsername);
+                if (me && me.banUntil && me.banUntil > Date.now()) {
+                    checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                } else {
                     document.getElementById('name-modal').classList.add('hidden');
                     document.getElementById('lobby-screen').classList.remove('hidden');
                 }
@@ -2609,16 +2699,6 @@
 
             checkMailRedDot();
             updateCoinsUI();
-        }
-
-        function checkUserBanStatus(name) {
-            if (!name) return false;
-            let found = registeredUsers.find(u => u.name === name);
-            if (found && found.banUntil && found.banUntil > Date.now()) {
-                alert(`정지된 계정입니다.\n사유: ${found.banReason || "없음"}`);
-                return true;
-            }
-            return false;
         }
 
         function saveInitialUsernameAndPlay() {
@@ -2647,8 +2727,13 @@
             syncGlobalUsers();
             saveData();
 
-            document.getElementById('name-modal').classList.add('hidden');
-            document.getElementById('lobby-screen').classList.remove('hidden');
+            let me = registeredUsers.find(u => u.name === savedUsername);
+            if (me && me.banUntil && me.banUntil > Date.now()) {
+                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+            } else {
+                document.getElementById('name-modal').classList.add('hidden');
+                document.getElementById('lobby-screen').classList.remove('hidden');
+            }
             checkMailRedDot();
         }
 
@@ -2744,15 +2829,17 @@
         }
 
         function checkUserHasName() {
+            let me = registeredUsers.find(u => u.name === savedUsername);
+            if (me && me.banUntil && me.banUntil > Date.now()) {
+                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                return false;
+            }
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) {
                 alert("현재 서버 점검 중이므로 게임을 플레이할 수 없습니다.");
                 return false;
             }
             if (!savedUsername || savedUsername.trim() === "" || savedUsername.startsWith("유저_")) {
                 document.getElementById('name-modal').classList.remove('hidden');
-                return false;
-            }
-            if (checkUserBanStatus(savedUsername)) {
                 return false;
             }
             return true;
@@ -2979,6 +3066,7 @@
         }
 
         function showCharacterSelect() {
+            if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('friend-screen').classList.add('hidden');
@@ -3007,6 +3095,7 @@
         }
 
         function confirmCharacterSelection() {
+            if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('char-select-screen').classList.add('hidden');
@@ -3031,6 +3120,7 @@
         }
 
         function startCountdownAndGame() {
+            if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             gameStarted = false;
             gameOverState = null;
@@ -3077,6 +3167,7 @@
         }
 
         function retryGame() {
+            if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (nextGameMode === 'friend' && conn && conn.open) {
                 conn.send({ type: 'RETRY_GAME' });
@@ -3119,6 +3210,7 @@
         }
 
         function showMyBallShop() {
+            if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             renderShop();
@@ -3126,6 +3218,7 @@
         }
 
         function showMailbox() {
+            if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             renderMailbox();
             document.getElementById('mailbox-screen').classList.remove('hidden');
@@ -3162,6 +3255,12 @@
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('free-play-screen').classList.add('hidden');
             
+            let me = registeredUsers.find(u => u.name === savedUsername);
+            if (me && me.banUntil && me.banUntil > Date.now()) {
+                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                return;
+            }
+
             if (!isServerUnderMaintenance || isAdminLoggedIn || isBypassedByPassword) {
                 document.getElementById('lobby-screen').classList.remove('hidden');
             } else {
@@ -3996,4 +4095,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                        </html>
+    </html>
