@@ -1046,7 +1046,6 @@
 
         .label { font-size: 12px; font-weight: bold; text-align: left; margin-bottom: 2px; }
 
-        /* 자유 플레이 전용 스타일 (흰색 배경 및 깔끔한 라이트 테마) */
         .free-play-container {
             background-color: #ffffff !important;
             color: #111111 !important;
@@ -1155,7 +1154,6 @@
             text-align: center;
         }
 
-        /* 밝고 깔끔한 볼 선택 모달 스타일 */
         .free-modal-box {
             width: 100%;
             max-width: 380px;
@@ -1192,7 +1190,6 @@
             margin-top: 2px;
         }
 
-        /* 시작 하기 버튼 */
         .free-start-btn {
             width: 100%;
             padding: 15px;
@@ -1213,7 +1210,7 @@
 </head>
 <body>
 
-    <!-- 실시간 밴 화면 (검은 배경, 빨간 글씨, 시간/분 및 정지 사유 표시) -->
+    <!-- 실시간 밴 화면 (검은 배경, 빨간 글씨, 1초마다 줄어드는 현실 시간 타이머 및 사유 표시) -->
     <div id="ban-screen" class="hidden">
         <h1 id="ban-title-text">[0시간 0분] 정지 되었습니다.<br>다시 들어와주세요</h1>
         <p id="ban-reason-text" style="font-size: 15px; color: #ff9999; margin-top: 10px;">정지 사유: 없음</p>
@@ -1256,16 +1253,13 @@
         </div>
     </div>
 
-    <!-- 모든 볼 선택 모달 (자유 플레이 전용 밝은 화이트 테마) -->
     <div class="modal-overlay hidden" id="free-ball-picker-modal">
         <div class="free-modal-box">
             <div class="header-row" style="margin-bottom:12px;">
                 <h2 style="color:#1a202c; text-shadow:none;">사용할 볼 선택</h2>
                 <button class="free-play-close-btn" onclick="closeFreeBallPicker()">X</button>
             </div>
-            <div class="shop-list" id="free-ball-grid-container" style="max-height: 320px;">
-                <!-- 동적으로 화사한 카드 모양의 볼 리스트가 생성됩니다 -->
-            </div>
+            <div class="shop-list" id="free-ball-grid-container" style="max-height: 320px;"></div>
         </div>
     </div>
 
@@ -1476,7 +1470,6 @@
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
 
-    <!-- 자유 플레이 화면 (경기장 선택 UI 삭제 완료, 1v1 대결, 공밑에 변경하기 버튼 & 볼 이름 표기) -->
     <div class="container hidden free-play-container" id="free-play-screen">
         <div class="free-play-header">
             <h2>자유 플레이</h2>
@@ -1484,9 +1477,7 @@
         </div>
         <div class="version-text">1대1 자유 매치</div>
 
-        <!-- 1대1 대결 구도 영역 -->
         <div class="free-play-arena">
-            <!-- 왼쪽 슬롯 ( Player 1 ) -->
             <div class="free-slot">
                 <div class="free-ball-box" id="free-slot-left">
                     <button class="free-add-btn" onclick="openFreeBallPicker('left')">추가하기</button>
@@ -1497,7 +1488,6 @@
 
             <div style="font-weight:900; font-size:18px; color:#a0aec0;">VS</div>
 
-            <!-- 오른쪽 슬롯 ( Player 2 ) -->
             <div class="free-slot">
                 <div class="free-ball-box" id="free-slot-right">
                     <button class="free-add-btn" onclick="openFreeBallPicker('right')">추가하기</button>
@@ -1507,7 +1497,6 @@
             </div>
         </div>
 
-        <!-- 가운데 시작 하기 버튼 -->
         <button class="free-start-btn" onclick="startFreeMatch()">시작 하기</button>
 
         <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px;">로비로 가기</button>
@@ -1760,7 +1749,6 @@
         let isHost = false; 
         let friendName = "친구";
 
-        // 자유 플레이 선택된 데이터 저장 변수
         let currentFreeSide = null;
         let selectedFreeBallLeft = null;
         let selectedFreeBallRight = null;
@@ -1819,15 +1807,24 @@
                 renderRankingList();
                 renderAdminGiftUserSelect();
                 
-                // 실시간으로 내 계정 밴 상태 체크
                 if (savedUsername) {
                     let me = registeredUsers.find(u => u.name === savedUsername);
                     if (me) {
-                        checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                        checkAndApplyBanScreen(me.banUntil, me.banReason);
                     }
                 }
             }
         });
+
+        // 1초마다 실시간으로 밴 타이머 계산 및 갱신
+        setInterval(() => {
+            if (savedUsername) {
+                let me = registeredUsers.find(u => u.name === savedUsername);
+                if (me) {
+                    checkAndApplyBanScreen(me.banUntil, me.banReason);
+                }
+            }
+        }, 1000);
 
         function syncGlobalUsers() {
             if (savedUsername && savedUsername.trim() !== "") {
@@ -1849,17 +1846,13 @@
                     status: "온라인",
                     lastAccess: "지금 접속 중",
                     banUntil: 0,
-                    banReason: "",
-                    banHours: 0,
-                    banMins: 0
+                    banReason: ""
                 };
                 
                 let match = registeredUsers.find(u => u.name === savedUsername);
                 if (match) {
                     userData.banUntil = match.banUntil || 0;
                     userData.banReason = match.banReason || "";
-                    userData.banHours = match.banHours || 0;
-                    userData.banMins = match.banMins || 0;
                     if (match.uid) window.userUniqueId = match.uid;
                 }
 
@@ -2276,6 +2269,7 @@
             let minsInput = parseInt(document.getElementById(`ban-min-${index}`).value) || 0;
             let reasonInput = document.getElementById(`ban-reason-${index}`).value.trim();
             
+            // 사용자가 입력한 시간/분 그대로 진짜 현실 시간(밀리초)으로 계산
             let totalMs = (hoursInput * 3600 + minsInput * 60) * 1000;
 
             if (totalMs <= 0) {
@@ -2288,9 +2282,7 @@
 
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: banTime,
-                banReason: reasonInput,
-                banHours: hoursInput,
-                banMins: minsInput
+                banReason: reasonInput
             });
 
             alert(`[${targetUser.name}] 님이 정지되었습니다.`);
@@ -2300,30 +2292,26 @@
             let targetUser = registeredUsers[index];
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: 0,
-                banReason: "",
-                banHours: 0,
-                banMins: 0
+                banReason: ""
             });
 
             alert(`[${targetUser.name}] 님의 밴이 해제되었습니다!`);
         }
 
-        function checkAndApplyBanScreen(banUntil, reason, hours, mins) {
+        function checkAndApplyBanScreen(banUntil, reason) {
             const banScreen = document.getElementById('ban-screen');
             if (banUntil && banUntil > Date.now()) {
-                let h = hours || 0;
-                let m = mins || 0;
-                if (h === 0 && m === 0) {
-                    let diffMs = banUntil - Date.now();
-                    h = Math.floor(diffMs / (1000 * 3600));
-                    m = Math.floor((diffMs % (1000 * 3600)) / (1000 * 60));
-                }
+                let diffMs = banUntil - Date.now();
+                let totalSec = Math.ceil(diffMs / 1000);
+                let h = Math.floor(totalSec / 3600);
+                let m = Math.floor((totalSec % 3600) / 60);
+                let s = totalSec % 60;
 
-                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분] 정지 되었습니다.<br>다시 들어와주세요`;
+                // 남은 시간 표기 (시간, 분, 초 단위까지 실시간 표시)
+                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분 ${s}초] 정지 되었습니다.<br>다시 들어와주세요`;
                 document.getElementById('ban-reason-text').innerText = `정지 사유: ${reason ? reason : "없음"}`;
                 banScreen.classList.remove('hidden');
 
-                // 모든 화면 숨기기
                 document.getElementById('name-modal').classList.add('hidden');
                 document.getElementById('lobby-screen').classList.add('hidden');
                 document.getElementById('game-screen').classList.add('hidden');
@@ -2690,7 +2678,7 @@
                 syncGlobalUsers();
                 let me = registeredUsers.find(u => u.name === savedUsername);
                 if (me && me.banUntil && me.banUntil > Date.now()) {
-                    checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                    checkAndApplyBanScreen(me.banUntil, me.banReason);
                 } else {
                     document.getElementById('name-modal').classList.add('hidden');
                     document.getElementById('lobby-screen').classList.remove('hidden');
@@ -2729,7 +2717,7 @@
 
             let me = registeredUsers.find(u => u.name === savedUsername);
             if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                checkAndApplyBanScreen(me.banUntil, me.banReason);
             } else {
                 document.getElementById('name-modal').classList.add('hidden');
                 document.getElementById('lobby-screen').classList.remove('hidden');
@@ -2831,7 +2819,7 @@
         function checkUserHasName() {
             let me = registeredUsers.find(u => u.name === savedUsername);
             if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                checkAndApplyBanScreen(me.banUntil, me.banReason);
                 return false;
             }
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) {
@@ -2852,7 +2840,6 @@
             showCharacterSelect();
         }
 
-        // --- 자유 플레이 기능 관련 함수 ---
         function showFreePlay() {
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
@@ -2864,7 +2851,6 @@
             const container = document.getElementById('free-ball-grid-container');
             container.innerHTML = '';
 
-            // 밝은 테마의 카드 스타일 목록으로 생성
             ballsData.forEach(ball => {
                 let card = document.createElement('div');
                 card.className = 'free-ball-card';
@@ -2897,10 +2883,9 @@
                 selectedFreeBallRight = ballObj;
             }
 
-            // 공 상자 안 문구 변경 & [변경하기] 버튼 표시 & 하단 볼 이름만 표기
             slot.innerHTML = `<div style="font-weight:800; font-size:13px; color:#2d3748; text-align:center;">장착됨</div>`;
             changeBtn.classList.remove('hidden');
-            nameLabel.innerText = ballObj.name; // 공 이름만 표시
+            nameLabel.innerText = ballObj.name;
 
             closeFreeBallPicker();
         }
@@ -3257,7 +3242,7 @@
             
             let me = registeredUsers.find(u => u.name === savedUsername);
             if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason, me.banHours || 0, me.banMins || 0);
+                checkAndApplyBanScreen(me.banUntil, me.banReason);
                 return;
             }
 
@@ -3494,7 +3479,6 @@
             if (defenseAlertTimer > 0) defenseAlertTimer--;
 
             if (!isBossMode) {
-                // 1P 및 2P 양쪽 모두 공 고유 기술 호출
                 triggerBallLogic(p1, p2, true);
                 if (nextGameMode === 'free') {
                     triggerBallLogic(p2, p1, false);
@@ -3825,7 +3809,6 @@
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.lineWidth = 3;
-            // 요청하신 상대 공(2P) 외곽 빨간색 테두리 강조 적용
             ctx.strokeStyle = isPlayer1 ? "#3498db" : "#ff0000";
             ctx.stroke();
             ctx.closePath();
