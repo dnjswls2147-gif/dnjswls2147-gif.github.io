@@ -27,7 +27,7 @@
             color: #ffffff;
         }
         
-        /* 공지사항 배너 개선: 크기를 키우고 화면 최상단에 고정하여 게임 진행 중에도 항상 노출 */
+        /* 공지사항 배너 개선 */
         .notice-banner {
             position: fixed;
             top: 10px;
@@ -102,14 +102,15 @@
             line-height: 1.6;
         }
 
+        /* 요청하신 점검 중 화면 스타일 수정: 흰색 배경 + 가운데 네모난 검정색 화면 + 파란 글씨 + 점검 사유 */
         #maintenance-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #000000;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -122,26 +123,43 @@
             display: none !important;
             pointer-events: none !important;
         }
+        .maintenance-center-box {
+            background-color: #000000;
+            color: #ffffff;
+            width: 90%;
+            max-width: 420px;
+            padding: 40px 25px;
+            border-radius: 14px;
+            border: 3px solid #3498db;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
         #maintenance-screen h1 {
-            color: #e74c3c;
-            font-size: 30px;
-            margin-bottom: 10px;
+            color: #3498db;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 900;
         }
         #maintenance-screen p {
-            font-size: 16px;
-            color: #bdc3c7;
+            font-size: 15px;
+            color: #ffffff;
             line-height: 1.5;
-            margin-bottom: 25px;
+            margin-top: 10px;
+            word-break: break-all;
         }
         .btn-maint-play {
             background-color: #e67e22;
             color: white;
             border: 2px solid #d35400;
             border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 15px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 20px;
         }
 
         .top-nav-bar {
@@ -1219,16 +1237,19 @@
         <p id="ban-reason-text" style="font-size: 15px; color: #ff9999; margin-top: 10px;">정지 사유: 없음</p>
     </div>
 
-    <!-- 공지사항 화면 최상단 고정 노출 (게임 중에도 항상 표시) -->
+    <!-- 공지사항 화면 최상단 고정 노출 -->
     <div id="top-notice-banner" class="notice-banner hidden">
         <span>📢 [공지]</span>
         <span id="notice-banner-text">공지사항이 들어갑니다.</span>
     </div>
 
+    <!-- 점검 중 화면 (흰색 배경 + 네모난 검정색 중앙 상자 + 파란 글씨 + 점검 사유) -->
     <div id="maintenance-screen" class="hidden">
-        <h1>🚨 지금 점검 중입니다!</h1>
-        <p>서버 점검 및 업데이트 중입니다.<br>잠시 후 다시 접속해 주세요.</p>
-        <button class="btn-maint-play" onclick="openMaintenancePassModal()">플레이 하기</button>
+        <div class="maintenance-center-box">
+            <h1 style="color: #3498db; margin: 0 0 10px 0;">점검중입니다</h1>
+            <p id="maintenance-reason-display" style="font-size: 15px; color: #ffffff; margin: 0 0 15px 0; display: none;"></p>
+            <button class="btn-maint-play" onclick="openMaintenancePassModal()">플레이 하기</button>
+        </div>
     </div>
 
     <div class="modal-overlay hidden" id="maintenance-pass-modal">
@@ -1304,7 +1325,7 @@
         </div>
     </div>
 
-    <!-- 어드민 패널 (쿠폰, 설정 메뉴 삭제) -->
+    <!-- 어드민 패널 (공지 밑에 점검 켜기/끄기 및 사유 입력창, 플레이 타임 삭제 버튼 추가) -->
     <div class="admin-window hidden" id="admin-panel">
         <div class="admin-header" id="admin-header-drag">
             <div class="admin-title">⚙️ 어드민 패널 (이곳을 눌러 이동)</div>
@@ -1325,6 +1346,15 @@
                         <button class="admin-small-btn" style="background:#e67e22;" onclick="publishAdminNotice()">등록</button>
                         <button class="admin-small-btn" style="background:#c0392b;" onclick="deleteAdminNotice()">삭제</button>
                     </div>
+
+                    <!-- 공지 밑에 점검 켜기 / 끄기 버튼 및 점검 사유 입력란 추가 -->
+                    <div class="admin-section-title">서버 점검 제어</div>
+                    <div class="admin-btn-row">
+                        <button class="admin-small-btn" style="background:#c0392b;" onclick="setAdminMaintenance(true)">점검 켜기</button>
+                        <button class="admin-small-btn" style="background:#27ae60;" onclick="setAdminMaintenance(false)">점검 끄기</button>
+                    </div>
+                    <div class="admin-section-title" style="margin-top:2px;">점검 사유 입력 (선택)</div>
+                    <input type="text" id="admin-maintenance-reason-input" placeholder="점검 사유를 입력하세요 (안 적으면 미노출)" style="margin-bottom:6px; font-size:10px; padding:5px; background:#2d2a3e; color:#fff; border-color:#4a4463;" oninput="updateMaintenanceReasonLive()">
 
                     <div class="admin-section-title">빠른 조작</div>
                     <div class="admin-btn-row">
@@ -1658,11 +1688,12 @@
         const MAINTENANCE_PASS = "123kpq";
 
         let isServerUnderMaintenance = false;
+        let maintenanceReasonText = "";
 
         const badWords = [
             "시발", "씨발", "시팔", "씨팔", "개새끼", "병신", "병신놈", "븅신", "지랄", "존나", "졸라", 
             "미친", "미친놈", "미친년", "바보", "멍청이", "꺼져", "닥쳐", "새끼", "쌍놈", "씨블",
-            "섹스", "섹시", "자지", "보지", "성교", "19금", "19", "야동", "유방", "음란", "조까", "엿먹어", "씹", "게이", "느금마", "니아빠", "니엄마", "fuck", "sex", "bitch"
+            "섹스", "섹시", "자지", "보지", "성교", "19금", "19", "야동", "유방", "음란", "조까", "엿먹어", "씹", "느금마", "니아빠", "니엄마", "fuck", "sex", "bitch"
         ];
 
         const characterImg = new Image(); characterImg.src = "character.jpg"; 
@@ -1790,10 +1821,26 @@
             renderAdminUserList();
         });
 
-        // 실시간 공지사항 수신 및 반영
+        // 공지사항 실시간 수신
         db.ref('notice').on('value', (snap) => {
             activeNotice = snap.val() || "";
             updateNoticeBanner();
+        });
+
+        // 실시간 점검 상태 수신 (점검 켜기/끄기, 사유 반영)
+        db.ref('maintenance').on('value', (snap) => {
+            let data = snap.val();
+            if (data && typeof data === 'object') {
+                isServerUnderMaintenance = !!data.active;
+                maintenanceReasonText = data.reason || "";
+            } else if (typeof data === 'boolean') {
+                isServerUnderMaintenance = data;
+                maintenanceReasonText = "";
+            } else {
+                isServerUnderMaintenance = false;
+                maintenanceReasonText = "";
+            }
+            applyMaintenanceUI();
         });
 
         // 실시간 우편함 데이터 수신
@@ -1854,11 +1901,12 @@
             endAdminDrag();
         });
 
+        // '게이' 님을 포함하여 플레이어 목록에 정상 노출되도록 필터링 규칙 수정
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 let allData = Object.values(data);
-                registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd" && u.name !== "게이");
+                registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
                 renderAdminUserList();
                 renderRankingList();
@@ -1900,8 +1948,7 @@
                     window.userUniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
                 }
 
-                const playTimeMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
-
+                // 플레이 타임 필드가 저장되지 않도록 완전히 삭제하여 동기화
                 const userData = {
                     name: savedUsername,
                     uid: window.userUniqueId,
@@ -1910,7 +1957,6 @@
                     friendsCount: 0,
                     recvReqCount: 0,
                     sendReqCount: 0,
-                    playTime: playTimeMinutes,
                     banUntil: localBanUntil || 0,
                     banReason: localBanReason || "",
                     forceRename: false
@@ -1941,29 +1987,20 @@
             }
         }
 
-        function checkMaintenanceStatus() {
-            fetch('status.json?t=' + new Date().getTime())
-                .then(response => {
-                    if (!response.ok) throw new Error("status.json 파일 없음");
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && typeof data.maintenance === 'boolean') {
-                        isServerUnderMaintenance = data.maintenance;
-                        applyMaintenanceUI();
-                    }
-                })
-                .catch(err => {
-                    isServerUnderMaintenance = false;
-                    applyMaintenanceUI();
-                });
-        }
-
-        setInterval(checkMaintenanceStatus, 2000);
-
+        // 점검 상태에 따른 화면 UI 제어 및 사유 없을 시 미노출 처리
         function applyMaintenanceUI() {
             const screen = document.getElementById('maintenance-screen');
+            const reasonEl = document.getElementById('maintenance-reason-display');
+
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) {
+                if (maintenanceReasonText && maintenanceReasonText.trim() !== "") {
+                    reasonEl.innerText = `점검 사유: ${maintenanceReasonText}`;
+                    reasonEl.style.display = "block";
+                } else {
+                    reasonEl.innerText = "";
+                    reasonEl.style.display = "none";
+                }
+
                 screen.classList.remove('hidden');
                 document.getElementById('name-modal').classList.add('hidden');
                 document.getElementById('lobby-screen').classList.add('hidden');
@@ -2002,6 +2039,26 @@
                     document.getElementById('name-modal').classList.remove('hidden');
                     document.getElementById('lobby-screen').classList.add('hidden');
                 }
+            }
+        }
+
+        // 어드민 점검 켜기 / 끄기 및 사유 Firebase 반영 함수
+        function setAdminMaintenance(activeState) {
+            const reasonVal = document.getElementById('admin-maintenance-reason-input').value.trim();
+            db.ref('maintenance').set({
+                active: activeState,
+                reason: reasonVal
+            }).then(() => {
+                alert(activeState ? "🚨 서버 점검이 켜졌습니다!" : "✅ 서버 점검이 해제되었습니다!");
+            });
+        }
+
+        function updateMaintenanceReasonLive() {
+            const reasonVal = document.getElementById('admin-maintenance-reason-input').value.trim();
+            if (isServerUnderMaintenance) {
+                db.ref('maintenance').update({
+                    reason: reasonVal
+                });
             }
         }
 
@@ -2181,7 +2238,6 @@
             }, 600);
         }
 
-        // 공지사항 등록 및 Firebase 동기화
         function publishAdminNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
             if (!text) {
@@ -2211,7 +2267,6 @@
             }
         }
 
-        // 어드민 패널 탭 전환 (쿠폰, 설정 메뉴 삭제)
         function switchAdminTab(tabName) {
             document.getElementById('admin-tab-main').classList.add('hidden');
             document.getElementById('admin-tab-char').classList.add('hidden');
@@ -2304,6 +2359,7 @@
             return isOnline;
         }
 
+        // 플레이 타임 항목을 완전히 제외하고 유저 카드 렌더링
         function renderAdminUserList() {
             const container = document.getElementById('admin-user-list-container');
             if (!container) return;
@@ -2324,14 +2380,12 @@
                 let statusClass = isBanned ? "admin-user-status banned" : (online ? "admin-user-status" : "admin-user-status offline");
                 let statusText = isBanned ? `정지됨 (${u.banReason ? u.banReason : "사유 없음"})` : (online ? "온라인" : "오프라인");
 
-                let playTimeMinutes = u.playTime || 0;
-
                 card.innerHTML = `
                     <div class="admin-user-card-top">
                         <span class="admin-user-name" onclick="openUserProfile('${u.name}')"><b>${u.name}</b></span>
                         <span class="${statusClass}">${statusText}</span>
                     </div>
-                    <div class="admin-user-sub">친구 ${u.friendsCount || 0}명 · 플레이 타임 ${playTimeMinutes}분</div>
+                    <div class="admin-user-sub">친구 ${u.friendsCount || 0}명</div>
                     
                     <div class="admin-time-row">
                         <input type="number" id="ban-time-${index}" value="${u.banHours || 0}" min="0"> 시간
@@ -2403,7 +2457,6 @@
                     friendsCount: existingData.friendsCount || 0,
                     recvReqCount: existingData.recvReqCount || 0,
                     sendReqCount: existingData.sendReqCount || 0,
-                    playTime: existingData.playTime || 0,
                     banUntil: existingData.banUntil || 0,
                     banReason: existingData.banReason || "",
                     forceRename: false
@@ -2530,7 +2583,6 @@
             }
         }
 
-        // 어드민 우편 발송 -> Firebase Realtime DB 직접 생성 (실시간 보상 지원)
         function sendAdminGift() {
             const targetVal = document.getElementById('admin-gift-target-user').value;
             const amountVal = parseInt(document.getElementById('admin-gift-amount').value);
@@ -2567,7 +2619,6 @@
             panel.style.transform = "translate(-50%, -50%)";
         }
 
-        // 수령 가능한 우편 감지
         function isMailValid() {
             const now = new Date().getTime();
             const hasDefaultMail = !mailClaimed && (now < EXPIRY_TIME);
@@ -2591,7 +2642,6 @@
             }
         }
 
-        // 우편함 렌더링
         function renderMailbox() {
             const msgEl = document.getElementById('mail-status-msg');
             const contentEl = document.getElementById('mail-content-area');
@@ -2666,7 +2716,6 @@
             }
         }
 
-        // 우편함 보상 수령 및 개인 데이터 업데이트
         function claimGlobalGift(giftId) {
             let gift = globalMails[giftId];
             let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
@@ -2711,7 +2760,7 @@
             const container = document.getElementById('ranking-list-container');
             container.innerHTML = '';
 
-            let sorted = registeredUsers.filter(u => u && u.name !== "11" && u.name !== "Dd" && u.name !== "게이");
+            let sorted = registeredUsers.filter(u => u && u.name !== "11" && u.name !== "Dd");
             
             if (currentRankingType === 'trophy') {
                 sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
@@ -2825,8 +2874,6 @@
                     console.error("데이터 로드 실패:", e);
                 }
             }
-
-            checkMaintenanceStatus();
 
             if (localBanUntil && localBanUntil > Date.now()) {
                 checkAndApplyBanScreen(localBanUntil, localBanReason);
@@ -4237,4 +4284,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                            </html>
+                </html>
