@@ -1874,13 +1874,17 @@
                 renderAdminGiftUserSelect();
                 
                 if (savedUsername) {
-                    let me = registeredUsers.find(u => u.name === savedUsername);
+                    let me = registeredUsers.find(u => u.name === savedUsername || u.oldName === savedUsername);
                     if (me) {
                         localBanUntil = me.banUntil || 0;
                         localBanReason = me.banReason || "";
-                        if (me.forcedName && me.forcedName !== savedUsername) {
-                            savedUsername = me.forcedName;
+                        
+                        if (me.name && me.name !== savedUsername) {
+                            let oldSaved = savedUsername;
+                            savedUsername = me.name;
                             saveData();
+                            
+                            db.ref('users/' + oldSaved.replace(/[.#$/\[\]]/g, "_")).remove().catch(() => {});
                             alert(`관리자에 의해 이름이 [${savedUsername}] (으)로 변경되었습니다!`);
                             location.reload();
                         } else {
@@ -2390,18 +2394,32 @@
             }
 
             if (adminChangingTargetUser) {
-                let targetName = adminChangingTargetUser;
-                db.ref('users/' + targetName.replace(/[.#$/\[\]]/g, "_")).update({
+                let oldName = adminChangingTargetUser;
+                let targetUserObj = registeredUsers.find(u => u.name === oldName);
+
+                let newUserData = {
                     name: val,
-                    forcedName: val
+                    uid: targetUserObj ? (targetUserObj.uid || Math.random().toString(36).substring(2, 8).toUpperCase()) : Math.random().toString(36).substring(2, 8).toUpperCase(),
+                    coins: targetUserObj ? (targetUserObj.coins || 0) : 0,
+                    trophies: targetUserObj ? (targetUserObj.trophies || 0) : 0,
+                    friendsCount: targetUserObj ? (targetUserObj.friendsCount || 0) : 0,
+                    recvReqCount: targetUserObj ? (targetUserObj.recvReqCount || 0) : 0,
+                    sendReqCount: targetUserObj ? (targetUserObj.sendReqCount || 0) : 0,
+                    playTime: targetUserObj ? (targetUserObj.playTime || 0) : 0,
+                    banUntil: targetUserObj ? (targetUserObj.banUntil || 0) : 0,
+                    banReason: targetUserObj ? (targetUserObj.banReason || "") : ""
+                };
+
+                db.ref('users/' + val.replace(/[.#$/\[\]]/g, "_")).set(newUserData).then(() => {
+                    db.ref('users/' + oldName.replace(/[.#$/\[\]]/g, "_")).remove().catch(() => {});
                 });
 
-                if (targetName === savedUsername) {
+                if (oldName === savedUsername) {
                     savedUsername = val;
                     saveData();
                 }
 
-                alert(`[${targetName}] 님의 이름이 [${val}] (으)로 변경되었습니다!`);
+                alert(`[${oldName}] 님의 이름이 [${val}] (으)로 영구 변경되었습니다!`);
                 closeAdminNameChangeModal();
             }
         }
@@ -4241,4 +4259,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+                    </html>
