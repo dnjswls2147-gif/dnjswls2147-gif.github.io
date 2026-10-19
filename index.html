@@ -1688,6 +1688,9 @@
         let selectedGiftType = 'coin';
         let currentAdminCharTarget = '1p';
 
+        let localBanUntil = 0;
+        let localBanReason = "";
+
         let gameStarted = false;
         let isCountingDown = false;
         let countdownValue = 3;
@@ -1810,7 +1813,10 @@
                 if (savedUsername) {
                     let me = registeredUsers.find(u => u.name === savedUsername);
                     if (me) {
-                        checkAndApplyBanScreen(me.banUntil, me.banReason);
+                        localBanUntil = me.banUntil || 0;
+                        localBanReason = me.banReason || "";
+                        saveData();
+                        checkAndApplyBanScreen(localBanUntil, localBanReason);
                     }
                 }
             }
@@ -1820,9 +1826,11 @@
         setInterval(() => {
             if (savedUsername) {
                 let me = registeredUsers.find(u => u.name === savedUsername);
-                if (me) {
-                    checkAndApplyBanScreen(me.banUntil, me.banReason);
-                }
+                let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
+                let banReason = (me && me.banReason) ? me.banReason : localBanReason;
+                checkAndApplyBanScreen(banTime, banReason);
+            } else if (localBanUntil > Date.now()) {
+                checkAndApplyBanScreen(localBanUntil, localBanReason);
             }
         }, 1000);
 
@@ -1845,14 +1853,18 @@
                     playTime: playTimeMinutes,
                     status: "온라인",
                     lastAccess: "지금 접속 중",
-                    banUntil: 0,
-                    banReason: ""
+                    banUntil: localBanUntil || 0,
+                    banReason: localBanReason || ""
                 };
                 
                 let match = registeredUsers.find(u => u.name === savedUsername);
                 if (match) {
-                    userData.banUntil = match.banUntil || 0;
-                    userData.banReason = match.banReason || "";
+                    if (match.banUntil && match.banUntil > Date.now()) {
+                        userData.banUntil = match.banUntil;
+                        userData.banReason = match.banReason || "";
+                        localBanUntil = match.banUntil;
+                        localBanReason = match.banReason || "";
+                    }
                     if (match.uid) window.userUniqueId = match.uid;
                 }
 
@@ -1898,6 +1910,11 @@
             } else {
                 screen.classList.add('hidden');
                 
+                if (localBanUntil && localBanUntil > Date.now()) {
+                    checkAndApplyBanScreen(localBanUntil, localBanReason);
+                    return;
+                }
+
                 if (savedUsername && savedUsername.trim() !== "" && !savedUsername.startsWith("유저_")) {
                     document.getElementById('name-modal').classList.add('hidden');
                     const isAnyGameScreenActive = 
@@ -2269,16 +2286,21 @@
             let minsInput = parseInt(document.getElementById(`ban-min-${index}`).value) || 0;
             let reasonInput = document.getElementById(`ban-reason-${index}`).value.trim();
             
-            // 사용자가 입력한 시간/분 그대로 진짜 현실 시간(밀리초)으로 계산
+            // 입력받은 시간/분 계산
             let totalMs = (hoursInput * 3600 + minsInput * 60) * 1000;
 
             if (totalMs <= 0) {
-                totalMs = 24 * 3600 * 1000; // 기본 24시간 정지
-                hoursInput = 24;
+                totalMs = 24 * 3600 * 1000;
             }
 
             let targetUser = registeredUsers[index];
             let banTime = Date.now() + totalMs;
+
+            if (targetUser.name === savedUsername) {
+                localBanUntil = banTime;
+                localBanReason = reasonInput;
+                saveData();
+            }
 
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: banTime,
@@ -2290,6 +2312,13 @@
 
         function executeUnban(index) {
             let targetUser = registeredUsers[index];
+
+            if (targetUser.name === savedUsername) {
+                localBanUntil = 0;
+                localBanReason = "";
+                saveData();
+            }
+
             db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
                 banUntil: 0,
                 banReason: ""
@@ -2307,7 +2336,6 @@
                 let m = Math.floor((totalSec % 3600) / 60);
                 let s = totalSec % 60;
 
-                // 남은 시간 표기 (시간, 분, 초 단위까지 실시간 표시)
                 document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분 ${s}초] 정지 되었습니다.<br>다시 들어와주세요`;
                 document.getElementById('ban-reason-text').innerText = `정지 사유: ${reason ? reason : "없음"}`;
                 banScreen.classList.remove('hidden');
@@ -2615,7 +2643,9 @@
                 username: savedUsername,
                 sessionStartTime: sessionStartTime,
                 balls: ballsData,
-                mailClaimed: mailClaimed
+                mailClaimed: mailClaimed,
+                banUntil: localBanUntil,
+                banReason: localBanReason
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
             syncGlobalUsers();
@@ -2636,6 +2666,9 @@
                         hasRealUsername = true;
                     }
                     if (parsed.mailClaimed !== undefined) mailClaimed = parsed.mailClaimed;
+                    if (parsed.banUntil !== undefined) localBanUntil = parsed.banUntil;
+                    if (parsed.banReason !== undefined) localBanReason = parsed.banReason;
+
                     if (parsed.balls !== undefined && Array.isArray(parsed.balls)) {
                         parsed.balls.forEach(savedBall => {
                             let match = ballsData.find(b => b.id === savedBall.id);
@@ -2671,18 +2704,15 @@
 
             checkMaintenanceStatus();
 
-            if (!hasRealUsername) {
+            if (localBanUntil && localBanUntil > Date.now()) {
+                checkAndApplyBanScreen(localBanUntil, localBanReason);
+            } else if (!hasRealUsername) {
                 document.getElementById('name-modal').classList.remove('hidden');
                 document.getElementById('lobby-screen').classList.add('hidden');
             } else {
                 syncGlobalUsers();
-                let me = registeredUsers.find(u => u.name === savedUsername);
-                if (me && me.banUntil && me.banUntil > Date.now()) {
-                    checkAndApplyBanScreen(me.banUntil, me.banReason);
-                } else {
-                    document.getElementById('name-modal').classList.add('hidden');
-                    document.getElementById('lobby-screen').classList.remove('hidden');
-                }
+                document.getElementById('name-modal').classList.add('hidden');
+                document.getElementById('lobby-screen').classList.remove('hidden');
             }
 
             checkMailRedDot();
@@ -2716,8 +2746,11 @@
             saveData();
 
             let me = registeredUsers.find(u => u.name === savedUsername);
-            if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason);
+            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
+            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
+
+            if (banTime && banTime > Date.now()) {
+                checkAndApplyBanScreen(banTime, banReason);
             } else {
                 document.getElementById('name-modal').classList.add('hidden');
                 document.getElementById('lobby-screen').classList.remove('hidden');
@@ -2818,8 +2851,11 @@
 
         function checkUserHasName() {
             let me = registeredUsers.find(u => u.name === savedUsername);
-            if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason);
+            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
+            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
+
+            if (banTime && banTime > Date.now()) {
+                checkAndApplyBanScreen(banTime, banReason);
                 return false;
             }
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) {
@@ -3241,8 +3277,11 @@
             document.getElementById('free-play-screen').classList.add('hidden');
             
             let me = registeredUsers.find(u => u.name === savedUsername);
-            if (me && me.banUntil && me.banUntil > Date.now()) {
-                checkAndApplyBanScreen(me.banUntil, me.banReason);
+            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
+            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
+
+            if (banTime && banTime > Date.now()) {
+                checkAndApplyBanScreen(banTime, banReason);
                 return;
             }
 
