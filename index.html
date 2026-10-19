@@ -1255,6 +1255,19 @@
         </div>
     </div>
 
+    <div class="modal-overlay hidden" id="admin-name-change-modal">
+        <div class="modal-box" style="max-width: 320px; z-index: 10000005;">
+            <div class="header-row">
+                <h2 id="admin-name-modal-title">✏️ 이름 변경</h2>
+                <button class="btn-close-x" onclick="closeAdminNameChangeModal()">X</button>
+            </div>
+            <div class="version-text">새로운 이름을 입력하세요</div>
+            <div class="error" id="admin-name-error-msg"></div>
+            <input type="text" id="admin-new-name-input" placeholder="새 이름 입력 (최대 10글자)" maxlength="10" onkeyup="if(event.key==='Enter') confirmAdminNameChange()">
+            <button class="btn btn-ai" onclick="confirmAdminNameChange()" style="margin-top:10px; font-size:16px; padding:12px;">변경 완료</button>
+        </div>
+    </div>
+
     <div class="modal-overlay hidden" id="free-ball-picker-modal">
         <div class="free-modal-box">
             <div class="header-row" style="margin-bottom:12px;">
@@ -2345,11 +2358,52 @@
 
         function openAdminChangeNameModal(targetUsername) {
             adminChangingTargetUser = targetUsername;
-            document.getElementById('name-modal-header-title').innerText = `✏️ [${targetUsername}] 이름 변경`;
-            document.getElementById('init-username-input').value = "";
-            document.getElementById('modal-error-msg').innerText = "";
-            document.getElementById('btn-save-name').innerText = "이름 변경 완료";
-            document.getElementById('name-modal').classList.remove('hidden');
+            document.getElementById('admin-name-modal-title').innerText = `✏️ [${targetUsername}] 이름 변경`;
+            document.getElementById('admin-new-name-input').value = "";
+            document.getElementById('admin-name-error-msg').innerText = "";
+            document.getElementById('admin-name-change-modal').classList.remove('hidden');
+        }
+
+        function closeAdminNameChangeModal() {
+            adminChangingTargetUser = null;
+            document.getElementById('admin-name-change-modal').classList.add('hidden');
+        }
+
+        function confirmAdminNameChange() {
+            const input = document.getElementById('admin-new-name-input');
+            const err = document.getElementById('admin-name-error-msg');
+            const val = input.value.trim();
+
+            if (!val) {
+                err.innerText = "변경할 이름을 입력해주세요!";
+                return;
+            }
+            if (val.length > 10) {
+                err.innerText = "10글자가 넘었습니다.";
+                return;
+            }
+
+            const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
+            if (isBadWord) {
+                err.innerText = "이 이름은 사용할 수 없습니다.";
+                return;
+            }
+
+            if (adminChangingTargetUser) {
+                let targetName = adminChangingTargetUser;
+                db.ref('users/' + targetName.replace(/[.#$/\[\]]/g, "_")).update({
+                    name: val,
+                    forcedName: val
+                });
+
+                if (targetName === savedUsername) {
+                    savedUsername = val;
+                    saveData();
+                }
+
+                alert(`[${targetName}] 님의 이름이 [${val}] (으)로 변경되었습니다!`);
+                closeAdminNameChangeModal();
+            }
         }
 
         function executeCustomBan(index) {
@@ -2806,26 +2860,6 @@
             const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
             if (isBadWord) {
                 err.innerText = "이 이름은 사용할 수 없습니다.";
-                return;
-            }
-
-            if (adminChangingTargetUser) {
-                let targetName = adminChangingTargetUser;
-                db.ref('users/' + targetName.replace(/[.#$/\[\]]/g, "_")).update({
-                    name: val,
-                    forcedName: val
-                });
-
-                if (targetName === savedUsername) {
-                    savedUsername = val;
-                    saveData();
-                }
-
-                alert(`[${targetName}] 님의 이름이 [${val}] (으)로 변경되었습니다!`);
-                adminChangingTargetUser = null;
-                document.getElementById('name-modal').classList.add('hidden');
-                document.getElementById('name-modal-header-title').innerText = "👤 이름을 정하세요";
-                document.getElementById('btn-save-name').innerText = "플레이 하기";
                 return;
             }
 
