@@ -1268,6 +1268,17 @@
         </div>
     </div>
 
+    <!-- 유저가 접속했을 때 강제로 이름을 바꾸게 만드는 모달 -->
+    <div class="modal-overlay hidden" id="forced-name-change-modal">
+        <div class="modal-box" style="max-width: 340px; z-index: 10000009;">
+            <h2>⚠️ 관리자에 의한 이름 변경</h2>
+            <div class="version-text" style="margin-top: 5px;">관리자가 회원님의 이름을 변경했습니다.<br>새로운 이름을 설정해주세요! (코인/트로피 초기화)</div>
+            <div class="error" id="forced-name-error-msg" style="margin-top: 8px;"></div>
+            <input type="text" id="forced-new-name-input" placeholder="새 이름 입력 (최대 10글자)" maxlength="10" onkeyup="if(event.key==='Enter') saveForcedNewName()">
+            <button class="btn btn-ai" onclick="saveForcedNewName()" style="margin-top:10px; font-size:16px; padding:14px;">새 이름으로 시작하기</button>
+        </div>
+    </div>
+
     <div class="modal-overlay hidden" id="free-ball-picker-modal">
         <div class="free-modal-box">
             <div class="header-row" style="margin-bottom:12px;">
@@ -1680,9 +1691,9 @@
         let isServerUnderMaintenance = false;
 
         const badWords = [
-            "시발", "씨발", "시팔", "씨팔", "개새끼", "병신", "븅신", "지랄", "존나", "졸라", 
+            "시발", "씨발", "시팔", "씨팔", "개새끼", "병신", "병신놈", "븅신", "지랄", "존나", "졸라", 
             "미친", "미친놈", "미친년", "바보", "멍청이", "꺼져", "닥쳐", "새끼", "쌍놈", "씨블",
-            "섹스", "자지", "보지", "성교", "19금", "야동", "유방", "음란", "조까", "엿먹어", "씹", "fuck", "sex", "bitch"
+            "섹스", "섹시", "자지", "보지", "성교", "19금", "19", "야동", "유방", "음란", "조까", "엿먹어", "씹", "게이", "느금마", "니아빠", "니엄마", "fuck", "sex", "bitch"
         ];
 
         const characterImg = new Image(); characterImg.src = "character.jpg"; 
@@ -1867,7 +1878,8 @@
             const data = snapshot.val();
             if (data) {
                 let allData = Object.values(data);
-                registeredUsers = allData.filter(u => u && u.name && !u.isBot);
+                // 봇(11, Dd 등) 및 비정상 유저 필터링 삭제 처리
+                registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd" && u.name !== "게이");
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
                 renderAdminUserList();
                 renderRankingList();
@@ -1879,20 +1891,19 @@
                         localBanUntil = me.banUntil || 0;
                         localBanReason = me.banReason || "";
                         
-                        if (me.name && me.name !== savedUsername) {
-                            let oldSaved = savedUsername;
-                            savedUsername = me.name;
-                            saveData();
-                            
-                            db.ref('users/' + oldSaved.replace(/[.#$/\[\]]/g, "_")).remove().catch(() => {});
-                            alert(`관리자에 의해 이름이 [${savedUsername}] (으)로 변경되었습니다!`);
-                            location.reload();
+                        // 관리자가 이름을 변경해 둔 경우 강제 이름 변경 창 띄우기
+                        if (me.forceRename) {
+                            openForcedNameChangeModal();
                         } else {
                             saveData();
                         }
                         checkAndApplyBanScreen(localBanUntil, localBanReason);
                     }
                 }
+            } else {
+                registeredUsers = [];
+                renderAdminUserList();
+                renderRankingList();
             }
         });
 
@@ -1925,7 +1936,8 @@
                     sendReqCount: 0,
                     playTime: playTimeMinutes,
                     banUntil: localBanUntil || 0,
-                    banReason: localBanReason || ""
+                    banReason: localBanReason || "",
+                    forceRename: false
                 };
                 
                 let match = registeredUsers.find(u => u.name === savedUsername);
@@ -1935,6 +1947,9 @@
                         userData.banReason = match.banReason || "";
                         localBanUntil = match.banUntil;
                         localBanReason = match.banReason || "";
+                    }
+                    if (match.forceRename !== undefined) {
+                        userData.forceRename = match.forceRename;
                     }
                     if (match.uid) window.userUniqueId = match.uid;
                 }
@@ -2351,7 +2366,7 @@
                     <input type="text" id="ban-reason-${index}" class="admin-reason-input" placeholder="추방 사유 (선택)" value="${u.banReason || ''}">
                     
                     <div style="display: flex; gap: 4px;">
-                        <button class="admin-small-btn" style="background:#8e44ad; border:1px solid #9b59b6;" onclick="openAdminChangeNameModal('${u.name}')">이름 변경</button>
+                        <button class="admin-small-btn" style="background:#8e44ad; border:1px solid #9b59b6;" onclick="triggerAdminForceRename('${u.name}')">이름 변경</button>
                         <button class="admin-ban-btn" onclick="executeCustomBan(${index})">밴(추방)</button>
                         <button class="admin-unban-btn" onclick="executeUnban(${index})">밴 해제</button>
                     </div>
@@ -2360,26 +2375,31 @@
             });
         }
 
-        function openAdminChangeNameModal(targetUsername) {
-            adminChangingTargetUser = targetUsername;
-            document.getElementById('admin-name-modal-title').innerText = `✏️ [${targetUsername}] 이름 변경`;
-            document.getElementById('admin-new-name-input').value = "";
-            document.getElementById('admin-name-error-msg').innerText = "";
-            document.getElementById('admin-name-change-modal').classList.remove('hidden');
+        // 관리자가 유저의 이름 변경을 요청할 때 (forceRename 플래그를 true로 설정)
+        function triggerAdminForceRename(targetUsername) {
+            if (confirm(`[${targetUsername}] 님에게 이름 변경 창을 띄우시겠습니까?\n(접속 시 코인과 트로피가 초기화되며 새 이름을 설정하게 됩니다.)`)) {
+                db.ref('users/' + targetUsername.replace(/[.#$/\[\]]/g, "_")).update({
+                    forceRename: true
+                }).then(() => {
+                    alert(`[${targetUsername}] 님에게 이름 변경 요청이 전달되었습니다.`);
+                });
+            }
         }
 
-        function closeAdminNameChangeModal() {
-            adminChangingTargetUser = null;
-            document.getElementById('admin-name-change-modal').classList.add('hidden');
+        function openForcedNameChangeModal() {
+            document.getElementById('forced-new-name-input').value = "";
+            document.getElementById('forced-name-error-msg').innerText = "";
+            document.getElementById('forced-name-change-modal').classList.remove('hidden');
+            document.getElementById('lobby-screen').classList.add('hidden');
         }
 
-        function confirmAdminNameChange() {
-            const input = document.getElementById('admin-new-name-input');
-            const err = document.getElementById('admin-name-error-msg');
+        function saveForcedNewName() {
+            const input = document.getElementById('forced-new-name-input');
+            const err = document.getElementById('forced-name-error-msg');
             const val = input.value.trim();
 
             if (!val) {
-                err.innerText = "변경할 이름을 입력해주세요!";
+                err.innerText = "이름을 입력해주세요!";
                 return;
             }
             if (val.length > 10) {
@@ -2389,39 +2409,42 @@
 
             const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
             if (isBadWord) {
-                err.innerText = "이 이름은 사용할 수 없습니다.";
+                err.innerText = "이름에 들어갈수 없는 이름입니다!";
                 return;
             }
 
-            if (adminChangingTargetUser) {
-                let oldName = adminChangingTargetUser;
-                let targetUserObj = registeredUsers.find(u => u.name === oldName);
+            let oldName = savedUsername;
+            savedUsername = val;
+            
+            // 코인 및 트로피 초기화
+            userCoins = 0;
+            userTrophies = 0;
 
-                let newUserData = {
-                    name: val,
-                    uid: targetUserObj ? (targetUserObj.uid || Math.random().toString(36).substring(2, 8).toUpperCase()) : Math.random().toString(36).substring(2, 8).toUpperCase(),
-                    coins: targetUserObj ? (targetUserObj.coins || 0) : 0,
-                    trophies: targetUserObj ? (targetUserObj.trophies || 0) : 0,
-                    friendsCount: targetUserObj ? (targetUserObj.friendsCount || 0) : 0,
-                    recvReqCount: targetUserObj ? (targetUserObj.recvReqCount || 0) : 0,
-                    sendReqCount: targetUserObj ? (targetUserObj.sendReqCount || 0) : 0,
-                    playTime: targetUserObj ? (targetUserObj.playTime || 0) : 0,
-                    banUntil: targetUserObj ? (targetUserObj.banUntil || 0) : 0,
-                    banReason: targetUserObj ? (targetUserObj.banReason || "") : ""
-                };
+            const newUserData = {
+                name: savedUsername,
+                uid: Math.random().toString(36).substring(2, 8).toUpperCase(),
+                coins: 0,
+                trophies: 0,
+                friendsCount: 0,
+                recvReqCount: 0,
+                sendReqCount: 0,
+                playTime: 0,
+                banUntil: 0,
+                banReason: "",
+                forceRename: false
+            };
 
-                db.ref('users/' + val.replace(/[.#$/\[\]]/g, "_")).set(newUserData).then(() => {
+            db.ref('users/' + savedUsername.replace(/[.#$/\[\]]/g, "_")).set(newUserData).then(() => {
+                if (oldName && oldName !== savedUsername) {
                     db.ref('users/' + oldName.replace(/[.#$/\[\]]/g, "_")).remove().catch(() => {});
-                });
-
-                if (oldName === savedUsername) {
-                    savedUsername = val;
-                    saveData();
                 }
+            });
 
-                alert(`[${oldName}] 님의 이름이 [${val}] (으)로 영구 변경되었습니다!`);
-                closeAdminNameChangeModal();
-            }
+            saveData();
+            document.getElementById('forced-name-change-modal').classList.add('hidden');
+            document.getElementById('lobby-screen').classList.remove('hidden');
+            updateCoinsUI();
+            alert("새로운 이름이 설정되었으며, 코인과 트로피가 초기화되었습니다!");
         }
 
         function executeCustomBan(index) {
@@ -2718,7 +2741,9 @@
             const container = document.getElementById('ranking-list-container');
             container.innerHTML = '';
 
-            let sorted = [...registeredUsers];
+            // 봇 및 제외 대상 필터링
+            let sorted = registeredUsers.filter(u => u && u.name !== "11" && u.name !== "Dd" && u.name !== "게이");
+            
             if (currentRankingType === 'trophy') {
                 sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
             } else {
@@ -2877,7 +2902,7 @@
 
             const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
             if (isBadWord) {
-                err.innerText = "이 이름은 사용할 수 없습니다.";
+                err.innerText = "이름에 들어갈수 없는 이름입니다!";
                 return;
             }
 
@@ -4259,4 +4284,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                    </html>
+</html>
