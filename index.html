@@ -321,7 +321,7 @@
             text-align: left;
         }
         .profile-info-row {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             margin-bottom: 10px;
             color: #ffe0b2;
@@ -1028,9 +1028,11 @@
             color: #fff;
             cursor: pointer;
         }
-        .admin-user-name:hover {
-            color: #ff7518;
-            text-decoration: underline;
+        .admin-user-date {
+            font-size: 10px;
+            color: #ffaa00;
+            font-weight: bold;
+            margin-left: 4px;
         }
         .admin-user-status {
             font-size: 10px;
@@ -1428,7 +1430,7 @@
                 </div>
 
                 <div id="admin-tab-manage" class="hidden">
-                    <div class="admin-section-title">👥 실시간 전체 플레이어 목록</div>
+                    <div class="admin-section-title">👥 실시간 전체 플레이어 목록 (최신순)</div>
                     <div id="admin-user-list-container"></div>
                 </div>
 
@@ -1475,6 +1477,10 @@
                 <div class="profile-info-row">
                     <span>📛 이름:</span>
                     <span id="profile-modal-name" style="color: #fff;">-</span>
+                </div>
+                <div class="profile-info-row">
+                    <span>📅 최초 접속:</span>
+                    <span id="profile-modal-date" style="color: #ffaa00; font-size:11px;">-</span>
                 </div>
                 <div class="profile-info-row">
                     <span>🪙 보유 코인:</span>
@@ -1705,13 +1711,12 @@
     </div>
 
     <script>
-        // 카카오톡 인앱 브라우저 판별 (카카오톡 이외 외부 브라우저 진입 차단)
+        // 1. 카카오톡 인앱 브라우저 여부 판별 (카카오톡 외 진입 차단)
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
 
         if (!isKakaoTalk) {
             document.getElementById('alt-browser-screen').classList.remove('hidden');
-            // 게임 내 모든 요소 완전 숨김 처리
             document.querySelectorAll('.container, .modal-overlay, #maintenance-screen, #ban-screen, #top-notice-banner').forEach(el => {
                 if (el.id !== 'alt-browser-screen') {
                     el.classList.add('hidden');
@@ -1752,6 +1757,8 @@
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
 
         let savedUsername = "";
+        let firstJoinDateStr = "";
+        let firstJoinTimestamp = 0;
         let sessionStartTime = Date.now();
         let registeredUsers = []; 
         let activePresenceUsers = {}; 
@@ -1830,6 +1837,16 @@
         let selectedFreeBallLeft = null;
         let selectedFreeBallRight = null;
 
+        // 접속 날짜 포맷 함수 (년, 월, 일, 시, 분 - 초 제외)
+        function getFormattedDate(nowDate = new Date()) {
+            const year = nowDate.getFullYear();
+            const month = String(nowDate.getMonth() + 1).padStart(2, '0');
+            const day = String(nowDate.getDate()).padStart(2, '0');
+            const hours = String(nowDate.getHours()).padStart(2, '0');
+            const minutes = String(nowDate.getMinutes()).padStart(2, '0');
+            return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+        }
+
         const userSessionId = Math.random().toString(36).substring(2, 9);
         const userStatusRef = db.ref('presence/' + userSessionId);
         const connectedRef = db.ref('.info/connected');
@@ -1842,7 +1859,7 @@
         });
 
         function sendHeartbeat() {
-            if (savedUsername && savedUsername.trim() !== "") {
+            if (savedUsername && savedUsername.trim() !== "" && isKakaoTalk) {
                 userStatusRef.set({
                     username: savedUsername,
                     lastSeen: Date.now()
@@ -1951,6 +1968,10 @@
             if (data) {
                 let allData = Object.values(data);
                 registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
+                
+                // 최신 진입 유저가 맨 위(상단)로 오도록 등록 시각 기준 내림차순 정렬
+                registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
+
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
                 renderAdminUserList();
                 renderRankingList();
@@ -1987,27 +2008,36 @@
         }, 1000);
 
         function syncGlobalUsers() {
-            if (savedUsername && savedUsername.trim() !== "") {
+            if (savedUsername && savedUsername.trim() !== "" && isKakaoTalk) {
                 if (!window.userUniqueId) {
                     window.userUniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
                 }
 
-                const userData = {
-                    name: savedUsername,
-                    uid: window.userUniqueId,
-                    coins: userCoins,
-                    trophies: userTrophies,
-                    friendsCount: 0,
-                    recvReqCount: 0,
-                    sendReqCount: 0,
-                    banUntil: localBanUntil || 0,
-                    banReason: localBanReason || "",
-                    forceRename: false
-                };
-                
                 let safeKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
                 db.ref('users/' + safeKey).once('value', (snap) => {
                     let existing = snap.val();
+                    let nowTime = Date.now();
+
+                    if (!firstJoinDateStr) {
+                        firstJoinDateStr = existing && existing.firstJoinedDate ? existing.firstJoinedDate : getFormattedDate();
+                        firstJoinTimestamp = existing && existing.joinedTimestamp ? existing.joinedTimestamp : nowTime;
+                    }
+
+                    const userData = {
+                        name: savedUsername,
+                        uid: window.userUniqueId,
+                        coins: userCoins,
+                        trophies: userTrophies,
+                        friendsCount: 0,
+                        recvReqCount: 0,
+                        sendReqCount: 0,
+                        banUntil: localBanUntil || 0,
+                        banReason: localBanReason || "",
+                        forceRename: false,
+                        firstJoinedDate: firstJoinDateStr,
+                        joinedTimestamp: firstJoinTimestamp
+                    };
+
                     if (existing) {
                         if (existing.banUntil && existing.banUntil > Date.now()) {
                             userData.banUntil = existing.banUntil;
@@ -2015,9 +2045,7 @@
                             localBanUntil = existing.banUntil;
                             localBanReason = existing.banReason || "";
                         }
-                        if (existing.forceRename !== undefined) {
-                            userData.forceRename = existing.forceRename;
-                        }
+                        if (existing.forceRename !== undefined) userData.forceRename = existing.forceRename;
                         if (existing.uid) window.userUniqueId = existing.uid;
                         if (existing.coins !== undefined) userCoins = existing.coins;
                         if (existing.trophies !== undefined) userTrophies = existing.trophies;
@@ -2420,10 +2448,14 @@
 
                 let statusClass = isBanned ? "admin-user-status banned" : (online ? "admin-user-status" : "admin-user-status offline");
                 let statusText = isBanned ? `정지됨 (${u.banReason ? u.banReason : "사유 없음"})` : (online ? "온라인" : "오프라인");
+                let dateDisplay = u.firstJoinedDate || "날짜 미기록";
 
                 card.innerHTML = `
                     <div class="admin-user-card-top">
-                        <span class="admin-user-name" onclick="openUserProfile('${u.name}')"><b>${u.name}</b></span>
+                        <div>
+                            <span class="admin-user-name" onclick="openUserProfile('${u.name}')"><b>${u.name}</b></span>
+                            <span class="admin-user-date">[최초 접속: ${dateDisplay}]</span>
+                        </div>
                         <span class="${statusClass}">${statusText}</span>
                     </div>
                     <div class="admin-user-sub">친구 ${u.friendsCount || 0}명</div>
@@ -2500,7 +2532,9 @@
                     sendReqCount: existingData.sendReqCount || 0,
                     banUntil: existingData.banUntil || 0,
                     banReason: existingData.banReason || "",
-                    forceRename: false
+                    forceRename: false,
+                    firstJoinedDate: existingData.firstJoinedDate || getFormattedDate(),
+                    joinedTimestamp: existingData.joinedTimestamp || Date.now()
                 };
 
                 userCoins = newUserData.coins;
@@ -2842,11 +2876,12 @@
         function openUserProfile(username) {
             let target = registeredUsers.find(u => u.name === username);
             if (!target) {
-                target = { name: username, coins: 0, trophies: 0 };
+                target = { name: username, coins: 0, trophies: 0, firstJoinedDate: getFormattedDate() };
             }
 
             document.getElementById('profile-modal-title').innerText = "👤 유저 프로필";
             document.getElementById('profile-modal-name').innerText = target.name;
+            document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || getFormattedDate();
             document.getElementById('profile-modal-coin').innerText = (target.coins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (target.trophies || 0) + "개";
             document.getElementById('profile-modal').classList.remove('hidden');
@@ -2875,7 +2910,9 @@
                 balls: ballsData,
                 mailClaimed: mailClaimed,
                 banUntil: localBanUntil,
-                banReason: localBanReason
+                banReason: localBanReason,
+                firstJoinedDate: firstJoinDateStr,
+                joinedTimestamp: firstJoinTimestamp
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
             syncGlobalUsers();
@@ -2895,6 +2932,8 @@
                         savedUsername = parsed.username;
                         hasRealUsername = true;
                     }
+                    if (parsed.firstJoinedDate) firstJoinDateStr = parsed.firstJoinedDate;
+                    if (parsed.joinedTimestamp) firstJoinTimestamp = parsed.joinedTimestamp;
                     if (parsed.mailClaimed !== undefined) mailClaimed = parsed.mailClaimed;
                     if (parsed.banUntil !== undefined) localBanUntil = parsed.banUntil;
                     if (parsed.banReason !== undefined) localBanReason = parsed.banReason;
@@ -2952,6 +2991,8 @@
             }
 
             savedUsername = val;
+            firstJoinDateStr = getFormattedDate();
+            firstJoinTimestamp = Date.now();
             sessionStartTime = Date.now();
             
             syncGlobalUsers();
@@ -2973,6 +3014,7 @@
         function openProfileModal() {
             document.getElementById('profile-modal-title').innerText = "👤 내 프로필";
             document.getElementById('profile-modal-name').innerText = savedUsername || "미설정";
+            document.getElementById('profile-modal-date').innerText = firstJoinDateStr || getFormattedDate();
             document.getElementById('profile-modal-coin').innerText = userCoins + "개";
             document.getElementById('profile-modal-trophy').innerText = userTrophies + "개";
             document.getElementById('profile-modal').classList.remove('hidden');
@@ -4325,4 +4367,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
