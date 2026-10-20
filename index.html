@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 자유 매칭 에디션</title>
+    <title>릴리 볼 파이트 - 미스터 비스트 비디오 에디션</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -69,7 +69,6 @@
         }
         .hidden { display: none !important; }
 
-        /* 외부 브라우저 전용 차단 화면 */
         #alt-browser-screen {
             position: fixed;
             top: 0;
@@ -1274,7 +1273,9 @@
 </head>
 <body>
 
-    <!-- 카톡 이외 브라우저 접속 시 부계정 방지 화면 -->
+    <!-- 춤추는 미스터 비스트 비디오 태그 추가 -->
+    <video id="mrbeast-dance-video" src="mrbeast_dance.mp4" loop muted playsinline style="display:none;"></video>
+
     <div id="alt-browser-screen" class="hidden">
         <h1>부계정 방지</h1>
     </div>
@@ -1289,7 +1290,6 @@
         <span id="notice-banner-text">공지사항이 들어갑니다.</span>
     </div>
 
-    <!-- 점검 중 화면 -->
     <div id="maintenance-screen" class="hidden">
         <div class="maintenance-center-box">
             <h1 style="color: #3498db; margin: 0 0 10px 0;">점검중입니다</h1>
@@ -1546,7 +1546,6 @@
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
 
-    <!-- 자유 매칭 화면 -->
     <div class="container hidden free-play-container" id="free-play-screen">
         <div class="free-play-header">
             <h2>자유 매칭</h2>
@@ -1721,7 +1720,6 @@
     </div>
 
     <script>
-        // 1. 카카오톡 인앱 브라우저 여부 판별
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
 
@@ -1765,6 +1763,9 @@
         const pokemonImg = new Image(); pokemonImg.src = "pokemon.png"; 
         const iceballImg = new Image(); iceballImg.src = "iceball.png";
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
+
+        // 비디오 요소 객체 정의
+        const mrbeastVideo = document.getElementById('mrbeast-dance-video');
 
         const ballImageMap = {
             'mrbeast': 'character.jpg',
@@ -2908,7 +2909,6 @@
             document.getElementById('profile-modal').classList.add('hidden');
         }
 
-        // 공 데이터 정의 (요청대로 설명문 갱신 적용)
         let ballsData = [
             { id: 'standard', name: '기본 볼', desc: '체력: 200, 데미지 없음', price: 0, hp: 200, damage: 0, owned: true, equipped: true },
             { id: 'fire', name: '화염 볼', desc: '체력: 200, 기본공격:없음 & 6초마다 거대 화염볼 폭격 (좌/중/우 3개, 개당 25데미지)', price: 50, hp: 200, damage: 25, owned: false, equipped: false },
@@ -3706,7 +3706,6 @@
             }
         }
 
-        // 스킬 발동 로직 (요청사항 완전 반영: 기본공격 전체 제거, 스킬 데미지 및 기믹 조정)
         function triggerBallLogic(attacker, target, isPlayer1) {
             let now = Date.now();
             let pType = attacker.type;
@@ -3723,21 +3722,18 @@
                 attacker.lastSkillTime = now;
 
                 if (pType === 'fire') {
-                    // 화염볼: 경기장을 꽉 채우는 좌(1/6), 중(3/6), 우(5/6) 위치 3개 폭격 (개당 25 데미지)
                     let fireRadius = canvas.width / 6; 
                     fireFallBlocks.push({ x: canvas.width * (1/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
                     fireFallBlocks.push({ x: canvas.width * (3/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
                     fireFallBlocks.push({ x: canvas.width * (5/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
                 } 
                 else if (pType === 'ice') {
-                    // 아이스볼: 위에서 4개 등분하여 꽉 채워 떨어짐 (개당 18 데미지, 맞으면 1초(60프레임) 정지)
                     let iceRadius = canvas.width / 8;
                     for (let k = 1; k <= 7; k += 2) {
                         iceFallBlocks.push({ x: canvas.width * (k/8), y: -60, radius: iceRadius, speed: 3.5, damage: 18, freeze: true, targetPlayer: target });
                     }
                 } 
                 else if (pType === 'pokemon') {
-                    // 포켓몬볼: 2초간 35개 폭격 (개당 2데미지)
                     for (let i = 0; i < 35; i++) {
                         specialAttackEntities.push({
                             type: 'pokeball_storm',
@@ -3751,7 +3747,6 @@
                     }
                 } 
                 else if (pType === 'dongryong') {
-                    // 동룡쓰볼: 7초마다 상대 뒤에 어몽어스 임포스터 칼 찌르기 (80데미지)
                     specialAttackEntities.push({
                         type: 'vent_assassinate',
                         x: target.x, y: target.y - 60,
@@ -3761,23 +3756,25 @@
                     });
                 } 
                 else if (pType === 'mrbeast') {
-                    // 미스터 비스트: 경기장 위에서 2.5초간 춤추기 (95데미지)
+                    // 미스터 비스트 기술 발동 시 춤 비디오 시작
+                    if (mrbeastVideo) {
+                        mrbeastVideo.currentTime = 0;
+                        mrbeastVideo.play();
+                    }
                     specialAttackEntities.push({
                         type: 'mrbeast_slam',
                         targetPlayer: target,
-                        timer: 150, // 2.5초 (60fps 기준 150프레임)
+                        timer: 150, // 2.5초 (60fps 기준)
                         damage: 95
                     });
                 }
                 else if (pType === 'sangsampany') {
-                    // 상품컴퍼니볼: 기술1: 행주 쓱싹 (2초간 100데미지) / 기술2: 유도 폭발 볼 (111데미지)
                     specialAttackEntities.push({
                         type: 'sangsampany_combo',
                         targetPlayer: target,
-                        timer: 120 // 2초간
+                        timer: 120
                     });
                     
-                    // 유도 폭발 볼 소환
                     projectiles.push({
                         type: 'sangsampany_homing',
                         x: attacker.x,
@@ -3846,7 +3843,7 @@
                         if (se.timer <= 0) {
                             let hitDmg = se.damage || 0;
                             if (se.type === 'sangsampany_combo') {
-                                hitDmg = 100; // 기술1 행주 쓱싹 100 데미지
+                                hitDmg = 100;
                             }
                             se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - hitDmg);
                             specialAttackEntities.splice(i, 1);
@@ -3878,7 +3875,7 @@
                     let dy = ib.y - ib.targetPlayer.y;
                     if (Math.sqrt(dx*dx + dy*dy) < ib.radius + ib.targetPlayer.radius) {
                         ib.targetPlayer.hp = Math.max(0, ib.targetPlayer.hp - ib.damage);
-                        if (ib.freeze) ib.targetPlayer.freezeTimer = 60; // 1초 정지 (60프레임)
+                        if (ib.freeze) ib.targetPlayer.freezeTimer = 60;
                         iceFallBlocks.splice(i, 1);
                         updateHpBars();
                         checkGameOver();
@@ -3890,7 +3887,6 @@
                 for (let i = projectiles.length - 1; i >= 0; i--) {
                     let pr = projectiles[i];
                     if (pr.type === 'sangsampany_homing') {
-                        // 상대방을 쫓아가는 유도 로직
                         let angle = Math.atan2(pr.target.y - pr.y, pr.target.x - pr.x);
                         pr.x += Math.cos(angle) * pr.speed * speedMultiplier;
                         pr.y += Math.sin(angle) * pr.speed * speedMultiplier;
@@ -4274,11 +4270,21 @@
                     ctx.fillText("🧽 행주로 쓱싹 쓱싹! (100뎀)", se.targetPlayer.x, se.targetPlayer.y - se.targetPlayer.radius - 12);
                     ctx.restore();
                 } else if (se.type === 'mrbeast_slam') {
+                    // 미스터 비스트 비디오 화면 그리기
                     ctx.save();
+                    let vW = 200;
+                    let vH = 200;
+                    let vX = (canvas.width - vW) / 2;
+                    let vY = 30;
+
+                    if (mrbeastVideo) {
+                        ctx.drawImage(mrbeastVideo, vX, vY, vW, vH);
+                    }
+
                     ctx.font = "bold 20px sans-serif";
                     ctx.fillStyle = "#f1c40f";
                     ctx.textAlign = "center";
-                    ctx.fillText("🕺 미스터 비스트 2.5초간 댄스! (95뎀)", canvas.width / 2, 70);
+                    ctx.fillText("🕺 미스터 비스트 2.5초간 댄스! (95뎀)", canvas.width / 2, vY + vH + 25);
                     ctx.restore();
                 }
             });
