@@ -69,6 +69,35 @@
         }
         .hidden { display: none !important; }
 
+        /* 외부 브라우저 전용 차단 화면 */
+        #alt-browser-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            color: #ff0000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999999999;
+            text-align: center;
+            padding: 20px;
+        }
+        #alt-browser-screen.hidden {
+            display: none !important;
+            pointer-events: none !important;
+        }
+        #alt-browser-screen h1 {
+            color: #ff0000;
+            font-size: 32px;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
         #ban-screen {
             position: fixed;
             top: 0;
@@ -262,7 +291,6 @@
             pointer-events: none !important;
         }
 
-        /* 점검 인증 창이 점검 화면 레이어(z-index)보다 항상 위에 뜨도록 z-index 설정 */
         #maintenance-pass-modal {
             z-index: 99999999 !important;
         }
@@ -1236,19 +1264,22 @@
 </head>
 <body>
 
+    <!-- 카톡 이외 브라우저 접속 시 부계정 방지 화면 -->
+    <div id="alt-browser-screen" class="hidden">
+        <h1>부계정 방지</h1>
+    </div>
+
     <div id="ban-screen" class="hidden">
         <h1 id="ban-title-text">[0시간 0분] 정지 되었습니다.<br>다시 들어와주세요</h1>
         <p id="ban-reason-text" style="font-size: 15px; color: #ff9999; margin-top: 10px;">정지 사유: 없음</p>
     </div>
 
-    <!-- 공지사항 화면 최상단 고정 노출 -->
     <div id="top-notice-banner" class="notice-banner hidden">
         <span>📢 [공지]</span>
         <span id="notice-banner-text">공지사항이 들어갑니다.</span>
     </div>
 
-    <!-- 점검 중 화면 -->
-    <div id="maintenance-screen" class="hidden">
+    <div id="maintenance-screen">
         <div class="maintenance-center-box">
             <h1 style="color: #3498db; margin: 0 0 10px 0;">점검중입니다</h1>
             <p id="maintenance-reason-display" style="font-size: 15px; color: #ffffff; margin: 0 0 15px 0; display: none;"></p>
@@ -1256,7 +1287,6 @@
         </div>
     </div>
 
-    <!-- 플레이 하기 버튼 누르면 뜨는 비밀번호 입력 창 (어드민 인증 모달 레이아웃 사용) -->
     <div class="modal-overlay hidden" id="maintenance-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1675,6 +1705,21 @@
     </div>
 
     <script>
+        // 카카오톡 인앱 브라우저 판별 (카카오톡 이외 외부 브라우저 진입 차단)
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
+
+        if (!isKakaoTalk) {
+            document.getElementById('alt-browser-screen').classList.remove('hidden');
+            // 게임 내 모든 요소 완전 숨김 처리
+            document.querySelectorAll('.container, .modal-overlay, #maintenance-screen, #ban-screen, #top-notice-banner').forEach(el => {
+                if (el.id !== 'alt-browser-screen') {
+                    el.classList.add('hidden');
+                }
+            });
+            throw new Error("카카오톡 브라우저가 아니므로 스크립트 실행을 중단합니다.");
+        }
+
         const firebaseConfig = {
             databaseURL: "https://lily-ball-fight-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
@@ -1688,10 +1733,9 @@
         const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users';
         
         const ADMIN_PASSWORD = "123kpq";
-        // 요청해주신 비밀번호로 변경되었습니다.
-        const MAINTENANCE_PASS = "123pqmdkwa";
+        const MAINTENANCE_PASS = "67pqm";
 
-        let isServerUnderMaintenance = false;
+        let isServerUnderMaintenance = true;
         let maintenanceReasonText = "";
 
         const badWords = [
@@ -2060,7 +2104,6 @@
             }
         }
 
-        // 플레이 하기 버튼 클릭 시 비밀번호 모달 노출
         function openMaintenancePassModal() {
             document.getElementById('maintenance-pass-input').value = "";
             document.getElementById('maintenance-pass-error').innerText = "";
