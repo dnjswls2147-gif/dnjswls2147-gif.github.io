@@ -261,6 +261,29 @@
             width: 100%;
             justify-content: center;
         }
+        
+        .global-chat-lobby-btn {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: #fff;
+            border: 2px solid #117a65;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(22, 160, 133, 0.4);
+            transition: transform 0.1s;
+        }
+        .global-chat-lobby-btn:active {
+            transform: scale(0.98);
+        }
+
         .red-dot {
             position: absolute;
             top: -4px;
@@ -359,6 +382,98 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+        }
+
+        .global-chat-box {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            border: 3px solid #16a085;
+            border-radius: 14px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+            color: #1a202c;
+            position: relative;
+        }
+        .global-chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .global-chat-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #16a085;
+            margin: 0;
+        }
+        .global-chat-controls {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+        .admin-chat-mode-btn {
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+        }
+        .admin-chat-mode-btn.active {
+            background: #e67e22;
+        }
+
+        .global-chat-log {
+            flex: 1;
+            background: #f8fafc;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+        .global-chat-row {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .global-chat-top-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+        .global-chat-sender {
+            font-size: 13px;
+            font-weight: 900;
+            color: #2980b9;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .global-chat-time {
+            font-size: 10px;
+            color: #a0aec0;
+        }
+        .global-chat-text {
+            font-size: 13px;
+            color: #2d3748;
+            word-break: break-all;
+            line-height: 1.4;
         }
 
         .mail-brown-box {
@@ -1324,6 +1439,44 @@
         </div>
     </div>
 
+    <!-- 전체 채팅 모달 -->
+    <div class="modal-overlay hidden" id="global-chat-modal">
+        <div class="global-chat-box">
+            <div class="global-chat-header">
+                <h3 class="global-chat-title">💬 전체 채팅</h3>
+                <button class="btn-close-x" style="position:static; width:30px; height:30px; font-size:14px;" onclick="closeGlobalChatModal()">X</button>
+            </div>
+            
+            <div class="global-chat-controls">
+                <button class="admin-chat-mode-btn active" id="btn-mode-all-talk" onclick="requestSwitchChatMode('all')">모두 말하기</button>
+                <button class="admin-chat-mode-btn" id="btn-mode-admin-talk" onclick="requestSwitchChatMode('admin')">관리자만 말하기</button>
+            </div>
+
+            <div class="global-chat-log" id="global-chat-log-area">
+                <div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 입장했습니다.<br>매너 채팅을 지켜주세요!</div>
+            </div>
+
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" id="global-chat-input" placeholder="모든 유저에게 메시지 전송..." style="margin-bottom:0; flex:1; background:#fff; color:#000; border-color:#cbd5e0;" onkeyup="if(event.key==='Enter') sendGlobalChatMessage()">
+                <button class="btn-claim" style="padding:10px 16px; font-size:13px; background:#16a085;" onclick="sendGlobalChatMessage()">전송</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 채팅모드 비밀번호 모달 -->
+    <div class="modal-overlay hidden" id="admin-chat-pass-modal">
+        <div class="modal-box" style="max-width: 300px;">
+            <div class="header-row">
+                <h2>🔒 관리자 모드 인증</h2>
+                <button class="btn-close-x" onclick="closeAdminChatPassModal()">X</button>
+            </div>
+            <div class="version-text">비밀번호를 입력하세요</div>
+            <div class="error" id="admin-chat-pass-error"></div>
+            <input type="password" id="admin-chat-pass-input" placeholder="비밀번호 입력" onkeyup="if(event.key==='Enter') verifyAdminChatPassword()">
+            <button class="btn btn-ai" onclick="verifyAdminChatPassword()">확인</button>
+        </div>
+    </div>
+
     <div class="modal-overlay hidden" id="chat-modal">
         <div class="chat-modal-box">
             <div class="header-row">
@@ -1505,6 +1658,12 @@
                 <button class="ranking-nav-btn" onclick="showRankingBoard()">🏆 랭킹보드</button>
             </div>
         </div>
+
+        <!-- 랭킹보드 밑 전체 채팅 버튼 -->
+        <button class="global-chat-lobby-btn" onclick="openGlobalChatModal()">
+            💬 전체 채팅 (<span id="global-chat-count-display">0명</span> | <span id="global-chat-status-text">온라인</span>)
+        </button>
+
         <h2>🎃 릴리 볼 파이트 🎃</h2>
         <div class="version-text">v1.4 할로윈 에디션</div>
         <div class="error" id="lobby-error-msg" style="color: #ff4757; font-size: 13px; font-weight: bold; margin-bottom: 6px; min-height: 18px;"></div>
@@ -1726,6 +1885,7 @@
         
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "67pqm";
+        const ADMIN_CHAT_PASS = "67pqm";
 
         let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
@@ -1761,6 +1921,8 @@
         let registeredUsers = []; 
         let activePresenceUsers = {}; 
         let globalMails = {}; 
+        let globalChatMessages = {};
+        let globalChatMode = 'all'; // 'all' or 'admin'
         let activeNotice = "";
         let isAdminLoggedIn = false;
         let isBypassedByPassword = false;
@@ -1843,6 +2005,17 @@
             return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
         }
 
+        function getTimeString(timestamp) {
+            const d = new Date(timestamp);
+            let h = d.getHours();
+            let m = d.getMinutes();
+            let ampm = h >= 12 ? '오후' : '오전';
+            h = h % 12;
+            h = h ? h : 12;
+            m = m < 10 ? '0' + m : m;
+            return `${ampm} ${h}:${m}`;
+        }
+
         const userSessionId = Math.random().toString(36).substring(2, 9);
         const userStatusRef = db.ref('presence/' + userSessionId);
         const connectedRef = db.ref('.info/connected');
@@ -1879,6 +2052,7 @@
             if (onlineCountEl) {
                 onlineCountEl.innerText = Math.max(1, count);
             }
+            updateGlobalChatLobbyStats();
             renderAdminUserList();
         });
 
@@ -1901,6 +2075,35 @@
             }
             applyMaintenanceUI();
         });
+
+        db.ref('globalChatMode').on('value', (snap) => {
+            globalChatMode = snap.val() || 'all';
+            updateGlobalChatModeUI();
+        });
+
+        db.ref('globalChatMessages').on('value', (snap) => {
+            globalChatMessages = snap.val() || {};
+            cleanupOldGlobalChatMessages();
+            renderGlobalChatLog();
+        });
+
+        function cleanupOldGlobalChatMessages() {
+            let now = Date.now();
+            let oneDayMs = 24 * 3600 * 1000;
+            let updates = {};
+            let hasOld = false;
+
+            Object.entries(globalChatMessages).forEach(([id, msg]) => {
+                if (msg.timestamp && (now - msg.timestamp > oneDayMs)) {
+                    updates[id] = null;
+                    hasOld = true;
+                }
+            });
+
+            if (hasOld) {
+                db.ref('globalChatMessages').update(updates);
+            }
+        }
 
         db.ref('mailboxes').on('value', (snap) => {
             globalMails = snap.val() || {};
@@ -1968,6 +2171,7 @@
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
+                updateGlobalChatLobbyStats();
                 renderAdminUserList();
                 renderRankingList();
                 renderAdminGiftUserSelect();
@@ -1986,6 +2190,7 @@
                 }
             } else {
                 registeredUsers = [];
+                updateGlobalChatLobbyStats();
                 renderAdminUserList();
                 renderRankingList();
             }
@@ -2086,7 +2291,7 @@
                     return;
                 }
 
-                if (savedUsername && savedUsername.trim() !== "" && !savedUsername.startsWith("유저_")) {
+                if (savedUsername && savedUsername.trim() !== "" && !savedUsername.startsWith("유user_")) {
                     document.getElementById('name-modal').classList.add('hidden');
                     const isAnyGameScreenActive = 
                         !document.getElementById('game-screen').classList.contains('hidden') ||
@@ -2106,6 +2311,152 @@
                     document.getElementById('lobby-screen').classList.add('hidden');
                 }
             }
+        }
+
+        // 전체 채팅 관련 기능 구현
+        function openGlobalChatModal() {
+            if (!checkUserHasName()) return;
+            document.getElementById('global-chat-modal').classList.remove('hidden');
+            renderGlobalChatLog();
+        }
+
+        function closeGlobalChatModal() {
+            document.getElementById('global-chat-modal').classList.add('hidden');
+        }
+
+        function updateGlobalChatLobbyStats() {
+            let totalRegistered = registeredUsers.length;
+            const countDisplay = document.getElementById('global-chat-count-display');
+            const statusText = document.getElementById('global-chat-status-text');
+
+            if (countDisplay) {
+                countDisplay.innerText = `${totalRegistered}명`;
+            }
+
+            let now = Date.now();
+            let isOnline = false;
+            if (savedUsername) {
+                Object.values(activePresenceUsers).forEach(p => {
+                    if (p.username === savedUsername && p.lastSeen && (now - p.lastSeen < 12000)) {
+                        isOnline = true;
+                    }
+                });
+            }
+
+            if (statusText) {
+                statusText.innerText = isOnline ? "온라인" : "오프라인";
+            }
+        }
+
+        function updateGlobalChatModeUI() {
+            const btnAll = document.getElementById('btn-mode-all-talk');
+            const btnAdmin = document.getElementById('btn-mode-admin-talk');
+
+            if (!btnAll || !btnAdmin) return;
+            if (globalChatMode === 'admin') {
+                btnAll.classList.remove('active');
+                btnAdmin.classList.add('active');
+            } else {
+                btnAll.classList.add('active');
+                btnAdmin.classList.remove('active');
+            }
+        }
+
+        function requestSwitchChatMode(mode) {
+            if (mode === 'all') {
+                db.ref('globalChatMode').set('all').then(() => {
+                    alert("📢 모두 말하기 모드로 변경되었습니다.");
+                });
+            } else {
+                // 관리자만 말하기 모드로 전환 시 비밀번호 인증 창 띄우기
+                openAdminChatPassModal();
+            }
+        }
+
+        function openAdminChatPassModal() {
+            document.getElementById('admin-chat-pass-input').value = "";
+            document.getElementById('admin-chat-pass-error').innerText = "";
+            document.getElementById('admin-chat-pass-modal').classList.remove('hidden');
+        }
+
+        function closeAdminChatPassModal() {
+            document.getElementById('admin-chat-pass-modal').classList.add('hidden');
+        }
+
+        function verifyAdminChatPassword() {
+            const val = document.getElementById('admin-chat-pass-input').value.trim();
+            const err = document.getElementById('admin-chat-pass-error');
+
+            if (val === ADMIN_CHAT_PASS) {
+                closeAdminChatPassModal();
+                db.ref('globalChatMode').set('admin').then(() => {
+                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다. (진짜 관리자만 작성 가능)");
+                });
+            } else {
+                err.innerText = "비밀번호가 올바르지 않습니다!";
+            }
+        }
+
+        function sendGlobalChatMessage() {
+            const input = document.getElementById('global-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 관리자만 말하기 모드일 때 검증 (진짜 관리자인지 확인: isAdminLoggedIn 이거나 비밀번호를 거친 세션)
+            if (globalChatMode === 'admin' && !isAdminLoggedIn) {
+                alert("🚫 현재 [관리자만 말하기] 모드입니다. 관리자만 메시지를 보낼 수 있습니다!");
+                return;
+            }
+
+            const isBadWord = badWords.some(word => text.toLowerCase().includes(word.toLowerCase()));
+            if (isBadWord) {
+                alert("비속어나 부적절한 단어는 사용할 수 없습니다!");
+                return;
+            }
+
+            let msgId = "gchat_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+            let msgData = {
+                id: msgId,
+                sender: savedUsername,
+                text: text,
+                timestamp: Date.now()
+            };
+
+            db.ref('globalChatMessages/' + msgId).set(msgData).then(() => {
+                input.value = '';
+            });
+        }
+
+        function renderGlobalChatLog() {
+            const logArea = document.getElementById('global-chat-log-area');
+            if (!logArea) return;
+
+            logArea.innerHTML = '';
+
+            let messages = Object.values(globalChatMessages);
+            messages.sort((a, b) => a.timestamp - b.timestamp);
+
+            if (messages.length === 0) {
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                return;
+            }
+
+            messages.forEach(m => {
+                let row = document.createElement('div');
+                row.className = 'global-chat-row';
+                let timeStr = getTimeString(m.timestamp);
+
+                row.innerHTML = `
+                    <div class="global-chat-top-info">
+                        <span class="global-chat-sender" onclick="openUserProfile('${m.sender}')">${m.sender}</span>
+                        <span class="global-chat-time">${timeStr}</span>
+                    </div>
+                    <div class="global-chat-text">${escapeHtml(m.text)}</div>
+                `;
+                logArea.appendChild(row);
+            });
+
+            logArea.scrollTop = logArea.scrollHeight;
         }
 
         function setAdminMaintenance(activeState) {
@@ -3477,6 +3828,7 @@
             updateCoinsUI();
             checkMailRedDot();
             closeChatModal();
+            closeGlobalChatModal();
 
             document.getElementById('btn-game-retry').classList.add('hidden');
             document.getElementById('game-screen').classList.add('hidden');
