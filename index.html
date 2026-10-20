@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 자유 플레이 에디션</title>
+    <title>릴리 볼 파이트 - 자유 매칭 에디션</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1172,6 +1172,13 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .free-ball-img-profile {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
         .free-add-btn {
             width: 100%;
@@ -1281,7 +1288,8 @@
         <span id="notice-banner-text">공지사항이 들어갑니다.</span>
     </div>
 
-    <div id="maintenance-screen">
+    <!-- 점검 중 화면 (기본 hidden 처리로 접속 시 점검중입니다 깜빡임 완전 해결) -->
+    <div id="maintenance-screen" class="hidden">
         <div class="maintenance-center-box">
             <h1 style="color: #3498db; margin: 0 0 10px 0;">점검중입니다</h1>
             <p id="maintenance-reason-display" style="font-size: 15px; color: #ffffff; margin: 0 0 15px 0; display: none;"></p>
@@ -1527,7 +1535,7 @@
 
         <div style="display: flex; gap: 6px;">
             <button class="btn btn-ai" onclick="startAI()" style="flex: 1; margin-top: 10px;">AI 자동 매칭</button>
-            <button class="btn btn-ai" onclick="showFreePlay()" style="flex: 1; margin-top: 10px; background-color: #3498db;">자유 플레이</button>
+            <button class="btn btn-ai" onclick="showFreePlay()" style="flex: 1; margin-top: 10px; background-color: #3498db;">자유 매칭</button>
         </div>
         <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">😈 보스 피하기</button>
         <div style="display: flex; gap: 6px;">
@@ -1537,9 +1545,10 @@
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
 
+    <!-- 자유 매칭 화면 -->
     <div class="container hidden free-play-container" id="free-play-screen">
         <div class="free-play-header">
-            <h2>자유 플레이</h2>
+            <h2>자유 매칭</h2>
             <button class="free-play-close-btn" onclick="showLobby()">X</button>
         </div>
         <div class="version-text">1대1 자유 매치</div>
@@ -1740,7 +1749,7 @@
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "67pqm";
 
-        let isServerUnderMaintenance = true;
+        let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
 
         const badWords = [
@@ -1755,6 +1764,15 @@
         const pokemonImg = new Image(); pokemonImg.src = "pokemon.png"; 
         const iceballImg = new Image(); iceballImg.src = "iceball.png";
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
+
+        const ballImageMap = {
+            'mrbeast': 'character.jpg',
+            'sangsampany': 'sangsampany.png',
+            'dongryong': 'dongryong.png',
+            'pokemon': 'pokemon.png',
+            'ice': 'iceball.png',
+            'fire': 'fire.jpg'
+        };
 
         let savedUsername = "";
         let firstJoinDateStr = "";
@@ -1837,7 +1855,7 @@
         let selectedFreeBallLeft = null;
         let selectedFreeBallRight = null;
 
-        // 접속 날짜 포맷 함수 (년, 월, 일, 시, 분 - 초 제외)
+        // 접속 날짜 포맷 함수
         function getFormattedDate(nowDate = new Date()) {
             const year = nowDate.getFullYear();
             const month = String(nowDate.getMonth() + 1).padStart(2, '0');
@@ -1969,7 +1987,6 @@
                 let allData = Object.values(data);
                 registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
                 
-                // 최신 진입 유저가 맨 위(상단)로 오도록 등록 시각 기준 내림차순 정렬
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
@@ -2196,7 +2213,7 @@
 
         function handleChatButtonClick() {
             if (nextGameMode === 'free') {
-                alert("🚫 자유 플레이 모드에서는 채팅을 이용할 수 없습니다!");
+                alert("🚫 자유 매칭 모드에서는 채팅을 이용할 수 없습니다!");
                 return;
             }
             if (nextGameMode !== 'friend') {
@@ -3157,6 +3174,7 @@
             document.getElementById('free-ball-picker-modal').classList.add('hidden');
         }
 
+        // 자유 매칭 선택한 볼 이미지/프로필 반영 함수
         function selectFreeBall(ballObj) {
             if (!currentFreeSide) return;
             const slot = document.getElementById(`free-slot-${currentFreeSide}`);
@@ -3169,7 +3187,13 @@
                 selectedFreeBallRight = ballObj;
             }
 
-            slot.innerHTML = `<div style="font-weight:800; font-size:13px; color:#2d3748; text-align:center;">장착됨</div>`;
+            if (ballImageMap[ballObj.id]) {
+                slot.innerHTML = `<img src="${ballImageMap[ballObj.id]}" class="free-ball-img-profile" alt="${ballObj.name}">`;
+            } else {
+                let bgCol = currentFreeSide === 'left' ? '#2980b9' : '#c0392b';
+                slot.innerHTML = `<div style="width:100%; height:100%; background:${bgCol}; border-radius:50%; display:flex; justify-content:center; align-items:center; color:#fff; font-weight:bold; font-size:12px;">${ballObj.name}</div>`;
+            }
+
             changeBtn.classList.remove('hidden');
             nameLabel.innerText = ballObj.name;
 
@@ -4367,4 +4391,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+    </html>
