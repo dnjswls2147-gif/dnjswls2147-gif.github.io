@@ -27,7 +27,6 @@
             color: #ffffff;
         }
         
-        /* 공지사항 배너 개선 */
         .notice-banner {
             position: fixed;
             top: 10px;
@@ -102,7 +101,6 @@
             line-height: 1.6;
         }
 
-        /* 요청하신 점검 중 화면 스타일 수정: 흰색 배경 + 가운데 네모난 검정색 화면 + 파란 글씨 + 점검 사유 */
         #maintenance-screen {
             position: fixed;
             top: 0;
@@ -115,7 +113,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 99999998;
+            z-index: 9999998;
             text-align: center;
             padding: 20px;
         }
@@ -263,6 +261,12 @@
             display: none !important;
             pointer-events: none !important;
         }
+
+        /* 점검 인증 창이 점검 화면 레이어(z-index)보다 항상 위에 뜨도록 z-index 설정 */
+        #maintenance-pass-modal {
+            z-index: 99999999 !important;
+        }
+
         .modal-box {
             width: 100%;
             max-width: 360px;
@@ -1243,7 +1247,7 @@
         <span id="notice-banner-text">공지사항이 들어갑니다.</span>
     </div>
 
-    <!-- 점검 중 화면 (흰색 배경 + 네모난 검정색 중앙 상자 + 파란 글씨 + 점검 사유) -->
+    <!-- 점검 중 화면 -->
     <div id="maintenance-screen" class="hidden">
         <div class="maintenance-center-box">
             <h1 style="color: #3498db; margin: 0 0 10px 0;">점검중입니다</h1>
@@ -1252,6 +1256,7 @@
         </div>
     </div>
 
+    <!-- 플레이 하기 버튼 누르면 뜨는 비밀번호 입력 창 (어드민 인증 모달 레이아웃 사용) -->
     <div class="modal-overlay hidden" id="maintenance-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1325,7 +1330,6 @@
         </div>
     </div>
 
-    <!-- 어드민 패널 (공지 밑에 점검 켜기/끄기 및 사유 입력창, 플레이 타임 삭제 버튼 추가) -->
     <div class="admin-window hidden" id="admin-panel">
         <div class="admin-header" id="admin-header-drag">
             <div class="admin-title">⚙️ 어드민 패널 (이곳을 눌러 이동)</div>
@@ -1347,7 +1351,6 @@
                         <button class="admin-small-btn" style="background:#c0392b;" onclick="deleteAdminNotice()">삭제</button>
                     </div>
 
-                    <!-- 공지 밑에 점검 켜기 / 끄기 버튼 및 점검 사유 입력란 추가 -->
                     <div class="admin-section-title">서버 점검 제어</div>
                     <div class="admin-btn-row">
                         <button class="admin-small-btn" style="background:#c0392b;" onclick="setAdminMaintenance(true)">점검 켜기</button>
@@ -1685,7 +1688,8 @@
         const GLOBAL_USERS_KEY = 'lily_ball_fight_global_users';
         
         const ADMIN_PASSWORD = "123kpq";
-        const MAINTENANCE_PASS = "123kpq";
+        // 요청해주신 비밀번호로 변경되었습니다.
+        const MAINTENANCE_PASS = "123pqmdkwa";
 
         let isServerUnderMaintenance = false;
         let maintenanceReasonText = "";
@@ -1821,13 +1825,11 @@
             renderAdminUserList();
         });
 
-        // 공지사항 실시간 수신
         db.ref('notice').on('value', (snap) => {
             activeNotice = snap.val() || "";
             updateNoticeBanner();
         });
 
-        // 실시간 점검 상태 수신 (점검 켜기/끄기, 사유 반영)
         db.ref('maintenance').on('value', (snap) => {
             let data = snap.val();
             if (data && typeof data === 'object') {
@@ -1843,7 +1845,6 @@
             applyMaintenanceUI();
         });
 
-        // 실시간 우편함 데이터 수신
         db.ref('mailboxes').on('value', (snap) => {
             globalMails = snap.val() || {};
             checkMailRedDot();
@@ -1901,7 +1902,6 @@
             endAdminDrag();
         });
 
-        // '게이' 님을 포함하여 플레이어 목록에 정상 노출되도록 필터링 규칙 수정
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1948,7 +1948,6 @@
                     window.userUniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
                 }
 
-                // 플레이 타임 필드가 저장되지 않도록 완전히 삭제하여 동기화
                 const userData = {
                     name: savedUsername,
                     uid: window.userUniqueId,
@@ -1987,7 +1986,6 @@
             }
         }
 
-        // 점검 상태에 따른 화면 UI 제어 및 사유 없을 시 미노출 처리
         function applyMaintenanceUI() {
             const screen = document.getElementById('maintenance-screen');
             const reasonEl = document.getElementById('maintenance-reason-display');
@@ -2014,6 +2012,7 @@
                 document.getElementById('free-play-screen').classList.add('hidden');
             } else {
                 screen.classList.add('hidden');
+                document.getElementById('maintenance-pass-modal').classList.add('hidden');
                 
                 if (localBanUntil && localBanUntil > Date.now()) {
                     checkAndApplyBanScreen(localBanUntil, localBanReason);
@@ -2042,7 +2041,6 @@
             }
         }
 
-        // 어드민 점검 켜기 / 끄기 및 사유 Firebase 반영 함수
         function setAdminMaintenance(activeState) {
             const reasonVal = document.getElementById('admin-maintenance-reason-input').value.trim();
             db.ref('maintenance').set({
@@ -2062,6 +2060,7 @@
             }
         }
 
+        // 플레이 하기 버튼 클릭 시 비밀번호 모달 노출
         function openMaintenancePassModal() {
             document.getElementById('maintenance-pass-input').value = "";
             document.getElementById('maintenance-pass-error').innerText = "";
@@ -2359,7 +2358,6 @@
             return isOnline;
         }
 
-        // 플레이 타임 항목을 완전히 제외하고 유저 카드 렌더링
         function renderAdminUserList() {
             const container = document.getElementById('admin-user-list-container');
             if (!container) return;
@@ -4284,4 +4282,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                </html>
+    </html>
