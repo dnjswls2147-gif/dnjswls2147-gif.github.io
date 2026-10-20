@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 미스터 비스트 비디오 에디션</title>
+    <title>릴리 볼 파이트 - 에디션</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -679,25 +679,6 @@
             height: 100%;
             display: block;
         }
-        .speed-btn {
-            position: absolute;
-            right: 8px;
-            bottom: 8px;
-            background: #d35400;
-            color: white;
-            border: 2px solid #a04000;
-            border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-        }
-        .speed-btn.active {
-            background: #c0392b;
-            border-color: #962d22;
-        }
 
         .boss-control-bar {
             display: flex;
@@ -1273,7 +1254,6 @@
 </head>
 <body>
 
-    <!-- 춤추는 미스터 비스트 비디오 태그 추가 -->
     <video id="mrbeast-dance-video" src="mrbeast_dance.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
@@ -1676,7 +1656,6 @@
     <div class="container hidden" id="game-screen">
         <div class="canvas-container">
             <canvas id="gameCanvas" width="540" height="540"></canvas>
-            <button class="speed-btn" id="speed-toggle-btn" onclick="toggleSpeed()">⚡ 2X 배속</button>
         </div>
         
         <div class="boss-control-bar hidden" id="boss-joystick-panel">
@@ -1764,7 +1743,6 @@
         const iceballImg = new Image(); iceballImg.src = "iceball.png";
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
 
-        // 비디오 요소 객체 정의
         const mrbeastVideo = document.getElementById('mrbeast-dance-video');
 
         const ballImageMap = {
@@ -1806,7 +1784,6 @@
         let userCoins = 0; 
         let userTrophies = 0;
         
-        let isDoubleSpeed = false;
         let speedMultiplier = 1;
 
         let currentRankingType = 'trophy';
@@ -2426,13 +2403,6 @@
 
         function setAdminSpeed(mult) {
             speedMultiplier = mult;
-            isDoubleSpeed = (mult === 2 || mult === 4);
-            const btn = document.getElementById('speed-toggle-btn');
-            if (btn) {
-                btn.innerText = `⚡ x${mult} 배속`;
-                if (mult > 1) btn.classList.add('active');
-                else btn.classList.remove('active');
-            }
             alert(`게임 속도가 x${mult}로 설정되었습니다.`);
         }
 
@@ -3349,13 +3319,6 @@
                     gameOverState = data.gameOverState;
                     updateHpBars();
                 }
-            } else if (data.type === 'SPEED_TOGGLE') {
-                isDoubleSpeed = data.isDoubleSpeed;
-                speedMultiplier = isDoubleSpeed ? 2 : 1;
-                const btn = document.getElementById('speed-toggle-btn');
-                btn.innerText = isDoubleSpeed ? "⚡ 2X 온 (ON)" : "⚡ 2X 배속";
-                if (isDoubleSpeed) btn.classList.add('active');
-                else btn.classList.remove('active');
             } else if (data.type === 'RETRY_GAME') {
                 startCountdownAndGame();
             } else if (data.type === 'CHAT_MSG') {
@@ -3471,33 +3434,6 @@
                 conn.send({ type: 'RETRY_GAME' });
             }
             startCountdownAndGame();
-        }
-
-        function toggleSpeed() {
-            if (!gameStarted) return;
-            if (nextGameMode === 'friend') {
-                const confirmChoice = confirm("⚡ 친구에게 2배속 요청이 들어왔습니다.\n승인하시겠습니까?");
-                if (!confirmChoice) {
-                    alert("2배속 요청이 거절되었습니다.");
-                    return;
-                }
-            }
-
-            isDoubleSpeed = !isDoubleSpeed;
-            speedMultiplier = isDoubleSpeed ? 2 : 1;
-            const btn = document.getElementById('speed-toggle-btn');
-
-            if (isDoubleSpeed) {
-                btn.innerText = "⚡ 2X 온 (ON)";
-                btn.classList.add('active');
-            } else {
-                btn.innerText = "⚡ 2X 배속";
-                btn.classList.remove('active');
-            }
-
-            if (conn && conn.open) {
-                conn.send({ type: 'SPEED_TOGGLE', isDoubleSpeed: isDoubleSpeed });
-            }
         }
 
         function showFriendMenu() {
@@ -3673,13 +3609,7 @@
             bossWideBlocks = [];
             specialAttackEntities = [];
             
-            isDoubleSpeed = false;
             speedMultiplier = 1;
-            const btn = document.getElementById('speed-toggle-btn');
-            if (btn) {
-                btn.innerText = "⚡ 2X 배속";
-                btn.classList.remove('active');
-            }
             updateHpBars();
         }
 
@@ -3756,7 +3686,6 @@
                     });
                 } 
                 else if (pType === 'mrbeast') {
-                    // 미스터 비스트 기술 발동 시 춤 비디오 시작
                     if (mrbeastVideo) {
                         mrbeastVideo.currentTime = 0;
                         mrbeastVideo.play();
@@ -3764,7 +3693,7 @@
                     specialAttackEntities.push({
                         type: 'mrbeast_slam',
                         targetPlayer: target,
-                        timer: 150, // 2.5초 (60fps 기준)
+                        timer: 150,
                         damage: 95
                     });
                 }
@@ -4270,7 +4199,6 @@
                     ctx.fillText("🧽 행주로 쓱싹 쓱싹! (100뎀)", se.targetPlayer.x, se.targetPlayer.y - se.targetPlayer.radius - 12);
                     ctx.restore();
                 } else if (se.type === 'mrbeast_slam') {
-                    // 미스터 비스트 비디오 화면 그리기
                     ctx.save();
                     let vW = 200;
                     let vH = 200;
@@ -4404,4 +4332,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
