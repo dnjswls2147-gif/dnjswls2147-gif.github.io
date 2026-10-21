@@ -1369,7 +1369,8 @@
 </head>
 <body>
 
-    <video id="mrbeast-dance-video" src="mrbeast_dance.mp4" loop muted playsinline style="display:none;"></video>
+    <!-- 미스터 비스트 쇼츠 영상 안정적 재생을 위한 외부 소스 연결 -->
+    <video id="mrbeast-dance-video" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
         <h1>부계정 방지</h1>
@@ -2291,7 +2292,7 @@
                     return;
                 }
 
-                if (savedUsername && savedUsername.trim() !== "" && !savedUsername.startsWith("유user_")) {
+                if (savedUsername && savedUsername.trim() !== "" && !savedUsername.startsWith("유저_")) {
                     document.getElementById('name-modal').classList.add('hidden');
                     const isAnyGameScreenActive = 
                         !document.getElementById('game-screen').classList.contains('hidden') ||
@@ -2368,7 +2369,6 @@
                     alert("📢 모두 말하기 모드로 변경되었습니다.");
                 });
             } else {
-                // 관리자만 말하기 모드로 전환 시 비밀번호 인증 창 띄우기
                 openAdminChatPassModal();
             }
         }
@@ -2402,7 +2402,6 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // 관리자만 말하기 모드일 때 검증 (진짜 관리자인지 확인: isAdminLoggedIn 이거나 비밀번호를 거친 세션)
             if (globalChatMode === 'admin' && !isAdminLoggedIn) {
                 alert("🚫 현재 [관리자만 말하기] 모드입니다. 관리자만 메시지를 보낼 수 있습니다!");
                 return;
@@ -4564,7 +4563,7 @@
                     ctx.font = "bold 20px sans-serif";
                     ctx.fillStyle = "#f1c40f";
                     ctx.textAlign = "center";
-                    ctx.fillText("🕺 미스터 비스트 2.5초간 댄스! (95뎀)", canvas.width / 2, vY + vH + 25);
+                    ctx.fillText("🕺 미스터 비스트 댄스 파티! (95뎀)", canvas.width / 2, vY + vH + 25);
                     ctx.restore();
                 }
             });
