@@ -1369,7 +1369,7 @@
 </head>
 <body>
 
-    <!-- 💡 내가 폴더에 넣은 mrbeast.mp4 로컬 영상 파일 연결 -->
+    <!-- 💡 미스터 비스트 영상 파일 연결 (웹 브라우저 자동 재생 제약 방지를 위해 muted, playsinline 추가) -->
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
@@ -1440,7 +1440,6 @@
         </div>
     </div>
 
-    <!-- 전체 채팅 모달 -->
     <div class="modal-overlay hidden" id="global-chat-modal">
         <div class="global-chat-box">
             <div class="global-chat-header">
@@ -1464,7 +1463,6 @@
         </div>
     </div>
 
-    <!-- 관리자 채팅모드 비밀번호 모달 -->
     <div class="modal-overlay hidden" id="admin-chat-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1660,7 +1658,6 @@
             </div>
         </div>
 
-        <!-- 랭킹보드 밑 전체 채팅 버튼 -->
         <button class="global-chat-lobby-btn" onclick="openGlobalChatModal()">
             💬 전체 채팅 (<span id="global-chat-count-display">0명</span> | <span id="global-chat-status-text">온라인</span>)
         </button>
@@ -1714,7 +1711,6 @@
         </div>
 
         <button class="free-start-btn" onclick="startFreeMatch()">시작 하기</button>
-
         <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px;">로비로 가기</button>
     </div>
 
@@ -1744,7 +1740,6 @@
         </div>
 
         <div class="ranking-list-box" id="ranking-list-container"></div>
-
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
@@ -1758,7 +1753,6 @@
         <div class="desc">공을 선택하거나 코인으로 구매하세요!</div>
         
         <div class="shop-list" id="shop-list-container"></div>
-
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
@@ -1923,7 +1917,7 @@
         let activePresenceUsers = {}; 
         let globalMails = {}; 
         let globalChatMessages = {};
-        let globalChatMode = 'all'; // 'all' or 'admin'
+        let globalChatMode = 'all';
         let activeNotice = "";
         let isAdminLoggedIn = false;
         let isBypassedByPassword = false;
@@ -2138,27 +2132,22 @@
         adminHeaderDrag.addEventListener('mousedown', (e) => {
             startAdminDrag(e.clientX, e.clientY);
         });
-
         document.addEventListener('mousemove', (e) => {
             moveAdminDrag(e.clientX, e.clientY);
         });
-
         document.addEventListener('mouseup', () => {
             endAdminDrag();
         });
-
         adminHeaderDrag.addEventListener('touchstart', (e) => {
             if (e.touches.length > 0) {
                 startAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
             }
         }, { passive: true });
-
         document.addEventListener('touchmove', (e) => {
             if (e.touches.length > 0) {
                 moveAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
             }
         }, { passive: true });
-
         document.addEventListener('touchend', () => {
             endAdminDrag();
         });
@@ -2168,7 +2157,6 @@
             if (data) {
                 let allData = Object.values(data);
                 registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
-                
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
@@ -2182,7 +2170,6 @@
                     if (me) {
                         localBanUntil = me.banUntil || 0;
                         localBanReason = me.banReason || "";
-                        
                         if (me.forceRename) {
                             openForcedNameChangeModal();
                         }
@@ -2314,7 +2301,6 @@
             }
         }
 
-        // 전체 채팅 관련 기능 구현
         function openGlobalChatModal() {
             if (!checkUserHasName()) return;
             document.getElementById('global-chat-modal').classList.remove('hidden');
@@ -2390,7 +2376,7 @@
             if (val === ADMIN_CHAT_PASS) {
                 closeAdminChatPassModal();
                 db.ref('globalChatMode').set('admin').then(() => {
-                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다. (진짜 관리자만 작성 가능)");
+                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다.");
                 });
             } else {
                 err.innerText = "비밀번호가 올바르지 않습니다!";
@@ -2403,7 +2389,7 @@
             if (!text) return;
 
             if (globalChatMode === 'admin' && !isAdminLoggedIn) {
-                alert("🚫 현재 [관리자만 말하기] 모드입니다. 관리자만 메시지를 보낼 수 있습니다!");
+                alert("🚫 현재 [관리자만 말하기] 모드입니다!");
                 return;
             }
 
@@ -2429,14 +2415,13 @@
         function renderGlobalChatLog() {
             const logArea = document.getElementById('global-chat-log-area');
             if (!logArea) return;
-
             logArea.innerHTML = '';
 
             let messages = Object.values(globalChatMessages);
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.</div>`;
                 return;
             }
 
@@ -2454,7 +2439,6 @@
                 `;
                 logArea.appendChild(row);
             });
-
             logArea.scrollTop = logArea.scrollHeight;
         }
 
@@ -2471,9 +2455,7 @@
         function updateMaintenanceReasonLive() {
             const reasonVal = document.getElementById('admin-maintenance-reason-input').value.trim();
             if (isServerUnderMaintenance) {
-                db.ref('maintenance').update({
-                    reason: reasonVal
-                });
+                db.ref('maintenance').update({ reason: reasonVal });
             }
         }
 
@@ -2495,7 +2477,7 @@
                 isBypassedByPassword = true;
                 closeMaintenancePassModal();
                 applyMaintenanceUI();
-                alert("🔓 비밀번호 인증 성공! 게임에 접속합니다.");
+                alert("🔓 비밀번호 인증 성공!");
             } else {
                 err.innerText = "비밀번호가 올바르지 않습니다!";
             }
@@ -2545,7 +2527,7 @@
                 return;
             }
             if (nextGameMode !== 'friend') {
-                alert("🚫 AI 매칭 및 보스전에서는 채팅을 이용할 수 없습니다!\n(친구 플레이 전용 기능)");
+                alert("🚫 AI 매칭 및 보스전에서는 채팅을 이용할 수 없습니다!");
                 return;
             }
             document.getElementById('chat-modal').classList.remove('hidden');
@@ -2557,8 +2539,7 @@
         }
 
         function toggleQuickChatPanel() {
-            const panel = document.getElementById('quick-chat-panel');
-            panel.classList.toggle('hidden');
+            document.getElementById('quick-chat-panel').classList.toggle('hidden');
         }
 
         function selectQuickChat(text) {
@@ -2581,7 +2562,6 @@
                     text: text
                 });
             }
-
             input.value = '';
         }
 
@@ -2612,9 +2592,7 @@
             if (isBossMode && gameStarted) {
                 if (e.key === 'ArrowLeft' || e.key === 'a') moveDirection = -1;
                 if (e.key === 'ArrowRight' || e.key === 'd') moveDirection = 1;
-                if (e.key === ' ' || e.key === 'Shift') {
-                    triggerDefense();
-                }
+                if (e.key === ' ' || e.key === 'Shift') triggerDefense();
             }
         });
 
@@ -2660,7 +2638,7 @@
                 return;
             }
             db.ref('notice').set(text).then(() => {
-                alert("모든 플레이어의 화면 상단에 공지가 등록되었습니다!");
+                alert("상단 공지가 등록되었습니다!");
             });
         }
 
@@ -2785,14 +2763,14 @@
                 let online = isUserReallyOnline(u.name);
 
                 let statusClass = isBanned ? "admin-user-status banned" : (online ? "admin-user-status" : "admin-user-status offline");
-                let statusText = isBanned ? `정지됨 (${u.banReason ? u.banReason : "사유 없음"})` : (online ? "온라인" : "오프라인");
+                let statusText = isBanned ? `정지됨` : (online ? "온라인" : "오프라인");
                 let dateDisplay = u.firstJoinedDate || "날짜 미기록";
 
                 card.innerHTML = `
                     <div class="admin-user-card-top">
                         <div>
                             <span class="admin-user-name" onclick="openUserProfile('${u.name}')"><b>${u.name}</b></span>
-                            <span class="admin-user-date">[최초 접속: ${dateDisplay}]</span>
+                            <span class="admin-user-date">[${dateDisplay}]</span>
                         </div>
                         <span class="${statusClass}">${statusText}</span>
                     </div>
@@ -2802,12 +2780,12 @@
                         <input type="number" id="ban-time-${index}" value="${u.banHours || 0}" min="0"> 시간
                         <input type="number" id="ban-min-${index}" value="${u.banMins || 0}" min="0"> 분
                     </div>
-                    <input type="text" id="ban-reason-${index}" class="admin-reason-input" placeholder="추방 사유 (선택)" value="${u.banReason || ''}">
+                    <input type="text" id="ban-reason-${index}" class="admin-reason-input" placeholder="추방 사유" value="${u.banReason || ''}">
                     
                     <div style="display: flex; gap: 4px;">
-                        <button class="admin-small-btn" style="background:#8e44ad; border:1px solid #9b59b6;" onclick="triggerAdminForceRename('${u.name}')">이름 변경</button>
-                        <button class="admin-ban-btn" onclick="executeCustomBan(${index})">밴(추방)</button>
-                        <button class="admin-unban-btn" onclick="executeUnban(${index})">밴 해제</button>
+                        <button class="admin-small-btn" style="background:#8e44ad;" onclick="triggerAdminForceRename('${u.name}')">이름 변경</button>
+                        <button class="admin-ban-btn" onclick="executeCustomBan(${index})">밴</button>
+                        <button class="admin-unban-btn" onclick="executeUnban(${index})">해제</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -2815,12 +2793,8 @@
         }
 
         function triggerAdminForceRename(targetUsername) {
-            if (confirm(`[${targetUsername}] 님에게 이름 변경 창을 띄우시겠습니까?\n(접속 시 트로피와 코인은 그대로 유지되며 새 이름을 설정하게 됩니다.)`)) {
-                db.ref('users/' + targetUsername.replace(/[.#$/\[\]]/g, "_")).update({
-                    forceRename: true
-                }).then(() => {
-                    alert(`[${targetUsername}] 님에게 이름 변경 요청이 전달되었습니다.`);
-                });
+            if (confirm(`[${targetUsername}] 님에게 이름 변경 창을 띄우시겠습니까?`)) {
+                db.ref('users/' + targetUsername.replace(/[.#$/\[\]]/g, "_")).update({ forceRename: true });
             }
         }
 
@@ -2845,12 +2819,6 @@
                 return;
             }
 
-            const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
-            if (isBadWord) {
-                err.innerText = "이름에 들어갈수 없는 이름입니다!";
-                return;
-            }
-
             let oldName = savedUsername;
             savedUsername = val;
             
@@ -2859,17 +2827,11 @@
 
             db.ref('users/' + safeOldKey).once('value', (snap) => {
                 let existingData = snap.val() || {};
-                
                 let newUserData = {
                     name: savedUsername,
                     uid: existingData.uid || Math.random().toString(36).substring(2, 8).toUpperCase(),
                     coins: existingData.coins !== undefined ? existingData.coins : userCoins,
                     trophies: existingData.trophies !== undefined ? existingData.trophies : userTrophies,
-                    friendsCount: existingData.friendsCount || 0,
-                    recvReqCount: existingData.recvReqCount || 0,
-                    sendReqCount: existingData.sendReqCount || 0,
-                    banUntil: existingData.banUntil || 0,
-                    banReason: existingData.banReason || "",
                     forceRename: false,
                     firstJoinedDate: existingData.firstJoinedDate || getFormattedDate(),
                     joinedTimestamp: existingData.joinedTimestamp || Date.now()
@@ -2886,7 +2848,7 @@
                     document.getElementById('forced-name-change-modal').classList.add('hidden');
                     document.getElementById('lobby-screen').classList.remove('hidden');
                     updateCoinsUI();
-                    alert("새로운 이름으로 변경되었습니다! (트로피와 코인 유지 완료)");
+                    alert("새로운 이름으로 변경되었습니다!");
                 });
             });
         }
@@ -2895,12 +2857,8 @@
             let hoursInput = parseInt(document.getElementById(`ban-time-${index}`).value) || 0;
             let minsInput = parseInt(document.getElementById(`ban-min-${index}`).value) || 0;
             let reasonInput = document.getElementById(`ban-reason-${index}`).value.trim();
-            
             let totalMs = (hoursInput * 3600 + minsInput * 60) * 1000;
-
-            if (totalMs <= 0) {
-                totalMs = 24 * 3600 * 1000;
-            }
+            if (totalMs <= 0) totalMs = 24 * 3600 * 1000;
 
             let targetUser = registeredUsers[index];
             let banTime = Date.now() + totalMs;
@@ -2915,25 +2873,18 @@
                 banUntil: banTime,
                 banReason: reasonInput
             });
-
             alert(`[${targetUser.name}] 님이 정지되었습니다.`);
         }
 
         function executeUnban(index) {
             let targetUser = registeredUsers[index];
-
             if (targetUser.name === savedUsername) {
                 localBanUntil = 0;
                 localBanReason = "";
                 saveData();
             }
-
-            db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({
-                banUntil: 0,
-                banReason: ""
-            });
-
-            alert(`[${targetUser.name}] 님의 밴이 해제되었습니다!`);
+            db.ref('users/' + targetUser.name.replace(/[.#$/\[\]]/g, "_")).update({ banUntil: 0, banReason: "" });
+            alert(`밴이 해제되었습니다!`);
         }
 
         function checkAndApplyBanScreen(banUntil, reason) {
@@ -2945,20 +2896,10 @@
                 let m = Math.floor((totalSec % 3600) / 60);
                 let s = totalSec % 60;
 
-                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분 ${s}초] 정지 되었습니다.<br>다시 들어와주세요`;
+                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분 ${s}초] 정지 되었습니다.`;
                 document.getElementById('ban-reason-text').innerText = `정지 사유: ${reason ? reason : "없음"}`;
                 banScreen.classList.remove('hidden');
-
-                document.getElementById('name-modal').classList.add('hidden');
-                document.getElementById('lobby-screen').classList.add('hidden');
-                document.getElementById('game-screen').classList.add('hidden');
-                document.getElementById('friend-screen').classList.add('hidden');
-                document.getElementById('group-screen').classList.add('hidden');
-                document.getElementById('char-select-screen').classList.add('hidden');
-                document.getElementById('myball-screen').classList.add('hidden');
-                document.getElementById('mailbox-screen').classList.add('hidden');
-                document.getElementById('ranking-screen').classList.add('hidden');
-                document.getElementById('free-play-screen').classList.add('hidden');
+                document.querySelectorAll('.container, .modal-overlay').forEach(el => el.classList.add('hidden'));
             } else {
                 banScreen.classList.add('hidden');
             }
@@ -2968,7 +2909,6 @@
             const selectEl = document.getElementById('admin-gift-target-user');
             if (!selectEl) return;
             selectEl.innerHTML = '';
-
             let allOpt = document.createElement('option');
             allOpt.value = "ALL_USERS";
             allOpt.innerText = "🌐 전체 유저에게 보내기";
@@ -2986,7 +2926,6 @@
             selectedGiftType = type;
             const coinBtn = document.getElementById('gift-type-coin-btn');
             const trophyBtn = document.getElementById('gift-type-trophy-btn');
-
             if (type === 'coin') {
                 coinBtn.classList.add('active-type');
                 trophyBtn.classList.remove('active-type');
@@ -2999,12 +2938,7 @@
         function sendAdminGift() {
             const targetVal = document.getElementById('admin-gift-target-user').value;
             const amountVal = parseInt(document.getElementById('admin-gift-amount').value);
-
-            if (!targetVal) {
-                alert("대상을 선택하세요.");
-                return;
-            }
-            if (isNaN(amountVal) || amountVal <= 0) {
+            if (!targetVal || isNaN(amountVal) || amountVal <= 0) {
                 alert("올바른 수량을 입력하세요.");
                 return;
             }
@@ -3019,9 +2953,8 @@
             };
 
             db.ref('mailboxes/' + mailId).set(mailData).then(() => {
-                let typeName = selectedGiftType === 'coin' ? '코인' : '트로피';
                 document.getElementById('admin-gift-amount').value = '';
-                alert(`[${targetVal}] 님께 ${typeName} ${amountVal}개 우편 발송 완료!`);
+                alert(`우편 발송 완료!`);
             });
         }
 
@@ -3035,31 +2968,25 @@
         function isMailValid() {
             const now = new Date().getTime();
             const hasDefaultMail = !mailClaimed && (now < EXPIRY_TIME);
-            
             const hasUnclaimedGlobalGifts = Object.values(globalMails).some(m => {
                 let isTarget = (m.targetUser === "ALL_USERS" || m.targetUser === savedUsername);
                 let alreadyClaimed = m.claimedBy && m.claimedBy[savedUsername.replace(/[.#$/\[\]]/g, "_")];
                 return isTarget && !alreadyClaimed;
             });
-
             return hasDefaultMail || hasUnclaimedGlobalGifts;
         }
 
         function checkMailRedDot() {
             const redDot = document.getElementById('mail-red-dot');
             if (!redDot) return;
-            if (isMailValid()) {
-                redDot.classList.remove('hidden');
-            } else {
-                redDot.classList.add('hidden');
-            }
+            if (isMailValid()) redDot.classList.remove('hidden');
+            else redDot.classList.add('hidden');
         }
 
         function renderMailbox() {
             const msgEl = document.getElementById('mail-status-msg');
             const contentEl = document.getElementById('mail-content-area');
             const now = new Date().getTime();
-
             contentEl.innerHTML = '';
             let itemCount = 0;
 
@@ -3089,35 +3016,23 @@
                 itemDiv.className = 'mail-item';
                 let typeText = gift.type === 'coin' ? '코인' : '트로피';
                 let icon = gift.type === 'coin' ? '🪙' : '🏆';
-                let tag = gift.targetUser === "ALL_USERS" ? "[전체 선물]" : "[개별 선물]";
-
                 itemDiv.innerHTML = `
                     <div>
-                        <div class="mail-info-title">🎁 ${tag} ${typeText} ${gift.amount}개</div>
-                        <div class="mail-info-time" style="color: #a29bfe;">유효 기간: 없음</div>
+                        <div class="mail-info-title">🎁 ${typeText} ${gift.amount}개</div>
                     </div>
                     <button class="btn-claim" onclick="claimGlobalGift('${gift.id}')">받기 ${icon}</button>
                 `;
                 contentEl.appendChild(itemDiv);
             });
 
-            if (itemCount > 0) {
-                msgEl.innerText = "도착한 우편이 있습니다!";
-            } else {
+            if (itemCount > 0) msgEl.innerText = "도착한 우편이 있습니다!";
+            else {
                 msgEl.innerText = "받을 보상이 없습니다";
-                contentEl.innerHTML = `<div style="font-size:12px; color:#d7ccc8; padding:10px 0; text-align:center;">도착한 우편이 없거나 이미 수령했습니다.</div>`;
+                contentEl.innerHTML = `<div style="font-size:12px; color:#d7ccc8; padding:10px 0; text-align:center;">도착한 우편이 없습니다.</div>`;
             }
         }
 
         function claimMailReward() {
-            const now = new Date().getTime();
-            if (now >= EXPIRY_TIME) {
-                alert("보상을 받을수 없습니다 (유효기간 만료)");
-                renderMailbox();
-                checkMailRedDot();
-                return;
-            }
-
             if (!mailClaimed) {
                 mailClaimed = true;
                 userCoins += 1000;
@@ -3132,20 +3047,15 @@
         function claimGlobalGift(giftId) {
             let gift = globalMails[giftId];
             let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
-
             if (gift && (!gift.claimedBy || !gift.claimedBy[userKey])) {
                 db.ref(`mailboxes/${giftId}/claimedBy/${userKey}`).set(true).then(() => {
-                    if (gift.type === 'coin') {
-                        userCoins += gift.amount;
-                    } else {
-                        userTrophies += gift.amount;
-                    }
-
+                    if (gift.type === 'coin') userCoins += gift.amount;
+                    else userTrophies += gift.amount;
                     updateCoinsUI();
                     saveData();
                     checkMailRedDot();
                     renderMailbox();
-                    alert(`🎉 선물로 ${gift.type === 'coin' ? '코인' : '트로피'} ${gift.amount}개를 수령했습니다!`);
+                    alert("🎉 보상을 수령했습니다!");
                 });
             }
         }
@@ -3160,29 +3070,19 @@
             currentRankingType = type;
             document.getElementById('rank-tab-trophy').classList.remove('active');
             document.getElementById('rank-tab-coin').classList.remove('active');
-
-            if (type === 'trophy') {
-                document.getElementById('rank-tab-trophy').classList.add('active');
-            } else {
-                document.getElementById('rank-tab-coin').classList.add('active');
-            }
+            if (type === 'trophy') document.getElementById('rank-tab-trophy').classList.add('active');
+            else document.getElementById('rank-tab-coin').classList.add('active');
             renderRankingList();
         }
 
         function renderRankingList() {
             const container = document.getElementById('ranking-list-container');
             container.innerHTML = '';
-
             let sorted = registeredUsers.filter(u => u && u.name !== "11" && u.name !== "Dd");
-            
-            if (currentRankingType === 'trophy') {
-                sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
-            } else {
-                sorted.sort((a, b) => (b.coins || 0) - (a.coins || 0));
-            }
+            if (currentRankingType === 'trophy') sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
+            else sorted.sort((a, b) => (b.coins || 0) - (a.coins || 0));
 
             let displayList = sorted.slice(0, 100);
-
             if (displayList.length === 0) {
                 container.innerHTML = `<div style="font-size:12px; color:#ffe0b2; text-align:center; padding:15px 0;">랭킹에 등록된 유저가 없습니다.</div>`;
                 return;
@@ -3190,11 +3090,7 @@
 
             displayList.forEach((user, index) => {
                 let rank = index + 1;
-                let rankClass = "";
-                if (rank === 1) rankClass = "top1";
-                else if (rank === 2) rankClass = "top2";
-                else if (rank === 3) rankClass = "top3";
-
+                let rankClass = rank === 1 ? "top1" : (rank === 2 ? "top2" : (rank === 3 ? "top3" : ""));
                 let val = currentRankingType === 'trophy' ? (user.trophies || 0) + '🏆' : (user.coins || 0) + '🪙';
 
                 let item = document.createElement('div');
@@ -3212,11 +3108,7 @@
         }
 
         function openUserProfile(username) {
-            let target = registeredUsers.find(u => u.name === username);
-            if (!target) {
-                target = { name: username, coins: 0, trophies: 0, firstJoinedDate: getFormattedDate() };
-            }
-
+            let target = registeredUsers.find(u => u.name === username) || { name: username, coins: 0, trophies: 0, firstJoinedDate: getFormattedDate() };
             document.getElementById('profile-modal-title').innerText = "👤 유저 프로필";
             document.getElementById('profile-modal-name').innerText = target.name;
             document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || getFormattedDate();
@@ -3231,12 +3123,12 @@
 
         let ballsData = [
             { id: 'standard', name: '기본 볼', desc: '체력: 200, 데미지 없음', price: 0, hp: 200, damage: 0, owned: true, equipped: true },
-            { id: 'fire', name: '화염 볼', desc: '체력: 200, 기본공격:없음 & 6초마다 거대 화염볼 폭격 (좌/중/우 3개, 개당 25데미지)', price: 50, hp: 200, damage: 25, owned: false, equipped: false },
-            { id: 'ice', name: '아이스 볼', desc: '체력: 200, 기본공격:없음 & 8초마다 얼음 폭격 (4개, 개당 18데미지, 맞으면 1초 정지)', price: 100, hp: 200, damage: 18, owned: false, equipped: false },
-            { id: 'pokemon', name: '포켓몬 볼', desc: '체력: 200, 기본공격:없음 & 9초마다 2초간 포켓몬 볼 30개 이상 폭격 (개당 2데미지)', price: 350, hp: 200, damage: 2, owned: false, equipped: false },
-            { id: 'dongryong', name: '동룡쓰 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 상대 뒤에서 어몽어스 임포스터 칼 찌르기 (80데미지)', price: 1000, hp: 250, damage: 80, owned: false, equipped: false },
-            { id: 'mrbeast', name: '미스터 비스트 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 경기장 위에서 2.5초간 춤추기 (95데미지)', price: 1500, hp: 250, damage: 95, owned: false, equipped: false },
-            { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 250, 기본공격:없음 & 8초마다 기술1: 행주 쓱싹 (2초간 100데미지) / 기술2: 유도 볼 소환 폭발 (111데미지)', price: 3000, hp: 250, damage: 100, owned: false, equipped: false }
+            { id: 'fire', name: '화염 볼', desc: '체력: 200, 기본공격:없음 & 6초마다 거대 화염볼 폭격', price: 50, hp: 200, damage: 25, owned: false, equipped: false },
+            { id: 'ice', name: '아이스 볼', desc: '체력: 200, 기본공격:없음 & 8초마다 얼음 폭격', price: 100, hp: 200, damage: 18, owned: false, equipped: false },
+            { id: 'pokemon', name: '포켓몬 볼', desc: '체력: 200, 기본공격:없음 & 9초마다 포켓몬 볼 폭격', price: 350, hp: 200, damage: 2, owned: false, equipped: false },
+            { id: 'dongryong', name: '동룡쓰 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 어몽어스 칼 찌르기', price: 1000, hp: 250, damage: 80, owned: false, equipped: false },
+            { id: 'mrbeast', name: '미스터 비스트 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 미스터 비스트 영상 재생 및 폭격 (95데미지)', price: 1500, hp: 250, damage: 95, owned: false, equipped: false },
+            { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 250, 기본공격:없음 & 8초마다 행주 쓱싹 및 유도 볼 폭발', price: 3000, hp: 250, damage: 100, owned: false, equipped: false }
         ];
 
         function saveData() {
@@ -3282,12 +3174,6 @@
                             if (match) {
                                 match.owned = savedBall.owned;
                                 match.equipped = savedBall.equipped;
-                                let defBall = ballsData.find(def => def.id === savedBall.id);
-                                if(defBall) {
-                                    match.desc = defBall.desc;
-                                    match.hp = defBall.hp;
-                                    match.damage = defBall.damage;
-                                }
                             }
                         });
                     }
@@ -3325,12 +3211,6 @@
                 return;
             }
 
-            const isBadWord = badWords.some(word => val.toLowerCase().includes(word.toLowerCase()));
-            if (isBadWord) {
-                err.innerText = "이름에 들어갈수 없는 이름입니다!";
-                return;
-            }
-
             savedUsername = val;
             firstJoinDateStr = getFormattedDate();
             firstJoinTimestamp = Date.now();
@@ -3339,16 +3219,8 @@
             syncGlobalUsers();
             saveData();
 
-            let me = registeredUsers.find(u => u.name === savedUsername);
-            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
-            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
-
-            if (banTime && banTime > Date.now()) {
-                checkAndApplyBanScreen(banTime, banReason);
-            } else {
-                document.getElementById('name-modal').classList.add('hidden');
-                document.getElementById('lobby-screen').classList.remove('hidden');
-            }
+            document.getElementById('name-modal').classList.add('hidden');
+            document.getElementById('lobby-screen').classList.remove('hidden');
             checkMailRedDot();
         }
 
@@ -3361,14 +3233,12 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        let p1 = { 
-            x: 270, y: 380, radius: 36, color: '#2980b9', vx: 2.0, vy: 2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0 
-        };
-        let p2 = { 
-            x: 270, y: 160, radius: 36, color: '#c0392b', vx: -2.0, vy: -2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0 
-        };
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        let p1 = { x: 270, y: 380, radius: 36, color: '#2980b9', vx: 2.0, vy: 2.0, hp: 200, maxHp: 200, type: 'standard', damage: 0, lastSkillTime: 0, freezeTimer: 0 };
+        let p2 = { x: 270, y: 160, radius: 36, color: '#c0392b', vx: -2.0, vy: -2.0, hp: 200, maxHp: 200, type: 'standard', damage: 0, lastSkillTime: 0, freezeTimer: 0 };
 
         function updateCoinsUI() {
             document.getElementById('coin-count').innerText = userCoins;
@@ -3426,7 +3296,7 @@
                 saveData();
                 alert(`${ball.name} 구매 완료!`);
             } else {
-                alert(`코인이 부족합니다! (필요 코인: ${ball.price}개)`);
+                alert(`코인이 부족합니다!`);
             }
         }
 
@@ -3441,18 +3311,6 @@
         }
 
         function checkUserHasName() {
-            let me = registeredUsers.find(u => u.name === savedUsername);
-            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
-            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
-
-            if (banTime && banTime > Date.now()) {
-                checkAndApplyBanScreen(banTime, banReason);
-                return false;
-            }
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) {
-                alert("현재 서버 점검 중이므로 게임을 플레이할 수 없습니다.");
-                return false;
-            }
             if (!savedUsername || savedUsername.trim() === "" || savedUsername.startsWith("유저_")) {
                 document.getElementById('name-modal').classList.remove('hidden');
                 return false;
@@ -3504,11 +3362,8 @@
             const nameLabel = document.getElementById(`free-name-${currentFreeSide}`);
             const changeBtn = document.getElementById(`free-change-btn-${currentFreeSide}`);
 
-            if (currentFreeSide === 'left') {
-                selectedFreeBallLeft = ballObj;
-            } else {
-                selectedFreeBallRight = ballObj;
-            }
+            if (currentFreeSide === 'left') selectedFreeBallLeft = ballObj;
+            else selectedFreeBallRight = ballObj;
 
             if (ballImageMap[ballObj.id]) {
                 slot.innerHTML = `<img src="${ballImageMap[ballObj.id]}" class="free-ball-img-profile" alt="${ballObj.name}">`;
@@ -3519,7 +3374,6 @@
 
             changeBtn.classList.remove('hidden');
             nameLabel.innerText = ballObj.name;
-
             closeFreeBallPicker();
         }
 
@@ -3558,104 +3412,55 @@
             let code = Math.floor(1000 + Math.random() * 9000).toString();
             document.getElementById('group-room-display').innerText = "그룹 코드: " + code;
             document.getElementById('group-room-display').classList.remove('hidden');
-            document.getElementById('group-error').style.color = "#27ae60";
-            document.getElementById('group-error').innerText = "그룹 대기실이 생성되었습니다! 친구를 초대하세요.";
         }
 
         function joinGroupRoom() {
             let code = document.getElementById('group-code-input').value.trim();
-            if (code.length !== 4 || isNaN(code)) {
-                document.getElementById('group-error').style.color = "#ff4757";
-                document.getElementById('group-error').innerText = "올바른 4자리 코드를 입력해주세요!";
-                return;
-            }
-            document.getElementById('group-error').style.color = "#27ae60";
-            document.getElementById('group-error').innerText = `[${code}] 그룹에 참가했습니다! 대기 중...`;
+            if (code.length !== 4) return;
+            alert(`[${code}] 그룹 입장!`);
         }
 
         function joinRoomMatch() {
             if (!checkUserHasName()) return;
-
             const code = document.getElementById('room-input').value.trim();
             const err = document.getElementById('friend-error');
-
-            if (createdCode && code === createdCode) {
-                err.innerText = "자신과 싸울수 없습니다";
-                return;
-            }
-
-            if (code.length !== 4 || isNaN(code)) {
-                err.innerText = "방 번호 4자리를 정확히 입력하세요";
-                return;
-            }
-
-            err.innerText = "친구 방에 연결 중입니다...";
+            if (code.length !== 4) return;
 
             if (peer) peer.destroy();
             peer = new Peer();
             
             peer.on('open', () => {
-                const targetPeerId = 'lily-ball-room-' + code;
-                conn = peer.connect(targetPeerId);
+                conn = peer.connect('lily-ball-room-' + code);
                 isHost = false;
-
                 conn.on('open', () => {
-                    err.innerText = "";
                     isBossMode = false;
                     nextGameMode = 'friend';
-                    conn.send({
-                        type: 'JOIN_INFO',
-                        name: savedUsername,
-                        ball: getEquippedBall()
-                    });
+                    conn.send({ type: 'JOIN_INFO', name: savedUsername, ball: getEquippedBall() });
                     showCharacterSelect();
                 });
-
                 conn.on('data', handleNetworkData);
-                conn.on('error', (e) => {
-                    err.innerText = "방을 찾을 수 없습니다! 방 번호를 확인하세요.";
-                });
-            });
-
-            peer.on('error', (e) => {
-                err.innerText = "네트워크 연결 실패. 다시 시도해주세요.";
             });
         }
 
         function createRoom() {
             if (!checkUserHasName()) return;
-
-            const err = document.getElementById('friend-error');
             createdCode = Math.floor(1000 + Math.random() * 9000).toString();
-            
             const box = document.getElementById('room-display');
             box.innerText = "방 번호: " + createdCode;
             box.classList.remove('hidden');
-
-            document.getElementById('join-container').classList.add('hidden');
-            err.style.color = "#27ae60";
-            err.innerText = "친구의 접속을 기다리는 중입니다...";
 
             if (peer) peer.destroy();
             peer = new Peer('lily-ball-room-' + createdCode);
             isHost = true;
 
-            peer.on('open', (id) => {});
-
             peer.on('connection', (c) => {
                 conn = c;
                 conn.on('open', () => {
-                    err.innerText = "친구가 접속했습니다!";
                     isBossMode = false;
                     nextGameMode = 'friend';
                     showCharacterSelect();
                 });
                 conn.on('data', handleNetworkData);
-            });
-
-            peer.on('error', (e) => {
-                err.style.color = "#ff4757";
-                err.innerText = "방 생성 오류. 다시 '방 생성하기'를 눌러주세요.";
             });
         }
 
@@ -3677,8 +3482,6 @@
         }
 
         function showCharacterSelect() {
-            if (!checkUserHasName()) return;
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('friend-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.add('hidden');
@@ -3706,8 +3509,6 @@
         }
 
         function confirmCharacterSelection() {
-            if (!checkUserHasName()) return;
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('char-select-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
@@ -3720,19 +3521,14 @@
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
-                if (nextGameMode === 'ai') {
-                    document.getElementById('p2-label').innerText = "AI 봇 (기본 볼) (레드)";
-                } else {
-                    document.getElementById('p2-label').innerText = `${friendName} (기본 볼) (레드)`;
-                }
+                if (nextGameMode === 'ai') document.getElementById('p2-label').innerText = "AI 봇 (레드)";
+                else document.getElementById('p2-label').innerText = `${friendName} (레드)`;
             }
 
             startCountdownAndGame();
         }
 
         function startCountdownAndGame() {
-            if (!checkUserHasName()) return;
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             gameStarted = false;
             gameOverState = null;
             document.getElementById('btn-game-retry').classList.add('hidden');
@@ -3749,37 +3545,17 @@
                     isCountingDown = false;
                     gameStarted = true;
                     p1.lastSkillTime = Date.now();
-                    p1.lastProjTime = Date.now();
                     p2.lastSkillTime = Date.now();
-                    p2.lastProjTime = Date.now();
                 }
             }, 1000);
         }
 
-        function startMoveLeft(e) {
-            e.preventDefault();
-            if (!gameStarted || !isBossMode) return;
-            moveDirection = -1;
-        }
-
-        function startMoveRight(e) {
-            e.preventDefault();
-            if (!gameStarted || !isBossMode) return;
-            moveDirection = 1;
-        }
-
-        function stopMove() {
-            moveDirection = 0;
-        }
-
-        function startDefense(e) {
-            if (e) e.preventDefault();
-            triggerDefense();
-        }
+        function startMoveLeft(e) { e.preventDefault(); if (gameStarted && isBossMode) moveDirection = -1; }
+        function startMoveRight(e) { e.preventDefault(); if (gameStarted && isBossMode) moveDirection = 1; }
+        function stopMove() { moveDirection = 0; }
+        function startDefense(e) { if (e) e.preventDefault(); triggerDefense(); }
 
         function retryGame() {
-            if (!checkUserHasName()) return;
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (nextGameMode === 'friend' && conn && conn.open) {
                 conn.send({ type: 'RETRY_GAME' });
             }
@@ -3787,22 +3563,17 @@
         }
 
         function showFriendMenu() {
-            if (!checkUserHasName()) return;
-            resetRoom();
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('friend-screen').classList.remove('hidden');
         }
 
         function showMyBallShop() {
-            if (!checkUserHasName()) return;
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             renderShop();
             document.getElementById('myball-screen').classList.remove('hidden');
         }
 
         function showMailbox() {
-            if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             renderMailbox();
             document.getElementById('mailbox-screen').classList.remove('hidden');
@@ -3811,17 +3582,11 @@
         function showLobby() {
             if (timerInterval) clearInterval(timerInterval);
             if (countdownInterval) clearInterval(countdownInterval);
-
             gameStarted = false;
             isCountingDown = false;
-            gameOverState = null;
 
-            if (peer) {
-                peer.destroy();
-                peer = null;
-            }
+            if (peer) { peer.destroy(); peer = null; }
             conn = null;
-            createdCode = null;
 
             resetGameState();
             updateCoinsUI();
@@ -3839,21 +3604,7 @@
             document.getElementById('ranking-screen').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('free-play-screen').classList.add('hidden');
-            
-            let me = registeredUsers.find(u => u.name === savedUsername);
-            let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
-            let banReason = (me && me.banReason) ? me.banReason : localBanReason;
-
-            if (banTime && banTime > Date.now()) {
-                checkAndApplyBanScreen(banTime, banReason);
-                return;
-            }
-
-            if (!isServerUnderMaintenance || isAdminLoggedIn || isBypassedByPassword) {
-                document.getElementById('lobby-screen').classList.remove('hidden');
-            } else {
-                applyMaintenanceUI();
-            }
+            document.getElementById('lobby-screen').classList.remove('hidden');
         }
 
         function resetRoom() {
@@ -3862,14 +3613,9 @@
             document.getElementById('room-display').classList.add('hidden');
             document.getElementById('join-container').classList.remove('hidden');
             document.getElementById('room-input').value = "";
-            const err = document.getElementById('friend-error');
-            err.style.color = "#ff4757";
-            err.innerText = "";
         }
 
-        function joinRoom() {
-            joinRoomMatch();
-        }
+        function joinRoom() { joinRoomMatch(); }
 
         function getRandomVelocity() {
             let angle = Math.random() * Math.PI * 2;
@@ -3883,7 +3629,6 @@
 
         function resetGameState() {
             let equipped = getEquippedBall();
-
             if (nextGameMode === 'free') {
                 if (selectedFreeBallLeft) {
                     p1.type = selectedFreeBallLeft.id;
@@ -3905,61 +3650,32 @@
             }
 
             p1.radius = isBossMode ? 20 : 36;
-            p1.x = 270; 
-            p1.y = isBossMode ? 460 : 380; 
-            
+            p1.x = 270; p1.y = isBossMode ? 460 : 380; 
             let v1 = getRandomVelocity();
-            p1.vx = isBossMode ? 0 : v1.vx; 
-            p1.vy = isBossMode ? 0 : v1.vy;
+            p1.vx = isBossMode ? 0 : v1.vx; p1.vy = isBossMode ? 0 : v1.vy;
             p1.lastSkillTime = Date.now();
-            p1.lastProjTime = Date.now();
             p1.freezeTimer = 0;
             moveDirection = 0;
             isDefending = false;
 
             if (isBossMode) {
                 p2.type = 'boss';
-                p2.maxHp = 750;
-                p2.hp = 750;
-                p2.damage = 0;
-                p2.x = 270; p2.y = 75;
-                p2.vx = 0; p2.vy = 0;
-                p2.radius = 45;
-                bossTimerFrames = 0;
-                bossPhase = 1;
-                bossMessageState = "";
-                bossMessageTimer = 0;
-                roundTwoActive = false;
-                defenseCount = 4;
-                defenseCooldown = 0;
-            } else if (nextGameMode !== 'free') {
-                p2.type = 'standard';
-                p2.maxHp = 200;
-                p2.hp = 200;
-                p2.damage = 0;
-                p2.x = 270; 
-                p2.y = 160; 
-                p2.radius = 36;
-                let v2 = getRandomVelocity();
-                p2.vx = v2.vx; p2.vy = v2.vy;
+                p2.maxHp = 750; p2.hp = 750;
+                p2.x = 270; p2.y = 75; p2.vx = 0; p2.vy = 0; p2.radius = 45;
+                bossTimerFrames = 0; bossPhase = 1; bossMessageState = ""; roundTwoActive = false; defenseCount = 4;
             } else {
-                p2.x = 270; 
-                p2.y = 160; 
-                p2.radius = 36;
+                p2.type = 'standard';
+                p2.maxHp = 200; p2.hp = 200;
+                p2.x = 270; p2.y = 160;
                 let v2 = getRandomVelocity();
                 p2.vx = v2.vx; p2.vy = v2.vy;
             }
-            
             p2.lastSkillTime = Date.now();
-            p2.lastProjTime = Date.now();
             p2.freezeTimer = 0;
-            projectiles = [];
-            iceFallBlocks = [];
-            fireFallBlocks = [];
-            bossObstacles = [];
-            bossWideBlocks = [];
             specialAttackEntities = [];
-            
+            fireFallBlocks = [];
+            iceFallBlocks = [];
+            bossObstacles = [];
             speedMultiplier = 1;
             updateHpBars();
         }
@@ -3967,15 +3683,10 @@
         function checkGameOver() {
             if (p1.hp <= 0 || p2.hp <= 0) {
                 gameStarted = false;
-
                 if (p1.hp > 0 && p2.hp <= 0) {
                     gameOverState = 'win';
-                    if (isBossMode) {
-                        userCoins += 1000; 
-                    } else if (nextGameMode !== 'free') {
-                        userCoins += 1;
-                        userTrophies += 1;
-                    }
+                    if (isBossMode) userCoins += 1000;
+                    else if (nextGameMode !== 'free') { userCoins += 1; userTrophies += 1; }
                     updateCoinsUI();
                     saveData();
                 } else if (p1.hp <= 0 && p2.hp > 0) {
@@ -3987,59 +3698,18 @@
             }
         }
 
-        function triggerBallLogic(attacker, target, isPlayer1) {
+        function triggerBallLogic(attacker, target) {
             let now = Date.now();
             let pType = attacker.type;
-
-            let skillInterval = 8000;
-            if (pType === 'fire') skillInterval = 6000;
-            else if (pType === 'ice') skillInterval = 8000;
-            else if (pType === 'pokemon') skillInterval = 9000;
-            else if (pType === 'dongryong') skillInterval = 7000;
-            else if (pType === 'mrbeast') skillInterval = 7000;
-            else if (pType === 'sangsampany') skillInterval = 8000;
+            let skillInterval = pType === 'mrbeast' ? 7000 : 8000;
 
             if (now - attacker.lastSkillTime > skillInterval) {
                 attacker.lastSkillTime = now;
 
-                if (pType === 'fire') {
-                    let fireRadius = canvas.width / 6; 
-                    fireFallBlocks.push({ x: canvas.width * (1/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
-                    fireFallBlocks.push({ x: canvas.width * (3/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
-                    fireFallBlocks.push({ x: canvas.width * (5/6), y: -80, radius: fireRadius, speed: 3.5, damage: 25, targetPlayer: target });
-                } 
-                else if (pType === 'ice') {
-                    let iceRadius = canvas.width / 8;
-                    for (let k = 1; k <= 7; k += 2) {
-                        iceFallBlocks.push({ x: canvas.width * (k/8), y: -60, radius: iceRadius, speed: 3.5, damage: 18, freeze: true, targetPlayer: target });
-                    }
-                } 
-                else if (pType === 'pokemon') {
-                    for (let i = 0; i < 35; i++) {
-                        specialAttackEntities.push({
-                            type: 'pokeball_storm',
-                            x: Math.random() * canvas.width,
-                            y: -10 - Math.random() * 500,
-                            speed: (4.5 + Math.random() * 4) * speedMultiplier,
-                            radius: 12,
-                            damage: 2,
-                            targetPlayer: target
-                        });
-                    }
-                } 
-                else if (pType === 'dongryong') {
-                    specialAttackEntities.push({
-                        type: 'vent_assassinate',
-                        x: target.x, y: target.y - 60,
-                        targetPlayer: target,
-                        damage: 80,
-                        timer: 40
-                    });
-                } 
-                else if (pType === 'mrbeast') {
+                if (pType === 'mrbeast') {
                     if (mrbeastVideo) {
                         mrbeastVideo.currentTime = 0;
-                        mrbeastVideo.play();
+                        mrbeastVideo.play().catch(e => console.log("비디오 재생 오류 방지:", e));
                     }
                     specialAttackEntities.push({
                         type: 'mrbeast_slam',
@@ -4048,629 +3718,93 @@
                         damage: 95
                     });
                 }
-                else if (pType === 'sangsampany') {
-                    specialAttackEntities.push({
-                        type: 'sangsampany_combo',
-                        targetPlayer: target,
-                        timer: 120
-                    });
-                    
-                    projectiles.push({
-                        type: 'sangsampany_homing',
-                        x: attacker.x,
-                        y: attacker.y,
-                        radius: 18,
-                        speed: 3.0,
-                        damage: 111,
-                        target: target
-                    });
-                }
             }
         }
 
         function update() {
-            if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (!gameStarted) return;
             if (nextGameMode === 'friend' && !isHost) return;
 
             if (defenseAlertTimer > 0) defenseAlertTimer--;
 
             if (!isBossMode) {
-                triggerBallLogic(p1, p2, true);
-                if (nextGameMode === 'free') {
-                    triggerBallLogic(p2, p1, false);
-                }
+                triggerBallLogic(p1, p2);
+                if (nextGameMode === 'free') triggerBallLogic(p2, p1);
 
-                if (p1.freezeTimer > 0) {
-                    p1.freezeTimer -= speedMultiplier;
-                } else {
-                    p1.x += p1.vx * speedMultiplier; 
-                    p1.y += p1.vy * speedMultiplier;
-                    if (p1.x - p1.radius < 0) { p1.x = p1.radius + 2; p1.vx *= -1; }
-                    if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius - 2; p1.vx *= -1; }
-                    if (p1.y - p1.radius < 0) { p1.y = p1.radius + 2; p1.vy *= -1; }
-                    if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; }
-                }
+                p1.x += p1.vx * speedMultiplier; 
+                p1.y += p1.vy * speedMultiplier;
+                if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) p1.vx *= -1;
+                if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) p1.vy *= -1;
 
-                if (p2.freezeTimer > 0) {
-                    p2.freezeTimer -= speedMultiplier;
-                } else {
-                    p2.x += p2.vx * speedMultiplier; 
-                    p2.y += p2.vy * speedMultiplier;
-                    if (p2.x - p2.radius < 0) { p2.x = p2.radius + 2; p2.vx *= -1; }
-                    if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; }
-                    if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; }
-                    if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; }
-                }
+                p2.x += p2.vx * speedMultiplier; 
+                p2.y += p2.vy * speedMultiplier;
+                if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) p2.vx *= -1;
+                if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) p2.vy *= -1;
 
                 for (let i = specialAttackEntities.length - 1; i >= 0; i--) {
                     let se = specialAttackEntities[i];
-                    if (se.type === 'pokeball_storm') {
-                        se.y += se.speed;
-                        let dx = se.x - se.targetPlayer.x;
-                        let dy = se.y - se.targetPlayer.y;
-                        if (Math.sqrt(dx*dx + dy*dy) < se.radius + se.targetPlayer.radius) {
-                            se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - se.damage);
-                            specialAttackEntities.splice(i, 1);
-                            updateHpBars();
-                            checkGameOver();
-                            continue;
-                        }
-                        if (se.y > canvas.height + 20) specialAttackEntities.splice(i, 1);
-                    } 
-                    else if (se.type === 'vent_assassinate' || se.type === 'sangsampany_combo' || se.type === 'mrbeast_slam') {
+                    if (se.type === 'mrbeast_slam') {
                         se.timer -= speedMultiplier;
                         if (se.timer <= 0) {
-                            let hitDmg = se.damage || 0;
-                            if (se.type === 'sangsampany_combo') {
-                                hitDmg = 100;
-                            }
-                            se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - hitDmg);
-                            specialAttackEntities.splice(i, 1);
+                            se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - se.damage);
+                            specialAttackEntities.splice(i, 1); // 💡 수정 완료 (i 인덱스로 정상 삭제)
                             updateHpBars();
                             checkGameOver();
                         }
                     }
-                }
-
-                for (let i = fireFallBlocks.length - 1; i >= 0; i--) {
-                    let fb = fireFallBlocks[i];
-                    fb.y += fb.speed * speedMultiplier;
-                    let dx = fb.x - fb.targetPlayer.x;
-                    let dy = fb.y - fb.targetPlayer.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < fb.radius + fb.targetPlayer.radius) {
-                        fb.targetPlayer.hp = Math.max(0, fb.targetPlayer.hp - fb.damage);
-                        fireFallBlocks.splice(i, 1);
-                        updateHpBars();
-                        checkGameOver();
-                        continue;
-                    }
-                    if (fb.y > canvas.height + 120) fireFallBlocks.splice(i, 1);
-                }
-
-                for (let i = iceFallBlocks.length - 1; i >= 0; i--) {
-                    let ib = iceFallBlocks[i];
-                    ib.y += ib.speed * speedMultiplier;
-                    let dx = ib.x - ib.targetPlayer.x;
-                    let dy = ib.y - ib.targetPlayer.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < ib.radius + ib.targetPlayer.radius) {
-                        ib.targetPlayer.hp = Math.max(0, ib.targetPlayer.hp - ib.damage);
-                        if (ib.freeze) ib.targetPlayer.freezeTimer = 60;
-                        iceFallBlocks.splice(i, 1);
-                        updateHpBars();
-                        checkGameOver();
-                        continue;
-                    }
-                    if (ib.y > canvas.height + 120) iceFallBlocks.splice(i, 1);
-                }
-
-                for (let i = projectiles.length - 1; i >= 0; i--) {
-                    let pr = projectiles[i];
-                    if (pr.type === 'sangsampany_homing') {
-                        let angle = Math.atan2(pr.target.y - pr.y, pr.target.x - pr.x);
-                        pr.x += Math.cos(angle) * pr.speed * speedMultiplier;
-                        pr.y += Math.sin(angle) * pr.speed * speedMultiplier;
-
-                        let dx = pr.x - pr.target.x;
-                        let dy = pr.y - pr.target.y;
-                        if (Math.sqrt(dx*dx + dy*dy) < pr.radius + pr.target.radius) {
-                            pr.target.hp = Math.max(0, pr.target.hp - pr.damage);
-                            projectiles.splice(i, 1);
-                            updateHpBars();
-                            checkGameOver();
-                            continue;
-                        }
-                    }
-                }
-
-            } else {
-                if (moveDirection !== 0) {
-                    p1.x = Math.max(p1.radius, Math.min(canvas.width - p1.radius, p1.x + moveDirection * 6 * speedMultiplier));
-                }
-                bossTimerFrames += speedMultiplier;
-
-                if (bossPhase === 1) {
-                    if (Math.floor(bossTimerFrames) % 5 < speedMultiplier) {
-                        bossObstacles.push({
-                            x: 15 + Math.random() * (canvas.width - 30),
-                            y: -15,
-                            radius: 12, 
-                            speed: (5.0 + Math.random() * 3.5) * speedMultiplier,
-                            damage: 35 
-                        });
-                    }
-                    if (bossTimerFrames >= 420) {
-                        bossPhase = 2;
-                        bossMessageState = "좀 하네 ㅋ";
-                        bossMessageTimer = 240; 
-                        bossObstacles = [];
-                    }
-                }
-                else if (bossPhase === 2) {
-                    bossMessageTimer -= speedMultiplier;
-                    if (bossMessageTimer <= 0) {
-                        if (bossMessageState === "좀 하네 ㅋ") {
-                            bossMessageState = "다시 시작할게";
-                            bossMessageTimer = 180; 
-                        } else if (bossMessageState === "다시 시작할게") {
-                            bossMessageState = "wait";
-                            bossMessageTimer = 180; 
-                        } else if (bossMessageState === "wait") {
-                            bossPhase = 3;
-                            roundTwoActive = true;
-                            bossTimerFrames = 0;
-                            bossMessageState = "";
-                        }
-                    }
-                }
-                else if (bossPhase === 3) {
-                    let r2Time = bossTimerFrames;
-                    if (Math.floor(r2Time) === 180) {
-                        bossWideBlocks.push({
-                            x: 0, y: -40, width: canvas.width, height: 40,
-                            speed: 3 * speedMultiplier, damage: 35, hitProcessed: false, type: 'down'
-                        });
-                    }
-                    if (Math.floor(r2Time) === 360) {
-                        bossMessageState = "지금";
-                        bossMessageTimer = 120;
-                        bossWideBlocks.push({
-                            x: 0, y: canvas.height + 40, width: canvas.width, height: 40,
-                            speed: -3 * speedMultiplier, damage: 35, hitProcessed: false, type: 'up'
-                        });
-                    }
-                    if (Math.floor(r2Time) === 660) {
-                        bossWideBlocks.push({
-                            x: 0, y: -40, width: canvas.width, height: 40,
-                            speed: 1.5 * speedMultiplier, damage: 35, hitProcessed: false, type: 'down_slow'
-                        });
-                    }
-                    if (Math.floor(r2Time) === 900) {
-                        bossWideBlocks.push({
-                            x: 0, y: canvas.height + 40, width: canvas.width, height: 40,
-                            speed: -3 * speedMultiplier, damage: 35, hitProcessed: false, type: 'up'
-                        });
-                    }
-                    if (Math.floor(r2Time) === 1320) {
-                        bossWideBlocks.push({
-                            x: -40, y: 0, width: 40, height: canvas.height,
-                            speed: 2 * speedMultiplier, damage: 35, hitProcessed: false, type: 'right_slow'
-                        });
-                        bossWideBlocks.push({
-                            x: canvas.width, y: 0, width: 40, height: canvas.height,
-                            speed: -2 * speedMultiplier, damage: 35, hitProcessed: false, type: 'left_slow'
-                        });
-                    }
-                }
-            }
-
-            for (let i = bossObstacles.length - 1; i >= 0; i--) {
-                let bo = bossObstacles[i];
-                bo.y += bo.speed;
-                let dx = bo.x - p1.x;
-                let dy = bo.y - p1.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < bo.radius + p1.radius) {
-                    if (!isDefending) {
-                        p1.hp = Math.max(0, p1.hp - bo.damage);
-                        updateHpBars();
-                        checkGameOver();
-                    }
-                    bossObstacles.splice(i, 1);
-                    continue;
-                }
-                if (bo.y > canvas.height + 30) bossObstacles.splice(i, 1);
-            }
-
-            for (let i = bossWideBlocks.length - 1; i >= 0; i--) {
-                let wb = bossWideBlocks[i];
-                if (wb.type === 'right_slow' || wb.type === 'left_slow') {
-                    wb.x += wb.speed;
-                } else {
-                    wb.y += wb.speed;
-                }
-                
-                if (!wb.hitProcessed &&
-                    p1.x + p1.radius > wb.x && p1.x - p1.radius < wb.x + wb.width &&
-                    p1.y + p1.radius > wb.y && p1.y - p1.radius < wb.y + wb.height) {
-                    
-                    wb.hitProcessed = true;
-                    if (!isDefending) {
-                        p1.hp = Math.max(0, p1.hp - wb.damage);
-                        updateHpBars();
-                        checkGameOver();
-                    }
-                }
-
-                if (wb.y > canvas.height + 100 || wb.y < -100 || wb.x > canvas.width + 100 || wb.x < -100) {
-                    bossWideBlocks.splice(i, 1);
-                }
-            }
-
-            if (!isBossMode) {
-                let dx = p2.x - p1.x;
-                let dy = p2.y - p1.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < p1.radius + p2.radius) {
-                    let tempVx = p1.vx; let tempVy = p1.vy;
-                    p1.vx = p2.vx; p1.vy = p2.vy;
-                    p2.vx = tempVx; p2.vy = tempVy;
-
-                    let overlap = (p1.radius + p2.radius) - dist + 1;
-                    let nx = dx / (dist || 1);
-                    let ny = dy / (dist || 1);
-                    p1.x -= nx * overlap / 2;
-                    p1.y -= ny * overlap / 2;
-                    p2.x += nx * overlap / 2;
-                    p2.y += ny * overlap / 2;
-
-                    p1.hp = Math.max(0, p1.hp - 10);
-                    p2.hp = Math.max(0, p2.hp - 10);
-
-                    updateHpBars();
-                    checkGameOver();
                 }
             }
         }
 
         function updateHpBars() {
-            const p1HpEl = document.getElementById('p1-hp');
-            const p1TextEl = document.getElementById('p1-hp-text');
-            const p2HpEl = document.getElementById('p2-hp');
-            const p2TextEl = document.getElementById('p2-hp-text');
-
-            if (p1HpEl) p1HpEl.style.width = Math.max(0, (p1.hp / p1.maxHp * 100)) + '%';
-            if (p1TextEl) p1TextEl.innerText = Math.max(0, Math.ceil(p1.hp)) + " / " + p1.maxHp;
-
-            if (p2HpEl) p2HpEl.style.width = Math.max(0, (p2.hp / p2.maxHp * 100)) + '%';
-            if (p2TextEl) p2TextEl.innerText = Math.max(0, Math.ceil(p2.hp)) + " / " + p2.maxHp;
+            document.getElementById('p1-hp').style.width = Math.max(0, (p1.hp / p1.maxHp * 100)) + '%';
+            document.getElementById('p1-hp-text').innerText = Math.max(0, Math.ceil(p1.hp)) + " / " + p1.maxHp;
+            document.getElementById('p2-hp').style.width = Math.max(0, (p2.hp / p2.maxHp * 100)) + '%';
+            document.getElementById('p2-hp-text').innerText = Math.max(0, Math.ceil(p2.hp)) + " / " + p2.maxHp;
         }
 
         function drawPlayer(p, isPlayer1) {
-            if (p.type === 'boss') {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#000000';
-                ctx.fill();
-                ctx.strokeStyle = '#e74c3c';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-                ctx.closePath();
-
-                ctx.font = "900 36px sans-serif";
-                ctx.fillStyle = "#ffffff";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText("L", p.x, p.y);
-
-                if (bossMessageState && bossMessageState !== "wait") {
-                    ctx.save();
-                    ctx.font = "bold 16px sans-serif";
-                    ctx.fillStyle = "#3498db";
-                    ctx.textAlign = "left";
-                    ctx.fillText(bossMessageState, p.x + p.radius + 10, p.y);
-                    ctx.restore();
-                }
-                return;
-            }
-
             ctx.save();
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.clip(); 
-
+            ctx.clip();
             if (p.type === 'mrbeast' && characterImg.complete && characterImg.naturalWidth !== 0) {
                 ctx.drawImage(characterImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            } 
-            else if (p.type === 'sangsampany' && sangsampanyImg.complete && sangsampanyImg.naturalWidth !== 0) {
-                ctx.drawImage(sangsampanyImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            } 
-            else if (p.type === 'dongryong' && dongryongImg.complete && dongryongImg.naturalWidth !== 0) {
-                ctx.drawImage(dongryongImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            } 
-            else if (p.type === 'pokemon' && pokemonImg.complete && pokemonImg.naturalWidth !== 0) {
-                ctx.drawImage(pokemonImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            }
-            else if (p.type === 'ice' && iceballImg.complete && iceballImg.naturalWidth !== 0) {
-                ctx.drawImage(iceballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            }
-            else if (p.type === 'fire' && fireballImg.complete && fireballImg.naturalWidth !== 0) {
-                ctx.drawImage(fireballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
-            }
-            else {
+            } else {
                 ctx.fillStyle = p.color;
                 ctx.fill();
             }
             ctx.restore();
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = isPlayer1 ? "#3498db" : "#ff0000";
-            ctx.stroke();
-            ctx.closePath();
-
-            if (isPlayer1 && isDefending && isBossMode) {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius + 12, 0, Math.PI * 2);
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "#f1c40f";
-                ctx.fillStyle = "rgba(241, 196, 15, 0.3)";
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath();
-            }
-
-            if (isPlayer1 && !isDefending && !isBossMode) {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius + 3, 0, Math.PI * 2);
-                ctx.lineWidth = 3.5;
-                ctx.strokeStyle = "#2ecc71";
-                ctx.stroke();
-                ctx.closePath();
-
-                let skillInterval = 8000;
-                if (p.type === 'fire') skillInterval = 6000;
-                else if (p.type === 'pokemon') skillInterval = 9000;
-                else if (p.type === 'mrbeast') skillInterval = 7000;
-                else if (p.type === 'sangsampany') skillInterval = 8000;
-                else if (p.type === 'dongryong') skillInterval = 7000;
-
-                let timePassed = gameStarted ? (Date.now() - p.lastSkillTime) : 0;
-                let progress = Math.min(1, timePassed / skillInterval);
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius + 7, 0, Math.PI * 2 * progress);
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "#f1c40f";
-                ctx.stroke();
-                ctx.closePath();
-            }
-        }
-
-        function drawHalloweenBackground() {
-            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#0f051d');
-            grad.addColorStop(0.5, '#2b0a3d');
-            grad.addColorStop(1, '#11051b');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.save();
-            ctx.strokeStyle = "rgba(255, 117, 24, 0.15)";
-            ctx.lineWidth = 1;
-            for(let x=0; x<canvas.width; x+=45) {
-                ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x, canvas.height); ctx.stroke();
-            }
-            for(let y=0; y<canvas.height; y+=45) {
-                ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width, y); ctx.stroke();
-            }
-            ctx.restore();
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(450, 80, 40, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffec99';
-            ctx.shadowColor = '#ffaa00';
-            ctx.shadowBlur = 20;
-            ctx.fill();
-            ctx.restore();
-
-            halloweenProps.forEach(prop => {
-                prop.y += prop.speed;
-                if (prop.y > canvas.height + 30) {
-                    prop.y = -30;
-                    prop.x = Math.random() * canvas.width;
-                }
-                let floatX = prop.x + Math.sin(Date.now() * 0.002 + prop.floatOffset) * 15;
-
-                ctx.save();
-                ctx.font = `${prop.size}px sans-serif`;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-
-                if (prop.type === 'pumpkin') {
-                    ctx.fillText('🎃', floatX, prop.y);
-                } else if (prop.type === 'ghost') {
-                    ctx.fillText('👻', floatX, prop.y);
-                } else if (prop.type === 'bat') {
-                    ctx.fillText('🦇', floatX, prop.y);
-                } else {
-                    ctx.fillStyle = "#ffffff";
-                    ctx.fillText('✨', floatX, prop.y);
-                }
-                ctx.restore();
-            });
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            drawHalloweenBackground();
-
-            if (isBossMode && roundTwoActive) {
-                ctx.save();
-                ctx.font = "bold 22px sans-serif";
-                ctx.fillStyle = "#f1c40f";
-                ctx.textAlign = "center";
-                ctx.fillText("라운드 2", canvas.width / 2, 35);
-
-                ctx.font = "bold 13px sans-serif";
-                ctx.fillStyle = "#ffffff";
-                ctx.fillText(`방어는 4번만 할 수 있습니다 (남은 횟수: ${defenseCount}회)`, canvas.width / 2, 60);
-                ctx.restore();
-            }
-
-            if (defenseAlertTimer > 0 && defenseAlertText) {
-                ctx.save();
-                ctx.font = "bold 16px sans-serif";
-                ctx.fillStyle = "#ff4757";
-                ctx.textAlign = "center";
-                ctx.fillText(defenseAlertText, canvas.width / 2, canvas.height - 70);
-                ctx.restore();
-            }
+            ctx.fillStyle = '#11051b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             drawPlayer(p1, true);
             drawPlayer(p2, false);
 
             specialAttackEntities.forEach(se => {
-                if (se.type === 'vent_assassinate') {
+                if (se.type === 'mrbeast_slam') {
                     ctx.save();
-                    ctx.font = "bold 18px sans-serif";
-                    ctx.fillStyle = "#ff4757";
-                    ctx.textAlign = "center";
-                    ctx.fillText("🔪 어몽어스 임포스터 습격! (80뎀)", se.targetPlayer.x, se.targetPlayer.y - se.targetPlayer.radius - 12);
-                    ctx.restore();
-                } else if (se.type === 'sangsampany_combo') {
-                    ctx.save();
-                    ctx.font = "bold 18px sans-serif";
-                    ctx.fillStyle = "#3498db";
-                    ctx.textAlign = "center";
-                    ctx.fillText("🧽 행주로 쓱싹 쓱싹! (100뎀)", se.targetPlayer.x, se.targetPlayer.y - se.targetPlayer.radius - 12);
-                    ctx.restore();
-                } else if (se.type === 'mrbeast_slam') {
-                    ctx.save();
-                    let vW = 200;
-                    let vH = 200;
+                    let vW = 260;
+                    let vH = 260;
                     let vX = (canvas.width - vW) / 2;
-                    let vY = 30;
+                    let vY = (canvas.height - vH) / 2;
 
                     if (mrbeastVideo) {
                         ctx.drawImage(mrbeastVideo, vX, vY, vW, vH);
                     }
 
-                    ctx.font = "bold 20px sans-serif";
+                    ctx.font = "bold 18px sans-serif";
                     ctx.fillStyle = "#f1c40f";
                     ctx.textAlign = "center";
-                    ctx.fillText("🕺 미스터 비스트 댄스 파티! (95뎀)", canvas.width / 2, vY + vH + 25);
+                    ctx.fillText("🔥 미스터 비스트 기술 발동! (-95HP) 🔥", canvas.width / 2, vY + vH + 25);
                     ctx.restore();
                 }
             });
-
-            fireFallBlocks.forEach(fb => {
-                ctx.beginPath();
-                ctx.arc(fb.x, fb.y, fb.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#e67e22';
-                ctx.fill();
-                ctx.strokeStyle = '#c0392b';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-                ctx.closePath();
-            });
-
-            iceFallBlocks.forEach(ib => {
-                ctx.beginPath();
-                ctx.arc(ib.x, ib.y, ib.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#3498db';
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-                ctx.closePath();
-            });
-
-            projectiles.forEach(pr => {
-                ctx.beginPath();
-                ctx.arc(pr.x, pr.y, pr.radius, 0, Math.PI * 2);
-                if (pr.type === 'sangsampany_homing') ctx.fillStyle = '#e74c3c';
-                ctx.fill();
-                ctx.closePath();
-            });
-
-            bossObstacles.forEach(bo => {
-                ctx.beginPath();
-                ctx.arc(bo.x, bo.y, bo.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#e74c3c';
-                ctx.fill();
-                ctx.strokeStyle = '#2c3e50';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-                ctx.closePath();
-
-                ctx.font = "12px sans-serif";
-                ctx.fillStyle = "#ffffff";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText("💀", bo.x, bo.y);
-            });
-
-            bossWideBlocks.forEach(wb => {
-                ctx.save();
-                ctx.fillStyle = "rgba(231, 76, 60, 0.85)";
-                ctx.fillRect(wb.x, wb.y, wb.width, wb.height);
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 3;
-                ctx.strokeRect(wb.x, wb.y, wb.width, wb.height);
-                ctx.restore();
-            });
-
-            if (isCountingDown) {
-                ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.font = "900 90px sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.strokeStyle = "#000000";
-                ctx.lineWidth = 8;
-                ctx.strokeText(countdownValue, canvas.width / 2, canvas.height / 2);
-                ctx.fillStyle = "#f1c40f";
-                ctx.fillText(countdownValue, canvas.width / 2, canvas.height / 2);
-                ctx.restore();
-            }
-
-            if (gameOverState) {
-                ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.font = "900 52px sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-
-                let resultText = "";
-                let textColor = "";
-
-                if (gameOverState === 'win') {
-                    resultText = isBossMode ? "🎉 보스 처치! (+1000C)" : "승리!!!";
-                    textColor = "#2ecc71";
-                } else if (gameOverState === 'lose') {
-                    resultText = "패배";
-                    textColor = "#ff4757";
-                } else {
-                    resultText = "무승부 ㅠ";
-                    textColor = "#f1c40f";
-                }
-
-                ctx.strokeStyle = "#000000";
-                ctx.lineWidth = 6;
-                ctx.strokeText(resultText, canvas.width / 2, canvas.height / 2);
-                ctx.fillStyle = textColor;
-                ctx.fillText(resultText, canvas.width / 2, canvas.height / 2);
-                ctx.restore();
-            }
         }
 
         function loop() {
@@ -4683,4 +3817,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+    </html>
