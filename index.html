@@ -1678,7 +1678,8 @@
             <button class="btn btn-ai" onclick="startAI()" style="flex: 1; margin-top: 10px;">AI 자동 매칭</button>
             <button class="btn btn-ai" onclick="showFreePlay()" style="flex: 1; margin-top: 10px; background-color: #3498db;">자유 매칭</button>
         </div>
-        <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">😈 보스 피하기</button>
+        <!-- 🎮 미니 게임 버튼으로 변경 완료 -->
+        <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">🎮 미니 게임</button>
         <div style="display: flex; gap: 6px;">
             <button class="btn btn-friend" onclick="showFriendMenu()" style="flex: 2; margin-top: 6px;">친구 플레이</button>
             <button class="btn btn-group" onclick="openGroupMenu()" style="flex: 1; margin-top: 6px;">👥 그룹</button>
@@ -1951,7 +1952,7 @@
 
         let currentRankingType = 'trophy';
 
-        let isBossMode = false;
+        let isBossMode = false; // 내부적으로 미니 게임(기존 보스 로직 유지) 여부
         let bossTimerFrames = 0; 
         let bossObstacles = [];
         let bossWideBlocks = [];
@@ -2314,7 +2315,6 @@
             }
         }
 
-        // 전체 채팅 관련 기능 구현
         function openGlobalChatModal() {
             if (!checkUserHasName()) return;
             document.getElementById('global-chat-modal').classList.remove('hidden');
@@ -2545,7 +2545,7 @@
                 return;
             }
             if (nextGameMode !== 'friend') {
-                alert("🚫 AI 매칭 및 보스전에서는 채팅을 이용할 수 없습니다!\n(친구 플레이 전용 기능)");
+                alert("🚫 AI 매칭 및 미니 게임에서는 채팅을 이용할 수 없습니다!\n(친구 플레이 전용 기능)");
                 return;
             }
             document.getElementById('chat-modal').classList.remove('hidden');
@@ -3716,7 +3716,7 @@
             document.getElementById('p1-label').innerText = `${savedUsername} (${equipped.name}) (블루)`;
 
             if (isBossMode) {
-                document.getElementById('p2-label').innerText = "😈 L 보스 (체력: 750)";
+                document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
@@ -4362,7 +4362,7 @@
                 ctx.fillStyle = "#ffffff";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("L", p.x, p.y);
+                ctx.fillText("M", p.x, p.y); // 미니게임 상징 문자
 
                 if (bossMessageState && bossMessageState !== "wait") {
                     ctx.save();
@@ -4654,7 +4654,7 @@
                 let textColor = "";
 
                 if (gameOverState === 'win') {
-                    resultText = isBossMode ? "🎉 보스 처치! (+1000C)" : "승리!!!";
+                    resultText = isBossMode ? "🎉 미니 게임 클리어! (+1000C)" : "승리!!!";
                     textColor = "#2ecc71";
                 } else if (gameOverState === 'lose') {
                     resultText = "패배";
