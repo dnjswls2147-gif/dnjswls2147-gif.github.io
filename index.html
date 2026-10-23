@@ -1369,7 +1369,6 @@
 </head>
 <body>
 
-    <!-- 💡 내가 폴더에 넣은 mrbeast.mp4 로컬 영상 파일 연결 -->
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
@@ -1440,7 +1439,6 @@
         </div>
     </div>
 
-    <!-- 전체 채팅 모달 -->
     <div class="modal-overlay hidden" id="global-chat-modal">
         <div class="global-chat-box">
             <div class="global-chat-header">
@@ -1464,7 +1462,6 @@
         </div>
     </div>
 
-    <!-- 관리자 채팅모드 비밀번호 모달 -->
     <div class="modal-overlay hidden" id="admin-chat-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1532,7 +1529,7 @@
                         <button class="admin-small-btn" style="background:#27ae60;" onclick="setAdminMaintenance(false)">점검 끄기</button>
                     </div>
                     <div class="admin-section-title" style="margin-top:2px;">점검 사유 입력 (선택)</div>
-                    <input type="text" id="admin-maintenance-reason-input" placeholder="점검 사유를 입력하세요 (안 적으면 미노출)" style="margin-bottom:6px; font-size:10px; padding:5px; background:#2d2a3e; color:#fff; border-color:#4a4463;" oninput="updateMaintenanceReasonLive()">
+                    <input type="text" id="admin-maintenance-reason-input" placeholder="점검 사유를 입력하세요" style="margin-bottom:6px; font-size:10px; padding:5px; background:#2d2a3e; color:#fff; border-color:#4a4463;" oninput="updateMaintenanceReasonLive()">
 
                     <div class="admin-section-title">빠른 조작</div>
                     <div class="admin-btn-row">
@@ -1660,7 +1657,6 @@
             </div>
         </div>
 
-        <!-- 랭킹보드 밑 전체 채팅 버튼 -->
         <button class="global-chat-lobby-btn" onclick="openGlobalChatModal()">
             💬 전체 채팅 (<span id="global-chat-count-display">0명</span> | <span id="global-chat-status-text">온라인</span>)
         </button>
@@ -1678,7 +1674,6 @@
             <button class="btn btn-ai" onclick="startAI()" style="flex: 1; margin-top: 10px;">AI 자동 매칭</button>
             <button class="btn btn-ai" onclick="showFreePlay()" style="flex: 1; margin-top: 10px; background-color: #3498db;">자유 매칭</button>
         </div>
-        <!-- 🎮 미니 게임 버튼으로 변경 완료 -->
         <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">🎮 미니 게임</button>
         <div style="display: flex; gap: 6px;">
             <button class="btn btn-friend" onclick="showFriendMenu()" style="flex: 2; margin-top: 6px;">친구 플레이</button>
@@ -1803,6 +1798,17 @@
         <button class="btn btn-back" onclick="showLobby()">로비로 가기</button>
     </div>
 
+    <!-- 미니 게임 시작 전 (가로 전환 안내 화면) -->
+    <div class="container hidden" id="boss-intro-screen">
+        <h2>🎮 미니 게임</h2>
+        <div class="version-text">v1.4 할로윈 에디션</div>
+        <div class="error" id="boss-intro-error" style="font-size: 16px; color: #ffaa00; margin: 20px 0; font-weight: bold;">
+            핸드폰을 가로로 돌려주세요!
+        </div>
+        <button class="btn btn-ai" onclick="confirmBossIntroStart()" style="font-size: 18px; padding: 16px;">시작 하기</button>
+        <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px; margin-top:10px;">로비로 가기</button>
+    </div>
+
     <div class="container hidden" id="char-select-screen">
         <div class="header-row">
             <h2>⚔️ 출전 준비 ⚔️</h2>
@@ -1924,7 +1930,7 @@
         let activePresenceUsers = {}; 
         let globalMails = {}; 
         let globalChatMessages = {};
-        let globalChatMode = 'all'; // 'all' or 'admin'
+        let globalChatMode = 'all'; 
         let activeNotice = "";
         let isAdminLoggedIn = false;
         let isBypassedByPassword = false;
@@ -1952,7 +1958,7 @@
 
         let currentRankingType = 'trophy';
 
-        let isBossMode = false; // 내부적으로 미니 게임(기존 보스 로직 유지) 여부
+        let isBossMode = false; 
         let bossTimerFrames = 0; 
         let bossObstacles = [];
         let bossWideBlocks = [];
@@ -2280,6 +2286,7 @@
                 document.getElementById('friend-screen').classList.add('hidden');
                 document.getElementById('group-screen').classList.add('hidden');
                 document.getElementById('char-select-screen').classList.add('hidden');
+                document.getElementById('boss-intro-screen').classList.add('hidden');
                 document.getElementById('myball-screen').classList.add('hidden');
                 document.getElementById('mailbox-screen').classList.add('hidden');
                 document.getElementById('ranking-screen').classList.add('hidden');
@@ -2300,6 +2307,7 @@
                         !document.getElementById('friend-screen').classList.contains('hidden') ||
                         !document.getElementById('group-screen').classList.contains('hidden') ||
                         !document.getElementById('char-select-screen').classList.contains('hidden') ||
+                        !document.getElementById('boss-intro-screen').classList.contains('hidden') ||
                         !document.getElementById('myball-screen').classList.contains('hidden') ||
                         !document.getElementById('mailbox-screen').classList.contains('hidden') ||
                         !document.getElementById('ranking-screen').classList.contains('hidden') ||
@@ -2390,7 +2398,7 @@
             if (val === ADMIN_CHAT_PASS) {
                 closeAdminChatPassModal();
                 db.ref('globalChatMode').set('admin').then(() => {
-                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다. (진짜 관리자만 작성 가능)");
+                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다.");
                 });
             } else {
                 err.innerText = "비밀번호가 올바르지 않습니다!";
@@ -2815,7 +2823,7 @@
         }
 
         function triggerAdminForceRename(targetUsername) {
-            if (confirm(`[${targetUsername}] 님에게 이름 변경 창을 띄우시겠습니까?\n(접속 시 트로피와 코인은 그대로 유지되며 새 이름을 설정하게 됩니다.)`)) {
+            if (confirm(`[${targetUsername}] 님에게 이름 변경 창을 띄우시겠습니까?`)) {
                 db.ref('users/' + targetUsername.replace(/[.#$/\[\]]/g, "_")).update({
                     forceRename: true
                 }).then(() => {
@@ -2886,7 +2894,7 @@
                     document.getElementById('forced-name-change-modal').classList.add('hidden');
                     document.getElementById('lobby-screen').classList.remove('hidden');
                     updateCoinsUI();
-                    alert("새로운 이름으로 변경되었습니다! (트로피와 코인 유지 완료)");
+                    alert("새로운 이름으로 변경되었습니다!");
                 });
             });
         }
@@ -2897,10 +2905,7 @@
             let reasonInput = document.getElementById(`ban-reason-${index}`).value.trim();
             
             let totalMs = (hoursInput * 3600 + minsInput * 60) * 1000;
-
-            if (totalMs <= 0) {
-                totalMs = 24 * 3600 * 1000;
-            }
+            if (totalMs <= 0) totalMs = 24 * 3600 * 1000;
 
             let targetUser = registeredUsers[index];
             let banTime = Date.now() + totalMs;
@@ -2955,6 +2960,7 @@
                 document.getElementById('friend-screen').classList.add('hidden');
                 document.getElementById('group-screen').classList.add('hidden');
                 document.getElementById('char-select-screen').classList.add('hidden');
+                document.getElementById('boss-intro-screen').classList.add('hidden');
                 document.getElementById('myball-screen').classList.add('hidden');
                 document.getElementById('mailbox-screen').classList.add('hidden');
                 document.getElementById('ranking-screen').classList.add('hidden');
@@ -3352,15 +3358,6 @@
             checkMailRedDot();
         }
 
-        function openProfileModal() {
-            document.getElementById('profile-modal-title').innerText = "👤 내 프로필";
-            document.getElementById('profile-modal-name').innerText = savedUsername || "미설정";
-            document.getElementById('profile-modal-date').innerText = firstJoinDateStr || getFormattedDate();
-            document.getElementById('profile-modal-coin').innerText = userCoins + "개";
-            document.getElementById('profile-modal-trophy').innerText = userTrophies + "개";
-            document.getElementById('profile-modal').classList.remove('hidden');
-        }
-
         let p1 = { 
             x: 270, y: 380, radius: 36, color: '#2980b9', vx: 2.0, vy: 2.0, hp: 200, maxHp: 200,
             type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0 
@@ -3541,10 +3538,44 @@
             startCountdownAndGame();
         }
 
+        // 🎮 미니 게임 버튼 클릭 시 가로 전환 안내 화면을 띄움 (시작하기 버튼은 항상 활성화)
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
             nextGameMode = 'boss';
+
+            document.getElementById('lobby-screen').classList.add('hidden');
+            document.getElementById('boss-intro-screen').classList.remove('hidden');
+            updateBossIntroOrientation();
+        }
+
+        // 화면 방향(가로/세로)을 실시간 감지하여 문구 변경
+        function updateBossIntroOrientation() {
+            const errEl = document.getElementById('boss-intro-error');
+            if (!errEl) return;
+            
+            if (window.innerWidth > window.innerHeight) {
+                errEl.innerText = "가로 모드 완료! 게임을 시작하세요.";
+                errEl.style.color = "#2ecc71";
+            } else {
+                errEl.innerText = "가로로 돌려주세요!";
+                errEl.style.color = "#ffaa00";
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('boss-intro-screen').classList.contains('hidden')) {
+                updateBossIntroOrientation();
+            }
+        });
+
+        // 미니 게임 인트로 화면에서 '시작 하기' 버튼을 눌렀을 때
+        function confirmBossIntroStart() {
+            if (window.innerWidth <= window.innerHeight) {
+                alert("가로로 돌려주세요!");
+                return;
+            }
+            document.getElementById('boss-intro-screen').classList.add('hidden');
             showCharacterSelect();
         }
 
@@ -3655,7 +3686,7 @@
 
             peer.on('error', (e) => {
                 err.style.color = "#ff4757";
-                err.innerText = "방 생성 오류. 다시 '방 생성하기'를 눌러주세요.";
+                err.innerText = "방 생성 오류. 다시 시도해주세요.";
             });
         }
 
@@ -3682,6 +3713,7 @@
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('friend-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.add('hidden');
+            document.getElementById('boss-intro-screen').classList.add('hidden');
             document.getElementById('myball-screen').classList.add('hidden');
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
@@ -3834,6 +3866,7 @@
             document.getElementById('friend-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.add('hidden');
             document.getElementById('char-select-screen').classList.add('hidden');
+            document.getElementById('boss-intro-screen').classList.add('hidden');
             document.getElementById('myball-screen').classList.add('hidden');
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
@@ -4122,9 +4155,7 @@
                         se.timer -= speedMultiplier;
                         if (se.timer <= 0) {
                             let hitDmg = se.damage || 0;
-                            if (se.type === 'sangsampany_combo') {
-                                hitDmg = 100;
-                            }
+                            if (se.type === 'sangsampany_combo') hitDmg = 100;
                             se.targetPlayer.hp = Math.max(0, se.targetPlayer.hp - hitDmg);
                             specialAttackEntities.splice(i, 1);
                             updateHpBars();
@@ -4362,7 +4393,7 @@
                 ctx.fillStyle = "#ffffff";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("M", p.x, p.y); // 미니게임 상징 문자
+                ctx.fillText("M", p.x, p.y);
 
                 if (bossMessageState && bossMessageState !== "wait") {
                     ctx.save();
