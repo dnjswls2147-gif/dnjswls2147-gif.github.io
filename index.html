@@ -2024,7 +2024,7 @@
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "67pqm";
         const ADMIN_CHAT_PASS = "67pqm";
-        const UPDATE_ADMIN_PASS = "67pqm"; // 업데이트 예고용 비밀번호
+        const UPDATE_ADMIN_PASS = "67pqm"; // 업로드/삭제 공용 비밀번호
 
         let pendingUpdateAction = null; // { type: 'upload' } 또는 { type: 'delete', id: itemId }
 
@@ -2247,7 +2247,7 @@
 
         function requestUploadAuth() {
             pendingUpdateAction = { type: 'upload' };
-            document.getElementById('update-pass-title').innerText = "📹 업로드 비밀번호";
+            document.getElementById('update-pass-title').innerText = "🔒 비밀번호 입력";
             document.getElementById('update-pass-input').value = "";
             document.getElementById('update-pass-error').innerText = "";
             document.getElementById('update-pass-modal').classList.remove('hidden');
@@ -2255,7 +2255,7 @@
 
         function requestDeleteAuth(mediaId) {
             pendingUpdateAction = { type: 'delete', id: mediaId };
-            document.getElementById('update-pass-title').innerText = "🗑️ 삭제 비밀번호";
+            document.getElementById('update-pass-title').innerText = "🔒 비밀번호 입력";
             document.getElementById('update-pass-input').value = "";
             document.getElementById('update-pass-error').innerText = "";
             document.getElementById('update-pass-modal').classList.remove('hidden');
@@ -2297,7 +2297,7 @@
                     url: dataUrl,
                     timestamp: Date.now()
                 }).then(() => {
-                    alert("미디어가 정상적으로 업로드되었습니다!");
+                    alert("미디어가 성공적으로 업로드되었습니다!");
                 });
             };
             reader.readAsDataURL(file);
@@ -2319,7 +2319,7 @@
             items.sort((a, b) => b.timestamp - a.timestamp);
 
             if (items.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; color: #a29bfe; font-size:13px; text-align:center; padding:30px 0;">등록된 업데이트 예고 미디어가 없습니다.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; color: #a29bfe; font-size:13px; text-align:center; padding:30px 0;">등록된 미디어가 없습니다.</div>`;
                 return;
             }
 
@@ -3791,7 +3791,6 @@
             startCountdownAndGame();
         }
 
-        // 🎮 미니 게임 버튼 클릭 시 가로 전환 안내 화면을 띄움
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
@@ -3802,7 +3801,6 @@
             updateBossIntroOrientation();
         }
 
-        // 화면 방향(가로/세로)을 실시간 감지하여 문구 변경
         function updateBossIntroOrientation() {
             const errEl = document.getElementById('boss-intro-error');
             if (!errEl) return;
@@ -3822,7 +3820,6 @@
             }
         });
 
-        // 미니 게임 인트로 화면에서 '시작 하기' 버튼을 눌렀을 때
         function confirmBossIntroStart() {
             if (window.innerWidth <= window.innerHeight) {
                 alert("가로로 돌려주세요!");
@@ -4967,4 +4964,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+            </html>
