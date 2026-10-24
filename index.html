@@ -1563,6 +1563,9 @@
 </head>
 <body>
 
+    <!-- 미니 게임 BGM 오디오 태그 -->
+    <audio id="bgm-audio" src="https://raw.githubusercontent.com/dnjswls2147-gif/dnjswls2147-gif.github.io/refs/heads/main/bgm.mp4" loop playsinline style="display:none;"></audio>
+
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
@@ -2225,6 +2228,23 @@
         let fireFallBlocks = [];
         let specialAttackEntities = [];
 
+        // BGM 재생 및 정지 함수 추가 완료
+        function playBGM() {
+            const bgm = document.getElementById('bgm-audio');
+            if (bgm) {
+                bgm.currentTime = 0;
+                bgm.play().catch(e => console.log("BGM 재생 대기:", e));
+            }
+        }
+
+        function stopBGM() {
+            const bgm = document.getElementById('bgm-audio');
+            if (bgm) {
+                bgm.pause();
+                bgm.currentTime = 0;
+            }
+        }
+
         let halloweenProps = [];
         for(let i = 0; i < 15; i++) {
             halloweenProps.push({
@@ -2459,7 +2479,6 @@
             }
         }
 
-        // 동영상/사진 업로드 시 용량 초과 방지를 위한 캔버스 최적화 및 압축 처리
         function handleMediaSelected(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -2470,7 +2489,6 @@
                 const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
 
                 if (mediaType === 'image') {
-                    // 이미지 자동 압축
                     const img = new Image();
                     img.src = rawDataUrl;
                     img.onload = function() {
@@ -2495,7 +2513,6 @@
                         saveMediaToDatabase(mediaType, compressedDataUrl);
                     };
                 } else {
-                    // 비디오 처리 (영상의 경우 그대로 등록하되 용량 알림 안내)
                     saveMediaToDatabase(mediaType, rawDataUrl);
                 }
             };
@@ -4215,6 +4232,7 @@
             if (isBossMode) {
                 document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
+                playBGM(); // 미니 게임 시작 시 BGM 자동 재생
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
                 if (nextGameMode === 'ai') {
@@ -4312,6 +4330,8 @@
             gameStarted = false;
             isCountingDown = false;
             gameOverState = null;
+
+            stopBGM(); // 로비로 돌아갈 때 BGM 정지
 
             if (peer) {
                 peer.destroy();
