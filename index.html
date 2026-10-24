@@ -230,6 +230,23 @@
             gap: 4px;
             box-shadow: 0 0 5px rgba(46, 204, 113, 0.3);
         }
+        .update-notice-btn {
+            font-size: 11px;
+            font-weight: bold;
+            color: #ffaa00;
+            background: rgba(255, 170, 0, 0.15);
+            border: 1px solid #ffaa00;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .update-notice-btn:hover {
+            background: rgba(255, 170, 0, 0.3);
+        }
         .mailbox-btn {
             position: relative;
             background: #d35400;
@@ -382,6 +399,83 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+        }
+
+        /* 업데이트 예고 모달 스타일 */
+        .update-preview-box {
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            background: #1e112a;
+            border: 3px solid #ffaa00;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            position: relative;
+        }
+        .big-upload-btn {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            border: 2px solid #ffaa00;
+            border-radius: 12px;
+            padding: 16px 36px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(230, 126, 34, 0.4);
+            margin: 15px 0;
+            transition: transform 0.1s;
+        }
+        .big-upload-btn:active {
+            transform: scale(0.96);
+        }
+        .preview-media-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .preview-media-card {
+            position: relative;
+            background: #2b113a;
+            border: 2px solid #68268a;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .preview-media-card img,
+        .preview-media-card video {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #000;
+        }
+        .card-red-x-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: #e74c3c;
+            color: white;
+            border: 1.5px solid #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+        .card-red-x-btn:active {
+            transform: scale(0.9);
         }
 
         .global-chat-box {
@@ -1406,6 +1500,39 @@
         </div>
     </div>
 
+    <!-- 업데이트 예고 모달 -->
+    <div class="modal-overlay hidden" id="update-preview-modal">
+        <div class="update-preview-box">
+            <div class="header-row" style="width:100%;">
+                <h2 style="color:#ffaa00; font-size:22px;">📖 업데이트 예고</h2>
+                <button class="btn-close-x" onclick="closeUpdatePreviewModal()">X</button>
+            </div>
+            
+            <button class="big-upload-btn" onclick="requestUploadAuth()">📹 영상 올리기</button>
+
+            <div class="preview-media-grid" id="preview-media-grid">
+                <!-- 동적 공유 카드 위치 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 비밀번호 인증 모달 (업로드 & 삭제 공용 : 67pqm) -->
+    <div class="modal-overlay hidden" id="update-pass-modal">
+        <div class="modal-box" style="max-width: 300px;">
+            <div class="header-row">
+                <h2 id="update-pass-title">🔒 비밀번호 입력</h2>
+                <button class="btn-close-x" onclick="closeUpdatePassModal()">X</button>
+            </div>
+            <div class="version-text">관리자 비밀번호를 입력하세요</div>
+            <div class="error" id="update-pass-error"></div>
+            <input type="password" id="update-pass-input" placeholder="비밀번호 입력" onkeyup="if(event.key==='Enter') verifyUpdatePassword()">
+            <button class="btn btn-ai" onclick="verifyUpdatePassword()">확인</button>
+        </div>
+    </div>
+
+    <!-- 숨겨진 파일 수집 input -->
+    <input type="file" id="mediaFileInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaSelected(event)">
+
     <div class="modal-overlay hidden" id="admin-auth-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1640,8 +1767,11 @@
         <div class="top-nav-bar">
             <div class="nav-column">
                 <button class="profile-btn" onclick="openProfileModal()">👤 프로필</button>
-                <div class="online-count-tag">
-                    <span>🟢</span> <span id="online-user-count">1</span>명 접속중
+                <div style="display:flex; gap:4px; align-items:center;">
+                    <div class="online-count-tag">
+                        <span>🟢</span> <span id="online-user-count">1</span>명 접속중
+                    </div>
+                    <button class="update-notice-btn" onclick="openUpdatePreviewModal()">📖 업데이트 예고</button>
                 </div>
             </div>
             
@@ -1894,6 +2024,9 @@
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "67pqm";
         const ADMIN_CHAT_PASS = "67pqm";
+        const UPDATE_ADMIN_PASS = "67pqm"; // 업데이트 예고용 비밀번호
+
+        let pendingUpdateAction = null; // { type: 'upload' } 또는 { type: 'delete', id: itemId }
 
         let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
@@ -1930,6 +2063,7 @@
         let activePresenceUsers = {}; 
         let globalMails = {}; 
         let globalChatMessages = {};
+        let updatePreviewMedia = {};
         let globalChatMode = 'all'; 
         let activeNotice = "";
         let isAdminLoggedIn = false;
@@ -2094,6 +2228,125 @@
             cleanupOldGlobalChatMessages();
             renderGlobalChatLog();
         });
+
+        // 실시간 업데이트 예고 미디어 피드 연동
+        db.ref('updatePreviewMedia').on('value', (snap) => {
+            updatePreviewMedia = snap.val() || {};
+            renderUpdatePreviewGrid();
+        });
+
+        function openUpdatePreviewModal() {
+            if (!checkUserHasName()) return;
+            document.getElementById('update-preview-modal').classList.remove('hidden');
+            renderUpdatePreviewGrid();
+        }
+
+        function closeUpdatePreviewModal() {
+            document.getElementById('update-preview-modal').classList.add('hidden');
+        }
+
+        function requestUploadAuth() {
+            pendingUpdateAction = { type: 'upload' };
+            document.getElementById('update-pass-title').innerText = "📹 업로드 비밀번호";
+            document.getElementById('update-pass-input').value = "";
+            document.getElementById('update-pass-error').innerText = "";
+            document.getElementById('update-pass-modal').classList.remove('hidden');
+        }
+
+        function requestDeleteAuth(mediaId) {
+            pendingUpdateAction = { type: 'delete', id: mediaId };
+            document.getElementById('update-pass-title').innerText = "🗑️ 삭제 비밀번호";
+            document.getElementById('update-pass-input').value = "";
+            document.getElementById('update-pass-error').innerText = "";
+            document.getElementById('update-pass-modal').classList.remove('hidden');
+        }
+
+        function closeUpdatePassModal() {
+            document.getElementById('update-pass-modal').classList.add('hidden');
+        }
+
+        function verifyUpdatePassword() {
+            const inputVal = document.getElementById('update-pass-input').value.trim();
+            const errEl = document.getElementById('update-pass-error');
+
+            if (inputVal === UPDATE_ADMIN_PASS) {
+                closeUpdatePassModal();
+                if (pendingUpdateAction && pendingUpdateAction.type === 'upload') {
+                    document.getElementById('mediaFileInput').click();
+                } else if (pendingUpdateAction && pendingUpdateAction.type === 'delete') {
+                    deleteUpdateMedia(pendingUpdateAction.id);
+                }
+            } else {
+                errEl.innerText = "비밀번호가 올바르지 않습니다!";
+            }
+        }
+
+        function handleMediaSelected(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const dataUrl = evt.target.result;
+                const newId = "media_" + Date.now();
+                const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+
+                db.ref('updatePreviewMedia/' + newId).set({
+                    id: newId,
+                    type: mediaType,
+                    url: dataUrl,
+                    timestamp: Date.now()
+                }).then(() => {
+                    alert("미디어가 정상적으로 업로드되었습니다!");
+                });
+            };
+            reader.readAsDataURL(file);
+            e.target.value = "";
+        }
+
+        function deleteUpdateMedia(mediaId) {
+            db.ref('updatePreviewMedia/' + mediaId).remove().then(() => {
+                alert("항목이 삭제되었습니다.");
+            });
+        }
+
+        function renderUpdatePreviewGrid() {
+            const grid = document.getElementById('preview-media-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const items = Object.values(updatePreviewMedia);
+            items.sort((a, b) => b.timestamp - a.timestamp);
+
+            if (items.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; color: #a29bfe; font-size:13px; text-align:center; padding:30px 0;">등록된 업데이트 예고 미디어가 없습니다.</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'preview-media-card';
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'card-red-x-btn';
+                delBtn.innerText = 'X';
+                delBtn.onclick = () => requestDeleteAuth(item.id);
+
+                let mediaElement;
+                if (item.type === 'video') {
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = item.url;
+                    mediaElement.controls = true;
+                } else {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = item.url;
+                }
+
+                card.appendChild(delBtn);
+                card.appendChild(mediaElement);
+                grid.appendChild(card);
+            });
+        }
 
         function cleanupOldGlobalChatMessages() {
             let now = Date.now();
@@ -3538,7 +3791,7 @@
             startCountdownAndGame();
         }
 
-        // 🎮 미니 게임 버튼 클릭 시 가로 전환 안내 화면을 띄움 (시작하기 버튼은 항상 활성화)
+        // 🎮 미니 게임 버튼 클릭 시 가로 전환 안내 화면을 띄움
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
