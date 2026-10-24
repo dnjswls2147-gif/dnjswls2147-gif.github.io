@@ -413,7 +413,6 @@
             cursor: pointer;
         }
 
-        /* 업데이트 예고 모달 스타일 */
         .update-preview-box {
             width: 100%;
             max-width: 520px;
@@ -504,7 +503,6 @@
             transform: scale(0.9);
         }
 
-        /* 전체 화면 라이트박스 전용 스타일 */
         .fullscreen-overlay {
             position: fixed;
             top: 0;
@@ -1564,7 +1562,7 @@
 <body>
 
     <!-- 미니 게임 BGM 오디오 태그 -->
-    <audio id="bgm-audio" src="https://raw.githubusercontent.com/dnjswls2147-gif/dnjswls2147-gif.github.io/refs/heads/main/bgm.mp4" loop playsinline style="display:none;"></audio>
+    <audio id="bgm-audio" src="https://raw.githubusercontent.com/dnjswls2147-gif/dnjswls2147-gif.github.io/refs/heads/main/bgm.mp4" loop playsinline preload="auto" style="display:none;"></audio>
 
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
@@ -1630,7 +1628,7 @@
         <div class="play-pause-icon-effect" id="play-pause-effect-icon">▶</div>
     </div>
 
-    <!-- 비밀번호 인증 모달 (업로드 & 삭제 공용 : 67pqm) -->
+    <!-- 비밀번호 인증 모달 -->
     <div class="modal-overlay hidden" id="update-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -2042,17 +2040,6 @@
         <button class="btn btn-back" onclick="showLobby()">로비로 가기</button>
     </div>
 
-    <!-- 미니 게임 시작 전 (가로 전환 안내 화면) -->
-    <div class="container hidden" id="boss-intro-screen">
-        <h2>🎮 미니 게임</h2>
-        <div class="version-text">v1.4 할로윈 에디션</div>
-        <div class="error" id="boss-intro-error" style="font-size: 16px; color: #ffaa00; margin: 20px 0; font-weight: bold;">
-            핸드폰을 가로로 돌려주세요!
-        </div>
-        <button class="btn btn-ai" onclick="confirmBossIntroStart()" style="font-size: 18px; padding: 16px;">시작 하기</button>
-        <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px; margin-top:10px;">로비로 가기</button>
-    </div>
-
     <div class="container hidden" id="char-select-screen">
         <div class="header-row">
             <h2>⚔️ 출전 준비 ⚔️</h2>
@@ -2138,7 +2125,7 @@
         const ADMIN_PASSWORD = "123kpq";
         const MAINTENANCE_PASS = "67pqm";
         const ADMIN_CHAT_PASS = "67pqm";
-        const UPDATE_ADMIN_PASS = "67pqm"; // 업로드/삭제 공용 비밀번호
+        const UPDATE_ADMIN_PASS = "67pqm"; 
 
         let pendingUpdateAction = null; 
 
@@ -2228,12 +2215,24 @@
         let fireFallBlocks = [];
         let specialAttackEntities = [];
 
-        // BGM 재생 및 정지 함수 추가 완료
+        // --- BGM 제어 모듈 (자동 재생 정책 대응 완벽 보정) ---
         function playBGM() {
             const bgm = document.getElementById('bgm-audio');
             if (bgm) {
                 bgm.currentTime = 0;
-                bgm.play().catch(e => console.log("BGM 재생 대기:", e));
+                let playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("BGM 자동재생 차단됨 -> 사용자 클릭 시 재시도 모드 대기");
+                        const enableAudio = () => {
+                            bgm.play().catch(e => console.log(e));
+                            document.removeEventListener('touchstart', enableAudio);
+                            document.removeEventListener('click', enableAudio);
+                        };
+                        document.addEventListener('touchstart', enableAudio, { once: true });
+                        document.addEventListener('click', enableAudio, { once: true });
+                    });
+                }
             }
         }
 
@@ -2771,7 +2770,6 @@
                 document.getElementById('friend-screen').classList.add('hidden');
                 document.getElementById('group-screen').classList.add('hidden');
                 document.getElementById('char-select-screen').classList.add('hidden');
-                document.getElementById('boss-intro-screen').classList.add('hidden');
                 document.getElementById('myball-screen').classList.add('hidden');
                 document.getElementById('mailbox-screen').classList.add('hidden');
                 document.getElementById('ranking-screen').classList.add('hidden');
@@ -2792,7 +2790,6 @@
                         !document.getElementById('friend-screen').classList.contains('hidden') ||
                         !document.getElementById('group-screen').classList.contains('hidden') ||
                         !document.getElementById('char-select-screen').classList.contains('hidden') ||
-                        !document.getElementById('boss-intro-screen').classList.contains('hidden') ||
                         !document.getElementById('myball-screen').classList.contains('hidden') ||
                         !document.getElementById('mailbox-screen').classList.contains('hidden') ||
                         !document.getElementById('ranking-screen').classList.contains('hidden') ||
@@ -3445,7 +3442,6 @@
                 document.getElementById('friend-screen').classList.add('hidden');
                 document.getElementById('group-screen').classList.add('hidden');
                 document.getElementById('char-select-screen').classList.add('hidden');
-                document.getElementById('boss-intro-screen').classList.add('hidden');
                 document.getElementById('myball-screen').classList.add('hidden');
                 document.getElementById('mailbox-screen').classList.add('hidden');
                 document.getElementById('ranking-screen').classList.add('hidden');
@@ -4023,41 +4019,11 @@
             startCountdownAndGame();
         }
 
+        // --- 미니 게임 시작 (가로 전환 안내창 없이 즉시 세로형 시작) ---
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
             nextGameMode = 'boss';
-
-            document.getElementById('lobby-screen').classList.add('hidden');
-            document.getElementById('boss-intro-screen').classList.remove('hidden');
-            updateBossIntroOrientation();
-        }
-
-        function updateBossIntroOrientation() {
-            const errEl = document.getElementById('boss-intro-error');
-            if (!errEl) return;
-            
-            if (window.innerWidth > window.innerHeight) {
-                errEl.innerText = "가로 모드 완료! 게임을 시작하세요.";
-                errEl.style.color = "#2ecc71";
-            } else {
-                errEl.innerText = "가로로 돌려주세요!";
-                errEl.style.color = "#ffaa00";
-            }
-        }
-
-        window.addEventListener('resize', () => {
-            if (!document.getElementById('boss-intro-screen').classList.contains('hidden')) {
-                updateBossIntroOrientation();
-            }
-        });
-
-        function confirmBossIntroStart() {
-            if (window.innerWidth <= window.innerHeight) {
-                alert("가로로 돌려주세요!");
-                return;
-            }
-            document.getElementById('boss-intro-screen').classList.add('hidden');
             showCharacterSelect();
         }
 
@@ -4195,7 +4161,6 @@
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('friend-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.add('hidden');
-            document.getElementById('boss-intro-screen').classList.add('hidden');
             document.getElementById('myball-screen').classList.add('hidden');
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
@@ -4232,7 +4197,7 @@
             if (isBossMode) {
                 document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
-                playBGM(); // 미니 게임 시작 시 BGM 자동 재생
+                playBGM(); // 미니 게임 시작 시 배경음악 연속 재생 호출
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
                 if (nextGameMode === 'ai') {
@@ -4331,7 +4296,7 @@
             isCountingDown = false;
             gameOverState = null;
 
-            stopBGM(); // 로비로 돌아갈 때 BGM 정지
+            stopBGM(); // 로비로 복귀 시 BGM 정지
 
             if (peer) {
                 peer.destroy();
@@ -4351,7 +4316,6 @@
             document.getElementById('friend-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.add('hidden');
             document.getElementById('char-select-screen').classList.add('hidden');
-            document.getElementById('boss-intro-screen').classList.add('hidden');
             document.getElementById('myball-screen').classList.add('hidden');
             document.getElementById('mailbox-screen').classList.add('hidden');
             document.getElementById('ranking-screen').classList.add('hidden');
@@ -5199,4 +5163,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
