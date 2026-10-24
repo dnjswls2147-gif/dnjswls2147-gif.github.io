@@ -3720,10 +3720,11 @@
             { id: 'standard', name: '기본 볼', desc: '체력: 200, 데미지 없음', price: 0, hp: 200, damage: 0, owned: true, equipped: true },
             { id: 'fire', name: '화염 볼', desc: '체력: 200, 기본공격:없음 & 6초마다 거대 화염볼 폭격 (좌/중/우 3개, 개당 25데미지)', price: 50, hp: 200, damage: 25, owned: false, equipped: false },
             { id: 'ice', name: '아이스 볼', desc: '체력: 200, 기본공격:없음 & 8초마다 얼음 폭격 (4개, 개당 18데미지, 맞으면 1초 정지)', price: 100, hp: 200, damage: 18, owned: false, equipped: false },
-            { id: 'pokemon', name: '포켓몬 볼', desc: '체력: 200, 기본공격:없음 & 9초마다 2초간 포켓몬 볼 30개 이상 폭격 (개당 2데미지)', price: 350, hp: 200, damage: 2, owned: false, equipped: false },
+            { id: 'pokemon', name: '포켓몬 볼', desc: '체력: 200, 기본공격:없음 & 9초마다 2.5초간 포켓몬 볼 30개 이상 폭격 (개당 2데미지)', price: 350, hp: 200, damage: 2, owned: false, equipped: false },
             { id: 'dongryong', name: '동룡쓰 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 상대 뒤에서 어몽어스 임포스터 칼 찌르기 (80데미지)', price: 1000, hp: 250, damage: 80, owned: false, equipped: false },
             { id: 'mrbeast', name: '미스터 비스트 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 경기장 위에서 2.5초간 춤추기 (95데미지)', price: 1500, hp: 250, damage: 95, owned: false, equipped: false },
-            { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 250, 기본공격:없음 & 8초마다 기술1: 행주 쓱싹 (2초간 100데미지) / 기술2: 유도 볼 소환 폭발 (111데미지)', price: 3000, hp: 250, damage: 100, owned: false, equipped: false }
+            { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 250, 기본공격:없음 & 8초마다 기술1: 행주 쓱싹 (2초간 100데미지) / 기술2: 유도 볼 소환 폭발 (111데미지)', price: 3000, hp: 250, damage: 100, owned: false, equipped: false },
+            { id: 'wangkl', name: '왕클세종 볼', desc: '체력: 200, 기본공격:없음 & 5초마다 4초 동안 볼 주변을 둥글게 감싸며 회전하는 초성 단어(ㄱㄴㄷ...) 소환 (맞으면 10 데미지 + 넉백)', price: 3500, hp: 200, damage: 10, owned: false, equipped: false }
         ];
 
         function saveData() {
@@ -3841,11 +3842,11 @@
 
         let p1 = { 
             x: 270, y: 380, radius: 36, color: '#2980b9', vx: 2.0, vy: 2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0 
+            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0 
         };
         let p2 = { 
             x: 270, y: 160, radius: 36, color: '#c0392b', vx: -2.0, vy: -2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0 
+            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0 
         };
 
         function updateCoinsUI() {
@@ -4019,7 +4020,6 @@
             startCountdownAndGame();
         }
 
-        // --- 미니 게임 시작 (가로 전환 안내창 없이 즉시 세로형 시작) ---
         function startBossMode() {
             if (!checkUserHasName()) return;
             isBossMode = true;
@@ -4197,7 +4197,7 @@
             if (isBossMode) {
                 document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
-                playBGM(); // 미니 게임 시작 시 배경음악 연속 재생 호출
+                playBGM();
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
                 if (nextGameMode === 'ai') {
@@ -4296,7 +4296,7 @@
             isCountingDown = false;
             gameOverState = null;
 
-            stopBGM(); // 로비로 복귀 시 BGM 정지
+            stopBGM();
 
             if (peer) {
                 peer.destroy();
@@ -4396,6 +4396,7 @@
             p1.lastSkillTime = Date.now();
             p1.lastProjTime = Date.now();
             p1.freezeTimer = 0;
+            p1.activeSkillTimer = 0;
             moveDirection = 0;
             isDefending = false;
 
@@ -4435,6 +4436,7 @@
             p2.lastSkillTime = Date.now();
             p2.lastProjTime = Date.now();
             p2.freezeTimer = 0;
+            p2.activeSkillTimer = 0;
             projectiles = [];
             iceFallBlocks = [];
             fireFallBlocks = [];
@@ -4480,6 +4482,7 @@
             else if (pType === 'dongryong') skillInterval = 7000;
             else if (pType === 'mrbeast') skillInterval = 7000;
             else if (pType === 'sangsampany') skillInterval = 8000;
+            else if (pType === 'wangkl') skillInterval = 5000;
 
             if (now - attacker.lastSkillTime > skillInterval) {
                 attacker.lastSkillTime = now;
@@ -4547,6 +4550,9 @@
                         target: target
                     });
                 }
+                else if (pType === 'wangkl') {
+                    attacker.activeSkillTimer = 240; // 현실 4초 (60프레임 * 4)
+                }
             }
         }
 
@@ -4562,6 +4568,9 @@
                 if (nextGameMode === 'free') {
                     triggerBallLogic(p2, p1, false);
                 }
+
+                if (p1.activeSkillTimer > 0) p1.activeSkillTimer -= speedMultiplier;
+                if (p2.activeSkillTimer > 0) p2.activeSkillTimer -= speedMultiplier;
 
                 if (p1.freezeTimer > 0) {
                     p1.freezeTimer -= speedMultiplier;
@@ -4583,6 +4592,45 @@
                     if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; }
                     if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; }
                     if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; }
+                }
+
+                // 왕클세종 볼 회전 초성 충돌 및 넉백 처리
+                const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+                let orbitRadius = p1.radius + 35;
+                if (p1.type === 'wangkl' && p1.activeSkillTimer > 0) {
+                    let angleStep = (Math.PI * 2) / jamos.length;
+                    let rotSpeed = Date.now() * 0.005;
+                    for (let i = 0; i < jamos.length; i++) {
+                        let curAngle = rotSpeed + (i * angleStep);
+                        let cx = p1.x + Math.cos(curAngle) * orbitRadius;
+                        let cy = p1.y + Math.sin(curAngle) * orbitRadius;
+                        let dx = cx - p2.x;
+                        let dy = cy - p2.y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 18 + p2.radius) {
+                            p2.hp = Math.max(0, p2.hp - 10);
+                            p2.vx *= -1.2; p2.vy *= -1.2;
+                            updateHpBars();
+                            checkGameOver();
+                        }
+                    }
+                }
+
+                if (p2.type === 'wangkl' && p2.activeSkillTimer > 0 && nextGameMode === 'free') {
+                    let angleStep = (Math.PI * 2) / jamos.length;
+                    let rotSpeed = Date.now() * 0.005;
+                    for (let i = 0; i < jamos.length; i++) {
+                        let curAngle = rotSpeed + (i * angleStep);
+                        let cx = p2.x + Math.cos(curAngle) * orbitRadius;
+                        let cy = p2.y + Math.sin(curAngle) * orbitRadius;
+                        let dx = cx - p1.x;
+                        let dy = cy - p1.y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 18 + p1.radius) {
+                            p1.hp = Math.max(0, p1.hp - 10);
+                            p1.vx *= -1.2; p1.vy *= -1.2;
+                            updateHpBars();
+                            checkGameOver();
+                        }
+                    }
                 }
 
                 for (let i = specialAttackEntities.length - 1; i >= 0; i--) {
@@ -4891,6 +4939,36 @@
             ctx.stroke();
             ctx.closePath();
 
+            // 왕클세종 볼 회전 초성 그리기 (탕탕특공대 스타일)
+            if (p.type === 'wangkl' && p.activeSkillTimer > 0) {
+                const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+                let orbitRadius = p.radius + 35;
+                let angleStep = (Math.PI * 2) / jamos.length;
+                let rotSpeed = Date.now() * 0.005;
+
+                ctx.save();
+                ctx.font = "bold 15px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                for (let i = 0; i < jamos.length; i++) {
+                    let curAngle = rotSpeed + (i * angleStep);
+                    let cx = p.x + Math.cos(curAngle) * orbitRadius;
+                    let cy = p.y + Math.sin(curAngle) * orbitRadius;
+                    
+                    ctx.fillStyle = "#f1c40f";
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 13, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#000000";
+                    ctx.fillText(jamos[i], cx, cy);
+                }
+                ctx.restore();
+            }
+
             if (isPlayer1 && isDefending && isBossMode) {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius + 12, 0, Math.PI * 2);
@@ -4916,6 +4994,7 @@
                 else if (p.type === 'mrbeast') skillInterval = 7000;
                 else if (p.type === 'sangsampany') skillInterval = 8000;
                 else if (p.type === 'dongryong') skillInterval = 7000;
+                else if (p.type === 'wangkl') skillInterval = 5000;
 
                 let timePassed = gameStarted ? (Date.now() - p.lastSkillTime) : 0;
                 let progress = Math.min(1, timePassed / skillInterval);
