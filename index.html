@@ -1597,9 +1597,6 @@
 </head>
 <body>
 
-    <!-- 샌즈(Megalovania) BGM 오디오 태그 (고성능 퍼블릭 CDN 링크 적용) -->
-    <audio id="bgm-audio" src="https://vgmsite.com/soundtracks/undertale/zptvucmyws/100%20Megalovania.mp3" loop playsinline preload="auto" style="display:none;"></audio>
-
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
     <div id="alt-browser-screen" class="hidden">
@@ -1637,7 +1634,6 @@
         </div>
     </div>
 
-    <!-- 업데이트 예고 모달 -->
     <div class="modal-overlay hidden" id="update-preview-modal">
         <div class="update-preview-box">
             <div class="header-row" style="width:100%;">
@@ -1649,22 +1645,16 @@
 
             <button class="big-upload-btn" onclick="requestUploadAuth()">📹 영상 올리기</button>
 
-            <div class="preview-media-grid" id="preview-media-grid">
-                <!-- 동적 공유 카드 위치 -->
-            </div>
+            <div class="preview-media-grid" id="preview-media-grid"></div>
         </div>
     </div>
 
-    <!-- 미디어 전체 화면 라이트박스 모달 -->
     <div class="fullscreen-overlay hidden" id="media-fullscreen-modal">
         <button class="fullscreen-close-btn" onclick="closeMediaFullscreen()">X</button>
-        <div class="fullscreen-container" id="media-fullscreen-container" onclick="toggleFullscreenMediaPlay()">
-            <!-- 전체 화면 미디어가 여기에 삽입됩니다 -->
-        </div>
+        <div class="fullscreen-container" id="media-fullscreen-container" onclick="toggleFullscreenMediaPlay()"></div>
         <div class="play-pause-icon-effect" id="play-pause-effect-icon">▶</div>
     </div>
 
-    <!-- 비밀번호 인증 모달 -->
     <div class="modal-overlay hidden" id="update-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1678,7 +1668,6 @@
         </div>
     </div>
 
-    <!-- 숨겨진 파일 수집 input -->
     <input type="file" id="mediaFileInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaSelected(event)">
 
     <div class="modal-overlay hidden" id="admin-auth-modal">
@@ -1988,7 +1977,6 @@
         </div>
 
         <button class="free-start-btn" onclick="startFreeMatch()">시작 하기</button>
-
         <button class="btn btn-back" onclick="showLobby()" style="background:#4a5568; color:#fff; padding:12px;">로비로 가기</button>
     </div>
 
@@ -2018,7 +2006,6 @@
         </div>
 
         <div class="ranking-list-box" id="ranking-list-container"></div>
-
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
@@ -2032,7 +2019,6 @@
         <div class="desc">공을 선택하거나 코인으로 구매하세요!</div>
         
         <div class="shop-list" id="shop-list-container"></div>
-
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
@@ -2133,7 +2119,7 @@
     </div>
 
     <script>
-        // --- Web Audio API 사운드 엔진 (벽 충돌 및 타격 시 효과음 재생) ---
+        // --- Web Audio API 효과음 엔진 (벽 충돌 및 타격음) ---
         class GameSoundEngine {
             constructor() {
                 this.ctx = null;
@@ -2221,7 +2207,6 @@
         const UPDATE_ADMIN_PASS = "67pqm"; 
 
         let pendingUpdateAction = null; 
-
         let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
 
@@ -2281,9 +2266,7 @@
         
         let userCoins = 0; 
         let userTrophies = 0;
-        
         let speedMultiplier = 1;
-
         let currentRankingType = 'trophy';
 
         let isBossMode = false; 
@@ -2300,43 +2283,12 @@
         let defenseCooldown = 0;
         let defenseAlertText = "";
         let defenseAlertTimer = 0;
-
         let moveDirection = 0;
 
         let projectiles = [];
         let iceFallBlocks = [];
         let fireFallBlocks = [];
         let specialAttackEntities = [];
-
-        // --- 샌즈 BGM 제어 모듈 (게임 시작 시 자동 재생) ---
-        function playBGM() {
-            gameSound.init();
-            const bgm = document.getElementById('bgm-audio');
-            if (bgm) {
-                bgm.currentTime = 0;
-                let playPromise = bgm.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        const enableAudio = () => {
-                            gameSound.init();
-                            bgm.play().catch(e => console.log(e));
-                            document.removeEventListener('touchstart', enableAudio);
-                            document.removeEventListener('click', enableAudio);
-                        };
-                        document.addEventListener('touchstart', enableAudio, { once: true });
-                        document.addEventListener('click', enableAudio, { once: true });
-                    });
-                }
-            }
-        }
-
-        function stopBGM() {
-            const bgm = document.getElementById('bgm-audio');
-            if (bgm) {
-                bgm.pause();
-                bgm.currentTime = 0;
-            }
-        }
 
         let halloweenProps = [];
         for(let i = 0; i < 15; i++) {
@@ -2753,7 +2705,6 @@
             if (data) {
                 let allData = Object.values(data);
                 registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
-                
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
@@ -4092,7 +4043,6 @@
 
             changeBtn.classList.remove('hidden');
             nameLabel.innerText = ballObj.name;
-
             closeFreeBallPicker();
         }
 
@@ -4300,7 +4250,6 @@
                 }
             }
 
-            playBGM(); // 게임 시작 시 샌즈(Megalovania) BGM 자동 재생
             startCountdownAndGame();
         }
 
@@ -4389,8 +4338,6 @@
             gameStarted = false;
             isCountingDown = false;
             gameOverState = null;
-
-            stopBGM(); // 로비로 돌아가면 BGM 정지
 
             if (peer) {
                 peer.destroy();
@@ -5163,7 +5110,6 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             drawHalloweenBackground();
 
             if (isBossMode && roundTwoActive) {
@@ -5340,4 +5286,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                            </html>
+    </html>
