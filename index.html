@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 에디션</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1597,8 +1597,8 @@
 </head>
 <body>
 
-    <!-- 미니 게임 BGM 오디오 태그 -->
-    <audio id="bgm-audio" src="https://raw.githubusercontent.com/dnjswls2147-gif/dnjswls2147-gif.github.io/refs/heads/main/bgm.mp4" loop playsinline preload="auto" style="display:none;"></audio>
+    <!-- 샌즈(Megalovania) BGM 오디오 태그 (고성능 퍼블릭 CDN 링크 적용) -->
+    <audio id="bgm-audio" src="https://vgmsite.com/soundtracks/undertale/zptvucmyws/100%20Megalovania.mp3" loop playsinline preload="auto" style="display:none;"></audio>
 
     <video id="mrbeast-dance-video" src="mrbeast.mp4" loop muted playsinline style="display:none;"></video>
 
@@ -2133,12 +2133,12 @@
     </div>
 
     <script>
-        // --- Web Audio API 사운드 엔진 (벽 충돌 및 타격 시 퐁퐁 음계 소리 재생) ---
+        // --- Web Audio API 사운드 엔진 (벽 충돌 및 타격 시 효과음 재생) ---
         class GameSoundEngine {
             constructor() {
                 this.ctx = null;
                 this.isMuted = false;
-                this.notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // 도, 레, 미, 솔, 라, 높은 도
+                this.notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
             }
 
             init() {
@@ -2308,7 +2308,7 @@
         let fireFallBlocks = [];
         let specialAttackEntities = [];
 
-        // --- BGM 제어 모듈 (사용자 터치 시 Web Audio 엔진 및 BGM 동시 활성화) ---
+        // --- 샌즈 BGM 제어 모듈 (게임 시작 시 자동 재생) ---
         function playBGM() {
             gameSound.init();
             const bgm = document.getElementById('bgm-audio');
@@ -4300,7 +4300,7 @@
                 }
             }
 
-            playBGM(); // 게임 시작 시 BGM 및 사운드 활성화
+            playBGM(); // 게임 시작 시 샌즈(Megalovania) BGM 자동 재생
             startCountdownAndGame();
         }
 
@@ -4390,7 +4390,7 @@
             isCountingDown = false;
             gameOverState = null;
 
-            stopBGM();
+            stopBGM(); // 로비로 돌아가면 BGM 정지
 
             if (peer) {
                 peer.destroy();
@@ -4666,7 +4666,6 @@
                 if (p1.activeSkillTimer > 0) p1.activeSkillTimer -= speedMultiplier;
                 if (p2.activeSkillTimer > 0) p2.activeSkillTimer -= speedMultiplier;
 
-                // 벽 충돌 체크 시 사운드 재생 추가
                 if (p1.freezeTimer > 0) {
                     p1.freezeTimer -= speedMultiplier;
                 } else {
@@ -4954,7 +4953,6 @@
                     p1.hp = Math.max(0, p1.hp - 10);
                     p2.hp = Math.max(0, p2.hp - 10);
 
-                    // 공끼리 부딪힐 때 효과음 재생 추가
                     gameSound.playHitSound();
 
                     updateHpBars();
@@ -5342,4 +5340,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                </html>
+                            </html>
