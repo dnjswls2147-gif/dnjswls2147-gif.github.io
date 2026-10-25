@@ -2267,7 +2267,7 @@
         const pokemonImg = new Image(); pokemonImg.src = "pokemon.png"; 
         const iceballImg = new Image(); iceballImg.src = "iceball.png";
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
-        const wangklImg = new Image(); wangklImg.src = "wangkl.png"; // <-- 왕클세종 볼 이미지 추가 완료
+        const wangklImg = new Image(); wangklImg.src = "wangkl.png";
 
         const mrbeastVideo = document.getElementById('mrbeast-dance-video');
 
@@ -4807,11 +4807,9 @@
                 }
 
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-                // 궤도 반경을 기존보다 2배 넓게 수정 (p1.radius + 70)
                 let orbitRadius = p1.radius + 70;
                 if (p1.type === 'wangkl' && p1.activeSkillTimer > 0) {
                     let angleStep = (Math.PI * 2) / jamos.length;
-                    // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
                     let rotSpeed = Date.now() * 0.0025;
                     for (let i = 0; i < jamos.length; i++) {
                         let curAngle = rotSpeed + (i * angleStep);
@@ -4831,7 +4829,6 @@
 
                 if (p2.type === 'wangkl' && p2.activeSkillTimer > 0 && nextGameMode === 'free') {
                     let angleStep = (Math.PI * 2) / jamos.length;
-                    // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
                     let rotSpeed = Date.now() * 0.0025;
                     for (let i = 0; i < jamos.length; i++) {
                         let curAngle = rotSpeed + (i * angleStep);
@@ -5145,7 +5142,7 @@
                 ctx.drawImage(fireballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
             else if (p.type === 'wangkl' && wangklImg.complete && wangklImg.naturalWidth !== 0) {
-                ctx.drawImage(wangklImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2); // <-- 왕클세종 이미지 렌더링 추가 완료
+                ctx.drawImage(wangklImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
             }
             else {
                 ctx.fillStyle = p.color;
@@ -5162,10 +5159,8 @@
 
             if (p.type === 'wangkl' && p.activeSkillTimer > 0) {
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-                // 궤도 반경을 기존보다 2배 넓게 수정 (p.radius + 70)
                 let orbitRadius = p.radius + 70;
                 let angleStep = (Math.PI * 2) / jamos.length;
-                // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
                 let rotSpeed = Date.now() * 0.0025;
 
                 ctx.save();
@@ -5463,4 +5458,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+    </html>
