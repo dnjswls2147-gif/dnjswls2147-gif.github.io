@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 샌즈 에디션</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션 (클럽 시스템 개정)</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -355,10 +355,6 @@
             pointer-events: none !important;
         }
 
-        #maintenance-pass-modal {
-            z-index: 99999999 !important;
-        }
-
         .modal-box {
             width: 100%;
             max-width: 360px;
@@ -371,6 +367,68 @@
             position: relative;
             color: #fff;
         }
+
+        /* --- 브롤스타즈 클럽 스타일 추가 UI --- */
+        .brawl-club-header {
+            background: linear-gradient(135deg, #1e3799, #0c2461);
+            border: 2px solid #4a69bd;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .brawl-club-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #f1c40f;
+            margin-bottom: 4px;
+        }
+        .brawl-club-sub {
+            font-size: 11px;
+            color: #dcdde1;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .brawl-members-box {
+            background: #192a56;
+            border: 2px solid #273c75;
+            border-radius: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 6px;
+        }
+        .brawl-member-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #273c75;
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .brawl-club-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .brawl-club-tab-btn {
+            flex: 1;
+            padding: 8px;
+            background: #2c3e50;
+            border: 2px solid #34495e;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .brawl-club-tab-btn.active {
+            background: #2980b9;
+            border-color: #3498db;
+        }
+        /* ------------------------------------- */
 
         .brown-info-box {
             background: #421959;
@@ -1944,7 +2002,7 @@
         <button class="btn btn-boss" onclick="startBossMode()" style="margin-top: 6px;">🎮 미니 게임</button>
         <div style="display: flex; gap: 6px;">
             <button class="btn btn-friend" onclick="showFriendMenu()" style="flex: 2; margin-top: 6px;">친구 플레이</button>
-            <button class="btn btn-group" onclick="openGroupMenu()" style="flex: 1; margin-top: 6px;">👥 그룹</button>
+            <button class="btn btn-group" onclick="openGroupMenu()" style="flex: 1; margin-top: 6px;">👥 클럽</button>
         </div>
         <button class="btn btn-admin" onclick="openAdminAuth()" style="margin-top: 12px;">⚙️ 어드민 패널 (F2)</button>
     </div>
@@ -2046,21 +2104,73 @@
         <button class="btn btn-back" onclick="showLobby()">뒤로 가기</button>
     </div>
 
+    <!-- --- 브롤스타즈 클럽(그룹) 시스템 화면 UI --- -->
     <div class="container hidden" id="group-screen">
-        <h2>👥 그룹 대기실 👥</h2>
-        <div class="version-text">v1.4 할로윈 에디션</div>
-        <div class="desc">그룹 코드 입력</div>
-        <div class="error" id="group-error"></div>
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <button class="btn btn-create" style="margin-top:0; flex:1;" onclick="createGroupRoom()">그룹 방 생성</button>
+        <div class="header-row">
+            <h2>🛡️ 클럽 대기실</h2>
+            <button class="btn-close-x" onclick="showLobby()">X</button>
         </div>
-        <div class="room-box hidden" id="group-room-display">----</div>
-        <div id="group-join-container">
-            <input type="text" id="group-code-input" placeholder="그룹 코드 4자리 입력" maxlength="4">
-            <button class="btn btn-join" style="background:#8e44ad;" onclick="joinGroupRoom()">그룹 입장하기</button>
+        <div class="version-text">브롤스타즈 스타일 클럽 시스템</div>
+        
+        <div class="brawl-club-tabs">
+            <button class="brawl-club-tab-btn active" id="club-tab-my" onclick="switchClubTab('my')">내 클럽</button>
+            <button class="brawl-club-tab-btn" id="club-tab-search" onclick="switchClubTab('search')">클럽 검색</button>
         </div>
-        <button class="btn btn-back" onclick="showLobby()">로비로 가기</button>
+
+        <!-- 내 클럽 뷰 -->
+        <div id="club-my-view">
+            <div class="brawl-club-header">
+                <div class="brawl-club-title" id="my-club-name">릴리전용 클럽 [공개]</div>
+                <div class="brawl-club-sub" id="my-club-desc">고수 환영! 3일 미접 추방, 닉네임 변경 후 장로 승급! 열심히 합시다.</div>
+                <div style="font-size:11px; color:#ffeaa7;">클럽 태그: <b id="my-club-tag">#U9G8UL09</b> | 트로피 조건: <b id="my-club-trophy">9000</b></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:12px; font-weight:bold; color:#74b9ff;">
+                <span>클럽 멤버 (<span id="my-club-member-count">1</span>/30)</span>
+                <span>트로피 기준 정렬</span>
+            </div>
+            
+            <div class="brawl-members-box" id="my-club-members-container">
+                <!-- 동적 멤버 리스트 로드 -->
+            </div>
+
+            <button class="btn" style="background:#e74c3c; padding:12px; margin-top:4px;" onclick="leaveClub()">클럽 탈퇴</button>
+        </div>
+
+        <!-- 클럽 검색 뷰 -->
+        <div id="club-search-view" class="hidden">
+            <div style="display:flex; gap:6px; margin-bottom:10px;">
+                <input type="text" id="club-search-input" placeholder="클럽 이름 검색..." style="margin-bottom:0; flex:1;" onkeyup="if(event.key==='Enter') searchClubs()">
+                <button class="btn-claim" style="background:#2980b9;" onclick="searchClubs()">검색</button>
+            </div>
+            
+            <div class="error" id="group-error"></div>
+            
+            <div class="brawl-members-box" id="club-search-results-container" style="max-height: 250px;">
+                <!-- 추천/검색된 클럽 리스트 -->
+            </div>
+
+            <button class="btn btn-create" style="margin-top:6px;" onclick="openCreateClubModal()">+새 클럽 만들기</button>
+        </div>
+
+        <button class="btn btn-back" onclick="showLobby()" style="margin-top:10px;">로비로 가기</button>
     </div>
+
+    <!-- 새 클럽 만들기 모달 -->
+    <div class="modal-overlay hidden" id="create-club-modal">
+        <div class="modal-box" style="max-width: 320px;">
+            <div class="header-row">
+                <h2>🛡️ 클럽 생성</h2>
+                <button class="btn-close-x" onclick="closeCreateClubModal()">X</button>
+            </div>
+            <div class="version-text">새로운 클럽을 창설하세요</div>
+            <input type="text" id="new-club-name-input" placeholder="클럽 이름 입력" maxlength="15">
+            <input type="text" id="new-club-desc-input" placeholder="클럽 설명 입력" maxlength="50">
+            <input type="number" id="new-club-trophy-input" placeholder="가입 트로피 조건 (예: 1000)" value="0">
+            <button class="btn btn-ai" onclick="submitCreateClub()" style="margin-top:10px;">클럽 만들기</button>
+        </div>
+    </div>
+    <!-- ----------------------------------------- -->
 
     <div class="container hidden" id="char-select-screen">
         <div class="header-row">
@@ -2147,7 +2257,6 @@
                 osc.frequency.setValueAtTime(300, this.ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
                 
-                // 볼륨 2배 상향 (0.1 -> 0.2)
                 gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
 
@@ -2166,7 +2275,6 @@
                 osc.frequency.setValueAtTime(450, this.ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.15);
                 
-                // 볼륨 2배 상향 (0.15 -> 0.3)
                 gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
 
@@ -2197,7 +2305,6 @@
                         osc.type = 'square';
                         osc.frequency.setValueAtTime(notes[this.bgmStep], this.ctx.currentTime);
 
-                        // 샌즈 BGM 볼륨 2배 상향 (0.04 -> 0.08)
                         gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
 
@@ -2296,6 +2403,19 @@
         let isBypassedByPassword = false;
         let selectedGiftType = 'coin';
         let currentAdminCharTarget = '1p';
+
+        // --- 클럽 상태 관리 데이터 ---
+        let myClub = {
+            id: "default_club",
+            name: "릴리전용 클럽",
+            tag: "#U9G8UL09",
+            desc: "여기는 릴리전용클럽입니다.\\고수 환영 \\ 3일 미접 추방 \\ 들어오는분들 모두 장로 승급! \\ 욕, 패드립 즉시 추방 \\ 들어와주시면 너무너무 감사합니다탐쥐링이빨래",
+            trophyReq: 9000,
+            type: "공개",
+            members: {}
+        };
+        let allClubsList = [];
+        // ------------------------------
 
         let localBanUntil = 0;
         let localBanReason = "";
@@ -2457,6 +2577,40 @@
             renderUpdatePreviewGrid();
             checkUpdateNoticeRedDot();
         });
+
+        // --- 클럽 데이터 Firebase 동기화 리스너 ---
+        db.ref('clubs').on('value', (snap) => {
+            const clubsData = snap.val() || {};
+            allClubsList = Object.values(clubsData);
+            
+            // 기본 클럽이 없으면 자동 생성
+            if (allClubsList.length === 0) {
+                let defaultC = {
+                    id: "club_default",
+                    name: "릴리전용 클럽",
+                    tag: "#U9G8UL09",
+                    desc: "여기는 릴리전용클럽입니다. 고수 환영! 3일 미접 추방, 장로 승급!",
+                    trophyReq: 9000,
+                    type: "공개",
+                    members: {
+                        "릴리_maseuteo": { name: "릴리_maseuteo", role: "대표", trophies: 40464, lastSeen: Date.now() },
+                        "꾸쿠까카": { name: "꾸쿠까카", role: "장로", trophies: 47658, lastSeen: Date.now() }
+                    }
+                };
+                db.ref('clubs/club_default').set(defaultC);
+            }
+
+            // 내가 속한 클럽 자동 찾기
+            let foundMyClub = allClubsList.find(c => c.members && c.members[savedUsername ? savedUsername.replace(/[.#$/\[\]]/g, "_") : ""]);
+            if (foundMyClub) {
+                myClub = foundMyClub;
+            } else if (allClubsList.length > 0) {
+                myClub = allClubsList[0]; // 기본 클럽 지정
+            }
+            renderMyClubView();
+            renderClubSearchResults(allClubsList);
+        });
+        // ------------------------------------------
 
         function checkUpdateNoticeRedDot() {
             const redDot = document.getElementById('update-notice-red-dot');
@@ -4142,33 +4296,218 @@
             showCharacterSelect();
         }
 
+        // --- 브롤스타즈 스타일 클럽 메뉴 및 관련 함수들 ---
         function openGroupMenu() {
             gameSound.init();
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.remove('hidden');
+            switchClubTab('my');
         }
 
-        function createGroupRoom() {
-            gameSound.init();
-            let code = Math.floor(1000 + Math.random() * 9000).toString();
-            document.getElementById('group-room-display').innerText = "그룹 코드: " + code;
-            document.getElementById('group-room-display').classList.remove('hidden');
-            document.getElementById('group-error').style.color = "#27ae60";
-            document.getElementById('group-error').innerText = "그룹 대기실이 생성되었습니다! 친구를 초대하세요.";
+        function switchClubTab(tab) {
+            const tabMy = document.getElementById('club-tab-my');
+            const tabSearch = document.getElementById('club-tab-search');
+            const viewMy = document.getElementById('club-my-view');
+            const viewSearch = document.getElementById('club-search-view');
+
+            if (tab === 'my') {
+                tabMy.classList.add('active');
+                tabSearch.classList.remove('active');
+                viewMy.classList.remove('hidden');
+                viewSearch.classList.add('hidden');
+                renderMyClubView();
+            } else {
+                tabSearch.classList.add('active');
+                tabMy.classList.remove('active');
+                viewSearch.classList.remove('hidden');
+                viewMy.classList.add('hidden');
+                renderClubSearchResults(allClubsList);
+            }
         }
 
-        function joinGroupRoom() {
-            gameSound.init();
-            let code = document.getElementById('group-code-input').value.trim();
-            if (code.length !== 4 || isNaN(code)) {
-                document.getElementById('group-error').style.color = "#ff4757";
-                document.getElementById('group-error').innerText = "올바른 4자리 코드를 입력해주세요!";
+        function renderMyClubView() {
+            if (!myClub) return;
+            document.getElementById('my-club-name').innerText = `${myClub.name} [${myClub.type || '공개'}]`;
+            document.getElementById('my-club-desc').innerText = myClub.desc || '';
+            document.getElementById('my-club-tag').innerText = myClub.tag || '#U9G8UL09';
+            document.getElementById('my-club-trophy').innerText = myClub.trophyReq || 0;
+
+            const container = document.getElementById('my-club-members-container');
+            container.innerHTML = '';
+
+            let membersObj = myClub.members || {};
+            let memArr = Object.values(membersObj);
+            document.getElementById('my-club-member-count').innerText = memArr.length;
+
+            // 트로피 높은 순 정렬
+            memArr.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
+
+            memArr.forEach((m, idx) => {
+                let row = document.createElement('div');
+                row.className = 'brawl-member-row';
+                let rankNum = idx + 1;
+                let roleColor = m.role === '대표' ? '#f1c40f' : (m.role === '장로' ? '#e67e22' : '#ffffff');
+                
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="width:18px; color:#ffeaa7; font-weight:bold;">${rankNum}</span>
+                        <span style="font-weight:bold; color:${roleColor};">${m.name} (${m.role || '멤버'})</span>
+                    </div>
+                    <div style="color:#74b9ff; font-weight:bold;">🏆 ${m.trophies || 0}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderClubSearchResults(list) {
+            const container = document.getElementById('club-search-results-container');
+            container.innerHTML = '';
+
+            if (!list || list.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#b2bec3; font-size:12px; padding:20px;">검색된 클럽이 없습니다.</div>`;
                 return;
             }
-            document.getElementById('group-error').style.color = "#27ae60";
-            document.getElementById('group-error').innerText = `[${code}] 그룹에 참가했습니다! 대기 중...`;
+
+            list.forEach(c => {
+                let card = document.createElement('div');
+                card.className = 'brawl-member-row';
+                card.style.flexDirection = 'column';
+                card.style.alignItems = 'flex-start';
+                card.style.gap = '4px';
+
+                let memCount = c.members ? Object.keys(c.members).length : 0;
+                let isMyCurrentClub = (myClub && myClub.id === c.id);
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                        <span style="font-weight:bold; font-size:14px; color:#f1c40f;">${c.name} (${c.tag || '#TAG'})</span>
+                        <span style="font-size:11px; color:#55efc4;">멤버 ${memCount}/30</span>
+                    </div>
+                    <div style="font-size:11px; color:#dfe6e9;">조건: 트로피 ${c.trophyReq || 0} 이상 | ${c.type || '공개'}</div>
+                    <div style="display:flex; justify-content:flex-end; width:100%; margin-top:4px;">
+                        ${isMyCurrentClub ? 
+                            `<span style="color:#2ecc71; font-weight:bold; font-size:11px;">내 클럽</span>` : 
+                            `<button class="btn-claim" style="padding:4px 10px; font-size:11px;" onclick="joinClub('${c.id}')">가입하기</button>`
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
+
+        function searchClubs() {
+            let keyword = document.getElementById('club-search-input').value.trim().toLowerCase();
+            if (!keyword) {
+                renderClubSearchResults(allClubsList);
+                return;
+            }
+            let filtered = allClubsList.filter(c => c.name.toLowerCase().includes(keyword) || (c.tag && c.tag.toLowerCase().includes(keyword)));
+            renderClubSearchResults(filtered);
+        }
+
+        function openCreateClubModal() {
+            gameSound.init();
+            document.getElementById('new-club-name-input').value = "";
+            document.getElementById('new-club-desc-input').value = "";
+            document.getElementById('new-club-trophy-input').value = "0";
+            document.getElementById('create-club-modal').classList.remove('hidden');
+        }
+
+        function closeCreateClubModal() {
+            document.getElementById('create-club-modal').classList.add('hidden');
+        }
+
+        function submitCreateClub() {
+            gameSound.init();
+            let name = document.getElementById('new-club-name-input').value.trim();
+            let desc = document.getElementById('new-club-desc-input').value.trim();
+            let trophyReq = parseInt(document.getElementById('new-club-trophy-input').value) || 0;
+
+            if (!name) {
+                alert("클럽 이름을 입력해주세요!");
+                return;
+            }
+
+            let clubId = "club_" + Date.now();
+            let clubTag = "#" + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            let newClubData = {
+                id: clubId,
+                name: name,
+                tag: clubTag,
+                desc: desc || "환영합니다!",
+                trophyReq: trophyReq,
+                type: "공개",
+                members: {}
+            };
+            
+            // 내 계정을 대표로 등록
+            newClubData.members[savedUsername.replace(/[.#$/\[\]]/g, "_")] = {
+                name: savedUsername,
+                role: "대표",
+                trophies: userTrophies,
+                lastSeen: Date.now()
+            };
+
+            db.ref('clubs/' + clubId).set(newClubData).then(() => {
+                myClub = newClubData;
+                closeCreateClubModal();
+                switchClubTab('my');
+                alert(`[${name}] 클럽이 생성되었습니다!`);
+            });
+        }
+
+        function joinClub(clubId) {
+            gameSound.init();
+            let targetClub = allClubsList.find(c => c.id === clubId);
+            if (!targetClub) return;
+
+            if (userTrophies < (targetClub.trophyReq || 0)) {
+                alert(`트로피 조건이 부족합니다! (필요 트로피: ${targetClub.trophyReq}개)`);
+                return;
+            }
+
+            let mems = targetClub.members || {};
+            if (Object.keys(mems).length >= 30) {
+                alert("클럽 정원이 꽉 찼습니다 (30/30).");
+                return;
+            }
+
+            let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
+            db.ref(`clubs/${clubId}/members/${userKey}`).set({
+                name: savedUsername,
+                role: "멤버",
+                trophies: userTrophies,
+                lastSeen: Date.now()
+            }).then(() => {
+                alert(`[${targetClub.name}] 클럽에 가입했습니다!`);
+                switchClubTab('my');
+            });
+        }
+
+        function leaveClub() {
+            gameSound.init();
+            if (!myClub) return;
+            let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
+            
+            if (myClub.members && myClub.members[userKey] && myClub.members[userKey].role === '대표') {
+                alert("클럽 대표는 탈퇴할 수 없습니다. 다른 유저에게 대표를 위임하거나 클럽 검색을 이용하세요.");
+                return;
+            }
+
+            if (confirm("정말 이 클럽을 탈퇴하시겠습니까?")) {
+                db.ref(`clubs/${myClub.id}/members/${userKey}`).remove().then(() => {
+                    alert("클럽에서 탈퇴했습니다.");
+                    // 기본 클럽으로 이동
+                    if (allClubsList.length > 0) {
+                        myClub = allClubsList[0];
+                    }
+                    renderMyClubView();
+                });
+            }
+        }
+        // ------------------------------------------
 
         function joinRoomMatch() {
             gameSound.init();
@@ -5458,4 +5797,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+                                                                                                                                 </html>
