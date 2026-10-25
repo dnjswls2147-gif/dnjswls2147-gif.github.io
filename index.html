@@ -2178,15 +2178,10 @@
                 if (this.bgmTimer || !this.ctx) return;
                 this.init();
 
-                // 샌즈 테마(Megalovania) 원곡 음계 배열 (더 자연스러운 리듬과 음높이 반영)
                 const notes = [
-                    // D4, D4, D5, A4, G#4, G4, F4, D4, F4, G4
                     587.33, 587.33, 1174.66, 880.00, 830.61, 783.99, 698.46, 587.33, 698.46, 783.99,
-                    // C#4, C#4, D5, A4, G#4, G4, F4, D4, F4, G4
                     554.37, 554.37, 1174.66, 880.00, 830.61, 783.99, 698.46, 587.33, 698.46, 783.99,
-                    // C4, C4, D5, A4, G#4, G4, F4, D4, F4, G4
                     523.25, 523.25, 1174.66, 880.00, 830.61, 783.99, 698.46, 587.33, 698.46, 783.99,
-                    // B3, B3, D5, A4, G#4, G4, F4, D4, F4, G4
                     493.88, 493.88, 1174.66, 880.00, 830.61, 783.99, 698.46, 587.33, 698.46, 783.99
                 ];
 
@@ -2895,6 +2890,34 @@
                     document.getElementById('name-modal').classList.remove('hidden');
                     document.getElementById('lobby-screen').classList.add('hidden');
                 }
+            }
+        }
+
+        function checkAndApplyBanScreen(banUntilTime, banReasonText) {
+            const banScreen = document.getElementById('ban-screen');
+            if (!banScreen) return;
+
+            if (banUntilTime && banUntilTime > Date.now()) {
+                let remainMs = banUntilTime - Date.now();
+                let remainHrs = Math.floor(remainMs / (3600 * 1000));
+                let remainMins = Math.floor((remainMs % (3600 * 1000)) / (60 * 1000));
+
+                document.getElementById('ban-title-text').innerHTML = `[${remainHrs}시간 ${remainMins}분] 정지 되었습니다.<br>다시 들어와주세요`;
+                document.getElementById('ban-reason-text').innerText = `정지 사유: ${banReasonText ? banReasonText : "없음"}`;
+                
+                banScreen.classList.remove('hidden');
+                document.getElementById('name-modal').classList.add('hidden');
+                document.getElementById('lobby-screen').classList.add('hidden');
+                document.getElementById('game-screen').classList.add('hidden');
+                document.getElementById('friend-screen').classList.add('hidden');
+                document.getElementById('group-screen').classList.add('hidden');
+                document.getElementById('char-select-screen').classList.add('hidden');
+                document.getElementById('myball-screen').classList.add('hidden');
+                document.getElementById('mailbox-screen').classList.add('hidden');
+                document.getElementById('ranking-screen').classList.add('hidden');
+                document.getElementById('free-play-screen').classList.add('hidden');
+            } else {
+                banScreen.classList.add('hidden');
             }
         }
 
@@ -5331,7 +5354,7 @@
                     textColor = "#f1c40f";
                 }
 
-.               ctx.strokeStyle = "#000000";
+                ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 6;
                 ctx.strokeText(resultText, canvas.width / 2, canvas.height / 2);
                 ctx.fillStyle = textColor;
