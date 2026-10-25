@@ -2119,7 +2119,7 @@
     </div>
 
     <script>
-        // --- Web Audio API 내장 효과음 및 샌즈 메인 BGM 신시사이저 엔진 (원곡 멜로디 보정) ---
+        // --- Web Audio API 내장 효과음 및 샌즈 메인 BGM 신시사이저 엔진 (볼륨 2배 상향 및 넉백 개선) ---
         class GameSoundEngine {
             constructor() {
                 this.ctx = null;
@@ -2147,7 +2147,8 @@
                 osc.frequency.setValueAtTime(300, this.ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
                 
-                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                // 볼륨 2배 상향 (0.1 -> 0.2)
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
 
                 osc.connect(gain);
@@ -2165,7 +2166,8 @@
                 osc.frequency.setValueAtTime(450, this.ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.15);
                 
-                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                // 볼륨 2배 상향 (0.15 -> 0.3)
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
 
                 osc.connect(gain);
@@ -2195,7 +2197,8 @@
                         osc.type = 'square';
                         osc.frequency.setValueAtTime(notes[this.bgmStep], this.ctx.currentTime);
 
-                        gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+                        // 샌즈 BGM 볼륨 2배 상향 (0.04 -> 0.08)
+                        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
 
                         osc.connect(gain);
@@ -3826,7 +3829,7 @@
             { id: 'dongryong', name: '동룡쓰 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 상대 뒤에서 어몽어스 임포스터 칼 찌르기 (80데미지)', price: 1000, hp: 250, damage: 80, owned: false, equipped: false },
             { id: 'mrbeast', name: '미스터 비스트 볼', desc: '체력: 250, 기본공격:없음 & 7초마다 경기장 위에서 2.5초간 춤추기 (95데미지)', price: 1500, hp: 250, damage: 95, owned: false, equipped: false },
             { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 250, 기본공격:없음 & 8초마다 기술1: 행주 쓱싹 (2초간 100데미지) / 기술2: 유도 볼 소환 폭발 (111데미지)', price: 3000, hp: 250, damage: 100, owned: false, equipped: false },
-            { id: 'wangkl', name: '왕클세종 볼', desc: '체력: 200, 기본공격:없음 & 5초마다 4초 동안 볼 주변을 둥글게 감싸며 회전하는 초성 단어(ㄱㄴㄷ...) 소환 (맞으면 10 데미지 + 넉백)', price: 3500, hp: 200, damage: 10, owned: false, equipped: false }
+            { id: 'wangkl', name: '왕클세종 볼', desc: '체력: 200, 기본공격:없음 & 5초마다 4초 동안 볼 주변을 넓고 느리게 회전하는 초성 단어 소환 (맞으면 10 데미지 + 1회 벽 튕김)', price: 3500, hp: 200, damage: 10, owned: false, equipped: false }
         ];
 
         function saveData() {
@@ -3945,11 +3948,11 @@
 
         let p1 = { 
             x: 270, y: 380, radius: 36, color: '#2980b9', vx: 2.0, vy: 2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0 
+            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0, hasBouncedOnce: false 
         };
         let p2 = { 
             x: 270, y: 160, radius: 36, color: '#c0392b', vx: -2.0, vy: -2.0, hp: 200, maxHp: 200,
-            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0 
+            type: 'standard', damage: 0, skillGauge: 0, maxSkillGauge: 100, lastSkillTime: 0, lastProjTime: 0, freezeTimer: 0, activeSkillTimer: 0, hasBouncedOnce: false 
         };
 
         function updateCoinsUI() {
@@ -4522,6 +4525,7 @@
             p1.lastProjTime = Date.now();
             p1.freezeTimer = 0;
             p1.activeSkillTimer = 0;
+            p1.hasBouncedOnce = false;
             moveDirection = 0;
             isDefending = false;
 
@@ -4562,6 +4566,7 @@
             p2.lastProjTime = Date.now();
             p2.freezeTimer = 0;
             p2.activeSkillTimer = 0;
+            p2.hasBouncedOnce = false;
             projectiles = [];
             iceFallBlocks = [];
             fireFallBlocks = [];
@@ -4680,6 +4685,7 @@
                 }
                 else if (pType === 'wangkl') {
                     attacker.activeSkillTimer = 240; 
+                    attacker.hasBouncedOnce = false;
                 }
             }
         }
@@ -4706,10 +4712,46 @@
                     p1.x += p1.vx * speedMultiplier; 
                     p1.y += p1.vy * speedMultiplier;
                     let p1Collided = false;
-                    if (p1.x - p1.radius < 0) { p1.x = p1.radius + 2; p1.vx *= -1; p1Collided = true; }
-                    if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius - 2; p1.vx *= -1; p1Collided = true; }
-                    if (p1.y - p1.radius < 0) { p1.y = p1.radius + 2; p1.vy *= -1; p1Collided = true; }
-                    if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; p1Collided = true; }
+                    if (p1.x - p1.radius < 0) { 
+                        p1.x = p1.radius + 2; 
+                        p1.vx *= -1; 
+                        p1Collided = true; 
+                        if (p1.hasBouncedOnce) {
+                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
+                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
+                            p1.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p1.x + p1.radius > canvas.width) { 
+                        p1.x = canvas.width - p1.radius - 2; 
+                        p1.vx *= -1; 
+                        p1Collided = true; 
+                        if (p1.hasBouncedOnce) {
+                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
+                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
+                            p1.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p1.y - p1.radius < 0) { 
+                        p1.y = p1.radius + 2; 
+                        p1.vy *= -1; 
+                        p1Collided = true; 
+                        if (p1.hasBouncedOnce) {
+                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
+                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
+                            p1.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p1.y + p1.radius > canvas.height) { 
+                        p1.y = canvas.height - p1.radius - 2; 
+                        p1.vy *= -1; 
+                        p1Collided = true; 
+                        if (p1.hasBouncedOnce) {
+                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
+                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
+                            p1.hasBouncedOnce = false;
+                        }
+                    }
                     if (p1Collided) gameSound.playWallSound();
                 }
 
@@ -4719,18 +4761,56 @@
                     p2.x += p2.vx * speedMultiplier; 
                     p2.y += p2.vy * speedMultiplier;
                     let p2Collided = false;
-                    if (p2.x - p2.radius < 0) { p2.x = p2.radius + 2; p2.vx *= -1; p2Collided = true; }
-                    if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; p2Collided = true; }
-                    if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; p2Collided = true; }
-                    if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; p2Collided = true; }
+                    if (p2.x - p2.radius < 0) { 
+                        p2.x = p2.radius + 2; 
+                        p2.vx *= -1; 
+                        p2Collided = true; 
+                        if (p2.hasBouncedOnce) {
+                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
+                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
+                            p2.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p2.x + p2.radius > canvas.width) { 
+                        p2.x = canvas.width - p2.radius - 2; 
+                        p2.vx *= -1; 
+                        p2Collided = true; 
+                        if (p2.hasBouncedOnce) {
+                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
+                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
+                            p2.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p2.y - p2.radius < 0) { 
+                        p2.y = p2.radius + 2; 
+                        p2.vy *= -1; 
+                        p2Collided = true; 
+                        if (p2.hasBouncedOnce) {
+                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
+                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
+                            p2.hasBouncedOnce = false;
+                        }
+                    }
+                    if (p2.y + p2.radius > canvas.height) { 
+                        p2.y = canvas.height - p2.radius - 2; 
+                        p2.vy *= -1; 
+                        p2Collided = true; 
+                        if (p2.hasBouncedOnce) {
+                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
+                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
+                            p2.hasBouncedOnce = false;
+                        }
+                    }
                     if (p2Collided) gameSound.playWallSound();
                 }
 
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-                let orbitRadius = p1.radius + 35;
+                // 궤도 반경을 기존보다 2배 넓게 수정 (p1.radius + 70)
+                let orbitRadius = p1.radius + 70;
                 if (p1.type === 'wangkl' && p1.activeSkillTimer > 0) {
                     let angleStep = (Math.PI * 2) / jamos.length;
-                    let rotSpeed = Date.now() * 0.005;
+                    // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
+                    let rotSpeed = Date.now() * 0.0025;
                     for (let i = 0; i < jamos.length; i++) {
                         let curAngle = rotSpeed + (i * angleStep);
                         let cx = p1.x + Math.cos(curAngle) * orbitRadius;
@@ -4739,7 +4819,8 @@
                         let dy = cy - p2.y;
                         if (Math.sqrt(dx*dx + dy*dy) < 18 + p2.radius) {
                             p2.hp = Math.max(0, p2.hp - 10);
-                            p2.vx *= -1.2; p2.vy *= -1.2;
+                            p2.vx *= -2.2; p2.vy *= -2.2;
+                            p2.hasBouncedOnce = true;
                             updateHpBars();
                             checkGameOver();
                         }
@@ -4748,7 +4829,8 @@
 
                 if (p2.type === 'wangkl' && p2.activeSkillTimer > 0 && nextGameMode === 'free') {
                     let angleStep = (Math.PI * 2) / jamos.length;
-                    let rotSpeed = Date.now() * 0.005;
+                    // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
+                    let rotSpeed = Date.now() * 0.0025;
                     for (let i = 0; i < jamos.length; i++) {
                         let curAngle = rotSpeed + (i * angleStep);
                         let cx = p2.x + Math.cos(curAngle) * orbitRadius;
@@ -4757,7 +4839,8 @@
                         let dy = cy - p1.y;
                         if (Math.sqrt(dx*dx + dy*dy) < 18 + p1.radius) {
                             p1.hp = Math.max(0, p1.hp - 10);
-                            p1.vx *= -1.2; p1.vy *= -1.2;
+                            p1.vx *= -2.2; p1.vy *= -2.2;
+                            p1.hasBouncedOnce = true;
                             updateHpBars();
                             checkGameOver();
                         }
@@ -5074,9 +5157,11 @@
 
             if (p.type === 'wangkl' && p.activeSkillTimer > 0) {
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-                let orbitRadius = p.radius + 35;
+                // 궤도 반경을 기존보다 2배 넓게 수정 (p.radius + 70)
+                let orbitRadius = p.radius + 70;
                 let angleStep = (Math.PI * 2) / jamos.length;
-                let rotSpeed = Date.now() * 0.005;
+                // 회전 속도를 기존보다 2배 느리게 수정 (0.0025)
+                let rotSpeed = Date.now() * 0.0025;
 
                 ctx.save();
                 ctx.font = "bold 15px sans-serif";
