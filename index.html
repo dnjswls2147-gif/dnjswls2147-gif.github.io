@@ -186,6 +186,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 20px;
+            touch-action: manipulation;
         }
 
         .top-nav-bar {
@@ -216,6 +217,9 @@
             gap: 2px;
             width: 100%;
             justify-content: center;
+            touch-action: manipulation;
+            z-index: 10;
+            position: relative;
         }
         .top-status-row {
             display: flex;
@@ -255,6 +259,8 @@
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+            touch-action: manipulation;
+            z-index: 10;
         }
         .update-notice-btn:hover {
             background: rgba(255, 170, 0, 0.3);
@@ -274,6 +280,8 @@
             gap: 2px;
             width: 100%;
             justify-content: center;
+            touch-action: manipulation;
+            z-index: 10;
         }
         .ranking-nav-btn {
             background: #8e44ad;
@@ -289,6 +297,8 @@
             gap: 2px;
             width: 100%;
             justify-content: center;
+            touch-action: manipulation;
+            z-index: 10;
         }
         
         .global-chat-lobby-btn {
@@ -308,6 +318,7 @@
             margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(22, 160, 133, 0.4);
             transition: transform 0.1s;
+            touch-action: manipulation;
         }
         .global-chat-lobby-btn:active {
             transform: scale(0.98);
@@ -322,6 +333,7 @@
             background-color: #e74c3c;
             border: 2px solid #ffffff;
             border-radius: 50%;
+            pointer-events: none;
         }
 
         .modal-overlay {
@@ -411,6 +423,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         .update-preview-box {
@@ -451,6 +464,7 @@
             box-shadow: 0 6px 16px rgba(230, 126, 34, 0.4);
             margin: 5px 0 15px 0;
             transition: transform 0.1s;
+            touch-action: manipulation;
         }
         .big-upload-btn:active {
             transform: scale(0.96);
@@ -498,6 +512,7 @@
             align-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.6);
             z-index: 10;
+            touch-action: manipulation;
         }
         .card-red-x-btn:active {
             transform: scale(0.9);
@@ -551,6 +566,7 @@
             cursor: pointer;
             z-index: 20000005;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            touch-action: manipulation;
         }
         .play-pause-icon-effect {
             position: absolute;
@@ -617,6 +633,7 @@
             font-weight: bold;
             cursor: pointer;
             flex: 1;
+            touch-action: manipulation;
         }
         .admin-chat-mode-btn.active {
             background: #e67e22;
@@ -721,6 +738,7 @@
             font-weight: bold;
             cursor: pointer;
             white-space: nowrap;
+            touch-action: manipulation;
         }
 
         .ranking-tab-container {
@@ -738,6 +756,7 @@
             font-weight: bold;
             cursor: pointer;
             color: #d1d8e0;
+            touch-action: manipulation;
         }
         .ranking-tab-btn.active {
             background: #8e44ad;
@@ -792,6 +811,7 @@
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
+            touch-action: manipulation;
         }
         .ranking-username {
             font-size: 13px;
@@ -853,6 +873,7 @@
             font-weight: bold;
             color: #e0aaff;
             cursor: pointer;
+            touch-action: manipulation;
         }
         .coin-icon {
             width: 16px;
@@ -904,6 +925,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 8px;
+            touch-action: manipulation;
         }
         .btn-ai { background-color: #27ae60; }
         .btn-friend { background-color: #2980b9; }
@@ -946,6 +968,7 @@
             border-radius: 6px;
             cursor: pointer;
             white-space: nowrap;
+            touch-action: manipulation;
         }
         .btn-buy { background-color: #d35400; }
         .btn-select { background-color: #2980b9; }
@@ -1097,6 +1120,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             transition: all 0.15s ease-in-out;
             outline: none;
+            touch-action: manipulation;
         }
         .fancy-chat-btn:active {
             transform: scale(0.92);
@@ -1105,6 +1129,7 @@
             width: 26px;
             height: 26px;
             fill: #ff7518;
+            pointer-events: none;
         }
 
         .chat-modal-box {
@@ -1189,6 +1214,7 @@
             font-weight: bold;
             color: #ffffff;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         .admin-window {
@@ -1253,6 +1279,7 @@
             border-radius: 4px;
             cursor: pointer;
             text-align: left;
+            touch-action: manipulation;
         }
         .admin-tab-btn.active {
             background: #2d2640;
@@ -1290,6 +1317,7 @@
             flex: 1;
             min-width: 35px;
             text-align: center;
+            touch-action: manipulation;
         }
         .admin-small-btn.active-type {
             background: #e91e63 !important;
@@ -1375,6 +1403,7 @@
             font-weight: bold;
             cursor: pointer;
             flex: 1;
+            touch-action: manipulation;
         }
         .admin-unban-btn {
             background: #27ae60;
@@ -1386,6 +1415,7 @@
             font-weight: bold;
             cursor: pointer;
             flex: 1;
+            touch-action: manipulation;
         }
 
         .label { font-size: 12px; font-weight: bold; text-align: left; margin-bottom: 2px; }
@@ -1429,6 +1459,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
+            touch-action: manipulation;
         }
         .free-play-arena {
             width: 100%;
@@ -1481,6 +1512,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            touch-action: manipulation;
         }
         .free-change-btn {
             background: #edf2f7;
@@ -1493,6 +1525,7 @@
             cursor: pointer;
             margin-top: 2px;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
         .free-change-btn:hover {
             background: #e2e8f0;
@@ -1525,6 +1558,7 @@
             padding: 12px 14px;
             cursor: pointer;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
         .free-ball-card:hover {
             background: #edf2f7;
@@ -1553,6 +1587,7 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
             margin-bottom: 8px;
+            touch-action: manipulation;
         }
         .free-start-btn:active {
             transform: translateY(1px);
@@ -2215,7 +2250,7 @@
         let fireFallBlocks = [];
         let specialAttackEntities = [];
 
-        // --- BGM 제어 모듈 (자동 재생 정책 대응 완벽 보정) ---
+        // --- BGM 제어 모듈 (카카오톡 인앱 오디오 자동 재생 차단 해결) ---
         function playBGM() {
             const bgm = document.getElementById('bgm-audio');
             if (bgm) {
@@ -2223,7 +2258,7 @@
                 let playPromise = bgm.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                        console.log("BGM 자동재생 차단됨 -> 사용자 클릭 시 재시도 모드 대기");
+                        console.log("BGM 자동재생 차단됨 -> 사용자 터치 시 재시도 대기");
                         const enableAudio = () => {
                             bgm.play().catch(e => console.log(e));
                             document.removeEventListener('touchstart', enableAudio);
@@ -4197,7 +4232,7 @@
             if (isBossMode) {
                 document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
-                playBGM();
+                playBGM(); // 미니게임 시작 시 사운드 재생 강제 트리거
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
                 if (nextGameMode === 'ai') {
@@ -4551,7 +4586,7 @@
                     });
                 }
                 else if (pType === 'wangkl') {
-                    attacker.activeSkillTimer = 240; // 현실 4초 (60프레임 * 4)
+                    attacker.activeSkillTimer = 240; 
                 }
             }
         }
@@ -4594,7 +4629,6 @@
                     if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; }
                 }
 
-                // 왕클세종 볼 회전 초성 충돌 및 넉백 처리
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
                 let orbitRadius = p1.radius + 35;
                 if (p1.type === 'wangkl' && p1.activeSkillTimer > 0) {
@@ -4939,7 +4973,6 @@
             ctx.stroke();
             ctx.closePath();
 
-            // 왕클세종 볼 회전 초성 그리기 (탕탕특공대 스타일)
             if (p.type === 'wangkl' && p.activeSkillTimer > 0) {
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
                 let orbitRadius = p.radius + 35;
@@ -5242,4 +5275,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+    </html>
