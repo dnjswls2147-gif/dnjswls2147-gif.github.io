@@ -2267,6 +2267,7 @@
         const pokemonImg = new Image(); pokemonImg.src = "pokemon.png"; 
         const iceballImg = new Image(); iceballImg.src = "iceball.png";
         const fireballImg = new Image(); fireballImg.src = "fire.jpg"; 
+        const wangklImg = new Image(); wangklImg.src = "wangkl.png"; // <-- 왕클세종 볼 이미지 추가 완료
 
         const mrbeastVideo = document.getElementById('mrbeast-dance-video');
 
@@ -2276,7 +2277,8 @@
             'dongryong': 'dongryong.png',
             'pokemon': 'pokemon.png',
             'ice': 'iceball.png',
-            'fire': 'fire.jpg'
+            'fire': 'fire.jpg',
+            'wangkl': 'wangkl.png'
         };
 
         let savedUsername = "";
@@ -5141,6 +5143,9 @@
             }
             else if (p.type === 'fire' && fireballImg.complete && fireballImg.naturalWidth !== 0) {
                 ctx.drawImage(fireballImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+            }
+            else if (p.type === 'wangkl' && wangklImg.complete && wangklImg.naturalWidth !== 0) {
+                ctx.drawImage(wangklImg, p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2); // <-- 왕클세종 이미지 렌더링 추가 완료
             }
             else {
                 ctx.fillStyle = p.color;
