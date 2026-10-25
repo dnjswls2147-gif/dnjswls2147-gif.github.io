@@ -218,8 +218,9 @@
             width: 100%;
             justify-content: center;
             touch-action: manipulation;
-            z-index: 10;
+            z-index: 100;
             position: relative;
+            pointer-events: auto !important;
         }
         .top-status-row {
             display: flex;
@@ -2132,6 +2133,63 @@
     </div>
 
     <script>
+        // --- Web Audio API 사운드 엔진 (벽 충돌 및 타격 시 퐁퐁 음계 소리 재생) ---
+        class GameSoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.isMuted = false;
+                this.notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // 도, 레, 미, 솔, 라, 높은 도
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playWallSound() {
+                if (this.isMuted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                const freq = this.notes[Math.floor(Math.random() * this.notes.length)];
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                
+                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+
+            playHitSound() {
+                if (this.isMuted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(350, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            }
+        }
+
+        const gameSound = new GameSoundEngine();
+
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
 
@@ -2250,16 +2308,17 @@
         let fireFallBlocks = [];
         let specialAttackEntities = [];
 
-        // --- BGM 제어 모듈 (카카오톡 인앱 오디오 자동 재생 차단 해결) ---
+        // --- BGM 제어 모듈 (사용자 터치 시 Web Audio 엔진 및 BGM 동시 활성화) ---
         function playBGM() {
+            gameSound.init();
             const bgm = document.getElementById('bgm-audio');
             if (bgm) {
                 bgm.currentTime = 0;
                 let playPromise = bgm.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                        console.log("BGM 자동재생 차단됨 -> 사용자 터치 시 재시도 대기");
                         const enableAudio = () => {
+                            gameSound.init();
                             bgm.play().catch(e => console.log(e));
                             document.removeEventListener('touchstart', enableAudio);
                             document.removeEventListener('click', enableAudio);
@@ -4232,7 +4291,6 @@
             if (isBossMode) {
                 document.getElementById('p2-label').innerText = "🎮 미니 게임 (체력: 750)";
                 document.getElementById('boss-joystick-panel').classList.remove('hidden');
-                playBGM(); // 미니게임 시작 시 사운드 재생 강제 트리거
             } else {
                 document.getElementById('boss-joystick-panel').classList.add('hidden');
                 if (nextGameMode === 'ai') {
@@ -4242,6 +4300,7 @@
                 }
             }
 
+            playBGM(); // 게임 시작 시 BGM 및 사운드 활성화
             startCountdownAndGame();
         }
 
@@ -4607,15 +4666,18 @@
                 if (p1.activeSkillTimer > 0) p1.activeSkillTimer -= speedMultiplier;
                 if (p2.activeSkillTimer > 0) p2.activeSkillTimer -= speedMultiplier;
 
+                // 벽 충돌 체크 시 사운드 재생 추가
                 if (p1.freezeTimer > 0) {
                     p1.freezeTimer -= speedMultiplier;
                 } else {
                     p1.x += p1.vx * speedMultiplier; 
                     p1.y += p1.vy * speedMultiplier;
-                    if (p1.x - p1.radius < 0) { p1.x = p1.radius + 2; p1.vx *= -1; }
-                    if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius - 2; p1.vx *= -1; }
-                    if (p1.y - p1.radius < 0) { p1.y = p1.radius + 2; p1.vy *= -1; }
-                    if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; }
+                    let p1Collided = false;
+                    if (p1.x - p1.radius < 0) { p1.x = p1.radius + 2; p1.vx *= -1; p1Collided = true; }
+                    if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius - 2; p1.vx *= -1; p1Collided = true; }
+                    if (p1.y - p1.radius < 0) { p1.y = p1.radius + 2; p1.vy *= -1; p1Collided = true; }
+                    if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; p1Collided = true; }
+                    if (p1Collided) gameSound.playWallSound();
                 }
 
                 if (p2.freezeTimer > 0) {
@@ -4623,10 +4685,12 @@
                 } else {
                     p2.x += p2.vx * speedMultiplier; 
                     p2.y += p2.vy * speedMultiplier;
-                    if (p2.x - p2.radius < 0) { p2.x = p2.radius + 2; p2.vx *= -1; }
-                    if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; }
-                    if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; }
-                    if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; }
+                    let p2Collided = false;
+                    if (p2.x - p2.radius < 0) { p2.x = p2.radius + 2; p2.vx *= -1; p2Collided = true; }
+                    if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; p2Collided = true; }
+                    if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; p2Collided = true; }
+                    if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; p2Collided = true; }
+                    if (p2Collided) gameSound.playWallSound();
                 }
 
                 const jamos = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
@@ -4889,6 +4953,9 @@
 
                     p1.hp = Math.max(0, p1.hp - 10);
                     p2.hp = Math.max(0, p2.hp - 10);
+
+                    // 공끼리 부딪힐 때 효과음 재생 추가
+                    gameSound.playHitSound();
 
                     updateHpBars();
                     checkGameOver();
@@ -5275,4 +5342,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+                </html>
