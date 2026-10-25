@@ -2119,12 +2119,13 @@
     </div>
 
     <script>
-        // --- Web Audio API 효과음 엔진 (벽 충돌 및 타격음) ---
+        // --- Web Audio API 내장 효과음 및 샌즈 메인 BGM 신시사이저 엔진 ---
         class GameSoundEngine {
             constructor() {
                 this.ctx = null;
                 this.isMuted = false;
-                this.notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+                this.bgmTimer = null;
+                this.bgmStep = 0;
             }
 
             init() {
@@ -2143,16 +2144,16 @@
                 const gain = this.ctx.createGain();
                 
                 osc.type = 'sine';
-                const freq = this.notes[Math.floor(Math.random() * this.notes.length)];
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
                 
-                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
 
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
+                osc.stop(this.ctx.currentTime + 0.1);
             }
 
             playHitSound() {
@@ -2161,16 +2162,56 @@
                 const gain = this.ctx.createGain();
                 
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(350, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(450, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.15);
                 
-                gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
 
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start();
-                osc.stop(this.ctx.currentTime + 0.1);
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+
+            startSandsBgm() {
+                if (this.bgmTimer || !this.ctx) return;
+                this.init();
+
+                // 샌즈 테마(Megalovania) 풍의 칩튠 멜로디 루프 노트 배열
+                const notes = [
+                    587.33, 587.33, 880, 783.99, 698.46, 622.25, 698.46, 622.25,
+                    523.25, 523.25, 880, 783.99, 698.46, 622.25, 698.46, 622.25
+                ];
+
+                this.bgmStep = 0;
+                this.bgmTimer = setInterval(() => {
+                    if (this.isMuted || !this.ctx) return;
+                    try {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(notes[this.bgmStep], this.ctx.currentTime);
+
+                        gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start();
+                        osc.stop(this.ctx.currentTime + 0.2);
+
+                        this.bgmStep = (this.bgmStep + 1) % notes.length;
+                    } catch (e) {}
+                }, 220);
+            }
+
+            stopBgm() {
+                if (this.bgmTimer) {
+                    clearInterval(this.bgmTimer);
+                    this.bgmTimer = null;
+                }
             }
         }
 
@@ -2423,6 +2464,7 @@
         }
 
         function openUpdatePreviewModal() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             const redDot = document.getElementById('update-notice-red-dot');
             if (redDot) redDot.classList.add('hidden');
@@ -2673,6 +2715,7 @@
         }
 
         adminHeaderDrag.addEventListener('mousedown', (e) => {
+            gameSound.init();
             startAdminDrag(e.clientX, e.clientY);
         });
 
@@ -2685,15 +2728,14 @@
         });
 
         adminHeaderDrag.addEventListener('touchstart', (e) => {
+            gameSound.init();
             if (e.touches.length > 0) {
                 startAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
             }
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                moveAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
-            }
+            moveAdminDrag(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
 
         document.addEventListener('touchend', () => {
@@ -2851,6 +2893,7 @@
         }
 
         function openGlobalChatModal() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             document.getElementById('global-chat-modal').classList.remove('hidden');
             renderGlobalChatLog();
@@ -2899,6 +2942,7 @@
         }
 
         function requestSwitchChatMode(mode) {
+            gameSound.init();
             if (mode === 'all') {
                 db.ref('globalChatMode').set('all').then(() => {
                     alert("📢 모두 말하기 모드로 변경되었습니다.");
@@ -2909,6 +2953,7 @@
         }
 
         function openAdminChatPassModal() {
+            gameSound.init();
             document.getElementById('admin-chat-pass-input').value = "";
             document.getElementById('admin-chat-pass-error').innerText = "";
             document.getElementById('admin-chat-pass-modal').classList.remove('hidden');
@@ -2933,6 +2978,7 @@
         }
 
         function sendGlobalChatMessage() {
+            gameSound.init();
             const input = document.getElementById('global-chat-input');
             const text = input.value.trim();
             if (!text) return;
@@ -3013,6 +3059,7 @@
         }
 
         function openMaintenancePassModal() {
+            gameSound.init();
             document.getElementById('maintenance-pass-input').value = "";
             document.getElementById('maintenance-pass-error').innerText = "";
             document.getElementById('maintenance-pass-modal').classList.remove('hidden');
@@ -3037,6 +3084,7 @@
         }
 
         function openAdminAuth() {
+            gameSound.init();
             if (isAdminLoggedIn) {
                 resetAdminPos();
                 renderAdminUserList();
@@ -3075,6 +3123,7 @@
         }
 
         function handleChatButtonClick() {
+            gameSound.init();
             if (nextGameMode === 'free') {
                 alert("🚫 자유 매칭 모드에서는 채팅을 이용할 수 없습니다!");
                 return;
@@ -3140,6 +3189,7 @@
         }
 
         document.addEventListener('keydown', (e) => {
+            gameSound.init();
             if (e.key === 'F2') {
                 e.preventDefault();
                 openAdminAuth();
@@ -3162,6 +3212,7 @@
         });
 
         function triggerDefense() {
+            gameSound.init();
             if (!isBossMode || !gameStarted || !roundTwoActive) return;
             const now = Date.now();
             if (defenseCount <= 0) {
@@ -3367,6 +3418,7 @@
         }
 
         function saveForcedNewName() {
+            gameSound.init();
             const input = document.getElementById('forced-new-name-input');
             const err = document.getElementById('forced-name-error-msg');
             const val = input.value.trim();
@@ -3466,34 +3518,6 @@
             });
 
             alert(`[${targetUser.name}] 님의 밴이 해제되었습니다!`);
-        }
-
-        function checkAndApplyBanScreen(banUntil, reason) {
-            const banScreen = document.getElementById('ban-screen');
-            if (banUntil && banUntil > Date.now()) {
-                let diffMs = banUntil - Date.now();
-                let totalSec = Math.ceil(diffMs / 1000);
-                let h = Math.floor(totalSec / 3600);
-                let m = Math.floor((totalSec % 3600) / 60);
-                let s = totalSec % 60;
-
-                document.getElementById('ban-title-text').innerHTML = `[${h}시간 ${m}분 ${s}초] 정지 되었습니다.<br>다시 들어와주세요`;
-                document.getElementById('ban-reason-text').innerText = `정지 사유: ${reason ? reason : "없음"}`;
-                banScreen.classList.remove('hidden');
-
-                document.getElementById('name-modal').classList.add('hidden');
-                document.getElementById('lobby-screen').classList.add('hidden');
-                document.getElementById('game-screen').classList.add('hidden');
-                document.getElementById('friend-screen').classList.add('hidden');
-                document.getElementById('group-screen').classList.add('hidden');
-                document.getElementById('char-select-screen').classList.add('hidden');
-                document.getElementById('myball-screen').classList.add('hidden');
-                document.getElementById('mailbox-screen').classList.add('hidden');
-                document.getElementById('ranking-screen').classList.add('hidden');
-                document.getElementById('free-play-screen').classList.add('hidden');
-            } else {
-                banScreen.classList.add('hidden');
-            }
         }
 
         function renderAdminGiftUserSelect() {
@@ -3642,6 +3666,7 @@
         }
 
         function claimMailReward() {
+            gameSound.init();
             const now = new Date().getTime();
             if (now >= EXPIRY_TIME) {
                 alert("보상을 받을수 없습니다 (유효기간 만료)");
@@ -3662,6 +3687,7 @@
         }
 
         function claimGlobalGift(giftId) {
+            gameSound.init();
             let gift = globalMails[giftId];
             let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
 
@@ -3683,6 +3709,7 @@
         }
 
         function showRankingBoard() {
+            gameSound.init();
             document.getElementById('lobby-screen').classList.add('hidden');
             renderRankingList();
             document.getElementById('ranking-screen').classList.remove('hidden');
@@ -3744,6 +3771,7 @@
         }
 
         function openUserProfile(username) {
+            gameSound.init();
             let target = registeredUsers.find(u => u.name === username);
             if (!target) {
                 target = { name: username, coins: 0, trophies: 0, firstJoinedDate: getFormattedDate() };
@@ -3845,6 +3873,7 @@
         }
 
         function saveInitialUsernameAndPlay() {
+            gameSound.init();
             const input = document.getElementById('init-username-input');
             const err = document.getElementById('modal-error-msg');
             const val = input.value.trim();
@@ -3940,6 +3969,7 @@
         }
 
         function buyBall(id) {
+            gameSound.init();
             let ball = ballsData.find(b => b.id === id);
             if (userCoins >= ball.price) {
                 userCoins -= ball.price;
@@ -3955,6 +3985,7 @@
         }
 
         function equipBall(id) {
+            gameSound.init();
             ballsData.forEach(b => b.equipped = (b.id === id));
             renderShop();
             saveData();
@@ -3985,6 +4016,7 @@
         }
 
         function startAI() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             isBossMode = false;
             nextGameMode = 'ai';
@@ -3992,12 +4024,14 @@
         }
 
         function showFreePlay() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('free-play-screen').classList.remove('hidden');
         }
 
         function openFreeBallPicker(side) {
+            gameSound.init();
             currentFreeSide = side;
             const container = document.getElementById('free-ball-grid-container');
             container.innerHTML = '';
@@ -4023,6 +4057,7 @@
         }
 
         function selectFreeBall(ballObj) {
+            gameSound.init();
             if (!currentFreeSide) return;
             const slot = document.getElementById(`free-slot-${currentFreeSide}`);
             const nameLabel = document.getElementById(`free-name-${currentFreeSide}`);
@@ -4047,6 +4082,7 @@
         }
 
         function startFreeMatch() {
+            gameSound.init();
             if (!selectedFreeBallLeft || !selectedFreeBallRight) {
                 alert("양쪽에 사용할 공을 모두 선택해주세요!");
                 return;
@@ -4065,6 +4101,7 @@
         }
 
         function startBossMode() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             isBossMode = true;
             nextGameMode = 'boss';
@@ -4072,12 +4109,14 @@
         }
 
         function openGroupMenu() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             document.getElementById('group-screen').classList.remove('hidden');
         }
 
         function createGroupRoom() {
+            gameSound.init();
             let code = Math.floor(1000 + Math.random() * 9000).toString();
             document.getElementById('group-room-display').innerText = "그룹 코드: " + code;
             document.getElementById('group-room-display').classList.remove('hidden');
@@ -4086,6 +4125,7 @@
         }
 
         function joinGroupRoom() {
+            gameSound.init();
             let code = document.getElementById('group-code-input').value.trim();
             if (code.length !== 4 || isNaN(code)) {
                 document.getElementById('group-error').style.color = "#ff4757";
@@ -4097,6 +4137,7 @@
         }
 
         function joinRoomMatch() {
+            gameSound.init();
             if (!checkUserHasName()) return;
 
             const code = document.getElementById('room-input').value.trim();
@@ -4146,6 +4187,7 @@
         }
 
         function createRoom() {
+            gameSound.init();
             if (!checkUserHasName()) return;
 
             const err = document.getElementById('friend-error');
@@ -4200,6 +4242,7 @@
         }
 
         function showCharacterSelect() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
@@ -4229,6 +4272,7 @@
         }
 
         function confirmCharacterSelection() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (timerInterval) clearInterval(timerInterval);
@@ -4254,9 +4298,11 @@
         }
 
         function startCountdownAndGame() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             gameStarted = false;
+            isCountingDown = false;
             gameOverState = null;
             document.getElementById('btn-game-retry').classList.add('hidden');
             resetGameState();
@@ -4271,6 +4317,9 @@
                     clearInterval(countdownInterval);
                     isCountingDown = false;
                     gameStarted = true;
+                    if (isBossMode) {
+                        gameSound.startSandsBgm();
+                    }
                     p1.lastSkillTime = Date.now();
                     p1.lastProjTime = Date.now();
                     p2.lastSkillTime = Date.now();
@@ -4301,6 +4350,7 @@
         }
 
         function retryGame() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             if (nextGameMode === 'friend' && conn && conn.open) {
@@ -4310,6 +4360,7 @@
         }
 
         function showFriendMenu() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             resetRoom();
             document.getElementById('lobby-screen').classList.add('hidden');
@@ -4317,6 +4368,7 @@
         }
 
         function showMyBallShop() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             if (isServerUnderMaintenance && !isAdminLoggedIn && !isBypassedByPassword) return;
             document.getElementById('lobby-screen').classList.add('hidden');
@@ -4325,6 +4377,7 @@
         }
 
         function showMailbox() {
+            gameSound.init();
             if (!checkUserHasName()) return;
             document.getElementById('lobby-screen').classList.add('hidden');
             renderMailbox();
@@ -4332,6 +4385,8 @@
         }
 
         function showLobby() {
+            gameSound.init();
+            gameSound.stopBgm();
             if (timerInterval) clearInterval(timerInterval);
             if (countdownInterval) clearInterval(countdownInterval);
 
@@ -4492,6 +4547,9 @@
         function checkGameOver() {
             if (p1.hp <= 0 || p2.hp <= 0) {
                 gameStarted = false;
+                if (isBossMode) {
+                    gameSound.stopBgm();
+                }
 
                 if (p1.hp > 0 && p2.hp <= 0) {
                     gameOverState = 'win';
@@ -5286,4 +5344,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+</html>
