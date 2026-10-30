@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 샌즈 에디션 (클럽 시스템 개정)</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션 (실시간 개정)</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -368,7 +368,6 @@
             color: #fff;
         }
 
-        /* --- 브롤스타즈 클럽 스타일 추가 UI --- */
         .brawl-club-header {
             background: linear-gradient(135deg, #1e3799, #0c2461);
             border: 2px solid #4a69bd;
@@ -428,7 +427,6 @@
             background: #2980b9;
             border-color: #3498db;
         }
-        /* ------------------------------------- */
 
         .brown-info-box {
             background: #421959;
@@ -1770,7 +1768,7 @@
             
             <div class="global-chat-controls">
                 <button class="admin-chat-mode-btn active" id="btn-mode-all-talk" onclick="requestSwitchChatMode('all')">모두 말하기</button>
-                <button class="admin-chat-mode-btn" id="btn-mode-admin-talk" onclick="requestSwitchChatMode('admin')">관리자만 말하기</button>
+                <button class="admin-chat-mode-btn" id="btn-mode-admin-talk" onclick="requestSwitchChatMode('admin')">채팅 금지</button>
             </div>
 
             <div class="global-chat-log" id="global-chat-log-area">
@@ -1838,8 +1836,17 @@
             </div>
             <div class="admin-content">
                 <div id="admin-tab-main">
+                    <div class="admin-section-title">전체 채팅 제어</div>
+                    <div class="admin-btn-row">
+                        <button class="admin-small-btn" style="background:#c0392b; width:100%; padding:8px; font-size:11px;" onclick="adminClearAllChats()">모든 채팅 삭제</button>
+                    </div>
+                    <div style="display:flex; gap:4px; margin-bottom:6px;">
+                        <input type="text" id="admin-direct-chat-input" placeholder="관리자 권한 채팅 입력..." style="margin-bottom:0; font-size:10px; padding:6px; background:#2d2a3e; color:#fff; border-color:#4a4463; flex:1;" onkeyup="if(event.key==='Enter') sendAdminDirectChatMessage()">
+                        <button class="admin-small-btn" style="background:#16a085; padding:6px 10px;" onclick="sendAdminDirectChatMessage()">전송</button>
+                    </div>
+
                     <div class="admin-section-title">공지 / 투표 공지</div>
-                    <input type="text" id="admin-notice-input" placeholder="공지사항 입력..." style="margin-bottom:4px; font-size:10px; padding:5px; background:#2d2a3e; color:#fff; border-color:#4a4463;">
+                    <input type="text" id="admin-notice-input" placeholder="공지사항 입력..." style="margin-bottom:4px; font-size:10px; padding:5px; background:#2d2a3e; color:#fff; border-color:#4a4463;" oninput="updateNoticeLive()">
                     <div class="admin-btn-row">
                         <button class="admin-small-btn" style="background:#e67e22;" onclick="publishAdminNotice()">등록</button>
                         <button class="admin-small-btn" style="background:#c0392b;" onclick="deleteAdminNotice()">삭제</button>
@@ -2104,7 +2111,6 @@
         <button class="btn btn-back" onclick="showLobby()">뒤로 가기</button>
     </div>
 
-    <!-- --- 브롤스타즈 클럽(그룹) 시스템 화면 UI --- -->
     <div class="container hidden" id="group-screen">
         <div class="header-row">
             <h2>🛡️ 클럽 대기실</h2>
@@ -2117,7 +2123,6 @@
             <button class="brawl-club-tab-btn" id="club-tab-search" onclick="switchClubTab('search')">클럽 검색</button>
         </div>
 
-        <!-- 내 클럽 뷰 -->
         <div id="club-my-view">
             <div class="brawl-club-header">
                 <div class="brawl-club-title" id="my-club-name">릴리전용 클럽 [공개]</div>
@@ -2130,14 +2135,11 @@
                 <span>트로피 기준 정렬</span>
             </div>
             
-            <div class="brawl-members-box" id="my-club-members-container">
-                <!-- 동적 멤버 리스트 로드 -->
-            </div>
+            <div class="brawl-members-box" id="my-club-members-container"></div>
 
             <button class="btn" style="background:#e74c3c; padding:12px; margin-top:4px;" onclick="leaveClub()">클럽 탈퇴</button>
         </div>
 
-        <!-- 클럽 검색 뷰 -->
         <div id="club-search-view" class="hidden">
             <div style="display:flex; gap:6px; margin-bottom:10px;">
                 <input type="text" id="club-search-input" placeholder="클럽 이름 검색..." style="margin-bottom:0; flex:1;" onkeyup="if(event.key==='Enter') searchClubs()">
@@ -2146,9 +2148,7 @@
             
             <div class="error" id="group-error"></div>
             
-            <div class="brawl-members-box" id="club-search-results-container" style="max-height: 250px;">
-                <!-- 추천/검색된 클럽 리스트 -->
-            </div>
+            <div class="brawl-members-box" id="club-search-results-container" style="max-height: 250px;"></div>
 
             <button class="btn btn-create" style="margin-top:6px;" onclick="openCreateClubModal()">+새 클럽 만들기</button>
         </div>
@@ -2156,7 +2156,6 @@
         <button class="btn btn-back" onclick="showLobby()" style="margin-top:10px;">로비로 가기</button>
     </div>
 
-    <!-- 새 클럽 만들기 모달 -->
     <div class="modal-overlay hidden" id="create-club-modal">
         <div class="modal-box" style="max-width: 320px;">
             <div class="header-row">
@@ -2170,7 +2169,6 @@
             <button class="btn btn-ai" onclick="submitCreateClub()" style="margin-top:10px;">클럽 만들기</button>
         </div>
     </div>
-    <!-- ----------------------------------------- -->
 
     <div class="container hidden" id="char-select-screen">
         <div class="header-row">
@@ -2229,7 +2227,6 @@
     </div>
 
     <script>
-        // --- Web Audio API 내장 효과음 및 샌즈 메인 BGM 신시사이저 엔진 (볼륨 2배 상향 및 넉백 개선) ---
         class GameSoundEngine {
             constructor() {
                 this.ctx = null;
@@ -2404,18 +2401,16 @@
         let selectedGiftType = 'coin';
         let currentAdminCharTarget = '1p';
 
-        // --- 클럽 상태 관리 데이터 ---
         let myClub = {
             id: "default_club",
             name: "릴리전용 클럽",
             tag: "#U9G8UL09",
-            desc: "여기는 릴리전용클럽입니다.\\고수 환영 \\ 3일 미접 추방 \\ 들어오는분들 모두 장로 승급! \\ 욕, 패드립 즉시 추방 \\ 들어와주시면 너무너무 감사합니다탐쥐링이빨래",
+            desc: "여기는 릴리전용클럽입니다.",
             trophyReq: 9000,
             type: "공개",
             members: {}
         };
         let allClubsList = [];
-        // ------------------------------
 
         let localBanUntil = 0;
         let localBanReason = "";
@@ -2541,11 +2536,17 @@
             renderAdminUserList();
         });
 
+        // 실시간 공지 동기화 리스너
         db.ref('notice').on('value', (snap) => {
             activeNotice = snap.val() || "";
             updateNoticeBanner();
+            const noticeInput = document.getElementById('admin-notice-input');
+            if (noticeInput && noticeInput !== document.activeElement) {
+                noticeInput.value = activeNotice;
+            }
         });
 
+        // 실시간 점검 동기화 리스너
         db.ref('maintenance').on('value', (snap) => {
             let data = snap.val();
             if (data && typeof data === 'object') {
@@ -2559,6 +2560,10 @@
                 maintenanceReasonText = "";
             }
             applyMaintenanceUI();
+            const maintInput = document.getElementById('admin-maintenance-reason-input');
+            if (maintInput && maintInput !== document.activeElement) {
+                maintInput.value = maintenanceReasonText;
+            }
         });
 
         db.ref('globalChatMode').on('value', (snap) => {
@@ -2566,10 +2571,29 @@
             updateGlobalChatModeUI();
         });
 
+        // 자정(오전 12시) 자동 초기화 체커 및 실시간 채팅 수신
         db.ref('globalChatMessages').on('value', (snap) => {
             globalChatMessages = snap.val() || {};
-            cleanupOldGlobalChatMessages();
-            renderGlobalChatLog();
+            
+            // 오늘 날짜 자정 타임스탬프 계산
+            let nowD = new Date();
+            let midnight = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate()).getTime();
+
+            let updates = {};
+            let needsClear = false;
+
+            Object.entries(globalChatMessages).forEach(([id, msg]) => {
+                if (msg.timestamp && msg.timestamp < midnight) {
+                    updates[id] = null;
+                    needsClear = true;
+                }
+            });
+
+            if (needsClear) {
+                db.ref('globalChatMessages').update(updates);
+            } else {
+                renderGlobalChatLog();
+            }
         });
 
         db.ref('updatePreviewMedia').on('value', (snap) => {
@@ -2578,39 +2602,34 @@
             checkUpdateNoticeRedDot();
         });
 
-        // --- 클럽 데이터 Firebase 동기화 리스너 ---
         db.ref('clubs').on('value', (snap) => {
             const clubsData = snap.val() || {};
             allClubsList = Object.values(clubsData);
             
-            // 기본 클럽이 없으면 자동 생성
             if (allClubsList.length === 0) {
                 let defaultC = {
                     id: "club_default",
                     name: "릴리전용 클럽",
                     tag: "#U9G8UL09",
-                    desc: "여기는 릴리전용클럽입니다. 고수 환영! 3일 미접 추방, 장로 승급!",
+                    desc: "여기는 릴리전용클럽입니다. 고수 환영!",
                     trophyReq: 9000,
                     type: "공개",
                     members: {
-                        "릴리_maseuteo": { name: "릴리_maseuteo", role: "대표", trophies: 40464, lastSeen: Date.now() },
-                        "꾸쿠까카": { name: "꾸쿠까카", role: "장로", trophies: 47658, lastSeen: Date.now() }
+                        "릴리_maseuteo": { name: "릴리_maseuteo", role: "대표", trophies: 40464, lastSeen: Date.now() }
                     }
                 };
                 db.ref('clubs/club_default').set(defaultC);
             }
 
-            // 내가 속한 클럽 자동 찾기
             let foundMyClub = allClubsList.find(c => c.members && c.members[savedUsername ? savedUsername.replace(/[.#$/\[\]]/g, "_") : ""]);
             if (foundMyClub) {
                 myClub = foundMyClub;
             } else if (allClubsList.length > 0) {
-                myClub = allClubsList[0]; // 기본 클럽 지정
+                myClub = allClubsList[0];
             }
             renderMyClubView();
             renderClubSearchResults(allClubsList);
         });
-        // ------------------------------------------
 
         function checkUpdateNoticeRedDot() {
             const redDot = document.getElementById('update-notice-red-dot');
@@ -2777,7 +2796,7 @@
             }).then(() => {
                 alert("미디어가 성공적으로 업로드되었습니다!");
             }).catch((err) => {
-                alert("용량이 너무 커서 업로드에 실패했습니다. 더 짧거나 작은 파일을 올려주세요!");
+                alert("용량이 너무 커서 업로드에 실패했습니다!");
             });
         }
 
@@ -2825,24 +2844,6 @@
                 card.appendChild(mediaElement);
                 grid.appendChild(card);
             });
-        }
-
-        function cleanupOldGlobalChatMessages() {
-            let now = Date.now();
-            let oneDayMs = 24 * 3600 * 1000;
-            let updates = {};
-            let hasOld = false;
-
-            Object.entries(globalChatMessages).forEach(([id, msg]) => {
-                if (msg.timestamp && (now - msg.timestamp > oneDayMs)) {
-                    updates[id] = null;
-                    hasOld = true;
-                }
-            });
-
-            if (hasOld) {
-                db.ref('globalChatMessages').update(updates);
-            }
         }
 
         db.ref('mailboxes').on('value', (snap) => {
@@ -3158,7 +3159,7 @@
             if (val === ADMIN_CHAT_PASS) {
                 closeAdminChatPassModal();
                 db.ref('globalChatMode').set('admin').then(() => {
-                    alert("🔐 관리자만 말하기 모드가 활성화되었습니다.");
+                    alert("🚫 채팅 금지(관리자만 말하기) 모드가 활성화되었습니다.");
                 });
             } else {
                 err.innerText = "비밀번호가 올바르지 않습니다!";
@@ -3172,7 +3173,7 @@
             if (!text) return;
 
             if (globalChatMode === 'admin' && !isAdminLoggedIn) {
-                alert("🚫 현재 [관리자만 말하기] 모드입니다. 관리자만 메시지를 보낼 수 있습니다!");
+                alert("🚫 현재 [채팅 금지] 상태입니다. 관리자만 메시지를 보낼 수 있습니다!");
                 return;
             }
 
@@ -3193,6 +3194,45 @@
             db.ref('globalChatMessages/' + msgId).set(msgData).then(() => {
                 input.value = '';
             });
+        }
+
+        // 어드민 패널에서 직접 채팅 입력 전송 (채팅 금지 상태여도 관리자로서 전송 가능)
+        function sendAdminDirectChatMessage() {
+            gameSound.init();
+            if (!isAdminLoggedIn) {
+                alert("관리자 로그인 후 이용 가능합니다!");
+                return;
+            }
+            const input = document.getElementById('admin-direct-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let msgId = "gchat_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+            let msgData = {
+                id: msgId,
+                sender: savedUsername + " [관리자]",
+                text: text,
+                timestamp: Date.now()
+            };
+
+            db.ref('globalChatMessages/' + msgId).set(msgData).then(() => {
+                input.value = '';
+                alert("관리자 채팅이 전송되었습니다!");
+            });
+        }
+
+        // 모든 채팅 삭제 기능 (실제 데이터베이스 및 화면 전체 삭제)
+        function adminClearAllChats() {
+            gameSound.init();
+            if (!isAdminLoggedIn) {
+                alert("관리자 로그인 후 이용 가능합니다!");
+                return;
+            }
+            if (confirm("정말로 모든 전체 채팅 메시지를 삭제하시겠습니까?")) {
+                db.ref('globalChatMessages').remove().then(() => {
+                    alert("모든 채팅 메시지가 삭제되었습니다.");
+                });
+            }
         }
 
         function renderGlobalChatLog() {
@@ -3244,6 +3284,11 @@
                     reason: reasonVal
                 });
             }
+        }
+
+        function updateNoticeLive() {
+            const text = document.getElementById('admin-notice-input').value.trim();
+            db.ref('notice').set(text);
         }
 
         function openMaintenancePassModal() {
@@ -3429,12 +3474,8 @@
 
         function publishAdminNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
-            if (!text) {
-                alert("공지사항 내용을 입력하세요!");
-                return;
-            }
             db.ref('notice').set(text).then(() => {
-                alert("모든 플레이어의 화면 상단에 공지가 등록되었습니다!");
+                alert("공지사항이 실시간으로 등록되었습니다!");
             });
         }
 
@@ -4031,18 +4072,10 @@
                             if (match) {
                                 match.owned = savedBall.owned;
                                 match.equipped = savedBall.equipped;
-                                let defBall = ballsData.find(def => def.id === savedBall.id);
-                                if(defBall) {
-                                    match.desc = defBall.desc;
-                                    match.hp = defBall.hp;
-                                    match.damage = defBall.damage;
-                                }
                             }
                         });
                     }
-                } catch (e) {
-                    console.error("데이터 로드 실패:", e);
-                }
+                } catch (e) {}
             }
 
             if (localBanUntil && localBanUntil > Date.now()) {
@@ -4296,7 +4329,6 @@
             showCharacterSelect();
         }
 
-        // --- 브롤스타즈 스타일 클럽 메뉴 및 관련 함수들 ---
         function openGroupMenu() {
             gameSound.init();
             if (!checkUserHasName()) return;
@@ -4340,7 +4372,6 @@
             let memArr = Object.values(membersObj);
             document.getElementById('my-club-member-count').innerText = memArr.length;
 
-            // 트로피 높은 순 정렬
             memArr.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
 
             memArr.forEach((m, idx) => {
@@ -4442,7 +4473,6 @@
                 members: {}
             };
             
-            // 내 계정을 대표로 등록
             newClubData.members[savedUsername.replace(/[.#$/\[\]]/g, "_")] = {
                 name: savedUsername,
                 role: "대표",
@@ -4464,13 +4494,13 @@
             if (!targetClub) return;
 
             if (userTrophies < (targetClub.trophyReq || 0)) {
-                alert(`트로피 조건이 부족합니다! (필요 트로피: ${targetClub.trophyReq}개)`);
+                alert(`트로피 조건이 부족합니다!`);
                 return;
             }
 
             let mems = targetClub.members || {};
             if (Object.keys(mems).length >= 30) {
-                alert("클럽 정원이 꽉 찼습니다 (30/30).");
+                alert("클럽 정원이 꽉 찼습니다.");
                 return;
             }
 
@@ -4492,14 +4522,13 @@
             let userKey = savedUsername.replace(/[.#$/\[\]]/g, "_");
             
             if (myClub.members && myClub.members[userKey] && myClub.members[userKey].role === '대표') {
-                alert("클럽 대표는 탈퇴할 수 없습니다. 다른 유저에게 대표를 위임하거나 클럽 검색을 이용하세요.");
+                alert("클럽 대표는 탈퇴할 수 없습니다.");
                 return;
             }
 
             if (confirm("정말 이 클럽을 탈퇴하시겠습니까?")) {
                 db.ref(`clubs/${myClub.id}/members/${userKey}`).remove().then(() => {
                     alert("클럽에서 탈퇴했습니다.");
-                    // 기본 클럽으로 이동
                     if (allClubsList.length > 0) {
                         myClub = allClubsList[0];
                     }
@@ -4507,7 +4536,6 @@
                 });
             }
         }
-        // ------------------------------------------
 
         function joinRoomMatch() {
             gameSound.init();
@@ -4550,12 +4578,12 @@
 
                 conn.on('data', handleNetworkData);
                 conn.on('error', (e) => {
-                    err.innerText = "방을 찾을 수 없습니다! 방 번호를 확인하세요.";
+                    err.innerText = "방을 찾을 수 없습니다!";
                 });
             });
 
             peer.on('error', (e) => {
-                err.innerText = "네트워크 연결 실패. 다시 시도해주세요.";
+                err.innerText = "네트워크 연결 실패.";
             });
         }
 
@@ -4593,7 +4621,7 @@
 
             peer.on('error', (e) => {
                 err.style.color = "#ff4757";
-                err.innerText = "방 생성 오류. 다시 시도해주세요.";
+                err.innerText = "방 생성 오류.";
             });
         }
 
@@ -5027,6 +5055,12 @@
                 else if (pType === 'wangkl') {
                     attacker.activeSkillTimer = 240; 
                     attacker.hasBouncedOnce = false;
+
+                    const voiceAudio = document.getElementById('wangkl-voice-audio');
+                    if (voiceAudio) {
+                        voiceAudio.currentTime = 0;
+                        voiceAudio.play().catch(e => {});
+                    }
                 }
             }
         }
@@ -5053,46 +5087,10 @@
                     p1.x += p1.vx * speedMultiplier; 
                     p1.y += p1.vy * speedMultiplier;
                     let p1Collided = false;
-                    if (p1.x - p1.radius < 0) { 
-                        p1.x = p1.radius + 2; 
-                        p1.vx *= -1; 
-                        p1Collided = true; 
-                        if (p1.hasBouncedOnce) {
-                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
-                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
-                            p1.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p1.x + p1.radius > canvas.width) { 
-                        p1.x = canvas.width - p1.radius - 2; 
-                        p1.vx *= -1; 
-                        p1Collided = true; 
-                        if (p1.hasBouncedOnce) {
-                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
-                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
-                            p1.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p1.y - p1.radius < 0) { 
-                        p1.y = p1.radius + 2; 
-                        p1.vy *= -1; 
-                        p1Collided = true; 
-                        if (p1.hasBouncedOnce) {
-                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
-                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
-                            p1.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p1.y + p1.radius > canvas.height) { 
-                        p1.y = canvas.height - p1.radius - 2; 
-                        p1.vy *= -1; 
-                        p1Collided = true; 
-                        if (p1.hasBouncedOnce) {
-                            let spd = Math.sqrt(p1.vx*p1.vx + p1.vy*p1.vy);
-                            if (spd > 3.0) { p1.vx = (p1.vx/spd)*2.2; p1.vy = (p1.vy/spd)*2.2; }
-                            p1.hasBouncedOnce = false;
-                        }
-                    }
+                    if (p1.x - p1.radius < 0) { p1.x = p1.radius + 2; p1.vx *= -1; p1Collided = true; }
+                    if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius - 2; p1.vx *= -1; p1Collided = true; }
+                    if (p1.y - p1.radius < 0) { p1.y = p1.radius + 2; p1.vy *= -1; p1Collided = true; }
+                    if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius - 2; p1.vy *= -1; p1Collided = true; }
                     if (p1Collided) gameSound.playWallSound();
                 }
 
@@ -5102,46 +5100,10 @@
                     p2.x += p2.vx * speedMultiplier; 
                     p2.y += p2.vy * speedMultiplier;
                     let p2Collided = false;
-                    if (p2.x - p2.radius < 0) { 
-                        p2.x = p2.radius + 2; 
-                        p2.vx *= -1; 
-                        p2Collided = true; 
-                        if (p2.hasBouncedOnce) {
-                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
-                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
-                            p2.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p2.x + p2.radius > canvas.width) { 
-                        p2.x = canvas.width - p2.radius - 2; 
-                        p2.vx *= -1; 
-                        p2Collided = true; 
-                        if (p2.hasBouncedOnce) {
-                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
-                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
-                            p2.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p2.y - p2.radius < 0) { 
-                        p2.y = p2.radius + 2; 
-                        p2.vy *= -1; 
-                        p2Collided = true; 
-                        if (p2.hasBouncedOnce) {
-                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
-                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
-                            p2.hasBouncedOnce = false;
-                        }
-                    }
-                    if (p2.y + p2.radius > canvas.height) { 
-                        p2.y = canvas.height - p2.radius - 2; 
-                        p2.vy *= -1; 
-                        p2Collided = true; 
-                        if (p2.hasBouncedOnce) {
-                            let spd = Math.sqrt(p2.vx*p2.vx + p2.vy*p2.vy);
-                            if (spd > 3.0) { p2.vx = (p2.vx/spd)*2.2; p2.vy = (p2.vy/spd)*2.2; }
-                            p2.hasBouncedOnce = false;
-                        }
-                    }
+                    if (p2.x - p2.radius < 0) { p2.x = p2.radius + 2; p2.vx *= -1; p2Collided = true; }
+                    if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius - 2; p2.vx *= -1; p2Collided = true; }
+                    if (p2.y - p2.radius < 0) { p2.y = p2.radius + 2; p2.vy *= -1; p2Collided = true; }
+                    if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius - 2; p2.vy *= -1; p2Collided = true; }
                     if (p2Collided) gameSound.playWallSound();
                 }
 
@@ -5159,26 +5121,6 @@
                         if (Math.sqrt(dx*dx + dy*dy) < 18 + p2.radius) {
                             p2.hp = Math.max(0, p2.hp - 10);
                             p2.vx *= -2.2; p2.vy *= -2.2;
-                            p2.hasBouncedOnce = true;
-                            updateHpBars();
-                            checkGameOver();
-                        }
-                    }
-                }
-
-                if (p2.type === 'wangkl' && p2.activeSkillTimer > 0 && nextGameMode === 'free') {
-                    let angleStep = (Math.PI * 2) / jamos.length;
-                    let rotSpeed = Date.now() * 0.0025;
-                    for (let i = 0; i < jamos.length; i++) {
-                        let curAngle = rotSpeed + (i * angleStep);
-                        let cx = p2.x + Math.cos(curAngle) * orbitRadius;
-                        let cy = p2.y + Math.sin(curAngle) * orbitRadius;
-                        let dx = cx - p1.x;
-                        let dy = cy - p1.y;
-                        if (Math.sqrt(dx*dx + dy*dy) < 18 + p1.radius) {
-                            p1.hp = Math.max(0, p1.hp - 10);
-                            p1.vx *= -2.2; p1.vy *= -2.2;
-                            p1.hasBouncedOnce = true;
                             updateHpBars();
                             checkGameOver();
                         }
@@ -5797,4 +5739,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                                                                                                                                 </html>
+            </html>
