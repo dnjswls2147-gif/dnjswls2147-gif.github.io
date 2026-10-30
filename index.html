@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 샌즈 에디션 (실시간 개정)</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션 (퀘스트 추가 개정)</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -316,12 +316,36 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             box-shadow: 0 4px 10px rgba(22, 160, 133, 0.4);
             transition: transform 0.1s;
             touch-action: manipulation;
         }
         .global-chat-lobby-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 퀘스트 로비 버튼 (전체 채팅 바로 아래) */
+        .quest-lobby-btn {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+            color: #fff;
+            border: 2px solid #a04000;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(211, 84, 0, 0.4);
+            transition: transform 0.1s;
+            touch-action: manipulation;
+        }
+        .quest-lobby-btn:active {
             transform: scale(0.98);
         }
 
@@ -366,6 +390,57 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             position: relative;
             color: #fff;
+        }
+
+        /* 코인 저금통 퀘스트 모달 박스 전용 스타일 */
+        .quest-modal-box {
+            width: 100%;
+            max-width: 390px;
+            background: #2b113a;
+            border: 3px solid #f1c40f;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.9);
+            position: relative;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .piggy-bank-container {
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #f39c12, #d35400);
+            border: 4px solid #f1c40f;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 15px auto;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .piggy-coins-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 234, 167, 0.35);
+            transition: height 0.4s ease;
+        }
+        .quest-item-card {
+            width: 100%;
+            background: #3d1b52;
+            border: 2px solid #8e44ad;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            text-align: left;
         }
 
         .brawl-club-header {
@@ -481,6 +556,32 @@
             align-items: center;
             cursor: pointer;
             touch-action: manipulation;
+        }
+
+        /* 요청하신 맨 위 오른쪽 큰 빨간색 X 버튼 스타일 */
+        .big-red-x-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: #e74c3c;
+            color: #ffffff;
+            border: 3px solid #c0392b;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 22px;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.6);
+            touch-action: manipulation;
+            transition: transform 0.1s;
+            z-index: 200;
+        }
+        .big-red-x-btn:active {
+            transform: scale(0.92);
         }
 
         .update-preview-box {
@@ -1782,6 +1883,32 @@
         </div>
     </div>
 
+    <!-- 코인 저금통 & 퀘스트 모달 창 -->
+    <div class="modal-overlay hidden" id="quest-modal">
+        <div class="quest-modal-box">
+            <button class="big-red-x-btn" onclick="closeQuestModal()">X</button>
+            <h2 style="color:#f1c40f; margin-top: 5px;">🪙 코인 저금통</h2>
+            <div class="version-text">매일 퀘스트를 깨고 코인을 채우세요!</div>
+
+            <!-- 가운데 코인 저금통 -->
+            <div class="piggy-bank-container">
+                <div class="piggy-coins-fill" id="piggy-fill-bar" style="height: 0%;"></div>
+                <span style="font-size:36px; z-index:2;">🐖</span>
+                <span id="piggy-status-text" style="font-size:12px; font-weight:bold; color:#fff; z-index:2; margin-top:4px; text-shadow:1px 1px 2px #000;">0 / 5 회</span>
+            </div>
+
+            <div style="width: 100%; text-align: left; font-size: 13px; font-weight: bold; color: #ffeaa7; margin-top: 5px;">📜 일일 퀘스트</div>
+            
+            <div class="quest-item-card">
+                <div>
+                    <div style="font-size:13px; font-weight:bold; color:#fff;" id="quest-title-text">게임 플레이 (0/5)</div>
+                    <div style="font-size:11px; color:#f1c40f; margin-top:3px;">보상: 50 코인</div>
+                </div>
+                <button class="btn-claim" id="quest-claim-btn" onclick="claimQuestReward()" style="background:#7f8c8d; cursor:not-allowed;" disabled>받기</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay hidden" id="admin-chat-pass-modal">
         <div class="modal-box" style="max-width: 300px;">
             <div class="header-row">
@@ -1991,6 +2118,11 @@
 
         <button class="global-chat-lobby-btn" onclick="openGlobalChatModal()">
             💬 전체 채팅 (<span id="global-chat-count-display">0명</span> | <span id="global-chat-status-text">온라인</span>)
+        </button>
+
+        <!-- 요청하신 전체 채팅 바로 아래 퀘스트 아이콘 버튼 -->
+        <button class="quest-lobby-btn" onclick="openQuestModal()">
+            📜 퀘스트 및 코인 저금통 (<span id="quest-lobby-status-text">0/5</span>)
         </button>
 
         <h2>🎃 릴리 볼 파이트 🎃</h2>
@@ -2359,6 +2491,10 @@
         let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
 
+        // 퀘스트 관련 변수 (게임 플레이 0/5, 보상 수령 여부)
+        let questPlayCount = 0;
+        let questClaimed = false;
+
         const badWords = [
             "시발", "씨발", "시팔", "씨팔", "개새끼", "병신", "병신놈", "븅신", "지랄", "존나", "졸라", 
             "미친", "미친놈", "미친년", "바보", "멍청이", "꺼져", "닥쳐", "새끼", "쌍놈", "씨블",
@@ -2536,7 +2672,6 @@
             renderAdminUserList();
         });
 
-        // 실시간 공지 동기화 리스너
         db.ref('notice').on('value', (snap) => {
             activeNotice = snap.val() || "";
             updateNoticeBanner();
@@ -2546,7 +2681,6 @@
             }
         });
 
-        // 실시간 점검 동기화 리스너
         db.ref('maintenance').on('value', (snap) => {
             let data = snap.val();
             if (data && typeof data === 'object') {
@@ -2571,11 +2705,8 @@
             updateGlobalChatModeUI();
         });
 
-        // 자정(오전 12시) 자동 초기화 체커 및 실시간 채팅 수신
         db.ref('globalChatMessages').on('value', (snap) => {
             globalChatMessages = snap.val() || {};
-            
-            // 오늘 날짜 자정 타임스탬프 계산
             let nowD = new Date();
             let midnight = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate()).getTime();
 
@@ -2968,6 +3099,8 @@
                         uid: window.userUniqueId,
                         coins: userCoins,
                         trophies: userTrophies,
+                        questPlayCount: questPlayCount,
+                        questClaimed: questClaimed,
                         friendsCount: 0,
                         recvReqCount: 0,
                         sendReqCount: 0,
@@ -2989,9 +3122,12 @@
                         if (existing.uid) window.userUniqueId = existing.uid;
                         if (existing.coins !== undefined) userCoins = existing.coins;
                         if (existing.trophies !== undefined) userTrophies = existing.trophies;
+                        if (existing.questPlayCount !== undefined) questPlayCount = existing.questPlayCount;
+                        if (existing.questClaimed !== undefined) questClaimed = existing.questClaimed;
                     }
                     db.ref('users/' + safeKey).set(userData);
                     updateCoinsUI();
+                    updateQuestUI();
                 });
 
                 sendHeartbeat();
@@ -3078,6 +3214,66 @@
                 document.getElementById('free-play-screen').classList.add('hidden');
             } else {
                 banScreen.classList.add('hidden');
+            }
+        }
+
+        /* 퀘스트 및 코인 저금통 모달 제어 함수 */
+        function openQuestModal() {
+            gameSound.init();
+            if (!checkUserHasName()) return;
+            updateQuestUI();
+            document.getElementById('quest-modal').classList.remove('hidden');
+        }
+
+        function closeQuestModal() {
+            document.getElementById('quest-modal').classList.add('hidden');
+        }
+
+        function updateQuestUI() {
+            const statusText = document.getElementById('piggy-status-text');
+            const fillBar = document.getElementById('piggy-fill-bar');
+            const lobbyStatus = document.getElementById('quest-lobby-status-text');
+            const questTitle = document.getElementById('quest-title-text');
+            const claimBtn = document.getElementById('quest-claim-btn');
+
+            let count = Math.min(5, questPlayCount);
+            if (lobbyStatus) lobbyStatus.innerText = `${count}/5`;
+            if (statusText) statusText.innerText = `${count} / 5 회`;
+
+            let fillPercent = (count / 5) * 100;
+            if (fillBar) fillBar.style.height = `${fillPercent}%`;
+
+            if (questTitle) questTitle.innerText = `게임 플레이 (${count}/5)`;
+
+            if (count >= 5) {
+                if (questClaimed) {
+                    claimBtn.innerText = "수령 완료";
+                    claimBtn.style.background = "#27ae60";
+                    claimBtn.style.cursor = "default";
+                    claimBtn.disabled = true;
+                } else {
+                    claimBtn.innerText = "받기";
+                    claimBtn.style.background = "#e67e22";
+                    claimBtn.style.cursor = "pointer";
+                    claimBtn.disabled = false;
+                }
+            } else {
+                claimBtn.innerText = "받기";
+                claimBtn.style.background = "#7f8c8d";
+                claimBtn.style.cursor = "not-allowed";
+                claimBtn.disabled = true;
+            }
+        }
+
+        function claimQuestReward() {
+            gameSound.init();
+            if (questPlayCount >= 5 && !questClaimed) {
+                questClaimed = true;
+                userCoins += 50; // 50 코인 실시간 지급
+                updateCoinsUI();
+                updateQuestUI();
+                saveData();
+                alert("🎉 퀘스트 완료 보상으로 50 코인을 획득했습니다!");
             }
         }
 
@@ -3196,7 +3392,6 @@
             });
         }
 
-        // 어드민 패널에서 직접 채팅 입력 전송 (채팅 금지 상태여도 관리자로서 전송 가능)
         function sendAdminDirectChatMessage() {
             gameSound.init();
             if (!isAdminLoggedIn) {
@@ -3221,7 +3416,6 @@
             });
         }
 
-        // 모든 채팅 삭제 기능 (실제 데이터베이스 및 화면 전체 삭제)
         function adminClearAllChats() {
             gameSound.init();
             if (!isAdminLoggedIn) {
@@ -3245,7 +3439,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
@@ -3681,6 +3875,8 @@
                     uid: existingData.uid || Math.random().toString(36).substring(2, 8).toUpperCase(),
                     coins: existingData.coins !== undefined ? existingData.coins : userCoins,
                     trophies: existingData.trophies !== undefined ? existingData.trophies : userTrophies,
+                    questPlayCount: existingData.questPlayCount !== undefined ? existingData.questPlayCount : questPlayCount,
+                    questClaimed: existingData.questClaimed !== undefined ? existingData.questClaimed : questClaimed,
                     friendsCount: existingData.friendsCount || 0,
                     recvReqCount: existingData.recvReqCount || 0,
                     sendReqCount: existingData.sendReqCount || 0,
@@ -4037,6 +4233,8 @@
                 sessionStartTime: sessionStartTime,
                 balls: ballsData,
                 mailClaimed: mailClaimed,
+                questPlayCount: questPlayCount,
+                questClaimed: questClaimed,
                 banUntil: localBanUntil,
                 banReason: localBanReason,
                 firstJoinedDate: firstJoinDateStr,
@@ -4063,6 +4261,8 @@
                     if (parsed.firstJoinedDate) firstJoinDateStr = parsed.firstJoinedDate;
                     if (parsed.joinedTimestamp) firstJoinTimestamp = parsed.joinedTimestamp;
                     if (parsed.mailClaimed !== undefined) mailClaimed = parsed.mailClaimed;
+                    if (parsed.questPlayCount !== undefined) questPlayCount = parsed.questPlayCount;
+                    if (parsed.questClaimed !== undefined) questClaimed = parsed.questClaimed;
                     if (parsed.banUntil !== undefined) localBanUntil = parsed.banUntil;
                     if (parsed.banReason !== undefined) localBanReason = parsed.banReason;
 
@@ -4091,6 +4291,7 @@
 
             checkMailRedDot();
             updateCoinsUI();
+            updateQuestUI();
         }
 
         function saveInitialUsernameAndPlay() {
@@ -4695,6 +4896,13 @@
                 }
             }
 
+            // 게임 플레이 시작 시 퀘스트 카운트 증가 (최대 5회)
+            if (questPlayCount < 5) {
+                questPlayCount++;
+                updateQuestUI();
+                saveData();
+            }
+
             startCountdownAndGame();
         }
 
@@ -4757,6 +4965,13 @@
             if (nextGameMode === 'friend' && conn && conn.open) {
                 conn.send({ type: 'RETRY_GAME' });
             }
+
+            if (questPlayCount < 5) {
+                questPlayCount++;
+                updateQuestUI();
+                saveData();
+            }
+
             startCountdownAndGame();
         }
 
@@ -4804,6 +5019,7 @@
 
             resetGameState();
             updateCoinsUI();
+            updateQuestUI();
             checkMailRedDot();
             closeChatModal();
             closeGlobalChatModal();
