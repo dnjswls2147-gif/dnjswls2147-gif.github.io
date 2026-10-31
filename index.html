@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 샌즈 에디션 (퀘스트 추가 개정)</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션 (아이콘 스타일 개정)</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -301,52 +301,66 @@
             touch-action: manipulation;
             z-index: 10;
         }
-        
-        .global-chat-lobby-btn {
-            background: linear-gradient(135deg, #16a085, #1abc9c);
-            color: #fff;
-            border: 2px solid #117a65;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
+
+        /* 브롤스타즈 스타일 아이콘 카드 배치 컨테이너 */
+        .brawl-icon-container {
             display: flex;
+            gap: 10px;
             justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 10px rgba(22, 160, 133, 0.4);
-            transition: transform 0.1s;
-            touch-action: manipulation;
-        }
-        .global-chat-lobby-btn:active {
-            transform: scale(0.98);
+            margin-bottom: 12px;
         }
 
-        /* 퀘스트 로비 버튼 (전체 채팅 바로 아래) */
-        .quest-lobby-btn {
-            background: linear-gradient(135deg, #d35400, #e67e22);
-            color: #fff;
-            border: 2px solid #a04000;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
+        /* 개별 아이콘 카드 (뉴스/친구 스타일) */
+        .brawl-icon-card {
+            background: #1e112a;
+            border: 2.5px solid #5a3175;
+            border-radius: 12px;
+            width: 120px;
+            padding: 6px 6px 8px 6px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 10px rgba(211, 84, 0, 0.4);
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: transform 0.1s;
             touch-action: manipulation;
         }
-        .quest-lobby-btn:active {
-            transform: scale(0.98);
+        .brawl-icon-card:active {
+            transform: scale(0.95);
+        }
+
+        /* 상단 아이콘 박스 */
+        .brawl-card-top-icon {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            border: 2px solid #117a65;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+        }
+        .brawl-card-top-icon.quest {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+            border: 2px solid #a04000;
+        }
+
+        /* 하단 텍스트 */
+        .brawl-card-label {
+            font-size: 13px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-top: 6px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
         .red-dot {
@@ -558,7 +572,6 @@
             touch-action: manipulation;
         }
 
-        /* 요청하신 맨 위 오른쪽 큰 빨간색 X 버튼 스타일 */
         .big-red-x-btn {
             position: absolute;
             right: 0;
@@ -1883,7 +1896,7 @@
         </div>
     </div>
 
-    <!-- 코인 저금통 & 퀘스트 모달 창 -->
+    <!-- 코인 저금통 & 일일 퀘스트 모달 창 -->
     <div class="modal-overlay hidden" id="quest-modal">
         <div class="quest-modal-box">
             <button class="big-red-x-btn" onclick="closeQuestModal()">X</button>
@@ -2116,14 +2129,25 @@
             </div>
         </div>
 
-        <button class="global-chat-lobby-btn" onclick="openGlobalChatModal()">
-            💬 전체 채팅 (<span id="global-chat-count-display">0명</span> | <span id="global-chat-status-text">온라인</span>)
-        </button>
+        <!-- 브롤스타즈 스타일 아이콘 배열 (전체 채팅 & 일일 퀘스트) -->
+        <div class="brawl-icon-container">
+            <!-- 전체 채팅 아이콘 카드 -->
+            <div class="brawl-icon-card" onclick="openGlobalChatModal()">
+                <div class="brawl-card-top-icon">
+                    💬
+                </div>
+                <div class="brawl-card-label">전체 채팅</div>
+            </div>
 
-        <!-- 요청하신 전체 채팅 바로 아래 퀘스트 아이콘 버튼 -->
-        <button class="quest-lobby-btn" onclick="openQuestModal()">
-            📜 퀘스트 및 코인 저금통 (<span id="quest-lobby-status-text">0/5</span>)
-        </button>
+            <!-- 일일 퀘스트 아이콘 카드 -->
+            <div class="brawl-icon-card" onclick="openQuestModal()">
+                <div class="brawl-card-top-icon quest">
+                    📜
+                    <div class="red-dot hidden" id="quest-red-dot"></div>
+                </div>
+                <div class="brawl-card-label">일일 퀘스트</div>
+            </div>
+        </div>
 
         <h2>🎃 릴리 볼 파이트 🎃</h2>
         <div class="version-text">v1.4 할로윈 에디션</div>
@@ -2491,7 +2515,7 @@
         let isServerUnderMaintenance = false; 
         let maintenanceReasonText = "";
 
-        // 퀘스트 관련 변수 (게임 플레이 0/5, 보상 수령 여부)
+        // 퀘스트 관련 변수
         let questPlayCount = 0;
         let questClaimed = false;
 
@@ -3232,12 +3256,11 @@
         function updateQuestUI() {
             const statusText = document.getElementById('piggy-status-text');
             const fillBar = document.getElementById('piggy-fill-bar');
-            const lobbyStatus = document.getElementById('quest-lobby-status-text');
+            const questRedDot = document.getElementById('quest-red-dot');
             const questTitle = document.getElementById('quest-title-text');
             const claimBtn = document.getElementById('quest-claim-btn');
 
             let count = Math.min(5, questPlayCount);
-            if (lobbyStatus) lobbyStatus.innerText = `${count}/5`;
             if (statusText) statusText.innerText = `${count} / 5 회`;
 
             let fillPercent = (count / 5) * 100;
@@ -3251,17 +3274,20 @@
                     claimBtn.style.background = "#27ae60";
                     claimBtn.style.cursor = "default";
                     claimBtn.disabled = true;
+                    if (questRedDot) questRedDot.classList.add('hidden');
                 } else {
                     claimBtn.innerText = "받기";
                     claimBtn.style.background = "#e67e22";
                     claimBtn.style.cursor = "pointer";
                     claimBtn.disabled = false;
+                    if (questRedDot) questRedDot.classList.remove('hidden');
                 }
             } else {
                 claimBtn.innerText = "받기";
                 claimBtn.style.background = "#7f8c8d";
                 claimBtn.style.cursor = "not-allowed";
                 claimBtn.disabled = true;
+                if (questRedDot) questRedDot.classList.add('hidden');
             }
         }
 
@@ -3290,13 +3316,6 @@
 
         function updateGlobalChatLobbyStats() {
             let totalRegistered = registeredUsers.length;
-            const countDisplay = document.getElementById('global-chat-count-display');
-            const statusText = document.getElementById('global-chat-status-text');
-
-            if (countDisplay) {
-                countDisplay.innerText = `${totalRegistered}명`;
-            }
-
             let now = Date.now();
             let isOnline = false;
             if (savedUsername) {
@@ -3305,10 +3324,6 @@
                         isOnline = true;
                     }
                 });
-            }
-
-            if (statusText) {
-                statusText.innerText = isOnline ? "온라인" : "오프라인";
             }
         }
 
@@ -3439,7 +3454,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
