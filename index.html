@@ -3444,7 +3444,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
@@ -4051,7 +4051,7 @@
             if (currentRankingType === 'trophy') {
                 sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
             } else {
-                sorted.sort((a, b) => (b.coins || 0) - (b.coins || 0));
+                sorted.sort((a, b) => (b.coins || 0) - (a.coins || 0));
             }
 
             let displayList = sorted.slice(0, 100);
@@ -5895,4 +5895,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-</html>
+                </html>
