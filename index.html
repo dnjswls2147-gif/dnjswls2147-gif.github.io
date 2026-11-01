@@ -302,15 +302,17 @@
             z-index: 10;
         }
 
+        /* 전체 채팅 및 일일 퀘스트 아이콘: 왼쪽 정렬, 위쪽 밀착, 크기 키움 */
         .brawl-icon-container {
             display: flex;
-            gap: 5px;
-            justify-content: center;
-            margin-bottom: 12px;
-            transform: scale(0.5);
-            transform-origin: center center;
-            position: relative;
-            left: -60px;
+            gap: 6px;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-top: -5px;
+            margin-bottom: 2px;
+            margin-left: 2px;
+            transform: scale(0.65);
+            transform-origin: top left;
         }
 
         .brawl-icon-card {
@@ -459,66 +461,6 @@
             align-items: center;
             margin-top: 12px;
             text-align: left;
-        }
-
-        .brawl-club-header {
-            background: linear-gradient(135deg, #1e3799, #0c2461);
-            border: 2px solid #4a69bd;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-            text-align: left;
-        }
-        .brawl-club-title {
-            font-size: 18px;
-            font-weight: 900;
-            color: #f1c40f;
-            margin-bottom: 4px;
-        }
-        .brawl-club-sub {
-            font-size: 11px;
-            color: #dcdde1;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-        .brawl-members-box {
-            background: #192a56;
-            border: 2px solid #273c75;
-            border-radius: 8px;
-            max-height: 220px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding: 6px;
-        }
-        .brawl-member-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #273c75;
-            border-radius: 6px;
-            padding: 6px 10px;
-            margin-bottom: 5px;
-            font-size: 12px;
-        }
-        .brawl-club-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .brawl-club-tab-btn {
-            flex: 1;
-            padding: 8px;
-            background: #2c3e50;
-            border: 2px solid #34495e;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .brawl-club-tab-btn.active {
-            background: #2980b9;
-            border-color: #3498db;
         }
 
         .brown-info-box {
@@ -1136,15 +1078,80 @@
             margin-bottom: 15px;
         }
 
-        .room-box {
-            background: #3d1b52;
+        /* 네모난 경기장 형태의 방 리스트 박스 스타일 */
+        .room-arena-box {
+            width: 100%;
+            max-height: 200px;
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 2px dashed #ff7518;
+            border-radius: 12px;
+            overflow-y: auto;
             padding: 10px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff7518;
             margin-bottom: 10px;
-            letter-spacing: 3px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        .room-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid #ff9d42;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .room-card:last-child { margin-bottom: 0; }
+        .room-card-info .room-host-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .room-card-info .room-code-text {
+            font-size: 12px;
+            color: #ffcc80;
+        }
+        .btn-room-participate {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .btn-room-participate:active { transform: scale(0.95); }
+
+        /* 화면 어두워지는 참여 중 오버레이 */
+        #joining-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999999;
+        }
+        #joining-loading-overlay.hidden {
+            display: none !important;
+            pointer-events: none !important;
+        }
+        .joining-loading-text {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            animation: pulseText 1s infinite alternate;
+        }
+        @keyframes pulseText {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .canvas-container {
@@ -1875,6 +1882,11 @@
         </div>
     </div>
 
+    <!-- 참여 중 로딩 화면 (화면 어두워짐 + 가운데 텍스트) -->
+    <div id="joining-loading-overlay" class="hidden">
+        <div class="joining-loading-text">참여중입니다</div>
+    </div>
+
     <div class="modal-overlay hidden" id="quest-modal">
         <div class="quest-modal-box">
             <button class="big-red-x-btn" onclick="closeQuestModal()">X</button>
@@ -2217,6 +2229,7 @@
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
+    <!-- 친구 플레이 화면 (네모난 경기장 방 목록 + 방 생성/참여 인터페이스) -->
     <div class="container hidden" id="friend-screen">
         <h2>👥 친구 플레이 👥</h2>
         <div class="version-text">v1.4 할로윈 에디션</div>
@@ -2231,6 +2244,19 @@
             <button class="btn btn-create" style="margin-top:0; flex:1;" onclick="createRoom()">방 생성하기 (랜덤 4자리)</button>
             <button class="btn" style="margin-top:0; width:50px; background:#c0392b;" onclick="resetRoom()">X</button>
         </div>
+
+        <!-- 네모난 경기장 형태의 방 목록 박스 -->
+        <div class="room-arena-box" id="room-arena-box">
+            <div style="font-size:12px; color:#a0aec0; text-align:center; padding:15px 0;" id="room-empty-notice">생성된 방이 없습니다. 방을 만들어보세요!</div>
+            <div class="room-card hidden" id="template-room-card">
+                <div class="room-card-info">
+                    <span class="room-host-name" id="display-host-name">김원진님의 방</span>
+                    <span class="room-code-text">방 번호: <b id="display-room-pw">----</b></span>
+                </div>
+                <button class="btn-room-participate" onclick="participateRoomFromCard()">참여하기</button>
+            </div>
+        </div>
+
         <div class="room-box hidden" id="room-display">----</div>
 
         <div id="join-container">
@@ -2254,9 +2280,9 @@
         </div>
 
         <div id="club-my-view">
-            <div class="brawl-club-header">
-                <div class="brawl-club-title" id="my-club-name">릴리전용 클럽 [공개]</div>
-                <div class="brawl-club-sub" id="my-club-desc">고수 환영! 3일 미접 추방, 닉네임 변경 후 장로 승급! 열심히 합시다.</div>
+            <div class="brawl-club-header" style="background: linear-gradient(135deg, #1e3799, #0c2461); border: 2px solid #4a69bd; border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: left;">
+                <div class="brawl-club-title" id="my-club-name" style="font-size: 18px; font-weight: 900; color: #f1c40f; margin-bottom: 4px;">릴리전용 클럽 [공개]</div>
+                <div class="brawl-club-sub" id="my-club-desc" style="font-size: 11px; color: #dcdde1; margin-bottom: 8px; line-height: 1.3;">고수 환영! 3일 미접 추방, 닉네임 변경 후 장로 승급! 열심히 합시다.</div>
                 <div style="font-size:11px; color:#ffeaa7;">클럽 태그: <b id="my-club-tag">#U9G8UL09</b> | 트로피 조건: <b id="my-club-trophy">9000</b></div>
             </div>
 
@@ -2265,7 +2291,7 @@
                 <span>트로피 기준 정렬</span>
             </div>
             
-            <div class="brawl-members-box" id="my-club-members-container"></div>
+            <div class="brawl-members-box" id="my-club-members-container" style="background: #192a56; border: 2px solid #273c75; border-radius: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 10px; padding: 6px;"></div>
 
             <button class="btn" style="background:#e74c3c; padding:12px; margin-top:4px;" onclick="leaveClub()">클럽 탈퇴</button>
         </div>
@@ -2278,7 +2304,7 @@
             
             <div class="error" id="group-error"></div>
             
-            <div class="brawl-members-box" id="club-search-results-container" style="max-height: 250px;"></div>
+            <div class="brawl-members-box" id="club-search-results-container" style="max-height: 250px; background: #192a56; border: 2px solid #273c75; border-radius: 8px; overflow-y: auto; margin-bottom: 10px; padding: 6px;"></div>
 
             <button class="btn btn-create" style="margin-top:6px;" onclick="openCreateClubModal()">+새 클럽 만들기</button>
         </div>
@@ -3402,7 +3428,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
@@ -3446,6 +3472,31 @@
         function updateNoticeLive() {
             const text = document.getElementById('admin-notice-input').value.trim();
             db.ref('notice').set(text);
+        }
+
+        function publishAdminNotice() {
+            const text = document.getElementById('admin-notice-input').value.trim();
+            db.ref('notice').set(text).then(() => {
+                alert("공지사항이 실시간으로 등록되었습니다!");
+            });
+        }
+
+        function deleteAdminNotice() {
+            db.ref('notice').remove().then(() => {
+                document.getElementById('admin-notice-input').value = "";
+                alert("상단 공지사항이 삭제되었습니다!");
+            });
+        }
+
+        function updateNoticeBanner() {
+            const banner = document.getElementById('top-notice-banner');
+            const bannerText = document.getElementById('notice-banner-text');
+            if (activeNotice && activeNotice.trim() !== "") {
+                bannerText.innerText = activeNotice;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
         }
 
         function openMaintenancePassModal() {
@@ -3510,148 +3561,6 @@
 
         function closeAdminPanel() {
             document.getElementById('admin-panel').classList.add('hidden');
-        }
-
-        function handleChatButtonClick() {
-            gameSound.init();
-            if (nextGameMode === 'free') {
-                alert("🚫 자유 매칭 모드에서는 채팅을 이용할 수 없습니다!");
-                return;
-            }
-            if (nextGameMode !== 'friend') {
-                alert("🚫 AI 매칭 및 미니 게임에서는 채팅을 이용할 수 없습니다!\n(친구 플레이 전용 기능)");
-                return;
-            }
-            document.getElementById('chat-modal').classList.remove('hidden');
-        }
-
-        function closeChatModal() {
-            document.getElementById('chat-modal').classList.add('hidden');
-            document.getElementById('quick-chat-panel').classList.add('hidden');
-        }
-
-        function toggleQuickChatPanel() {
-            const panel = document.getElementById('quick-chat-panel');
-            panel.classList.toggle('hidden');
-        }
-
-        function selectQuickChat(text) {
-            document.getElementById('chat-msg-input').value = text;
-            document.getElementById('quick-chat-panel').classList.add('hidden');
-            sendChatMessage();
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-msg-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            appendChatMessage(savedUsername || "나", text, true);
-
-            if (conn && conn.open) {
-                conn.send({
-                    type: 'CHAT_MSG',
-                    sender: savedUsername || "친구",
-                    text: text
-                });
-            }
-
-            input.value = '';
-        }
-
-        function appendChatMessage(sender, text, isMe) {
-            const logArea = document.getElementById('chat-log-area');
-            const initMsg = logArea.querySelector('div[style*="text-align:center"]');
-            if (initMsg) initMsg.remove();
-
-            const row = document.createElement('div');
-            row.className = `chat-msg-row ${isMe ? 'me' : 'other'}`;
-            row.innerHTML = `
-                <div class="chat-sender">${sender}</div>
-                <div class="chat-bubble">${escapeHtml(text)}</div>
-            `;
-            logArea.appendChild(row);
-            logArea.scrollTop = logArea.scrollHeight;
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
-        document.addEventListener('keydown', (e) => {
-            gameSound.init();
-            if (e.key === 'F2') {
-                e.preventDefault();
-                openAdminAuth();
-            }
-            if (isBossMode && gameStarted) {
-                if (e.key === 'ArrowLeft' || e.key === 'a') moveDirection = -1;
-                if (e.key === 'ArrowRight' || e.key === 'd') moveDirection = 1;
-                if (e.key === ' ' || e.key === 'Shift') {
-                    triggerDefense();
-                }
-            }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            if (isBossMode && gameStarted) {
-                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'ArrowRight' || e.key === 'd') {
-                    moveDirection = 0;
-                }
-            }
-        });
-
-        function triggerDefense() {
-            gameSound.init();
-            if (!isBossMode || !gameStarted || !roundTwoActive) return;
-            const now = Date.now();
-            if (defenseCount <= 0) {
-                defenseAlertText = "4번을 다 썼습니다";
-                defenseAlertTimer = 120;
-                return;
-            }
-            if (now < defenseCooldown) {
-                let leftSec = ((defenseCooldown - now) / 1000).toFixed(1);
-                defenseAlertText = `${leftSec}초 뒤에 사용하세요`;
-                defenseAlertTimer = 120;
-                return;
-            }
-
-            defenseCount--;
-            defenseCooldown = now + 2000;
-            isDefending = true;
-            const btn = document.getElementById('defense-btn');
-            if(btn) btn.classList.add('defending');
-
-            setTimeout(() => {
-                isDefending = false;
-                if(btn) btn.classList.remove('defending');
-            }, 600);
-        }
-
-        function publishAdminNotice() {
-            const text = document.getElementById('admin-notice-input').value.trim();
-            db.ref('notice').set(text).then(() => {
-                alert("공지사항이 실시간으로 등록되었습니다!");
-            });
-        }
-
-        function deleteAdminNotice() {
-            db.ref('notice').remove().then(() => {
-                document.getElementById('admin-notice-input').value = "";
-                alert("상단 공지사항이 삭제되었습니다!");
-            });
-        }
-
-        function updateNoticeBanner() {
-            const banner = document.getElementById('top-notice-banner');
-            const bannerText = document.getElementById('notice-banner-text');
-            if (activeNotice && activeNotice.trim() !== "") {
-                bannerText.innerText = activeNotice;
-                banner.classList.remove('hidden');
-            } else {
-                banner.classList.add('hidden');
-            }
         }
 
         function switchAdminTab(tabName) {
@@ -4724,6 +4633,11 @@
                 return;
             }
 
+            connectToRoomPeer(code);
+        }
+
+        function connectToRoomPeer(code) {
+            const err = document.getElementById('friend-error');
             err.innerText = "친구 방에 연결 중입니다...";
 
             if (peer) peer.destroy();
@@ -4757,6 +4671,20 @@
             });
         }
 
+        /* 참여하기 버튼을 누르면 화면이 어두워지고 '참여중입니다' 문구 표시 후 연결 */
+        function participateRoomFromCard() {
+            gameSound.init();
+            if (!createdCode) return;
+
+            const loadingOverlay = document.getElementById('joining-loading-overlay');
+            loadingOverlay.classList.remove('hidden');
+
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                connectToRoomPeer(createdCode);
+            }, 1200);
+        }
+
         function createRoom() {
             gameSound.init();
             if (!checkUserHasName()) return;
@@ -4764,11 +4692,16 @@
             const err = document.getElementById('friend-error');
             createdCode = Math.floor(1000 + Math.random() * 9000).toString();
             
+            // 네모난 방 카드에 방 정보 반영
+            document.getElementById('room-empty-notice').classList.add('hidden');
+            document.getElementById('display-host-name').innerText = `${savedUsername}님의 방`;
+            document.getElementById('display-room-pw').innerText = createdCode;
+            document.getElementById('template-room-card').classList.remove('hidden');
+
             const box = document.getElementById('room-display');
             box.innerText = "방 번호: " + createdCode;
             box.classList.remove('hidden');
 
-            document.getElementById('join-container').classList.add('hidden');
             err.style.color = "#27ae60";
             err.innerText = "친구의 접속을 기다리는 중입니다...";
 
@@ -5025,7 +4958,8 @@
             createdCode = null;
             if (peer) peer.destroy();
             document.getElementById('room-display').classList.add('hidden');
-            document.getElementById('join-container').classList.remove('hidden');
+            document.getElementById('template-room-card').classList.add('hidden');
+            document.getElementById('room-empty-notice').classList.remove('hidden');
             document.getElementById('room-input').value = "";
             const err = document.getElementById('friend-error');
             err.style.color = "#ff4757";
@@ -5919,4 +5853,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-        </html>
+                    </html>
