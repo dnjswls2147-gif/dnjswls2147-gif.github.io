@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -305,11 +302,16 @@
             z-index: 10;
         }
 
+        /* 전체 채팅, 일일 퀘스트 아이콘 2배 작게 및 왼쪽 이동 */
         .brawl-icon-container {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             justify-content: center;
             margin-bottom: 12px;
+            transform: scale(0.5);
+            transform-origin: center center;
+            position: relative;
+            left: -60px;
         }
 
         .brawl-icon-card {
@@ -423,23 +425,28 @@
         .piggy-bank-container {
             width: 140px;
             height: 140px;
-            background: radial-gradient(circle, #f39c12, #d35400);
-            border: 4px solid #f1c40f;
+            background: radial-gradient(circle, #ff9ff3, #f368e0);
+            border: 4px solid #ff4757;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 15px auto;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+            box-shadow: 0 0 20px rgba(243, 104, 224, 0.5);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .piggy-bank-container:active {
+            transform: scale(0.93) rotate(-3deg);
         }
         .piggy-coins-fill {
             position: absolute;
             bottom: 0;
             width: 100%;
-            background: rgba(255, 234, 167, 0.35);
+            background: rgba(255, 234, 167, 0.45);
             transition: height 0.4s ease;
         }
         .quest-item-card {
@@ -786,26 +793,6 @@
             font-weight: 900;
             color: #16a085;
             margin: 0;
-        }
-        .global-chat-controls {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 6px;
-        }
-        .admin-chat-mode-btn {
-            background: #34495e;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            flex: 1;
-            touch-action: manipulation;
-        }
-        .admin-chat-mode-btn.active {
-            background: #e67e22;
         }
 
         .global-chat-log {
@@ -1877,11 +1864,6 @@
                 <h3 class="global-chat-title">💬 전체 채팅</h3>
                 <button class="btn-close-x" style="position:static; width:30px; height:30px; font-size:14px;" onclick="closeGlobalChatModal()">X</button>
             </div>
-            
-            <div class="global-chat-controls">
-                <button class="admin-chat-mode-btn active" id="btn-mode-all-talk" onclick="requestSwitchChatMode('all')">모두 말하기</button>
-                <button class="admin-chat-mode-btn" id="btn-mode-admin-talk" onclick="requestSwitchChatMode('admin')">채팅 금지</button>
-            </div>
 
             <div class="global-chat-log" id="global-chat-log-area">
                 <div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 입장했습니다.<br>매너 채팅을 지켜주세요!</div>
@@ -1901,10 +1883,10 @@
             <h2 style="color:#f1c40f; margin-top: 5px;">🪙 코인 저금통</h2>
             <div class="version-text">매일 퀘스트를 깨고 코인을 채우세요!</div>
 
-            <!-- 가운데 코인 저금통 -->
-            <div class="piggy-bank-container">
+            <!-- 현실적인 돼지 저금통 모양 및 클릭 시 동전 소리 재생 -->
+            <div class="piggy-bank-container" onclick="playRealCoinSound()">
                 <div class="piggy-coins-fill" id="piggy-fill-bar" style="height: 0%;"></div>
-                <span style="font-size:36px; z-index:2;">🐖</span>
+                <span style="font-size:42px; z-index:2;">🐷</span>
                 <span id="piggy-status-text" style="font-size:12px; font-weight:bold; color:#fff; z-index:2; margin-top:4px; text-shadow:1px 1px 2px #000;">0 / 5 회</span>
             </div>
 
@@ -2432,6 +2414,34 @@
                 osc.stop(this.ctx.currentTime + 0.15);
             }
 
+            // Real Coin Sound (Teng-teng sound when interacting with Piggy Bank)
+            playCoinSound() {
+                if (this.isMuted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const notes = [987.77, 1318.51, 1760.00];
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        if (!this.ctx) return;
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        
+                        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+                        
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        
+                        osc.start();
+                        osc.stop(this.ctx.currentTime + 0.15);
+                    }, index * 50);
+                });
+            }
+
             startSandsBgm() {
                 if (this.bgmTimer || !this.ctx) return;
                 this.init();
@@ -2476,6 +2486,10 @@
 
         const gameSound = new GameSoundEngine();
 
+        function playRealCoinSound() {
+            gameSound.playCoinSound();
+        }
+
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
 
@@ -2512,6 +2526,7 @@
 
         let questPlayCount = 0;
         let questClaimed = false;
+        let lastQuestResetDate = "";
 
         const badWords = [
             "시발", "씨발", "시팔", "씨팔", "개새끼", "병신", "병신놈", "븅신", "지랄", "존나", "졸라", 
@@ -2548,7 +2563,6 @@
         let globalMails = {}; 
         let globalChatMessages = {};
         let updatePreviewMedia = {};
-        let globalChatMode = 'all'; 
         let activeNotice = "";
         let isAdminLoggedIn = false;
         let isBypassedByPassword = false;
@@ -2639,6 +2653,23 @@
             return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
         }
 
+        function getTodayDateString(nowDate = new Date()) {
+            const year = nowDate.getFullYear();
+            const month = String(nowDate.getMonth() + 1).padStart(2, '0');
+            const day = String(nowDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function checkAndResetDailyQuest() {
+            const todayStr = getTodayDateString();
+            if (lastQuestResetDate !== todayStr) {
+                lastQuestResetDate = todayStr;
+                questPlayCount = 0;
+                questClaimed = false;
+                saveData();
+            }
+        }
+
         function getTimeString(timestamp) {
             const d = new Date(timestamp);
             let h = d.getHours();
@@ -2686,7 +2717,6 @@
             if (onlineCountEl) {
                 onlineCountEl.innerText = Math.max(1, count);
             }
-            updateGlobalChatLobbyStats();
             renderAdminUserList();
         });
 
@@ -2716,11 +2746,6 @@
             if (maintInput && maintInput !== document.activeElement) {
                 maintInput.value = maintenanceReasonText;
             }
-        });
-
-        db.ref('globalChatMode').on('value', (snap) => {
-            globalChatMode = snap.val() || 'all';
-            updateGlobalChatModeUI();
         });
 
         db.ref('globalChatMessages').on('value', (snap) => {
@@ -3060,7 +3085,6 @@
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
-                updateGlobalChatLobbyStats();
                 renderAdminUserList();
                 renderRankingList();
                 renderAdminGiftUserSelect();
@@ -3079,13 +3103,13 @@
                 }
             } else {
                 registeredUsers = [];
-                updateGlobalChatLobbyStats();
                 renderAdminUserList();
                 renderRankingList();
             }
         });
 
         setInterval(() => {
+            checkAndResetDailyQuest();
             if (savedUsername) {
                 let me = registeredUsers.find(u => u.name === savedUsername);
                 let banTime = (me && me.banUntil) ? me.banUntil : localBanUntil;
@@ -3119,6 +3143,7 @@
                         trophies: userTrophies,
                         questPlayCount: questPlayCount,
                         questClaimed: questClaimed,
+                        lastQuestResetDate: lastQuestResetDate,
                         friendsCount: 0,
                         recvReqCount: 0,
                         sendReqCount: 0,
@@ -3142,6 +3167,7 @@
                         if (existing.trophies !== undefined) userTrophies = existing.trophies;
                         if (existing.questPlayCount !== undefined) questPlayCount = existing.questPlayCount;
                         if (existing.questClaimed !== undefined) questClaimed = existing.questClaimed;
+                        if (existing.lastQuestResetDate) lastQuestResetDate = existing.lastQuestResetDate;
                     }
                     db.ref('users/' + safeKey).set(userData);
                     updateCoinsUI();
@@ -3238,6 +3264,7 @@
         function openQuestModal() {
             gameSound.init();
             if (!checkUserHasName()) return;
+            checkAndResetDailyQuest();
             updateQuestUI();
             document.getElementById('quest-modal').classList.remove('hidden');
         }
@@ -3307,79 +3334,11 @@
             document.getElementById('global-chat-modal').classList.add('hidden');
         }
 
-        function updateGlobalChatLobbyStats() {
-            let totalRegistered = registeredUsers.length;
-            let now = Date.now();
-            let isOnline = false;
-            if (savedUsername) {
-                Object.values(activePresenceUsers).forEach(p => {
-                    if (p.username === savedUsername && p.lastSeen && (now - p.lastSeen < 12000)) {
-                        isOnline = true;
-                    }
-                });
-            }
-        }
-
-        function updateGlobalChatModeUI() {
-            const btnAll = document.getElementById('btn-mode-all-talk');
-            const btnAdmin = document.getElementById('btn-mode-admin-talk');
-
-            if (!btnAll || !btnAdmin) return;
-            if (globalChatMode === 'admin') {
-                btnAll.classList.remove('active');
-                btnAdmin.classList.add('active');
-            } else {
-                btnAll.classList.add('active');
-                btnAdmin.classList.remove('active');
-            }
-        }
-
-        function requestSwitchChatMode(mode) {
-            gameSound.init();
-            if (mode === 'all') {
-                db.ref('globalChatMode').set('all').then(() => {
-                    alert("📢 모두 말하기 모드로 변경되었습니다.");
-                });
-            } else {
-                openAdminChatPassModal();
-            }
-        }
-
-        function openAdminChatPassModal() {
-            gameSound.init();
-            document.getElementById('admin-chat-pass-input').value = "";
-            document.getElementById('admin-chat-pass-error').innerText = "";
-            document.getElementById('admin-chat-pass-modal').classList.remove('hidden');
-        }
-
-        function closeAdminChatPassModal() {
-            document.getElementById('admin-chat-pass-modal').classList.add('hidden');
-        }
-
-        function verifyAdminChatPassword() {
-            const val = document.getElementById('admin-chat-pass-input').value.trim();
-            const err = document.getElementById('admin-chat-pass-error');
-
-            if (val === ADMIN_CHAT_PASS) {
-                closeAdminChatPassModal();
-                db.ref('globalChatMode').set('admin').then(() => {
-                    alert("🚫 채팅 금지(관리자만 말하기) 모드가 활성화되었습니다.");
-                });
-            } else {
-                err.innerText = "비밀번호가 올바르지 않습니다!";
-            }
-        }
-
         function sendGlobalChatMessage() {
             gameSound.init();
             const input = document.getElementById('global-chat-input');
             const text = input.value.trim();
             if (!text) return;
-
-            if (globalChatMode === 'admin' && !isAdminLoggedIn) {
-                alert("🚫 현재 [채팅 금지] 상태입니다. 관리자만 메시지를 보낼 수 있습니다!");
-                return;
-            }
 
             const isBadWord = badWords.some(word => text.toLowerCase().includes(word.toLowerCase()));
             if (isBadWord) {
@@ -3885,6 +3844,7 @@
                     trophies: existingData.trophies !== undefined ? existingData.trophies : userTrophies,
                     questPlayCount: existingData.questPlayCount !== undefined ? existingData.questPlayCount : questPlayCount,
                     questClaimed: existingData.questClaimed !== undefined ? existingData.questClaimed : questClaimed,
+                    lastQuestResetDate: lastQuestResetDate,
                     friendsCount: existingData.friendsCount || 0,
                     recvReqCount: existingData.recvReqCount || 0,
                     sendReqCount: existingData.sendReqCount || 0,
@@ -4243,6 +4203,7 @@
                 mailClaimed: mailClaimed,
                 questPlayCount: questPlayCount,
                 questClaimed: questClaimed,
+                lastQuestResetDate: lastQuestResetDate,
                 banUntil: localBanUntil,
                 banReason: localBanReason,
                 firstJoinedDate: firstJoinDateStr,
@@ -4271,6 +4232,7 @@
                     if (parsed.mailClaimed !== undefined) mailClaimed = parsed.mailClaimed;
                     if (parsed.questPlayCount !== undefined) questPlayCount = parsed.questPlayCount;
                     if (parsed.questClaimed !== undefined) questClaimed = parsed.questClaimed;
+                    if (parsed.lastQuestResetDate !== undefined) lastQuestResetDate = parsed.lastQuestResetDate;
                     if (parsed.banUntil !== undefined) localBanUntil = parsed.banUntil;
                     if (parsed.banReason !== undefined) localBanReason = parsed.banReason;
 
@@ -4285,6 +4247,8 @@
                     }
                 } catch (e) {}
             }
+
+            checkAndResetDailyQuest();
 
             if (localBanUntil && localBanUntil > Date.now()) {
                 checkAndApplyBanScreen(localBanUntil, localBanReason);
@@ -4327,6 +4291,7 @@
             firstJoinDateStr = getFormattedDate();
             firstJoinTimestamp = Date.now();
             sessionStartTime = Date.now();
+            lastQuestResetDate = getTodayDateString();
             
             syncGlobalUsers();
             saveData();
@@ -4904,6 +4869,7 @@
                 }
             }
 
+            checkAndResetDailyQuest();
             if (questPlayCount < 5) {
                 questPlayCount++;
                 updateQuestUI();
@@ -4973,6 +4939,7 @@
                 conn.send({ type: 'RETRY_GAME' });
             }
 
+            checkAndResetDailyQuest();
             if (questPlayCount < 5) {
                 questPlayCount++;
                 updateQuestUI();
@@ -5956,4 +5923,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                    </html>
+        </html>
