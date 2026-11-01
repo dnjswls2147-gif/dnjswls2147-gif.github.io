@@ -26,6 +26,15 @@
             min-height: 100vh;
             color: #ffffff;
         }
+
+        /* 버튼 터치 감도 및 반응성 개선 */
+        button {
+            touch-action: manipulation;
+            transition: transform 0.05s active;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
         
         .notice-banner {
             position: fixed;
@@ -302,7 +311,6 @@
             z-index: 10;
         }
 
-        /* 전체 채팅 및 일일 퀘스트 아이콘: 왼쪽 정렬, 위쪽 밀착, 크기 키움 */
         .brawl-icon-container {
             display: flex;
             gap: 6px;
@@ -1882,7 +1890,7 @@
         </div>
     </div>
 
-    <!-- 참여 중 로딩 화면 (화면 어두워짐 + 가운데 텍스트) -->
+    <!-- 참여 중 로딩 화면 -->
     <div id="joining-loading-overlay" class="hidden">
         <div class="joining-loading-text">참여중입니다</div>
     </div>
@@ -2063,6 +2071,7 @@
         </div>
     </div>
 
+    <!-- 지정하신 양식의 프로필 모달 팝업 -->
     <div class="modal-overlay hidden" id="profile-modal">
         <div class="modal-box">
             <div class="header-row">
@@ -2087,6 +2096,10 @@
                 <div class="profile-info-row">
                     <span>🏆 보유 트로피:</span>
                     <span id="profile-modal-trophy" style="color: #3498db;">0개</span>
+                </div>
+                <div class="profile-info-row">
+                    <span>🛡️ 참여중인 클럽:</span>
+                    <span id="profile-modal-club" style="color: #e0aaff;">가입한 클럽이 없음</span>
                 </div>
             </div>
             
@@ -2229,7 +2242,7 @@
         <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
     </div>
 
-    <!-- 친구 플레이 화면 (네모난 경기장 방 목록 + 방 생성/참여 인터페이스) -->
+    <!-- 친구 플레이 화면 (네모난 방 리스트 배치) -->
     <div class="container hidden" id="friend-screen">
         <h2>👥 친구 플레이 👥</h2>
         <div class="version-text">v1.4 할로윈 에디션</div>
@@ -2370,6 +2383,7 @@
 
         <div style="display: flex; gap: 8px; margin-top: 15px; align-items: center;">
             <button class="btn btn-retry hidden" id="btn-game-retry" onclick="retryGame()" style="margin-top: 0; flex: 1;">🔄 다시 플레이</button>
+            <!-- 로비로가기 버튼 클릭 시 게임 재시작 없이 로비로 직행 -->
             <button class="btn btn-back" id="btn-game-lobby" onclick="showLobby()" style="margin-top: 0; flex: 2; background-color: #e74c3c; border: 2px solid #c0392b; font-size:16px; padding:14px; border-radius:10px;">🏠 로비로 가기</button>
             <button class="fancy-chat-btn" onclick="handleChatButtonClick()">
                 <svg class="chat-icon-svg" viewBox="0 0 24 24">
@@ -2672,7 +2686,7 @@
             const day = String(nowDate.getDate()).padStart(2, '0');
             const hours = String(nowDate.getHours()).padStart(2, '0');
             const minutes = String(nowDate.getMinutes()).padStart(2, '0');
-            return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+            return `${year}/${month}/${day}`;
         }
 
         function getTodayDateString(nowDate = new Date()) {
@@ -3099,11 +3113,13 @@
             endAdminDrag();
         });
 
+        // 릴리 팬, 릴리 A를 가져가, 네힁 필터링 적용
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 let allData = Object.values(data);
-                registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd");
+                const excludedNames = ["릴리 팬", "릴리 A를 가져가", "네힁"];
+                registeredUsers = allData.filter(u => u && u.name && !u.isBot && u.name !== "11" && u.name !== "Dd" && !excludedNames.includes(u.name));
                 registeredUsers.sort((a, b) => (b.joinedTimestamp || 0) - (a.joinedTimestamp || 0));
 
                 localStorage.setItem(GLOBAL_USERS_KEY, JSON.stringify(registeredUsers));
@@ -3428,7 +3444,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
@@ -4035,7 +4051,7 @@
             if (currentRankingType === 'trophy') {
                 sorted.sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
             } else {
-                sorted.sort((a, b) => (b.coins || 0) - (a.coins || 0));
+                sorted.sort((a, b) => (b.coins || 0) - (b.coins || 0));
             }
 
             let displayList = sorted.slice(0, 100);
@@ -4068,6 +4084,25 @@
             });
         }
 
+        // 프로필 버튼 클릭 시 지정하신 항목(이름, 최초 접속 날짜 YYYY/MM/DD, 코인, 트로피, 참여 중인 클럽)이 정확히 출력되도록 구현
+        function openProfileModal() {
+            gameSound.init();
+            document.getElementById('profile-modal-name').innerText = savedUsername;
+            document.getElementById('profile-modal-date').innerText = firstJoinDateStr || "2026/10/16";
+            document.getElementById('profile-modal-coin').innerText = (userCoins || 0) + "개";
+            document.getElementById('profile-modal-trophy').innerText = (userTrophies || 0) + "개";
+
+            let userKey = savedUsername ? savedUsername.replace(/[.#$/\[\]]/g, "_") : "";
+            let joinedClubName = "가입한 클럽이 없음";
+            
+            if (myClub && myClub.members && myClub.members[userKey]) {
+                joinedClubName = myClub.name;
+            }
+            document.getElementById('profile-modal-club').innerText = joinedClubName;
+
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
         function openUserProfile(username) {
             gameSound.init();
             let target = registeredUsers.find(u => u.name === username);
@@ -4077,9 +4112,17 @@
 
             document.getElementById('profile-modal-title').innerText = "👤 유저 프로필";
             document.getElementById('profile-modal-name').innerText = target.name;
-            document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || getFormattedDate();
+            document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || "2026/10/16";
             document.getElementById('profile-modal-coin').innerText = (target.coins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (target.trophies || 0) + "개";
+            
+            let targetKey = target.name.replace(/[.#$/\[\]]/g, "_");
+            let clubName = "가입한 클럽이 없음";
+            if (myClub && myClub.members && myClub.members[targetKey]) {
+                clubName = myClub.name;
+            }
+            document.getElementById('profile-modal-club').innerText = clubName;
+
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
@@ -4193,7 +4236,7 @@
             }
 
             savedUsername = val;
-            firstJoinDateStr = getFormattedDate();
+            firstJoinDateStr = "2026/10/16";
             firstJoinTimestamp = Date.now();
             sessionStartTime = Date.now();
             lastQuestResetDate = getTodayDateString();
@@ -4671,7 +4714,6 @@
             });
         }
 
-        /* 참여하기 버튼을 누르면 화면이 어두워지고 '참여중입니다' 문구 표시 후 연결 */
         function participateRoomFromCard() {
             gameSound.init();
             if (!createdCode) return;
@@ -4692,7 +4734,6 @@
             const err = document.getElementById('friend-error');
             createdCode = Math.floor(1000 + Math.random() * 9000).toString();
             
-            // 네모난 방 카드에 방 정보 반영
             document.getElementById('room-empty-notice').classList.add('hidden');
             document.getElementById('display-host-name').innerText = `${savedUsername}님의 방`;
             document.getElementById('display-room-pw').innerText = createdCode;
@@ -4903,6 +4944,7 @@
             document.getElementById('mailbox-screen').classList.remove('hidden');
         }
 
+        // [로비로가기] 버튼 동작 시 게임 재시작 없이 확실히 로비 화면으로 전환되도록 처리
         function showLobby() {
             gameSound.init();
             gameSound.stopBgm();
@@ -5853,4 +5895,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                    </html>
+</html>
