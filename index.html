@@ -302,7 +302,6 @@
             z-index: 10;
         }
 
-        /* 전체 채팅, 일일 퀘스트 아이콘 2배 작게 및 왼쪽 이동 */
         .brawl-icon-container {
             display: flex;
             gap: 5px;
@@ -1876,14 +1875,12 @@
         </div>
     </div>
 
-    <!-- 코인 저금통 & 일일 퀘스트 모달 창 -->
     <div class="modal-overlay hidden" id="quest-modal">
         <div class="quest-modal-box">
             <button class="big-red-x-btn" onclick="closeQuestModal()">X</button>
             <h2 style="color:#f1c40f; margin-top: 5px;">🪙 코인 저금통</h2>
             <div class="version-text">매일 퀘스트를 깨고 코인을 채우세요!</div>
 
-            <!-- 현실적인 돼지 저금통 모양 및 클릭 시 동전 소리 재생 -->
             <div class="piggy-bank-container" onclick="playRealCoinSound()">
                 <div class="piggy-coins-fill" id="piggy-fill-bar" style="height: 0%;"></div>
                 <span style="font-size:42px; z-index:2;">🐷</span>
@@ -2414,7 +2411,6 @@
                 osc.stop(this.ctx.currentTime + 0.15);
             }
 
-            // Real Coin Sound (Teng-teng sound when interacting with Piggy Bank)
             playCoinSound() {
                 if (this.isMuted) return;
                 this.init();
