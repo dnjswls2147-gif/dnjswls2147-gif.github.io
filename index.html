@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 샌즈 에디션 (아이콘 스타일 개정)</title>
+    <title>릴리 볼 파이트 - 샌즈 에디션 (무지개 색상 수정)</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -500,11 +500,13 @@
             padding-bottom: 0;
         }
 
-        /* 무지개 이름 텍스트 스타일 */
+        /* 무지개 이름 텍스트 스타일 수정 (배경과 텍스트 충돌 방지) */
         .rainbow-name-text {
             background: linear-gradient(90deg, #ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ed4c67);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
             font-weight: 900;
         }
 
@@ -2079,7 +2081,7 @@
         </div>
     </div>
 
-    <!-- 개정된 프로필 모달 팝업: 프로필 이름 옆 🏳️‍🌈 아이콘 및 무지개 색상 변경 적용 -->
+    <!-- 프로필 모달 팝업 (무지개 이름 및 🏳️‍🌈 적용) -->
     <div class="modal-overlay hidden" id="profile-modal">
         <div class="modal-box">
             <div class="header-row">
@@ -2091,7 +2093,7 @@
             <div class="brown-info-box">
                 <div class="profile-info-row">
                     <span>📛 이름:</span>
-                    <span id="profile-modal-name" class="rainbow-name-text">- 🏳️‍🌈</span>
+                    <span id="profile-modal-name">-</span>
                 </div>
                 <div class="profile-info-row">
                     <span>📅 최초 접속:</span>
@@ -2391,7 +2393,6 @@
 
         <div style="display: flex; gap: 8px; margin-top: 15px; align-items: center;">
             <button class="btn btn-retry hidden" id="btn-game-retry" onclick="retryGame()" style="margin-top: 0; flex: 1;">🔄 다시 플레이</button>
-            <!-- 로비로가기 버튼 클릭 시 게임 재시작 없이 로비로 직행 -->
             <button class="btn btn-back" id="btn-game-lobby" onclick="showLobby()" style="margin-top: 0; flex: 2; background-color: #e74c3c; border: 2px solid #c0392b; font-size:16px; padding:14px; border-radius:10px;">🏠 로비로 가기</button>
             <button class="fancy-chat-btn" onclick="handleChatButtonClick()">
                 <svg class="chat-icon-svg" viewBox="0 0 24 24">
@@ -3121,7 +3122,6 @@
             endAdminDrag();
         });
 
-        // 릴리 팬, 릴리 A를 가져가, 네힁 필터링 적용
         db.ref('users').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -4092,10 +4092,10 @@
             });
         }
 
-        // 프로필 이름 옆 🏳️‍🌈 아이콘과 무지개 색상이 함께 표시되도록 기능 개정
+        // 프로필 이름 무지개 색상 정상 반영 수정 반영
         function openProfileModal() {
             gameSound.init();
-            document.getElementById('profile-modal-name').innerHTML = `${escapeHtml(savedUsername)} 🏳️‍🌈`;
+            document.getElementById('profile-modal-name').innerHTML = `<span class="rainbow-name-text">${escapeHtml(savedUsername)} 🏳️‍🌈</span>`;
             document.getElementById('profile-modal-date').innerText = firstJoinDateStr || "2026/10/16";
             document.getElementById('profile-modal-coin').innerText = (userCoins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (userTrophies || 0) + "개";
@@ -4119,7 +4119,7 @@
             }
 
             document.getElementById('profile-modal-title').innerText = "👤 유저 프로필";
-            document.getElementById('profile-modal-name').innerHTML = `${escapeHtml(target.name)} 🏳️‍🌈`;
+            document.getElementById('profile-modal-name').innerHTML = `<span class="rainbow-name-text">${escapeHtml(target.name)} 🏳️‍🌈</span>`;
             document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || "2026/10/16";
             document.getElementById('profile-modal-coin').innerText = (target.coins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (target.trophies || 0) + "개";
@@ -4962,7 +4962,6 @@
             document.getElementById('mailbox-screen').classList.remove('hidden');
         }
 
-        // [로비로가기] 버튼 동작 시 게임 재시작 없이 확실히 로비 화면으로 전환되도록 처리
         function showLobby() {
             gameSound.init();
             gameSound.stopBgm();
@@ -5913,4 +5912,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-    </html>
+            </html>
