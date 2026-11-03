@@ -500,6 +500,14 @@
             padding-bottom: 0;
         }
 
+        /* 무지개 이름 텍스트 스타일 */
+        .rainbow-name-text {
+            background: linear-gradient(90deg, #ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ed4c67);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
         .header-row {
             display: flex;
             justify-content: center;
@@ -2071,7 +2079,7 @@
         </div>
     </div>
 
-    <!-- 지정하신 양식의 프로필 모달 팝업 -->
+    <!-- 개정된 프로필 모달 팝업: 프로필 이름 옆 🏳️‍🌈 아이콘 및 무지개 색상 변경 적용 -->
     <div class="modal-overlay hidden" id="profile-modal">
         <div class="modal-box">
             <div class="header-row">
@@ -2083,7 +2091,7 @@
             <div class="brown-info-box">
                 <div class="profile-info-row">
                     <span>📛 이름:</span>
-                    <span id="profile-modal-name" style="color: #fff;">-</span>
+                    <span id="profile-modal-name" class="rainbow-name-text">- 🏳️‍🌈</span>
                 </div>
                 <div class="profile-info-row">
                     <span>📅 최초 접속:</span>
@@ -3444,7 +3452,7 @@
             messages.sort((a, b) => a.timestamp - b.timestamp);
 
             if (messages.length === 0) {
-                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지 가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
+                logArea.innerHTML = `<div style="font-size:12px; color:#a0aec0; text-align:center; margin: auto 0;">전체 채팅방에 메시지가 없습니다.<br>첫 메시지를 남겨보세요!</div>`;
                 return;
             }
 
@@ -4084,10 +4092,10 @@
             });
         }
 
-        // 프로필 버튼 클릭 시 지정하신 항목(이름, 최초 접속 날짜 YYYY/MM/DD, 코인, 트로피, 참여 중인 클럽)이 정확히 출력되도록 구현
+        // 프로필 이름 옆 🏳️‍🌈 아이콘과 무지개 색상이 함께 표시되도록 기능 개정
         function openProfileModal() {
             gameSound.init();
-            document.getElementById('profile-modal-name').innerText = savedUsername;
+            document.getElementById('profile-modal-name').innerHTML = `${escapeHtml(savedUsername)} 🏳️‍🌈`;
             document.getElementById('profile-modal-date').innerText = firstJoinDateStr || "2026/10/16";
             document.getElementById('profile-modal-coin').innerText = (userCoins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (userTrophies || 0) + "개";
@@ -4111,7 +4119,7 @@
             }
 
             document.getElementById('profile-modal-title').innerText = "👤 유저 프로필";
-            document.getElementById('profile-modal-name').innerText = target.name;
+            document.getElementById('profile-modal-name').innerHTML = `${escapeHtml(target.name)} 🏳️‍🌈`;
             document.getElementById('profile-modal-date').innerText = target.firstJoinedDate || "2026/10/16";
             document.getElementById('profile-modal-coin').innerText = (target.coins || 0) + "개";
             document.getElementById('profile-modal-trophy').innerText = (target.trophies || 0) + "개";
@@ -4128,6 +4136,16 @@
 
         function closeProfileModal() {
             document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
         let ballsData = [
@@ -5895,4 +5913,4 @@
         requestAnimationFrame(loop);
     </script>
 </body>
-                </html>
+    </html>
