@@ -27,10 +27,11 @@
             color: #ffffff;
         }
 
-        /* 버튼 터치 감도 및 반응성 개선 */
+        /* 버튼 터치 감도 및 레이어 충돌 방지 */
         button {
             touch-action: manipulation;
             transition: transform 0.05s active;
+            cursor: pointer;
         }
         button:active {
             transform: scale(0.96);
@@ -75,6 +76,7 @@
             text-align: center;
             position: relative;
             margin-top: 25px;
+            z-index: 50;
         }
         .hidden { display: none !important; }
 
@@ -204,6 +206,8 @@
             align-items: center;
             margin-bottom: 10px;
             gap: 6px;
+            position: relative;
+            z-index: 100;
         }
         .nav-column {
             display: flex;
@@ -227,7 +231,7 @@
             width: 100%;
             justify-content: center;
             touch-action: manipulation;
-            z-index: 100;
+            z-index: 120;
             position: relative;
             pointer-events: auto !important;
         }
@@ -270,7 +274,7 @@
             transition: all 0.2s;
             white-space: nowrap;
             touch-action: manipulation;
-            z-index: 10;
+            z-index: 120;
         }
         .update-notice-btn:hover {
             background: rgba(255, 170, 0, 0.3);
@@ -291,7 +295,7 @@
             width: 100%;
             justify-content: center;
             touch-action: manipulation;
-            z-index: 10;
+            z-index: 120;
         }
         .ranking-nav-btn {
             background: #8e44ad;
@@ -308,7 +312,7 @@
             width: 100%;
             justify-content: center;
             touch-action: manipulation;
-            z-index: 10;
+            z-index: 120;
         }
 
         .brawl-icon-container {
@@ -321,6 +325,8 @@
             margin-left: 2px;
             transform: scale(0.65);
             transform-origin: top left;
+            z-index: 110;
+            position: relative;
         }
 
         .brawl-icon-card {
@@ -337,6 +343,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: transform 0.1s;
             touch-action: manipulation;
+            z-index: 115;
         }
         .brawl-icon-card:active {
             transform: scale(0.95);
@@ -383,6 +390,7 @@
             border: 2px solid #ffffff;
             border-radius: 50%;
             pointer-events: none;
+            z-index: 130;
         }
 
         .modal-overlay {
@@ -500,7 +508,7 @@
             padding-bottom: 0;
         }
 
-        /* 무지개 이름 텍스트 스타일 수정 (배경과 충돌 방지 및 가독성 개선) */
+        /* 무지개 이름 텍스트 가독성 및 그라데이션 적용 개선 */
         .rainbow-name-text {
             background: linear-gradient(90deg, #ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ed4c67);
             -webkit-background-clip: text;
@@ -534,6 +542,7 @@
             align-items: center;
             cursor: pointer;
             touch-action: manipulation;
+            z-index: 10;
         }
 
         .big-red-x-btn {
@@ -4214,6 +4223,11 @@
                 document.getElementById('lobby-screen').classList.add('hidden');
             } else {
                 syncGlobalUsers();
+                if (!firstJoinDateStr) {
+                    firstJoinDateStr = getFormattedDate();
+                    firstJoinTimestamp = Date.now();
+                    saveData();
+                }
                 document.getElementById('name-modal').classList.add('hidden');
                 document.getElementById('lobby-screen').classList.remove('hidden');
             }
@@ -4245,7 +4259,7 @@
             }
 
             savedUsername = val;
-            firstJoinDateStr = getFormattedDate(); // [수정됨] 접속 날짜가 고정되도록 현재 날짜 함수 반영
+            firstJoinDateStr = getFormattedDate(); 
             firstJoinTimestamp = Date.now();
             sessionStartTime = Date.now();
             lastQuestResetDate = getTodayDateString();
