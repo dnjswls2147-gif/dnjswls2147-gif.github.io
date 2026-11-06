@@ -32,7 +32,7 @@
             left: 0;
         }
 
-        /* 로비 좌측 상단 메뉴 (2배 확대 프로필 & 전체 채팅) */
+        /* 로비 좌측 상단 메뉴 (프로필 & 전체 채팅) */
         .top-left-menu-bar {
             position: fixed;
             top: 35px;
@@ -43,36 +43,17 @@
             z-index: 1000;
         }
 
-        /* 프로필 버튼 */
-        .profile-entry-box {
+        .profile-entry-box, .chat-entry-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
         }
-        .profile-icon {
+        .profile-icon, .chat-icon {
             font-size: 64px;
             line-height: 1;
         }
-        .profile-label {
-            font-size: 20px;
-            font-weight: 900;
-            color: #000000;
-            margin-top: 4px;
-        }
-
-        /* 전체 채팅 버튼 */
-        .chat-entry-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-        .chat-icon {
-            font-size: 64px;
-            line-height: 1;
-        }
-        .chat-label {
+        .profile-label, .chat-label {
             font-size: 20px;
             font-weight: 900;
             color: #000000;
@@ -154,8 +135,8 @@
 
         /* 메인 컨테이너 */
         .app-container {
-            width: 92vw;
-            max-width: 440px;
+            width: 95vw;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -187,7 +168,7 @@
             opacity: 1;
         }
 
-        /* 조금 더 줄여진 중앙 경기장 뷰포트 */
+        /* 원래 크기로 복구된 중앙 경기장 뷰포트 */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -208,15 +189,15 @@
             display: flex;
             gap: 14px;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 22px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 24px 0;
+            padding: 28px 0;
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -231,10 +212,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 20px;
+            margin-top: 24px;
             width: 100%;
-            padding: 24px 0;
-            font-size: 32px;
+            padding: 28px 0;
+            font-size: 36px;
             font-weight: 900;
             border: 4px solid #000000;
             border-radius: 14px;
@@ -243,20 +224,20 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            box-shadow: 0 6px 0 #000000;
+            box-shadow: 0 7px 0 #000000;
             outline: none;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(3px);
-            box-shadow: 0 3px 0 #000000;
+            box-shadow: 0 4px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 18px;
+            margin-top: 22px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -272,9 +253,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 26px;
+            font-size: 32px;
             font-weight: 900;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -284,9 +265,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 50px;
+            height: 60px;
             background: #e0e0e0;
-            border: 4.5px solid #000000;
+            border: 5px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -305,15 +286,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 24px;
+            font-size: 28px;
             text-shadow: 2px 2px 4px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 32px;
+            height: 36px;
             background: #cccccc;
             border: 3px solid #000000;
-            margin-top: 6px;
+            margin-top: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -329,7 +310,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 900;
             color: #000;
         }
@@ -402,12 +383,87 @@
             outline: none;
         }
 
-        /* 대폭 확대된 전체 채팅 팝업 스타일 */
-        .chat-modal-box {
+        /* 3배 확대된 프로필 팝업 스타일 */
+        .profile-modal-box {
             width: 95vw;
             max-width: 600px;
-            height: 80vh;
-            max-height: 750px;
+            background: #ffffff;
+            border: 8px solid #000000;
+            padding: 45px 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+
+        /* 대폭 확대된 전체 채팅 팝업 스타일 */
+        .chat-modal-box {
+            width: 96vw;
+            max-width: 650px;
+            height: 85vh;
+            max-height: 800px;
+            background: #ffffff;
+            border: 8px solid #000000;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+        .chat-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .chat-logs-area {
+            flex: 1;
+            border: 4.5px solid #000;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            padding: 20px;
+            overflow-y: auto !important;
+            touch-action: pan-y !important;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .chat-msg-card {
+            background: #ffffff;
+            border: 3.5px solid #000;
+            padding: 14px 18px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .chat-sender-name {
+            font-size: 22px;
+            font-weight: 900;
+            color: #2980b9;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .chat-msg-text {
+            font-size: 24px;
+            font-weight: bold;
+            word-break: break-all;
+            color: #000;
+        }
+        .chat-msg-time {
+            font-size: 15px;
+            color: #666666;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* 플레이어 목록 팝업 스타일 */
+        .players-modal-box {
+            width: 92vw;
+            max-width: 500px;
+            height: 70vh;
+            max-height: 600px;
             background: #ffffff;
             border: 7px solid #000000;
             padding: 30px;
@@ -416,27 +472,28 @@
             position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .chat-logs-area {
+        .players-list-area {
             flex: 1;
-            border: 4px solid #000;
+            border: 3.5px solid #000;
             background: #f8f9fa;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding: 20px;
+            margin-top: 15px;
+            padding: 15px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
-        .chat-msg-bubble {
-            background: #ffffff;
-            border: 3px solid #000;
-            padding: 14px 18px;
-            border-radius: 10px;
-            font-size: 22px;
-            font-weight: bold;
-            word-break: break-all;
+        .player-item-card {
+            background: #fff;
+            border: 2.5px solid #000;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 900;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         /* 관리자 패널 */
@@ -483,7 +540,7 @@
         .admin-input {
             width: 100%;
             padding: 18px;
-            font-size: 22px;
+            font-size: 24px;
             border: 3.5px solid #000;
             text-align: center;
             outline: none;
@@ -495,9 +552,9 @@
         }
         .admin-btn {
             flex: 1;
-            padding: 18px 0;
-            font-size: 20px;
-            font-weight: bold;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: 900;
             border: 3.5px solid #000;
             cursor: pointer;
             outline: none;
@@ -526,9 +583,9 @@
             background-color: #3498db;
             color: #ffffff;
             border: 3.5px solid #000;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 900;
-            padding: 0 26px;
+            padding: 0 30px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
@@ -538,7 +595,7 @@
 </head>
 <body>
 
-    <!-- 로비 좌측 상단 메뉴 (프로필 & 대폭 확대된 전체 채팅) -->
+    <!-- 로비 좌측 상단 메뉴 (프로필 & 전체 채팅) -->
     <div class="top-left-menu-bar">
         <div class="profile-entry-box" onclick="openProfileModal()">
             <div class="profile-icon">👤</div>
@@ -565,7 +622,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 조금 줄여진 중앙 경기장 뷰포트 -->
+        <!-- 원래 크기로 복구된 중앙 경기장 뷰포트 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
@@ -616,14 +673,59 @@
     <div class="modal-overlay hidden" id="chat-modal" style="z-index: 100003;">
         <div class="chat-modal-box">
             <button class="modal-close-btn" onclick="closeChatModal()">✕</button>
-            <div style="font-size:32px; font-weight:900; text-align:center;">📘 전체 채팅</div>
+            <div class="chat-header-row">
+                <div style="font-size:34px; font-weight:900;">📘 전체 채팅</div>
+                <div style="font-size:22px; font-weight:900; background:#eee; padding:8px 16px; border:3px solid #000; border-radius:8px; cursor:pointer;" onclick="openPlayersModal()">
+                    현재 인원수: <span id="online-count-txt">1</span>명 ➡️
+                </div>
+            </div>
             <div class="chat-logs-area" id="chat-logs">
-                <div class="chat-msg-bubble">시스템: 전체 채팅에 오신 것을 환영합니다!</div>
+                <div class="chat-msg-card">
+                    <div class="chat-sender-name">시스템</div>
+                    <div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div>
+                    <div class="chat-msg-time">오전 12:00</div>
+                </div>
             </div>
             <div class="row-inline-group">
-                <input type="text" id="chat-input" class="admin-input" style="font-size:22px; padding:20px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                <button class="btn-send" style="font-size:24px; padding:0 30px;" onclick="sendChatMessage()">전송</button>
+                <input type="text" id="chat-input" class="admin-input" style="font-size:24px; padding:22px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="btn-send" style="font-size:26px; padding:0 35px;" onclick="sendChatMessage()">전송</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 플레이어 목록 팝업 창 -->
+    <div class="modal-overlay hidden" id="players-modal" style="z-index: 100006;">
+        <div class="players-modal-box">
+            <button class="modal-close-btn" onclick="closePlayersModal()">✕</button>
+            <div style="font-size:30px; font-weight:900; text-align:center;">👥 접속 중인 플레이어</div>
+            <div class="players-list-area" id="players-list-container"></div>
+        </div>
+    </div>
+
+    <!-- 3배 대폭 확대된 내 프로필 정보 팝업 창 -->
+    <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100004;">
+        <div class="profile-modal-box">
+            <button class="modal-close-btn" onclick="closeProfileModal()">✕</button>
+            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
+            <div style="font-size:36px; font-weight:900; margin-bottom:30px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:28px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:24px; font-weight:bold; color:#555; margin-bottom:40px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div class="admin-btn-group" style="width:100%;">
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff;" onclick="editUserNamePrompt()">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" onclick="closeProfileModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 다른 사람 프로필 확인용 팝업 창 -->
+    <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100007;">
+        <div class="profile-modal-box">
+            <button class="modal-close-btn" onclick="closeOtherProfileModal()">✕</button>
+            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
+            <div style="font-size:36px; font-weight:900; margin-bottom:30px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="font-size:28px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+            <div style="font-size:24px; font-weight:bold; color:#555; margin-bottom:40px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%;" onclick="closeOtherProfileModal()">닫기</button>
         </div>
     </div>
 
@@ -637,24 +739,10 @@
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 100005;">
-        <div style="background:#fff; border:6px solid #000; padding:35px 25px; width:92vw; max-width:460px; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.4);">
-            <div style="font-size:32px; font-weight:900; margin-bottom:20px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:25px;">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:20px; font-size:24px; font-weight:900;" onclick="submitUserName()">등록하고 시작하기</button>
-        </div>
-    </div>
-
-    <!-- 내 프로필 정보 팝업 창 -->
-    <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100004;">
-        <div style="background:#fff; border:6px solid #000; padding:35px 25px; width:92vw; max-width:460px; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.4);">
-            <div style="font-size:36px; line-height:1;">👤</div>
-            <div style="font-size:28px; font-weight:900; margin-top:10px; margin-bottom:25px; border-bottom:4px solid #000; padding-bottom:10px;">내 프로필</div>
-            <div style="font-size:24px; font-weight:900; margin-bottom:15px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="font-size:20px; font-weight:bold; color:#555; margin-bottom:30px;" id="profile-date-txt">접속한 날짜: -</div>
-            <div class="admin-btn-group">
-                <button class="admin-btn" style="background-color:#f39c12; color:#fff;" onclick="editUserNamePrompt()">이름 변경</button>
-                <button class="admin-btn admin-btn-confirm" onclick="closeProfileModal()">닫기</button>
-            </div>
+        <div style="background:#fff; border:6px solid #000; padding:45px 30px; width:95vw; max-width:500px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+            <div style="font-size:36px; font-weight:900; margin-bottom:25px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:30px; font-size:26px; padding:22px;">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:22px; font-size:26px; font-weight:900;" onclick="submitUserName()">등록하고 시작하기</button>
         </div>
     </div>
 
@@ -705,12 +793,11 @@
     </div>
 
     <script>
-        // '얌 얌 얌' 먹는 사운드 효과 구현
+        // '얌 얌 얌' 사운드 효과 구현
         function playYamSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 let now = audioCtx.currentTime;
-                // 세 번의 얌 소리 (오르내리는 주파수)
                 for (let i = 0; i < 3; i++) {
                     let osc = audioCtx.createOscillator();
                     let gain = audioCtx.createGain();
@@ -746,7 +833,7 @@
         })();
 
         document.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.admin-scroll-body') || e.target.closest('.picker-grid') || e.target.closest('.chat-logs-area')) {
+            if (e.target.closest('.admin-scroll-body') || e.target.closest('.picker-grid') || e.target.closest('.chat-logs-area') || e.target.closest('.players-list-area')) {
                 return;
             }
             e.preventDefault();
@@ -760,19 +847,57 @@
             return `${yyyy}/${mm}/${dd}`;
         }
 
+        function getCurrentTimeString() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let ampm = hours >= 12 ? '오후' : '오전';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            return `${ampm} ${hours}:${minutes}`;
+        }
+
+        // 자정(오전 12시) 초기화 체크 및 채팅/유저 관리 로직
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('lily_game_user_name');
             let savedDate = localStorage.getItem('lily_game_login_date');
+            let lastResetDate = localStorage.getItem('lily_game_last_reset_date');
+            const todayStr = getFormattedToday();
+
+            // 자정 지나면 채팅 초기화
+            if (lastResetDate !== todayStr) {
+                localStorage.removeItem('lily_game_chat_logs');
+                localStorage.setItem('lily_game_last_reset_date', todayStr);
+            }
 
             if (!savedDate) {
-                savedDate = getFormattedToday();
+                savedDate = todayStr;
                 localStorage.setItem('lily_game_login_date', savedDate);
             }
 
+            // 플레이어 목록 등록/갱신
+            registerPlayer(savedName, savedDate);
+
             if (!savedName) {
                 document.getElementById('name-input-modal').classList.remove('hidden');
+            } else {
+                loadChatLogs();
+                updateOnlineCount();
             }
         });
+
+        function registerPlayer(name, date) {
+            if (!name) return;
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let existing = players.find(p => p.name === name);
+            if (!existing) {
+                players.push({ name: name, date: date });
+            } else {
+                existing.date = date; // 갱신
+            }
+            localStorage.setItem('lily_game_players_list', JSON.stringify(players));
+        }
 
         function submitUserName() {
             const inputVal = document.getElementById('user-name-input').value.trim();
@@ -781,8 +906,13 @@
                 return;
             }
             localStorage.setItem('lily_game_user_name', inputVal);
+            localStorage.setItem('lily_game_login_date', getFormattedToday());
+            registerPlayer(inputVal, getFormattedToday());
+
             document.getElementById('name-input-modal').classList.add('hidden');
             showToast(`환영합니다, ${inputVal}님!`);
+            loadChatLogs();
+            updateOnlineCount();
         }
 
         function openProfileModal() {
@@ -804,13 +934,82 @@
             document.getElementById('name-input-modal').classList.remove('hidden');
         }
 
-        // 전체 채팅 모달 제어 로직
+        // 다른 사람 프로필 보기
+        function openOtherProfile(name) {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let player = players.find(p => p.name === name);
+            let joinDate = player ? player.date : (localStorage.getItem('lily_game_login_date') || getFormattedToday());
+
+            document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
+            document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
+            document.getElementById('other-profile-modal').classList.remove('hidden');
+        }
+
+        function closeOtherProfileModal() {
+            document.getElementById('other-profile-modal').classList.add('hidden');
+        }
+
+        // 전체 채팅 관련 로직
         function openChatModal() {
             document.getElementById('chat-modal').classList.remove('hidden');
+            loadChatLogs();
+            updateOnlineCount();
         }
 
         function closeChatModal() {
             document.getElementById('chat-modal').classList.add('hidden');
+        }
+
+        function updateOnlineCount() {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let count = Math.max(1, players.length);
+            document.getElementById('online-count-txt').innerText = count;
+        }
+
+        function openPlayersModal() {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            const container = document.getElementById('players-list-container');
+            container.innerHTML = '';
+
+            if (players.length === 0) {
+                const savedName = localStorage.getItem('lily_game_user_name');
+                if (savedName) players.push({ name: savedName, date: localStorage.getItem('lily_game_login_date') });
+            }
+
+            players.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'player-item-card';
+                item.innerHTML = `<span>👤 ${p.name}</span><span style="font-size:15px; color:#555;">접속일: ${p.date}</span>`;
+                container.appendChild(item);
+            });
+
+            document.getElementById('players-modal').classList.remove('hidden');
+        }
+
+        function closePlayersModal() {
+            document.getElementById('players-modal').classList.add('hidden');
+        }
+
+        function loadChatLogs() {
+            const logs = document.getElementById('chat-logs');
+            let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+            
+            logs.innerHTML = '';
+            if (chatData.length === 0) {
+                logs.innerHTML = `
+                    <div class="chat-msg-card">
+                        <div class="chat-sender-name">시스템</div>
+                        <div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div>
+                        <div class="chat-msg-time">오전 12:00</div>
+                    </div>
+                `;
+                return;
+            }
+
+            chatData.forEach(item => {
+                appendChatBubble(item.name, item.msg, item.time, false);
+            });
+            logs.scrollTop = logs.scrollHeight;
         }
 
         function sendChatMessage() {
@@ -819,13 +1018,43 @@
             if (!msg) return;
 
             const name = localStorage.getItem('lily_game_user_name') || '익명';
-            const logs = document.getElementById('chat-logs');
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-msg-bubble';
-            bubble.innerText = `${name}: ${msg}`;
-            logs.appendChild(bubble);
-            logs.scrollTop = logs.scrollHeight;
+            const timeStr = getCurrentTimeString();
+
+            // 데이터 저장
+            let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+            chatData.push({ name: name, msg: msg, time: timeStr });
+            localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+
+            appendChatBubble(name, msg, timeStr, true);
             input.value = '';
+        }
+
+        function appendChatBubble(senderName, msgText, timeText, shouldScroll) {
+            const logs = document.getElementById('chat-logs');
+            const card = document.createElement('div');
+            card.className = 'chat-msg-card';
+
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'chat-sender-name';
+            nameDiv.innerText = senderName;
+            nameDiv.onclick = () => openOtherProfile(senderName);
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'chat-msg-text';
+            textDiv.innerText = msgText;
+
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'chat-msg-time';
+            timeDiv.innerText = timeText;
+
+            card.appendChild(nameDiv);
+            card.appendChild(textDiv);
+            card.appendChild(timeDiv);
+
+            logs.appendChild(card);
+            if (shouldScroll) {
+                logs.scrollTop = logs.scrollHeight;
+            }
         }
 
         let toastTimer = null;
@@ -1004,7 +1233,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 언제나 완벽하게 일정한 속도 값 (가속/감속 원천 차단)
         const FIXED_SPEED = 2.8;
 
         let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 8.0 };
@@ -1125,7 +1353,6 @@
             ctx.restore();
         }
 
-        // 항상 일정한 속도로 뻗어나가는 벡터 설정 함수
         function setFixedSpeedVelocity(obj) {
             const angle = Math.random() * Math.PI * 2;
             obj.vx = Math.cos(angle) * FIXED_SPEED;
@@ -1167,7 +1394,6 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // 기술 충전 시간 8초 기준으로 갱신 (토스트 메시지 없음)
                 if (p1.name === '미스터비스트') {
                     p1.skillTimer -= 0.1;
                     if (p1.skillTimer <= 0) {
@@ -1259,7 +1485,6 @@
                 p1.x += p1.vx; p1.y += p1.vy;
                 p2.x += p2.vx; p2.y += p2.vy;
 
-                // 벽 충돌 시 속도 가감 없이 정확히 반사만 수행 (일정 속도 유지)
                 if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx = Math.abs(p1.vx); }
                 if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx = -Math.abs(p1.vx); }
                 if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy = Math.abs(p1.vy); }
@@ -1270,7 +1495,6 @@
                 if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = Math.abs(p2.vy); }
                 if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -Math.abs(p2.vy); }
 
-                // 돈 먹기 로직 ('얌얌얌' 사운드 적용)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
 
@@ -1296,7 +1520,6 @@
                     }
                 }
 
-                // 공끼리 충돌 시에도 속도가 변하지 않고 일정하게 튕기도록 처리
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
                 let distance = Math.hypot(dx, dy);
