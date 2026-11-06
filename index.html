@@ -32,6 +32,28 @@
             left: 0;
         }
 
+        /* 왼쪽 상단 릴리 전용 어드민 진입 버튼 영역 */
+        .admin-entry-box {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .admin-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+        .admin-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #555555;
+            margin-top: 2px;
+        }
+
         /* 메인 컨테이너 */
         .app-container {
             width: 98vw;
@@ -42,7 +64,7 @@
             position: relative;
         }
 
-        /* 화면 상단 초대형 토스트 알림 메시지 */
+        /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
             top: 35px;
@@ -200,7 +222,7 @@
             width: 0%;
         }
 
-        /* 볼 선택 모달 팝업창 (사진처럼 경기장 영역 전체를 덮도록 대폭 확대)[span_1](start_span)[span_1](end_span) */
+        /* 볼 선택 모달 팝업창 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -242,7 +264,6 @@
             outline: none;
         }
 
-        /* 선택 리스트 영역도 꽉 차게 확장 */
         .picker-grid {
             display: flex;
             flex-direction: column;
@@ -267,10 +288,59 @@
             text-overflow: ellipsis;
             outline: none;
         }
+
+        /* 어드민 패널 모달 스타일 */
+        .admin-modal-box {
+            width: 90vw;
+            max-width: 400px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+        }
+        .admin-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        .admin-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 3px solid #000;
+            margin-bottom: 15px;
+            text-align: center;
+            outline: none;
+        }
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .admin-btn {
+            flex: 1;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border: 3px solid #000;
+            cursor: pointer;
+        }
+        .admin-btn-confirm { background: #2ecc71; color: #fff; }
+        .admin-btn-cancel { background: #e74c3c; color: #fff; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
+    <!-- 왼쪽 상단 릴리 전용 어드민 진입 아이콘 -->
+    <div class="admin-entry-box" onclick="openAdminPrompt()">
+        <div class="admin-icon">🚫</div>
+        <div class="admin-label">릴리 전용</div>
+    </div>
 
     <!-- 화면 상단 초대형 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
@@ -327,6 +397,29 @@
         </div>
     </div>
 
+    <!-- 어드민 비밀번호 입력 모달 -->
+    <div class="modal-overlay hidden" id="admin-password-modal">
+        <div class="admin-modal-box">
+            <div class="admin-title">🔒 릴리 전용 어드민</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력">
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" onclick="verifyAdminPassword()">확인</button>
+                <button class="admin-btn admin-btn-cancel" onclick="closeAdminPassword()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 어드민 패널 모달 (인증 성공 시 오픈) -->
+    <div class="modal-overlay hidden" id="admin-panel-modal">
+        <div class="admin-modal-box" style="max-width: 450px;">
+            <div class="admin-title">⚙️ 관리자 패널</div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:20px; text-align:center;">
+                모든 밴 목록이 해제되었습니다!<br>현재 모든 유저가 자유롭게 이용 가능합니다.
+            </div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px;" onclick="closeAdminPanel()">닫기</button>
+        </div>
+    </div>
+
     <script>
         // 카카오톡 브라우저 강제 이동 (고정)
         (function forceOpenInChrome() {
@@ -359,6 +452,30 @@
             toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
             }, 2000);
+        }
+
+        // 어드민 비밀번호 인증 로직
+        function openAdminPrompt() {
+            document.getElementById('admin-pw-input').value = '';
+            document.getElementById('admin-password-modal').classList.remove('hidden');
+        }
+
+        function closeAdminPassword() {
+            document.getElementById('admin-password-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pw = document.getElementById('admin-pw-input').value;
+            if (pw === '걱스키비디야르7') {
+                closeAdminPassword();
+                document.getElementById('admin-panel-modal').classList.remove('hidden');
+            } else {
+                showToast('비밀번호가 틀렸습니다!');
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
         const ballList = [
@@ -501,7 +618,6 @@
             ctx.restore();
         }
 
-        // 헬퍼 함수: 무작위 속도 생성 (0이 아닌 값, 최소 속도 보장)
         function getRandomVelocity(min, max) {
             let val = (Math.random() * (max - min) + min) * (Math.random() < 0.5 ? 1 : -1);
             if (Math.abs(val) < min) val = val < 0 ? -min : min;
@@ -517,7 +633,6 @@
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = 150; p1.y = 250;
-            // 시작할 때마다 매번 완전히 랜덤한 방향과 속도로 이동 설정
             p1.vx = getRandomVelocity(2.5, 5);
             p1.vy = getRandomVelocity(2.5, 5);
             p1.ballData = selectedLeftBall;
@@ -525,7 +640,6 @@
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
-            // 매번 랜덤한 방향과 속도로 설정
             p2.vx = getRandomVelocity(2.5, 5);
             p2.vy = getRandomVelocity(2.5, 5);
             p2.ballData = selectedRightBall;
