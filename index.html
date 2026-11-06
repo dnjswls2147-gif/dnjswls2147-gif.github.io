@@ -32,7 +32,7 @@
             left: 0;
         }
 
-        /* 왼쪽 상단 2배 더 크고 아래로 이동한 프로필 버튼 */
+        /* 프로필 버튼 */
         .profile-entry-box {
             position: fixed;
             top: 45px;
@@ -54,7 +54,7 @@
             margin-top: 4px;
         }
 
-        /* 화면 좌측 하단 릴리 전용 어드민 아이콘 */
+        /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             position: fixed;
             bottom: 18px;
@@ -268,7 +268,7 @@
             height: 100%;
             background: #2ecc71;
             width: 100%;
-            transition: width 0.15s;
+            transition: width 0.3s ease-in-out;
         }
         .hp-text-overlay {
             position: absolute;
@@ -296,7 +296,6 @@
             height: 100%;
             background: #4a90e2;
             width: 0%;
-            transition: width 0.2s;
         }
         .sub-gauge-text {
             position: absolute;
@@ -524,7 +523,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
-                            <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중</div>
+                            <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (5.0초)</div>
                         </div>
                     </div>
                     <div class="player-status-card">
@@ -535,7 +534,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
-                            <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중</div>
+                            <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (5.0초)</div>
                         </div>
                     </div>
                 </div>
@@ -891,12 +890,12 @@
         const ctx = canvas.getContext('2d');
 
         // 공 크기 2배 작게 설정 (기존 radius 45 -> 22.5)
-        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
-        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
+        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 5.0 };
+        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 5.0 };
 
-        // 미스터비스트 스킬(돈 아이템) 관리 배열
+        // 플레이어별 생성된 돈 배열 (소유자 구분: owner 'p1' 또는 'p2')
         let moneyItems = [];
-        let mrBeastTimer = null;
+        let gameInterval = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -1010,11 +1009,14 @@
             ctx.restore();
         }
 
-        // 속도 조금 더 느리게 줄임 (1.5 ~ 3.0)
-        function getRandomVelocity(min, max) {
-            let val = (Math.random() * (max - min) + min) * (Math.random() < 0.5 ? 1 : -1);
-            if (Math.abs(val) < min) val = val < 0 ? -min : min;
-            return val;
+        // 완벽하게 무작위 각도와 속도로 튕기게 해주는 랜덤 속도 생성기
+        function getRandomVelocity() {
+            const speed = Math.random() * 1.5 + 2.0; // 2.0 ~ 3.5 속도
+            const angle = Math.random() * Math.PI * 2; // 모든 360도 방향 중 랜덤
+            return {
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed
+            };
         }
 
         function startMatch() {
@@ -1026,16 +1028,18 @@
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = 150; p1.y = 250;
-            p1.vx = getRandomVelocity(1.5, 3.0);
-            p1.vy = getRandomVelocity(1.5, 3.0);
+            let v1 = getRandomVelocity();
+            p1.vx = v1.vx; p1.vy = v1.vy;
             p1.ballData = selectedLeftBall;
+            p1.skillTimer = 5.0;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
-            p2.vx = getRandomVelocity(1.5, 3.0);
-            p2.vy = getRandomVelocity(1.5, 3.0);
+            let v2 = getRandomVelocity();
+            p2.vx = v2.vx; p2.vy = v2.vy;
             p2.ballData = selectedRightBall;
+            p2.skillTimer = 5.0;
 
             moneyItems = [];
 
@@ -1048,27 +1052,69 @@
             isGaming = true;
             updateHpBars();
 
-            // 미스터비스트가 포함되어 있는지 확인 후 5초마다 돈 2개 생성
-            if (mrBeastTimer) clearInterval(mrBeastTimer);
-            if (p1.name === '미스터비스트' || p2.name === '미스터비스트') {
-                mrBeastTimer = setInterval(() => {
-                    if (!isGaming) return;
-                    // 무작위 위치에 돈 2개 생성
-                    for (let i = 0; i < 2; i++) {
-                        moneyItems.push({
-                            x: Math.random() * 400 + 50,
-                            y: Math.random() * 400 + 50,
-                            radius: 18
-                        });
+            // 0.1초마다 타이머 갱신 및 스킬 주기 체크 (실제 시간 5초 기준)
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(() => {
+                if (!isGaming) return;
+
+                // P1 미스터비스트 스킬 타이머
+                if (p1.name === '미스터비스트') {
+                    p1.skillTimer -= 0.1;
+                    if (p1.skillTimer <= 0) {
+                        p1.skillTimer = 5.0;
+                        spawnMoney('p1');
+                        showToast('💸 [동룡이쪽] 미스터비스트 스킬 발동!');
                     }
-                    showToast('💸 미스터비스트가 돈을 뿌렸습니다!');
-                }, 5000); // 실제 시간 5초마다
+                    let pct = ((5.0 - p1.skillTimer) / 5.0) * 100;
+                    document.getElementById('p1-gauge-fill').style.width = pct + '%';
+                    document.getElementById('p1-gauge-txt').innerText = `기술 충전중 (${p1.skillTimer.toFixed(1)}초)`;
+                } else {
+                    document.getElementById('p1-gauge-fill').style.width = '0%';
+                    document.getElementById('p1-gauge-txt').innerText = '기술 없음';
+                }
+
+                // P2 미스터비스트 스킬 타이머
+                if (p2.name === '미스터비스트') {
+                    p2.skillTimer -= 0.1;
+                    if (p2.skillTimer <= 0) {
+                        p2.skillTimer = 5.0;
+                        spawnMoney('p2');
+                        showToast('💸 [상대쪽] 미스터비스트 스킬 발동!');
+                    }
+                    let pct = ((5.0 - p2.skillTimer) / 5.0) * 100;
+                    document.getElementById('p2-gauge-fill').style.width = pct + '%';
+                    document.getElementById('p2-gauge-txt').innerText = `기술 충전중 (${p2.skillTimer.toFixed(1)}초)`;
+                } else {
+                    document.getElementById('p2-gauge-fill').style.width = '0%';
+                    document.getElementById('p2-gauge-txt').innerText = '기술 없음';
+                }
+            }, 100);
+        }
+
+        // 겹치지 않고 무작위 위치에 돈 2개 생성하는 함수
+        function spawnMoney(owner) {
+            for (let i = 0; i < 2; i++) {
+                let attempts = 0;
+                let mx, my, overlapping;
+                do {
+                    mx = Math.random() * 400 + 50;
+                    my = Math.random() * 400 + 50;
+                    overlapping = moneyItems.some(item => Math.hypot(item.x - mx, item.y - my) < 40);
+                    attempts++;
+                } while (overlapping && attempts < 10);
+
+                moneyItems.push({
+                    x: mx,
+                    y: my,
+                    radius: 18,
+                    owner: owner // 'p1' 또는 'p2' 지정 (자신만 먹을 수 있음)
+                });
             }
         }
 
         function exitMatch() {
             isGaming = false;
-            if (mrBeastTimer) clearInterval(mrBeastTimer);
+            if (gameInterval) clearInterval(gameInterval);
             moneyItems = [];
             
             selectedLeftBall = null;
@@ -1107,31 +1153,46 @@
                 p1.x += p1.vx; p1.y += p1.vy;
                 p2.x += p2.vx; p2.y += p2.vy;
 
-                if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) p1.vx *= -1;
-                if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) p1.vy *= -1;
-                if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) p2.vx *= -1;
-                if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) p2.vy *= -1;
+                // 벽 충돌 시 완전 무작위 튕김 적용
+                if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) {
+                    p1.vx *= -1;
+                    p1.vy += (Math.random() - 0.5) * 1.5; // 약간의 무작위 각도 변화
+                }
+                if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) {
+                    p1.vy *= -1;
+                    p1.vx += (Math.random() - 0.5) * 1.5;
+                }
+                if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) {
+                    p2.vx *= -1;
+                    p2.vy += (Math.random() - 0.5) * 1.5;
+                }
+                if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) {
+                    p2.vy *= -1;
+                    p2.vx += (Math.random() - 0.5) * 1.5;
+                }
 
-                // 미스터비스트가 돈(💸)을 먹었는지 체크
+                // 오직 '내 돈(owner가 나인 것)'만 내가 먹을 수 있도록 체크
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
-                    // P1이 미스터비스트일 때
-                    if (p1.name === '미스터비스트') {
-                        let dist1 = Math.sqrt((p1.x - m.x)**2 + (p1.y - m.y)**2);
+
+                    // P1이 내 돈을 먹었을 때
+                    if (m.owner === 'p1') {
+                        let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                         if (dist1 < p1.radius + m.radius) {
-                            p1.hp = Math.min(p1.maxHp, p1.hp + 25); // 피 25 회복 (최대 체력 넘지 않음)
-                            playEatSound(); // 효과음 재생
+                            p1.hp = Math.min(p1.maxHp, p1.hp + 25);
+                            playEatSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                             continue;
                         }
                     }
-                    // P2가 미스터비스트일 때
-                    if (p2.name === '미스터비스트') {
-                        let dist2 = Math.sqrt((p2.x - m.x)**2 + (p2.y - m.y)**2);
+
+                    // P2가 내 돈을 먹었을 때 (상대방은 못 먹음!)
+                    if (m.owner === 'p2') {
+                        let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                         if (dist2 < p2.radius + m.radius) {
-                            p2.hp = Math.min(p2.maxHp, p2.hp + 25); // 피 25 회복
-                            playEatSound(); // 효과음 재생
+                            p2.hp = Math.min(p2.maxHp, p2.hp + 25);
+                            playEatSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                         }
@@ -1141,7 +1202,7 @@
                 // 공끼리 충돌 체크
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
+                let distance = Math.hypot(dx, dy);
 
                 if (distance < p1.radius + p2.radius) {
                     let tempVx = p1.vx; let tempVy = p1.vy;
@@ -1154,7 +1215,7 @@
 
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
-                        if (mrBeastTimer) clearInterval(mrBeastTimer);
+                        if (gameInterval) clearInterval(gameInterval);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -1168,7 +1229,7 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 바닥에 쌓인 돈(💸) 아이콘들 그리기
+                // 바닥에 쌓인 돈 아이콘들 그리기
                 moneyItems.forEach(m => {
                     ctx.save();
                     ctx.font = "28px sans-serif";
