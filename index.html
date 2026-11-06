@@ -23,6 +23,25 @@
             color: #111111;
         }
 
+        /* 카카오톡 미접속 시 차단 덮개 (검정 화면) */
+        #kakaotalk-block-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
         /* 메인 컨테이너 */
         .app-container {
             width: 100%;
@@ -244,6 +263,11 @@
 </head>
 <body>
 
+    <!-- 카카오톡 브라우저가 아닐 때 띄우는 차단 오버레이 -->
+    <div id="kakaotalk-block-screen" class="hidden">
+        카카오톡으로 들어와주세요
+    </div>
+
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
@@ -256,8 +280,8 @@
         <!-- 로비 대기 화면 -->
         <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="slot-container">
-                <button class="btn-add-slot" id="slot-left-btn" onclick="openBallPicker('left')">추가하기</button>
-                <button class="btn-add-slot" id="slot-right-btn" onclick="openBallPicker('right')">추가하기</button>
+                <button class="btn-add-slot" id="slot-left-btn" onclick="handleSlotClick('left')">추가하기</button>
+                <button class="btn-add-slot" id="slot-right-btn" onclick="handleSlotClick('right')">추가하기</button>
             </div>
             <button class="btn-main-action btn-start" onclick="startMatch()">시작하기 ▶</button>
         </div>
@@ -298,6 +322,17 @@
     </div>
 
     <script>
+        // 1. 카카오톡 인앱 브라우저 체크
+        function checkKakaoTalkBrowser() {
+            const ua = navigator.userAgent.toLowerCase();
+            const isKakao = ua.indexOf('kakaotalk') !== -1;
+
+            if (!isKakao) {
+                document.getElementById('kakaotalk-block-screen').classList.remove('hidden');
+            }
+        }
+        checkKakaoTalkBrowser();
+
         // 커스텀 볼 목록 (체력 250)
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
@@ -313,9 +348,37 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 기본 위치 (왼쪽: x=120, 오른쪽: x=280)
         let p1 = { x: 120, y: 200, radius: 30, vx: 3, vy: 2.5, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
         let p2 = { x: 280, y: 200, radius: 30, vx: -2.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
+
+        // 2. 슬롯 클릭 시 (선택되어 있으면 취소, 안 되어 있으면 모달 열기)
+        function handleSlotClick(side) {
+            if (side === 'left') {
+                if (selectedLeftBall) {
+                    // 이미 선택되어 있으면 취소
+                    selectedLeftBall = null;
+                    p1.name = '';
+                    const slotBtn = document.getElementById('slot-left-btn');
+                    slotBtn.innerText = '추가하기';
+                    slotBtn.classList.remove('selected');
+                    drawPreview();
+                } else {
+                    openBallPicker('left');
+                }
+            } else if (side === 'right') {
+                if (selectedRightBall) {
+                    // 이미 선택되어 있으면 취소
+                    selectedRightBall = null;
+                    p2.name = '';
+                    const slotBtn = document.getElementById('slot-right-btn');
+                    slotBtn.innerText = '추가하기';
+                    slotBtn.classList.remove('selected');
+                    drawPreview();
+                } else {
+                    openBallPicker('right');
+                }
+            }
+        }
 
         function openBallPicker(side) {
             currentTargetSide = side;
@@ -361,12 +424,10 @@
             if (isGaming) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 선택된 왼쪽 공 경기장 좌측 중앙 배치
             if (selectedLeftBall) {
                 drawBall(120, 200, p1.radius, selectedLeftBall.color, selectedLeftBall.name, "rgba(30, 144, 255, 0.15)");
             }
 
-            // 선택된 오른쪽 공 경기장 우측 중앙 배치
             if (selectedRightBall) {
                 drawBall(280, 200, p2.radius, selectedRightBall.color, selectedRightBall.name, "rgba(231, 76, 60, 0.15)");
             }
@@ -387,7 +448,6 @@
             ctx.strokeStyle = "#000000";
             ctx.stroke();
 
-            // 공 텍스트 이름 표시
             ctx.fillStyle = "#ffffff";
             ctx.font = "bold 10px sans-serif";
             ctx.textAlign = "center";
@@ -445,13 +505,11 @@
                 p1.x += p1.vx; p1.y += p1.vy;
                 p2.x += p2.vx; p2.y += p2.vy;
 
-                // 벽 충돌 체크
                 if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) p1.vx *= -1;
                 if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) p1.vy *= -1;
                 if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) p2.vx *= -1;
                 if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) p2.vy *= -1;
 
-                // 공끼리 충돌 체크
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
@@ -461,7 +519,6 @@
                     p1.vx = p2.vx; p1.vy = p2.vy;
                     p2.vx = tempVx; p2.vy = tempVy;
 
-                    // 충돌 시 10 데미지씩 깎임
                     p1.hp = Math.max(0, p1.hp - 10);
                     p2.hp = Math.max(0, p2.hp - 10);
                     updateHpBars();
