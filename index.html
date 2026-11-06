@@ -31,10 +31,10 @@
             left: 0;
         }
 
-        /* 메인 컨테이너 (크롬에서도 카카오톡처럼 큼직하고 시원하게 꽉 차도록 수정) */
+        /* 메인 컨테이너 (크롬에서도 카카오톡처럼 큼직하고 꽉 찬 화면 유지) */
         .app-container {
-            width: 92vw;
-            max-width: 420px;
+            width: 95vw;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -42,15 +42,15 @@
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (시원하게 키움) */
+        /* 중앙 경기장 사각형 뷰포트 (크기를 큼직하게 확장) */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 3.5px solid #000000;
+            border: 4px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         canvas {
             width: 100%;
@@ -67,11 +67,11 @@
         }
         .btn-add-slot {
             flex: 1;
-            padding: 15px 0;
+            padding: 16px 0;
             background: #555555;
             color: #ffffff;
-            border: 2.5px solid #000000;
-            font-size: 16px;
+            border: 3px solid #000000;
+            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
@@ -82,13 +82,13 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 18px;
+            margin-top: 20px;
             width: 75%;
-            padding: 15px 0;
-            font-size: 20px;
+            padding: 16px 0;
+            font-size: 21px;
             font-weight: 900;
-            border: 2.5px solid #000000;
-            border-radius: 6px;
+            border: 3px solid #000000;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -122,7 +122,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 900;
             margin-bottom: 4px;
         }
@@ -131,9 +131,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 24px;
+            height: 26px;
             background: #e0e0e0;
-            border: 2.5px solid #000000;
+            border: 3px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -152,15 +152,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 5px;
+            height: 6px;
             background: #cccccc;
             border: 1px solid #000000;
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -184,7 +184,7 @@
 
         .picker-modal-box {
             width: 100%;
-            max-width: 360px;
+            max-width: 380px;
             background: #ffffff;
             border: 3px solid #000000;
             padding: 15px;
@@ -194,10 +194,10 @@
         .modal-close-btn {
             position: absolute;
             top: 10px; right: 10px;
-            width: 30px; height: 30px;
+            width: 32px; height: 32px;
             border: 2px solid #000000;
             background: #ffffff;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -210,7 +210,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-top: 30px;
-            max-height: 320px;
+            max-height: 340px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -218,8 +218,8 @@
             background: #4a4a4a;
             color: #ffffff;
             border: 2px solid #000000;
-            padding: 13px 6px;
-            font-size: 14px;
+            padding: 14px 6px;
+            font-size: 15px;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
@@ -285,12 +285,24 @@
     </div>
 
     <script>
-        // 모바일 화면 스크롤/바운스 방지
+        // 카카오톡 브라우저로 들어오면 크롬(외부 브라우저)으로 자동 이동
+        (function redirectToExternalBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const targetUrl = location.href;
+
+            if (userAgent.indexOf('kakaotalk') !== -1) {
+                if (userAgent.indexOf('android') !== -1) {
+                    location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=http;package=com.android.chrome;end';
+                } else if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1) {
+                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
+                }
+            }
+        })();
+
+        // 모바일 화면 흔들림/스크롤 방지
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
-
-        // 크롬과 카카오톡 모두 접속 가능하도록 강제 리다이렉트 코드는 제거했습니다.
 
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
