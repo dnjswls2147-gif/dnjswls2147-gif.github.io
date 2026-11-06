@@ -3,613 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트 - 완벽 전체 코드 버전</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
+    <title>릴리 볼 파이트 - 커스텀 볼 에디션</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
         }
         body {
-            background-color: #12041a;
-            font-family: sans-serif;
+            background-color: #ffffff;
             margin: 0;
             padding: 10px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            color: #111111;
+        }
+
+        /* 상단 아이콘 네비게이션 바 */
+        .top-icon-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+            padding: 6px 4px;
+            margin-bottom: 8px;
+            background: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .icon-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .icon-btn {
+            background: none;
+            border: 1.5px solid #666666;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .currency-badge {
+            background: #ffffff;
+            border: 1.5px solid #333333;
+            border-radius: 14px;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .coin-icon {
+            background: #000000;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        /* 메인 컨테이너 */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 중앙 경기장 사각형 뷰포트 */
+        .arena-frame {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 3px solid #000000;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 플로팅 채팅 아이콘 */
+        .floating-chat-btn {
+            position: absolute;
+            right: -8px;
+            top: 45%;
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* 추가하기 슬롯 영역 */
+        .slot-container {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-add-slot {
+            flex: 1;
+            padding: 14px 0;
+            background: #555555;
+            color: #ffffff;
+            border: 2px solid #000000;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-add-slot.selected {
+            background: #27ae60;
+        }
+
+        /* 시작하기 / 나가기 버튼 */
+        .btn-main-action {
+            margin-top: 20px;
+            width: 65%;
+            max-width: 250px;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: 900;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 0 #000000;
+        }
+        .btn-start { background-color: #2ecc71; color: #ffffff; }
+        .btn-exit { background-color: #e74c3c; color: #ffffff; border-radius: 8px; }
+
+        /* 인게임 HP 및 게이지 바 영역 */
+        .ingame-status-panel {
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .status-row-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .player-status-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .player-name-label {
+            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: 3px;
+        }
+        .player-name-p1 { color: #1e90ff; }
+        .player-name-p2 { color: #9b59b6; text-align: right; }
+
+        .hp-bar-outer {
+            width: 100%;
+            height: 22px;
+            background: #e0e0e0;
+            border: 2px solid #000000;
+            position: relative;
+            overflow: hidden;
+        }
+        .hp-bar-inner {
+            height: 100%;
+            background: #2ecc71;
+            width: 100%;
+            transition: width 0.15s;
+        }
+        .hp-text-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .sub-gauge-bar {
+            width: 100%;
+            height: 5px;
+            background: #cccccc;
+            border: 1px solid #000000;
+            margin-top: 2px;
+        }
+        .sub-gauge-fill {
+            height: 100%;
+            background: #4a90e2;
+            width: 0%;
+        }
+
+        /* 하단 푸터 정보 */
+        .footer-info {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #777777;
+            line-height: 1.5;
+        }
+
+        /* 볼 선택 모달 (2열 그리드) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            color: #ffffff;
-        }
-
-        button {
-            touch-action: manipulation;
-            transition: transform 0.05s active;
-            cursor: pointer;
-        }
-        button:active {
-            transform: scale(0.96);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 580px;
-            background: #2b113a;
-            border: 3px solid #ff7518;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(255, 117, 24, 0.4);
-            text-align: center;
-            position: relative;
-            margin-top: 25px;
-        }
-        .container.hidden { display: none !important; pointer-events: none !important; }
-
-        #alt-browser-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000; color: #ff0000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 999999; text-align: center; padding: 20px;
-        }
-        #alt-browser-screen.hidden { display: none !important; }
-
-        .top-nav-bar {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 6px;
-        }
-        .nav-column { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 6px; }
-        .profile-btn, .mailbox-btn, .ranking-nav-btn {
-            background: #2980b9; color: #fff; border: 2px solid #1c5980;
-            border-radius: 8px; padding: 10px 6px; font-size: 13px; font-weight: bold;
-            cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center;
-        }
-        .mailbox-btn { background: #d35400; border-color: #a04000; }
-        .ranking-nav-btn { background: #8e44ad; border-color: #6c3483; }
-
-        .currency-container { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
-        .coin-box, .trophy-box {
-            display: inline-flex; align-items: center; background: #3b200b; border: 2px solid #f1c40f;
-            border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: bold; color: #f1c40f;
-        }
-        .trophy-box { background: #0f2738; border-color: #3498db; color: #3498db; }
-        .myball-btn-box {
-            display: inline-flex; align-items: center; background: #321342; border: 2px solid #9b59b6;
-            border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: bold; color: #e0aaff; cursor: pointer;
-        }
-
-        h2 { color: #ff7518; margin-bottom: 2px; font-size: 20px; }
-        .version-text { font-size: 11px; color: #a29bfe; margin-bottom: 10px; font-weight: bold; }
-
-        .btn {
-            width: 100%; padding: 16px; color: white; border: none; border-radius: 10px;
-            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px;
-        }
-        .btn-ai { background-color: #27ae60; }
-        .btn-friend { background-color: #2980b9; }
-        .btn-back { background-color: #d35400; font-size: 15px; padding: 14px; }
-
-        .shop-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; max-height: 250px; overflow-y: auto; text-align: left; }
-        .shop-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #3d1b52; border: 2px solid #8e44ad; border-radius: 8px; padding: 12px 15px;
-        }
-        .shop-action-btn {
-            padding: 8px 14px; font-size: 12px; font-weight: bold; color: white; border: none; border-radius: 6px; cursor: pointer;
-        }
-        .btn-buy { background-color: #d35400; }
-        .btn-select { background-color: #2980b9; }
-        .btn-equipped { background-color: #27ae60; cursor: default; }
-
-        .free-play-container {
-            background-color: #ffffff !important;
-            color: #111111 !important;
-            border: 3px solid #111111 !important;
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            max-width: 540px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .free-play-container.hidden { display: none !important; }
-        .free-play-top-box {
-            position: relative; width: 100%; aspect-ratio: 1 / 1;
-            background: #ffffff; border: 3px solid #111111; border-radius: 8px;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 15px; margin-bottom: 12px;
-        }
-        .free-slot-row {
-            display: flex; justify-content: space-around; align-items: center; width: 100%; flex: 1;
-        }
-        .free-slot-btn {
-            width: 42%; height: 50px; background: #4a5568; color: #ffffff;
-            border: 2px solid #111111; border-radius: 8px; font-size: 15px; font-weight: 900;
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-        }
-        .free-start-action-btn {
-            width: 100%; background-color: #27ae60; color: white; border: 2px solid #111111;
-            border-radius: 10px; padding: 14px; font-size: 18px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
-        }
-
-        .char-picker-modal {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 100000; padding: 15px;
-        }
-        .char-picker-modal.hidden { display: none !important; }
-        .char-picker-box {
-            background: #ffffff; width: 100%; max-width: 420px; border: 3px solid #111111;
-            border-radius: 12px; padding: 15px; display: flex; flex-direction: column; max-height: 85vh;
-        }
-        .char-grid-scroll {
-            flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; padding-right: 4px;
-        }
-        .char-select-card {
-            background: #4a5568; color: #ffffff; border: 2px solid #111111; border-radius: 8px;
-            padding: 12px 8px; font-size: 14px; font-weight: 900; cursor: pointer; text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); word-break: keep-all;
-        }
-        .char-select-card:active { transform: scale(0.96); }
-
-        .gameplay-screen-box {
-            background-color: #ffffff !important;
-            color: #111111 !important;
-            border: 3px solid #111111 !important;
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            max-width: 540px;
-            margin: 0 auto;
-        }
-        .gameplay-screen-box.hidden { display: none !important; }
-
-        .canvas-container {
-            position: relative; width: 100%; aspect-ratio: 1 / 1;
-            margin: 0 auto 12px auto; border: 3px solid #111111;
-            border-radius: 8px; overflow: hidden; background-color: #ffffff;
-        }
-        canvas { width: 100%; height: 100%; display: block; }
-
-        .status-panel-row {
-            display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px;
-        }
-        .player-status-group { flex: 1; display: flex; flex-direction: column; text-align: left; }
-        .player-name-tag { font-size: 14px; font-weight: 900; margin-bottom: 3px; }
-        .player-name-tag.p1 { color: #1e3799; }
-        .player-name-tag.p2 { color: #4a69bd; }
-
-        .hp-bar-container {
-            position: relative; width: 100%; height: 22px;
-            background: #e2e8f0; border: 2px solid #111111; border-radius: 6px; overflow: hidden; margin-bottom: 4px;
-        }
-        .hp-fill-bar {
-            position: absolute; top: 0; left: 0; height: 100%; width: 100%;
-            background-color: #2ecc71; transition: width 0.1s;
-        }
-        .hp-fill-bar.p2 { background-color: #3498db; }
-        .hp-text-overlay {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 11px; font-weight: 900; color: #111111; z-index: 5; text-shadow: 0 0 2px #fff;
-        }
-
-        .skill-gauge-container {
-            position: relative; width: 100%; height: 10px;
-            background: #cbd5e0; border: 1.5px solid #111111; border-radius: 4px; overflow: hidden;
-        }
-        .skill-gauge-fill {
-            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
-            background-color: #8e44ad; transition: width 0.2s;
-        }
-
-        .gameplay-bottom-actions {
-            display: flex; justify-content: center; align-items: center; margin-top: 15px;
-        }
-        .big-exit-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white; border: 3px solid #962d22; border-radius: 16px;
-            padding: 14px 48px; font-size: 18px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4); display: flex; align-items: center; gap: 8px;
-        }
-
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .btn-close-x {
-            background: #e74c3c; color: #fff; border: 2px solid #111; border-radius: 6px;
-            width: 34px; height: 34px; font-size: 16px; font-weight: bold; cursor: pointer;
-        }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 10000; padding: 20px;
+            z-index: 9999;
+            padding: 20px;
         }
         .modal-overlay.hidden { display: none !important; }
-        .profile-info-row {
-            font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #ffe0b2;
-            display: flex; justify-content: space-between; border-bottom: 1px dashed #8e44ad; padding-bottom: 8px;
+
+        .picker-modal-box {
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff;
+            border: 3px solid #000000;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-        .brown-info-box {
-            background: #421959; border: 3px solid #68268a; border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left;
+        .modal-close-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 30px; height: 30px;
+            border: 2px solid #000000;
+            background: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .rainbow-name-text {
-            background: linear-gradient(90deg, #ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ed4c67);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900;
+
+        .picker-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 30px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
+        .ball-select-btn {
+            background: #4a4a4a;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 12px 6px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="alt-browser-screen" class="hidden"><h1>카카오톡 브라우저에서 실행해주세요</h1></div>
-
-    <!-- 로비 화면 -->
-    <div class="container" id="lobby-screen">
-        <div class="top-nav-bar">
-            <div class="nav-column">
-                <button class="profile-btn" onclick="openProfileModal()">👤 프로필</button>
-            </div>
-            <div class="nav-column">
-                <button class="mailbox-btn" onclick="showMailbox()">📬 우편함</button>
-                <button class="ranking-nav-btn" onclick="showRankingBoard()">🏆 랭킹보드</button>
-            </div>
+    <!-- 상단 아이콘 바 -->
+    <div class="top-icon-bar">
+        <div class="icon-btn-group">
+            <button class="icon-btn">👤</button>
+            <button class="icon-btn">🎖️</button>
+            <button class="icon-btn">✉️</button>
+            <button class="icon-btn">📅</button>
+            <button class="icon-btn">🆚</button>
         </div>
-
-        <h2>🎃 릴리 볼 파이트 🎃</h2>
-        <div class="version-text">v1.4 완벽 연동 에디션</div>
-        <div class="currency-container">
-            <div class="coin-box">🪙 코인: <span id="coin-count">0</span>개</div>
-            <div class="trophy-box">🏆 트로피: <span id="trophy-count">0</span>개</div>
-            <div class="myball-btn-box" onclick="showMyBallShop()">⚽ 나의 공</div>
+        <div class="currency-badge">
+            <span class="coin-icon">B</span>
+            <span>437</span>
         </div>
-
-        <button class="btn btn-ai" onclick="startAI()" style="margin-top: 10px;">AI 자동 매칭</button>
-        <button class="btn btn-friend" onclick="showFreePlay()" style="margin-top: 6px; background-color: #3498db;">자유 매칭 (공 선택)</button>
-    </div>
-
-    <!-- 자유 매칭 캐릭터 선택 화면 -->
-    <div class="container hidden free-play-container" id="free-play-screen">
-        <div class="header-row" style="margin-bottom: 6px;">
-            <h2 style="color:#111; text-shadow:none; font-size:16px;">자유 매칭 캐릭터 선택</h2>
-            <button class="btn-close-x" onclick="showLobby()">X</button>
-        </div>
-        
-        <div class="free-play-top-box">
-            <div class="free-slot-row">
-                <button class="free-slot-btn" id="free-btn-left" onclick="openCharPicker('left')">추가하기</button>
-                <div style="font-weight:900; font-size:16px; color:#111;">VS</div>
-                <button class="free-slot-btn" id="free-btn-right" onclick="openCharPicker('right')">추가하기</button>
-            </div>
-            <div style="text-align:center; font-size:12px; color:#666; font-weight:bold;">버튼을 눌러 출전할 공(캐릭터)을 선택하세요</div>
-        </div>
-
-        <button class="free-start-action-btn" onclick="startFreeMatch()">시작하기 ▶</button>
-    </div>
-
-    <!-- 캐릭터 리스트 선택 모달 -->
-    <div class="char-picker-modal hidden" id="char-picker-modal">
-        <div class="char-picker-box">
-            <div class="header-row" style="margin-bottom: 0;">
-                <h3 style="color:#111; margin:0; font-size:16px;">공(캐릭터) 선택</h3>
-                <button class="btn-close-x" onclick="closeCharPicker()">X</button>
-            </div>
-            <div class="char-grid-scroll" id="char-grid-container"></div>
+        <div class="icon-btn-group">
+            <button class="icon-btn">🏪</button>
+            <button class="icon-btn">💭</button>
+            <button class="icon-btn">📋</button>
         </div>
     </div>
 
-    <!-- 나의 공 보관함 화면 -->
-    <div class="container hidden" id="myball-screen">
-        <h2>⚽ 나의 공 보관함 ⚽</h2>
-        <div class="version-text">공 스탯 및 기술 정보 확인</div>
-        <div class="currency-container">
-            <div class="coin-box">코인: <span id="coin-count-shop">0</span>개</div>
-            <div class="trophy-box">트로피: <span id="trophy-count-shop">0</span>개</div>
-        </div>
-        <div class="shop-list" id="shop-list-container"></div>
-        <button class="btn btn-back" onclick="showLobby()">로비로 돌아가기</button>
-    </div>
+    <!-- 메인 컨테이너 -->
+    <div class="app-container">
 
-    <!-- 프로필 모달 -->
-    <div class="modal-overlay hidden" id="profile-modal">
-        <div class="modal-box" style="background:#2b113a; border:3px solid #ff7518; border-radius:12px; padding:20px; text-align:center; position:relative; color:#fff; max-width:360px; width:100%;">
-            <div class="header-row">
-                <h2>👤 프로필 조회</h2>
-                <button class="btn-close-x" onclick="closeProfileModal()">X</button>
+        <!-- 경기장 뷰포트 사각형 -->
+        <div class="arena-frame">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <button class="floating-chat-btn">💬</button>
+        </div>
+
+        <!-- 로비 대기 화면 -->
+        <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="slot-container">
+                <button class="btn-add-slot" id="slot-left-btn" onclick="openBallPicker('left')">추가하기</button>
+                <button class="btn-add-slot" id="slot-right-btn" onclick="openBallPicker('right')">추가하기</button>
             </div>
-            <div class="brown-info-box">
-                <div class="profile-info-row"><span>📛 이름:</span><span id="profile-modal-name">-</span></div>
-                <div class="profile-info-row"><span>📅 최초 접속:</span><span id="profile-modal-date" style="color:#ffaa00;">-</span></div>
-                <div class="profile-info-row"><span>🪙 보유 코인:</span><span id="profile-modal-coin" style="color:#f1c40f;">0개</span></div>
-                <div class="profile-info-row"><span>🏆 보유 트로피:</span><span id="profile-modal-trophy" style="color:#3498db;">0개</span></div>
-            </div>
-            <button class="btn btn-back" onclick="closeProfileModal()">닫기</button>
-        </div>
-    </div>
-
-    <!-- 흰색 배경 경기장 UI 화면 -->
-    <div class="gameplay-screen-box hidden" id="game-screen">
-        <div class="canvas-container">
-            <canvas id="gameCanvas" width="540" height="540"></canvas>
+            <button class="btn-main-action btn-start" onclick="startMatch()">시작하기 ▶</button>
         </div>
 
-        <div class="status-panel-row">
-            <div class="player-status-group">
-                <div class="player-name-tag p1" id="p1-name-tag">플레이어 1</div>
-                <div class="hp-bar-container">
-                    <div class="hp-fill-bar" id="p1-hp-fill" style="width: 100%;"></div>
-                    <div class="hp-text-overlay" id="p1-hp-text">250 / 250</div>
-                </div>
-                <div class="skill-gauge-container">
-                    <div class="skill-gauge-fill" id="p1-skill-fill"></div>
+        <!-- 인게임 대결 화면 -->
+        <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="ingame-status-panel">
+                <div class="status-row-group">
+                    <div class="player-status-card">
+                        <div class="player-name-label player-name-p1" id="p1-name-txt">동룡쓰 볼</div>
+                        <div class="hp-bar-outer">
+                            <div class="hp-bar-inner" id="p1-hp-fill"></div>
+                            <div class="hp-text-overlay" id="p1-hp-txt">250 / 250</div>
+                        </div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" style="width:70%;"></div></div>
+                    </div>
+                    <div class="player-status-card">
+                        <div class="player-name-label player-name-p2" id="p2-name-txt">미스터비스트 볼</div>
+                        <div class="hp-bar-outer">
+                            <div class="hp-bar-inner" id="p2-hp-fill"></div>
+                            <div class="hp-text-overlay" id="p2-hp-txt">250 / 250</div>
+                        </div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" style="width:40%;"></div></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="player-status-group" style="text-align: right;">
-                <div class="player-name-tag p2" id="p2-name-tag">플레이어 2</div>
-                <div class="hp-bar-container">
-                    <div class="hp-fill-bar p2" id="p2-hp-fill" style="width: 100%;"></div>
-                    <div class="hp-text-overlay" id="p2-hp-text">250 / 250</div>
-                </div>
-                <div class="skill-gauge-container">
-                    <div class="skill-gauge-fill" id="p2-skill-fill" style="float: right;"></div>
-                </div>
-            </div>
+            <button class="btn-main-action btn-exit" onclick="exitMatch()">나가기 🚪</button>
         </div>
 
-        <div class="gameplay-bottom-actions">
-            <button class="big-exit-btn" onclick="showLobby()">
-                나가기 🚪
-            </button>
+        <div class="footer-info">
+            <div>created by ball_fight_tiktok</div>
+            <div>⚠️ 인게임 화면을 녹화 후 영상으로 사용하는 행위는 엄격히 금지됩니다</div>
+            <div style="margin-top: 6px; font-size: 10px;">내 아이디 SHD7BP &nbsp;&nbsp;&nbsp;&nbsp; v4.13.39</div>
+        </div>
+
+    </div>
+
+    <!-- 볼 선택 모달 팝업창 -->
+    <div class="modal-overlay hidden" id="ball-picker-modal">
+        <div class="picker-modal-box">
+            <button class="modal-close-btn" onclick="closeBallPicker()">✕</button>
+            <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
 
     <script>
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        const isKakaoTalk = /KAKAOTALK/i.test(userAgent);
+        // 요청하신 직접 만든 공들 (체력 모두 250으로 설정)
+        const ballList = [
+            { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
+            { name: '미스터비스트 볼', hp: 250, color: '#e74c3c' },
+            { name: '상품컴퍼니 볼', hp: 250, color: '#f1c40f' }
+        ];
 
-        if (!isKakaoTalk) {
-            document.getElementById('alt-browser-screen').classList.remove('hidden');
-        }
+        let selectedLeftBall = null;
+        let selectedRightBall = null;
+        let currentTargetSide = null;
 
+        let isGaming = false;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const STORAGE_KEY = 'lily_ball_fight_stats_v5';
-        let savedUsername = "김원진";
-        let firstJoinDateStr = "2026년 10월 20일 20시 59분";
-        let userCoins = 1000;
-        let userTrophies = 500;
+        let p1 = { x: 120, y: 200, radius: 30, vx: 3, vy: 2.5, hp: 250, maxHp: 250, name: '동룡쓰 볼', color: '#1e90ff' };
+        let p2 = { x: 280, y: 200, radius: 30, vx: -2.5, vy: 3, hp: 250, maxHp: 250, name: '미스터비스트 볼', color: '#e74c3c' };
 
-        let ballsData = [
-            { id: 'standard', name: '기본 볼', desc: '체력: 200 | 평타: 15 | 기술딜: 35', price: 0, hp: 200, damage: 15, skillDmg: 35, skillCooldown: 5, owned: true, equipped: true },
-            { id: 'iceball', name: '아이스볼', desc: '체력: 220 | 평타: 20 | 기술딜: 45', price: 50, hp: 220, damage: 20, skillDmg: 45, skillCooldown: 4, owned: false, equipped: false },
-            { id: 'fireball', name: '화염볼', desc: '체력: 220 | 평타: 25 | 기술딜: 50', price: 100, hp: 220, damage: 25, skillDmg: 50, skillCooldown: 4, owned: false, equipped: false },
-            { id: 'pokemon', name: '포켓몬볼', desc: '체력: 250 | 평타: 30 | 기술딜: 70', price: 350, hp: 250, damage: 30, skillDmg: 70, skillCooldown: 3.5, owned: false, equipped: false },
-            { id: 'dongryong', name: '동룡쓰볼', desc: '체력: 300 | 평타: 45 | 기술딜: 90', price: 1000, hp: 300, damage: 45, skillDmg: 90, skillCooldown: 3, owned: false, equipped: false },
-            { id: 'mrbeast', name: '미스터 비스트 볼', desc: '체력: 320 | 평타: 55 | 기술딜: 110', price: 1500, hp: 320, damage: 55, skillDmg: 110, skillCooldown: 2.5, owned: false, equipped: false },
-            { id: 'sangsampany', name: '상품컴퍼니 볼', desc: '체력: 350 | 평타: 60 | 기술딜: 130', price: 3000, hp: 350, damage: 60, skillDmg: 130, skillCooldown: 2, owned: false, equipped: false }
-        ];
+        function openBallPicker(side) {
+            currentTargetSide = side;
+            const grid = document.getElementById('ball-picker-grid');
+            grid.innerHTML = '';
 
-        let selectedCharLeft = ballsData[0];
-        let selectedCharRight = ballsData[1];
-        let activePickingSide = 'left';
-
-        let gameStarted = false;
-        let p1 = { x: 150, y: 270, radius: 36, color: '#1e3799', vx: 2.5, vy: 2, hp: 200, maxHp: 200, damage: 15, skillDmg: 35, skillCooldown: 5, skillProgress: 0, name: '플레이어 1' };
-        let p2 = { x: 390, y: 270, radius: 36, color: '#4a69bd', vx: -2.5, vy: -2, hp: 200, maxHp: 200, damage: 15, skillDmg: 35, skillCooldown: 5, skillProgress: 0, name: '플레이어 2' };
-
-        function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (parsed.coins !== undefined) userCoins = parsed.coins;
-                    if (parsed.trophies !== undefined) userTrophies = parsed.trophies;
-                    if (parsed.balls) ballsData = parsed.balls;
-                } catch(e){}
-            }
-            updateCoinsUI();
-        }
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ coins: userCoins, trophies: userTrophies, balls: ballsData }));
-            updateCoinsUI();
-        }
-        function updateCoinsUI() {
-            document.getElementById('coin-count').innerText = userCoins;
-            document.getElementById('trophy-count').innerText = userTrophies;
-            document.getElementById('coin-count-shop').innerText = userCoins;
-            document.getElementById('trophy-count-shop').innerText = userTrophies;
-        }
-
-        function openProfileModal() {
-            document.getElementById('profile-modal-name').innerHTML = `<span class="rainbow-name-text">${savedUsername} 🏳️‍🌈</span>`;
-            document.getElementById('profile-modal-date').innerText = firstJoinDateStr;
-            document.getElementById('profile-modal-coin').innerText = userCoins + "개";
-            document.getElementById('profile-modal-trophy').innerText = userTrophies + "개";
-            document.getElementById('profile-modal').classList.remove('hidden');
-        }
-        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
-        function showMailbox() { alert("우편함이 비어 있습니다."); }
-        function showRankingBoard() { alert("랭킹보드 준비 중입니다."); }
-
-        function showMyBallShop() {
-            document.getElementById('lobby-screen').classList.add('hidden');
-            renderShop();
-            document.getElementById('myball-screen').classList.remove('hidden');
-        }
-        function renderShop() {
-            const container = document.getElementById('shop-list-container');
-            container.innerHTML = '';
-            ballsData.forEach(ball => {
-                let div = document.createElement('div');
-                div.className = 'shop-item';
-                div.innerHTML = `<div><div style="font-weight:bold; font-size:14px; color:#fff;">${ball.name}</div><div style="font-size:11px; color:#d1d8e0;">${ball.desc}</div></div>`;
-                let btn = document.createElement('button');
-                btn.className = 'shop-action-btn ' + (ball.equipped ? 'btn-equipped' : (ball.owned ? 'btn-select' : 'btn-buy'));
-                btn.innerText = ball.equipped ? '장착 중' : (ball.owned ? '선택' : ball.price + ' 코인');
-                btn.onclick = () => {
-                    if (!ball.owned) {
-                        if (userCoins >= ball.price) { userCoins -= ball.price; ball.owned = true; ball.equipped = true; saveData(); renderShop(); }
-                        else { alert("코인이 부족합니다!"); }
-                    } else {
-                        ballsData.forEach(b => b.equipped = false);
-                        ball.equipped = true;
-                        saveData();
-                        renderShop();
-                    }
-                };
-                div.appendChild(btn);
-                container.appendChild(div);
+            ballList.forEach(ball => {
+                const btn = document.createElement('div');
+                btn.className = 'ball-select-btn';
+                btn.innerText = ball.name;
+                btn.onclick = () => chooseBall(ball);
+                grid.appendChild(btn);
             });
+
+            document.getElementById('ball-picker-modal').classList.remove('hidden');
         }
 
-        function showFreePlay() {
-            document.getElementById('lobby-screen').classList.add('hidden');
-            document.getElementById('free-play-screen').classList.remove('hidden');
-            updateFreeSlotsUI();
+        function closeBallPicker() {
+            document.getElementById('ball-picker-modal').classList.add('hidden');
         }
 
-        function updateFreeSlotsUI() {
-            document.getElementById('free-btn-left').innerText = selectedCharLeft ? selectedCharLeft.name : '추가하기';
-            document.getElementById('free-btn-right').innerText = selectedCharRight ? selectedCharRight.name : '추가하기';
+        function chooseBall(ball) {
+            if (currentTargetSide === 'left') {
+                selectedLeftBall = ball;
+                const slotBtn = document.getElementById('slot-left-btn');
+                slotBtn.innerText = ball.name;
+                slotBtn.classList.add('selected');
+            } else {
+                selectedRightBall = ball;
+                const slotBtn = document.getElementById('slot-right-btn');
+                slotBtn.innerText = ball.name;
+                slotBtn.classList.add('selected');
+            }
+            closeBallPicker();
         }
 
-        function openCharPicker(side) {
-            activePickingSide = side;
-            const container = document.getElementById('char-grid-container');
-            container.innerHTML = '';
-            ballsData.forEach(ball => {
-                let card = document.createElement('div');
-                card.className = 'char-select-card';
-                card.innerText = ball.name;
-                card.onclick = () => {
-                    if (activePickingSide === 'left') selectedCharLeft = ball;
-                    else selectedCharRight = ball;
-                    closeCharPicker();
-                    updateFreeSlotsUI();
-                };
-                container.appendChild(card);
-            });
-            document.getElementById('char-picker-modal').classList.remove('hidden');
-        }
-        function closeCharPicker() { document.getElementById('char-picker-modal').classList.add('hidden'); }
-
-        function startAI() {
-            let equipped = ballsData.find(b => b.equipped) || ballsData[0];
-            selectedCharLeft = equipped;
-            selectedCharRight = ballsData[Math.floor(Math.random() * ballsData.length)];
-            launchGameSession();
-        }
-
-        function startFreeMatch() {
-            if (!selectedCharLeft || !selectedCharRight) { alert("양쪽 모두 공을 선택해주세요!"); return; }
-            launchGameSession();
-        }
-
-        function launchGameSession() {
-            document.querySelectorAll('.container, .gameplay-screen-box').forEach(el => el.classList.add('hidden'));
-            document.getElementById('game-screen').classList.remove('hidden');
-
-            p1.maxHp = selectedCharLeft.hp; p1.hp = p1.maxHp;
-            p1.damage = selectedCharLeft.damage; p1.skillDmg = selectedCharLeft.skillDmg;
-            p1.skillCooldown = selectedCharLeft.skillCooldown; p1.skillProgress = 0;
-            p1.name = selectedCharLeft.name;
-
-            p2.maxHp = selectedCharRight.hp; p2.hp = p2.maxHp;
-            p2.damage = selectedCharRight.damage; p2.skillDmg = selectedCharRight.skillDmg;
-            p2.skillCooldown = selectedCharRight.skillCooldown; p2.skillProgress = 0;
-            p2.name = selectedCharRight.name;
-
-            document.getElementById('p1-name-tag').innerText = p1.name;
-            document.getElementById('p2-name-tag').innerText = p2.name;
-
-            gameStarted = true;
-            updateHpUI();
-        }
-
-        function showLobby() {
-            gameStarted = false;
-            document.querySelectorAll('.container, .gameplay-screen-box, .modal-overlay').forEach(el => el.classList.add('hidden'));
-            document.getElementById('lobby-screen').classList.remove('hidden');
-            updateCoinsUI();
-        }
-
-        function updateHpUI() {
-            document.getElementById('p1-hp-fill').style.width = Math.max(0, (p1.hp / p1.maxHp) * 100) + '%';
-            document.getElementById('p1-hp-text').innerText = `${Math.ceil(p1.hp)} / ${p1.maxHp}`;
-            document.getElementById('p1-skill-fill').style.width = p1.skillProgress + '%';
-
-            document.getElementById('p2-hp-fill').style.width = Math.max(0, (p2.hp / p2.maxHp) * 100) + '%';
-            document.getElementById('p2-hp-text').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
-            document.getElementById('p2-skill-fill').style.width = p2.skillProgress + '%';
-        }
-
-        function updateGame() {
-            if (!gameStarted) return;
-
-            p1.x += p1.vx; p1.y += p1.vy;
-            p2.x += p2.vx; p2.y += p2.vy;
-
-            p1.skillProgress = Math.min(100, p1.skillProgress + (0.5 / p1.skillCooldown));
-            p2.skillProgress = Math.min(100, p2.skillProgress + (0.5 / p2.skillCooldown));
-
-            if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) { p1.vx *= -1; p2.hp -= p1.damage * 0.3; }
-            if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) { p1.vy *= -1; }
-            if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) { p2.vx *= -1; p1.hp -= p2.damage * 0.3; }
-            if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) { p2.vy *= -1; }
-
-            let dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-            if (dist < p1.radius + p2.radius) {
-                let tempVx = p1.vx; let tempVy = p1.vy;
-                p1.vx = p2.vx; p1.vy = p2.vy;
-                p2.vx = tempVx; p2.vy = tempVy;
-
-                let p1Deal = p1.skillProgress >= 100 ? p1.skillDmg : p1.damage;
-                let p2Deal = p2.skillProgress >= 100 ? p2.skillDmg : p2.damage;
-
-                p2.hp -= p1Deal;
-                p1.hp -= p2Deal;
-
-                if (p1.skillProgress >= 100) p1.skillProgress = 0;
-                if (p2.skillProgress >= 100) p2.skillProgress = 0;
+        function startMatch() {
+            if (!selectedLeftBall || !selectedRightBall) {
+                alert('양쪽 볼을 모두 선택해주세요!');
+                return;
             }
 
-            updateHpUI();
+            p1.name = selectedLeftBall.name;
+            p1.maxHp = selectedLeftBall.hp;
+            p1.hp = selectedLeftBall.hp;
+            p1.color = selectedLeftBall.color;
+            p1.x = 120; p1.y = 200;
 
-            if (p1.hp <= 0 || p2.hp <= 0) {
-                gameStarted = false;
-                alert(p1.hp <= 0 ? `${p2.name} 승리!` : `${p1.name} 승리!`);
-                userCoins += 50; userTrophies += 10;
-                saveData();
-                showLobby();
-            }
+            p2.name = selectedRightBall.name;
+            p2.maxHp = selectedRightBall.hp;
+            p2.hp = selectedRightBall.hp;
+            p2.color = selectedRightBall.color;
+            p2.x = 280; p2.y = 200;
+
+            document.getElementById('p1-name-txt').innerText = p1.name;
+            document.getElementById('p2-name-txt').innerText = p2.name;
+
+            document.getElementById('lobby-controls').classList.add('hidden');
+            document.getElementById('ingame-controls').classList.remove('hidden');
+
+            isGaming = true;
+            updateHpBars();
         }
 
-        function drawGame() {
+        function exitMatch() {
+            isGaming = false;
+            document.getElementById('ingame-controls').classList.add('hidden');
+            document.getElementById('lobby-controls').classList.remove('hidden');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 60, 0, Math.PI*2); ctx.stroke();
-
-            ctx.beginPath(); ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p1.color; ctx.fill();
-            ctx.lineWidth = 3; ctx.strokeStyle = '#111'; ctx.stroke(); ctx.closePath();
-
-            ctx.beginPath(); ctx.arc(p2.x, p2.y, p2.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p2.color; ctx.fill();
-            ctx.lineWidth = 3; ctx.strokeStyle = '#111'; ctx.stroke(); ctx.closePath();
         }
 
-        function gameLoop() {
-            updateGame();
-            drawGame();
-            requestAnimationFrame(gameLoop);
+        function updateHpBars() {
+            const p1Pct = Math.max(0, (p1.hp / p1.maxHp) * 100);
+            const p2Pct = Math.max(0, (p2.hp / p2.maxHp) * 100);
+
+            document.getElementById('p1-hp-fill').style.width = p1Pct + '%';
+            document.getElementById('p1-hp-txt').innerText = `${Math.ceil(p1.hp)} / ${p1.maxHp}`;
+
+            document.getElementById('p2-hp-fill').style.width = p2Pct + '%';
+            document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
         }
 
-        loadData();
-        requestAnimationFrame(gameLoop);
+        function runGameLoop() {
+            if (isGaming) {
+                p1.x += p1.vx; p1.y += p1.vy;
+                p2.x += p2.vx; p2.y += p2.vy;
+
+                if (p1.x - p1.radius < 0 || p1.x + p1.radius > canvas.width) p1.vx *= -1;
+                if (p1.y - p1.radius < 0 || p1.y + p1.radius > canvas.height) p1.vy *= -1;
+                if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) p2.vx *= -1;
+                if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) p2.vy *= -1;
+
+                let dx = p2.x - p1.x;
+                let dy = p2.y - p1.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < p1.radius + p2.radius) {
+                    let tempVx = p1.vx; let tempVy = p1.vy;
+                    p1.vx = p2.vx; p1.vy = p2.vy;
+                    p2.vx = tempVx; p2.vy = tempVy;
+
+                    p1.hp = Math.max(0, p1.hp - 6);
+                    p2.hp = Math.max(0, p2.hp - 6);
+                    updateHpBars();
+
+                    if (p1.hp <= 0 || p2.hp <= 0) {
+                        isGaming = false;
+                        setTimeout(() => {
+                            alert(p1.hp > 0 ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
+                            exitMatch();
+                        }, 100);
+                    }
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Player 1
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(p1.x, p1.y, p1.radius + 18, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(30, 144, 255, 0.15)";
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p1.color;
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#000000";
+                ctx.stroke();
+                ctx.restore();
+
+                // Player 2
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(p2.x, p2.y, p2.radius + 18, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(231, 76, 60, 0.15)";
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(p2.x, p2.y, p2.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p2.color;
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#000000";
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(runGameLoop);
+        }
+
+        requestAnimationFrame(runGameLoop);
     </script>
 </body>
 </html>
