@@ -32,7 +32,7 @@
             left: 0;
         }
 
-        /* 로비 좌측 상단 아이콘 그룹 (프로필 & 전체 채팅) */
+        /* 로비 좌측 상단 메뉴 (2배 확대 프로필 & 전체 채팅) */
         .top-left-menu-bar {
             position: fixed;
             top: 35px;
@@ -43,7 +43,7 @@
             z-index: 1000;
         }
 
-        /* 2배 더 크게 확대한 프로필 버튼 */
+        /* 프로필 버튼 */
         .profile-entry-box {
             display: flex;
             flex-direction: column;
@@ -61,7 +61,7 @@
             margin-top: 4px;
         }
 
-        /* 📘 전체 채팅 버튼 */
+        /* 전체 채팅 버튼 */
         .chat-entry-box {
             display: flex;
             flex-direction: column;
@@ -79,7 +79,7 @@
             margin-top: 4px;
         }
 
-        /* 화면 좌측 하단 릴리 전용 어드민 아이콘 */
+        /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             position: fixed;
             bottom: 18px;
@@ -154,7 +154,8 @@
 
         /* 메인 컨테이너 */
         .app-container {
-            width: 98vw;
+            width: 92vw;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -186,7 +187,7 @@
             opacity: 1;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 */
+        /* 조금 더 줄여진 중앙 경기장 뷰포트 */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -207,15 +208,15 @@
             display: flex;
             gap: 14px;
             width: 100%;
-            margin-top: 22px;
+            margin-top: 18px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 28px 0;
+            padding: 24px 0;
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -230,10 +231,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 24px;
-            width: 95%;
-            padding: 28px 0;
-            font-size: 36px;
+            margin-top: 20px;
+            width: 100%;
+            padding: 24px 0;
+            font-size: 32px;
             font-weight: 900;
             border: 4px solid #000000;
             border-radius: 14px;
@@ -242,20 +243,20 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            box-shadow: 0 7px 0 #000000;
+            box-shadow: 0 6px 0 #000000;
             outline: none;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(3px);
-            box-shadow: 0 4px 0 #000000;
+            box-shadow: 0 3px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 22px;
+            margin-top: 18px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -271,9 +272,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 900;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -283,9 +284,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 60px;
+            height: 50px;
             background: #e0e0e0;
-            border: 5px solid #000000;
+            border: 4.5px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -304,15 +305,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 28px;
+            font-size: 24px;
             text-shadow: 2px 2px 4px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 36px;
+            height: 32px;
             background: #cccccc;
             border: 3px solid #000000;
-            margin-top: 8px;
+            margin-top: 6px;
             position: relative;
             overflow: hidden;
         }
@@ -328,7 +329,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
             color: #000;
         }
@@ -401,39 +402,39 @@
             outline: none;
         }
 
-        /* 전체 채팅 팝업 스타일 */
+        /* 대폭 확대된 전체 채팅 팝업 스타일 */
         .chat-modal-box {
-            width: 92vw;
-            max-width: 480px;
-            height: 70vh;
-            max-height: 600px;
+            width: 95vw;
+            max-width: 600px;
+            height: 80vh;
+            max-height: 750px;
             background: #ffffff;
-            border: 6px solid #000000;
-            padding: 25px;
+            border: 7px solid #000000;
+            padding: 30px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .chat-logs-area {
             flex: 1;
-            border: 3.5px solid #000;
+            border: 4px solid #000;
             background: #f8f9fa;
-            margin-top: 15px;
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 14px;
         }
         .chat-msg-bubble {
             background: #ffffff;
-            border: 2px solid #000;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 18px;
+            border: 3px solid #000;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 22px;
             font-weight: bold;
             word-break: break-all;
         }
@@ -537,7 +538,7 @@
 </head>
 <body>
 
-    <!-- 로비 좌측 상단 메뉴 (2배 확대 프로필 & 전체 채팅) -->
+    <!-- 로비 좌측 상단 메뉴 (프로필 & 대폭 확대된 전체 채팅) -->
     <div class="top-left-menu-bar">
         <div class="profile-entry-box" onclick="openProfileModal()">
             <div class="profile-icon">👤</div>
@@ -564,7 +565,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 경기장 뷰포트 사각형 -->
+        <!-- 조금 줄여진 중앙 경기장 뷰포트 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
@@ -590,7 +591,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
-                            <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (5.0초)</div>
+                            <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (8.0초)</div>
                         </div>
                     </div>
                     <div class="player-status-card">
@@ -601,7 +602,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
-                            <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (5.0초)</div>
+                            <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (8.0초)</div>
                         </div>
                     </div>
                 </div>
@@ -611,17 +612,17 @@
 
     </div>
 
-    <!-- 전체 채팅 모달 팝업 창 -->
+    <!-- 대폭 확대된 전체 채팅 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="chat-modal" style="z-index: 100003;">
         <div class="chat-modal-box">
             <button class="modal-close-btn" onclick="closeChatModal()">✕</button>
-            <div style="font-size:26px; font-weight:900; text-align:center;">📘 전체 채팅</div>
+            <div style="font-size:32px; font-weight:900; text-align:center;">📘 전체 채팅</div>
             <div class="chat-logs-area" id="chat-logs">
                 <div class="chat-msg-bubble">시스템: 전체 채팅에 오신 것을 환영합니다!</div>
             </div>
             <div class="row-inline-group">
-                <input type="text" id="chat-input" class="admin-input" style="margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                <button class="btn-send" onclick="sendChatMessage()">전송</button>
+                <input type="text" id="chat-input" class="admin-input" style="font-size:22px; padding:20px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="btn-send" style="font-size:24px; padding:0 30px;" onclick="sendChatMessage()">전송</button>
             </div>
         </div>
     </div>
@@ -704,21 +705,29 @@
     </div>
 
     <script>
-        // 새로운 동전 획득 사운드 (경쾌한 챠링 음)
-        function playEatSound() {
+        // '얌 얌 얌' 먹는 사운드 효과 구현
+        function playYamSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.12);
-                gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.12);
+                let now = audioCtx.currentTime;
+                // 세 번의 얌 소리 (오르내리는 주파수)
+                for (let i = 0; i < 3; i++) {
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    let startTime = now + i * 0.1;
+                    osc.frequency.setValueAtTime(300, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(600, startTime + 0.05);
+                    osc.frequency.exponentialRampToValueAtTime(250, startTime + 0.09);
+                    
+                    gain.gain.setValueAtTime(0.4, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.09);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.09);
+                }
             } catch(e) {}
         }
 
@@ -995,11 +1004,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 일정한 속도값 지정
+        // 언제나 완벽하게 일정한 속도 값 (가속/감속 원천 차단)
         const FIXED_SPEED = 2.8;
 
-        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 5.0 };
-        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 5.0 };
+        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 8.0 };
+        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 8.0 };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1116,7 +1125,7 @@
             ctx.restore();
         }
 
-        // 항상 일정한 속도를 갖는 방향 벡터 생성
+        // 항상 일정한 속도로 뻗어나가는 벡터 설정 함수
         function setFixedSpeedVelocity(obj) {
             const angle = Math.random() * Math.PI * 2;
             obj.vx = Math.cos(angle) * FIXED_SPEED;
@@ -1134,14 +1143,14 @@
             p1.x = 150; p1.y = 250;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = 5.0;
+            p1.skillTimer = 8.0;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = 5.0;
+            p2.skillTimer = 8.0;
 
             moneyItems = [];
 
@@ -1158,14 +1167,14 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // 상단 토스트 메시지 출력 제거 (요청사항 반영)
+                // 기술 충전 시간 8초 기준으로 갱신 (토스트 메시지 없음)
                 if (p1.name === '미스터비스트') {
                     p1.skillTimer -= 0.1;
                     if (p1.skillTimer <= 0) {
-                        p1.skillTimer = 5.0;
+                        p1.skillTimer = 8.0;
                         spawnMoney('p1');
                     }
-                    let pct = ((5.0 - p1.skillTimer) / 5.0) * 100;
+                    let pct = ((8.0 - p1.skillTimer) / 8.0) * 100;
                     document.getElementById('p1-gauge-fill').style.width = pct + '%';
                     document.getElementById('p1-gauge-txt').innerText = `기술 충전중 (${p1.skillTimer.toFixed(1)}초)`;
                 } else {
@@ -1176,10 +1185,10 @@
                 if (p2.name === '미스터비스트') {
                     p2.skillTimer -= 0.1;
                     if (p2.skillTimer <= 0) {
-                        p2.skillTimer = 5.0;
+                        p2.skillTimer = 8.0;
                         spawnMoney('p2');
                     }
-                    let pct = ((5.0 - p2.skillTimer) / 5.0) * 100;
+                    let pct = ((8.0 - p2.skillTimer) / 8.0) * 100;
                     document.getElementById('p2-gauge-fill').style.width = pct + '%';
                     document.getElementById('p2-gauge-txt').innerText = `기술 충전중 (${p2.skillTimer.toFixed(1)}초)`;
                 } else {
@@ -1250,18 +1259,18 @@
                 p1.x += p1.vx; p1.y += p1.vy;
                 p2.x += p2.vx; p2.y += p2.vy;
 
-                // 테두리 벽 끼임 방지 보정 및 속도 일정하게 보정
-                if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx *= -1; }
-                if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx *= -1; }
-                if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy *= -1; }
-                if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius; p1.vy *= -1; }
+                // 벽 충돌 시 속도 가감 없이 정확히 반사만 수행 (일정 속도 유지)
+                if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx = Math.abs(p1.vx); }
+                if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx = -Math.abs(p1.vx); }
+                if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy = Math.abs(p1.vy); }
+                if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius; p1.vy = -Math.abs(p1.vy); }
 
-                if (p2.x - p2.radius < 0) { p2.x = p2.radius; p2.vx *= -1; }
-                if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius; p2.vx *= -1; }
-                if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy *= -1; }
-                if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy *= -1; }
+                if (p2.x - p2.radius < 0) { p2.x = p2.radius; p2.vx = Math.abs(p2.vx); }
+                if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius; p2.vx = -Math.abs(p2.vx); }
+                if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = Math.abs(p2.vy); }
+                if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -Math.abs(p2.vy); }
 
-                // 돈 획득 로직
+                // 돈 먹기 로직 ('얌얌얌' 사운드 적용)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
 
@@ -1269,7 +1278,7 @@
                         let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                         if (dist1 < p1.radius + m.radius) {
                             p1.hp = Math.min(p1.maxHp, p1.hp + 25);
-                            playEatSound();
+                            playYamSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                             continue;
@@ -1280,21 +1289,20 @@
                         let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                         if (dist2 < p2.radius + m.radius) {
                             p2.hp = Math.min(p2.maxHp, p2.hp + 25);
-                            playEatSound();
+                            playYamSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                         }
                     }
                 }
 
-                // 공 충돌 처리 (서로 튕길 때도 항상 일정한 속도로 가도록 조절)
+                // 공끼리 충돌 시에도 속도가 변하지 않고 일정하게 튕기도록 처리
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
                 let distance = Math.hypot(dx, dy);
                 let minDistance = p1.radius + p2.radius;
 
                 if (distance < minDistance) {
-                    // 겹침 현상 즉시 보정하여 끼이지 않게 설정
                     let overlap = minDistance - distance;
                     let nx = dx / (distance || 1);
                     let ny = dy / (distance || 1);
@@ -1304,7 +1312,6 @@
                     p2.x += nx * (overlap / 2);
                     p2.y += ny * (overlap / 2);
 
-                    // 반사 벡터 계산 후 fixed speed 적용
                     let angle = Math.atan2(ny, nx);
                     p1.vx = -Math.cos(angle) * FIXED_SPEED;
                     p1.vy = -Math.sin(angle) * FIXED_SPEED;
