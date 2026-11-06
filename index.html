@@ -12,7 +12,6 @@
             user-select: none;
             -webkit-user-select: none;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            /* 터치 스크롤 및 확대/축소 완전 차단 */
             touch-action: none;
         }
         html, body {
@@ -21,21 +20,21 @@
             padding: 0;
             width: 100vw;
             height: 100vh;
-            height: 100dvh; /* 모바일 크롬 주소창 대응 높이 */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* 스크롤바 바깥 이동 차단 */
+            overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
         }
 
-        /* 메인 컨테이너 (화면에 최대한 크게 맞춤) */
+        /* 메인 컨테이너 크기를 조금 더 아담하게 조절 */
         .app-container {
-            width: 96vw;
-            max-width: 500px;
+            width: 86vw;
+            max-width: 360px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,15 +43,15 @@
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (화면 폭에 맞게 크게) */
+        /* 중앙 경기장 사각형 뷰포트 (적당한 크기로 축소) */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 4px solid #000000;
+            border: 3px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
         canvas {
             width: 100%;
@@ -63,17 +62,17 @@
         /* 추가하기 / 공 선택 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 12px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 16px 0;
+            padding: 12px 0;
             background: #555555;
             color: #ffffff;
-            border: 3px solid #000000;
-            font-size: 18px;
+            border: 2px solid #000000;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
@@ -84,38 +83,38 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 20px;
-            width: 80%;
-            padding: 16px 0;
-            font-size: 22px;
+            margin-top: 15px;
+            width: 70%;
+            padding: 13px 0;
+            font-size: 18px;
             font-weight: 900;
-            border: 3px solid #000000;
-            border-radius: 8px;
+            border: 2px solid #000000;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: 0 4px 0 #000000;
+            box-shadow: 0 3px 0 #000000;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #000000;
+            box-shadow: 0 1px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
         .status-row-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .player-status-card {
@@ -124,18 +123,18 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 900;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .player-name-p1 { color: #1e90ff; }
         .player-name-p2 { color: #e74c3c; text-align: right; }
 
         .hp-bar-outer {
             width: 100%;
-            height: 26px;
+            height: 22px;
             background: #e0e0e0;
-            border: 3px solid #000000;
+            border: 2px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -154,15 +153,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: #cccccc;
             border: 1px solid #000000;
-            margin-top: 3px;
+            margin-top: 2px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -186,7 +185,7 @@
 
         .picker-modal-box {
             width: 100%;
-            max-width: 380px;
+            max-width: 340px;
             background: #ffffff;
             border: 3px solid #000000;
             padding: 15px;
@@ -196,10 +195,10 @@
         .modal-close-btn {
             position: absolute;
             top: 10px; right: 10px;
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border: 2px solid #000000;
             background: #ffffff;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -211,8 +210,8 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-top: 30px;
-            max-height: 340px;
+            margin-top: 25px;
+            max-height: 300px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -220,8 +219,8 @@
             background: #4a4a4a;
             color: #ffffff;
             border: 2px solid #000000;
-            padding: 14px 6px;
-            font-size: 15px;
+            padding: 12px 6px;
+            font-size: 14px;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
@@ -287,12 +286,10 @@
     </div>
 
     <script>
-        // 모바일 웹 스크롤 바운스 방지 코드
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
 
-        // 카카오톡 내장 브라우저 접속 시 크롬으로 외부 오픈
         (function redirectToExternalBrowser() {
             const userAgent = navigator.userAgent.toLowerCase();
             const targetUrl = location.href;
@@ -306,7 +303,6 @@
             }
         })();
 
-        // 커스텀 볼 목록 (체력 250)
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
             { name: '미스터비스트 볼', hp: 250, color: '#e74c3c' },
