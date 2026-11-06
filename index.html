@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -95,11 +94,14 @@
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
             outline: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .btn-add-slot.selected {
             background: #27ae60;
@@ -148,9 +150,12 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .player-name-p1 { color: #1e90ff; }
         .player-name-p2 { color: #e74c3c; text-align: right; }
@@ -246,7 +251,7 @@
             color: #ffffff;
             border: 3.5px solid #000000;
             padding: 22px 10px;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
@@ -346,13 +351,16 @@
 
             toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
-            }, 1800); // 1.8초 뒤 서서히 사라짐
+            }, 1800);
         }
 
+        // 볼 목록에 '왕클세종 볼', '본이 볼' 추가 완료
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
             { name: '미스터비스트 볼', hp: 250, color: '#e74c3c' },
-            { name: '상품컴퍼니 볼', hp: 250, color: '#f1c40f' }
+            { name: '상품컴퍼니 볼', hp: 250, color: '#f1c40f' },
+            { name: '왕클세종 볼', hp: 250, color: '#9b59b6' },
+            { name: '본이 볼', hp: 250, color: '#e67e22' }
         ];
 
         let selectedLeftBall = null;
@@ -470,7 +478,7 @@
 
         function startMatch() {
             if (!selectedLeftBall || !selectedRightBall) {
-                showToast('양쪽 공을 모두 선택해 주세요!'); // alert 대신 상단 토스트 메시지 출력
+                showToast('양쪽 공을 모두 선택해 주세요!');
                 return;
             }
 
@@ -496,6 +504,21 @@
 
         function exitMatch() {
             isGaming = false;
+            
+            // 게임 종료/나가기 시 선택된 볼 정보를 초기화하여 다시 고르게 설정
+            selectedLeftBall = null;
+            selectedRightBall = null;
+            p1.name = '';
+            p2.name = '';
+
+            const leftBtn = document.getElementById('slot-left-btn');
+            leftBtn.innerText = '추가하기';
+            leftBtn.classList.remove('selected');
+
+            const rightBtn = document.getElementById('slot-right-btn');
+            rightBtn.innerText = '추가하기';
+            rightBtn.classList.remove('selected');
+
             document.getElementById('ingame-controls').classList.add('hidden');
             document.getElementById('lobby-controls').classList.remove('hidden');
             drawPreview();
