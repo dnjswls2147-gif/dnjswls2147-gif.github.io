@@ -32,11 +32,11 @@
             left: 0;
         }
 
-        /* 왼쪽 상단 큼직한 프로필 아이콘 영역 */
+        /* 왼쪽 상단 2배 더 크고 아래로 이동한 프로필 버튼 */
         .profile-entry-box {
             position: fixed;
-            top: 15px;
-            left: 15px;
+            top: 45px;
+            left: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,17 +44,17 @@
             z-index: 1000;
         }
         .profile-icon {
-            font-size: 38px;
+            font-size: 56px;
             line-height: 1;
         }
         .profile-label {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 900;
             color: #000000;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
-        /* 화면 좌측 하단 2배 이상 더 크게 확대된 릴리 전용 어드민 아이콘 */
+        /* 화면 좌측 하단 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             position: fixed;
             bottom: 18px;
@@ -227,7 +227,7 @@
             box-shadow: 0 4px 0 #000000;
         }
 
-        /* 인게임 대폭 확대된 HP 바 및 볼 이름 영역 */
+        /* 인게임 대폭 확대된 HP 바, 이름, 3배 커진 기술 게이지 영역 */
         .ingame-status-panel {
             width: 100%;
             margin-top: 22px;
@@ -246,7 +246,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 900;
             margin-bottom: 8px;
             white-space: nowrap;
@@ -258,7 +258,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 54px;
+            height: 60px;
             background: #e0e0e0;
             border: 5px solid #000000;
             position: relative;
@@ -279,20 +279,35 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 26px;
+            font-size: 28px;
             text-shadow: 2px 2px 4px #000;
         }
+        /* 기술 게이지 3배 크게 (높이 36px) */
         .sub-gauge-bar {
             width: 100%;
-            height: 12px;
+            height: 36px;
             background: #cccccc;
-            border: 2px solid #000000;
-            margin-top: 5px;
+            border: 3px solid #000000;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
         }
         .sub-gauge-fill {
             height: 100%;
             background: #4a90e2;
             width: 0%;
+            transition: width 0.2s;
+        }
+        .sub-gauge-text {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            color: #000;
         }
 
         /* 일반 모달 공통 스타일 */
@@ -462,13 +477,13 @@
 </head>
 <body>
 
-    /* 로비 좌측 상단 프로필 버튼 */
+    <!-- 프로필 버튼 -->
     <div class="profile-entry-box" onclick="openProfileModal()">
         <div class="profile-icon">👤</div>
         <div class="profile-label">프로필</div>
     </div>
 
-    <!-- 로비 좌측 하단 2배 확대된 릴리 전용 어드민 아이콘 -->
+    <!-- 릴리 전용 어드민 아이콘 -->
     <div class="admin-entry-box" onclick="openAdminPrompt()">
         <div class="admin-icon">🚫</div>
         <div class="admin-label">릴리 전용</div>
@@ -507,7 +522,10 @@
                             <div class="hp-bar-inner" id="p1-hp-fill"></div>
                             <div class="hp-text-overlay" id="p1-hp-txt">250 / 250</div>
                         </div>
-                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" style="width:70%;"></div></div>
+                        <div class="sub-gauge-bar">
+                            <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
+                            <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중</div>
+                        </div>
                     </div>
                     <div class="player-status-card">
                         <div class="player-name-label player-name-p2" id="p2-name-txt">미스터비스트</div>
@@ -515,7 +533,10 @@
                             <div class="hp-bar-inner" id="p2-hp-fill"></div>
                             <div class="hp-text-overlay" id="p2-hp-txt">250 / 250</div>
                         </div>
-                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" style="width:40%;"></div></div>
+                        <div class="sub-gauge-bar">
+                            <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
+                            <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -567,7 +588,7 @@
         </div>
     </div>
 
-    <!-- 초대형 관리자 패널 -->
+    <!-- 관리자 패널 -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
@@ -602,6 +623,24 @@
     </div>
 
     <script>
+        // 오디오 효과음 생성 함수 (먹는 소리 뿅!)
+        function playEatSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {}
+        }
+
         // 카카오톡 강제 크롬 이동
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
@@ -616,7 +655,6 @@
             }
         })();
 
-        // 화면 터치 고정 (스크롤 허용 요소 제외)
         document.addEventListener('touchmove', function(e) {
             if (e.target.closest('.admin-scroll-body') || e.target.closest('.picker-grid')) {
                 return;
@@ -624,7 +662,6 @@
             e.preventDefault();
         }, { passive: false });
 
-        // 이름 및 접속 날짜 저장 관리 로직
         function getFormattedToday() {
             const now = new Date();
             const yyyy = now.getFullYear();
@@ -642,7 +679,6 @@
                 localStorage.setItem('lily_game_login_date', savedDate);
             }
 
-            // 이름이 등록되어 있지 않거나 새로 접속했을 때 강제로 이름 쓰기 팝업 띄우기
             if (!savedName) {
                 document.getElementById('name-input-modal').classList.remove('hidden');
             }
@@ -678,7 +714,6 @@
             document.getElementById('name-input-modal').classList.remove('hidden');
         }
 
-        // 토스트 알림 함수
         let toastTimer = null;
         function showToast(message) {
             const toast = document.getElementById('toast-alert');
@@ -692,7 +727,6 @@
             }, 2000);
         }
 
-        // 비밀번호 인증
         function openAdminPrompt() {
             document.getElementById('admin-pw-input').value = '';
             document.getElementById('admin-password-modal').classList.remove('hidden');
@@ -720,7 +754,6 @@
             document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
-        // 공지 전송
         function sendNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
             if (!text) {
@@ -734,7 +767,6 @@
             closeAdminPanel();
         }
 
-        // 투표 실시간 로직
         let voteCount1 = 0;
         let voteCount2 = 0;
         let voteOpt1Text = '';
@@ -784,7 +816,7 @@
             showToast('투표가 완료되었습니다!');
         }
 
-        // 어드민 패널 드래그 이동
+        // 드래그 로직
         (function enablePanelDrag() {
             const panel = document.getElementById('admin-panel-modal');
             const header = document.getElementById('admin-drag-header-bar');
@@ -858,8 +890,13 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1 = { x: 150, y: 250, radius: 45, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
-        let p2 = { x: 350, y: 250, radius: 45, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
+        // 공 크기 2배 작게 설정 (기존 radius 45 -> 22.5)
+        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
+        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
+
+        // 미스터비스트 스킬(돈 아이템) 관리 배열
+        let moneyItems = [];
+        let mrBeastTimer = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -945,7 +982,7 @@
         function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(x, y, radius + 22, 0, Math.PI * 2);
+            ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
             ctx.fillStyle = auraColor;
             ctx.fill();
 
@@ -960,19 +997,20 @@
                 ctx.fillStyle = ballObj.color || '#999999';
                 ctx.fill();
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 14px sans-serif";
+                ctx.font = "bold 10px sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillText(ballObj.name, x, y);
             }
             ctx.restore();
 
-            ctx.lineWidth = 4.5;
+            ctx.lineWidth = 3;
             ctx.strokeStyle = "#000000";
             ctx.stroke();
             ctx.restore();
         }
 
+        // 속도 조금 더 느리게 줄임 (1.5 ~ 3.0)
         function getRandomVelocity(min, max) {
             let val = (Math.random() * (max - min) + min) * (Math.random() < 0.5 ? 1 : -1);
             if (Math.abs(val) < min) val = val < 0 ? -min : min;
@@ -988,16 +1026,18 @@
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = 150; p1.y = 250;
-            p1.vx = getRandomVelocity(2.5, 5);
-            p1.vy = getRandomVelocity(2.5, 5);
+            p1.vx = getRandomVelocity(1.5, 3.0);
+            p1.vy = getRandomVelocity(1.5, 3.0);
             p1.ballData = selectedLeftBall;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
-            p2.vx = getRandomVelocity(2.5, 5);
-            p2.vy = getRandomVelocity(2.5, 5);
+            p2.vx = getRandomVelocity(1.5, 3.0);
+            p2.vy = getRandomVelocity(1.5, 3.0);
             p2.ballData = selectedRightBall;
+
+            moneyItems = [];
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -1007,10 +1047,29 @@
 
             isGaming = true;
             updateHpBars();
+
+            // 미스터비스트가 포함되어 있는지 확인 후 5초마다 돈 2개 생성
+            if (mrBeastTimer) clearInterval(mrBeastTimer);
+            if (p1.name === '미스터비스트' || p2.name === '미스터비스트') {
+                mrBeastTimer = setInterval(() => {
+                    if (!isGaming) return;
+                    // 무작위 위치에 돈 2개 생성
+                    for (let i = 0; i < 2; i++) {
+                        moneyItems.push({
+                            x: Math.random() * 400 + 50,
+                            y: Math.random() * 400 + 50,
+                            radius: 18
+                        });
+                    }
+                    showToast('💸 미스터비스트가 돈을 뿌렸습니다!');
+                }, 5000); // 실제 시간 5초마다
+            }
         }
 
         function exitMatch() {
             isGaming = false;
+            if (mrBeastTimer) clearInterval(mrBeastTimer);
+            moneyItems = [];
             
             selectedLeftBall = null;
             selectedRightBall = null;
@@ -1053,6 +1112,33 @@
                 if (p2.x - p2.radius < 0 || p2.x + p2.radius > canvas.width) p2.vx *= -1;
                 if (p2.y - p2.radius < 0 || p2.y + p2.radius > canvas.height) p2.vy *= -1;
 
+                // 미스터비스트가 돈(💸)을 먹었는지 체크
+                for (let i = moneyItems.length - 1; i >= 0; i--) {
+                    let m = moneyItems[i];
+                    // P1이 미스터비스트일 때
+                    if (p1.name === '미스터비스트') {
+                        let dist1 = Math.sqrt((p1.x - m.x)**2 + (p1.y - m.y)**2);
+                        if (dist1 < p1.radius + m.radius) {
+                            p1.hp = Math.min(p1.maxHp, p1.hp + 25); // 피 25 회복 (최대 체력 넘지 않음)
+                            playEatSound(); // 효과음 재생
+                            moneyItems.splice(i, 1);
+                            updateHpBars();
+                            continue;
+                        }
+                    }
+                    // P2가 미스터비스트일 때
+                    if (p2.name === '미스터비스트') {
+                        let dist2 = Math.sqrt((p2.x - m.x)**2 + (p2.y - m.y)**2);
+                        if (dist2 < p2.radius + m.radius) {
+                            p2.hp = Math.min(p2.maxHp, p2.hp + 25); // 피 25 회복
+                            playEatSound(); // 효과음 재생
+                            moneyItems.splice(i, 1);
+                            updateHpBars();
+                        }
+                    }
+                }
+
+                // 공끼리 충돌 체크
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
@@ -1068,6 +1154,7 @@
 
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
+                        if (mrBeastTimer) clearInterval(mrBeastTimer);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -1080,6 +1167,17 @@
                 }
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 바닥에 쌓인 돈(💸) 아이콘들 그리기
+                moneyItems.forEach(m => {
+                    ctx.save();
+                    ctx.font = "28px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("💸", m.x, m.y);
+                    ctx.restore();
+                });
+
                 drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
                 drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
             }
