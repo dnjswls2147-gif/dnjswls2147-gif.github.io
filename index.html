@@ -200,7 +200,7 @@
             width: 0%;
         }
 
-        /* 볼 선택 모달 팝업창 (세로로 길쭉한 1열 스타일로 변경) */
+        /* 볼 선택 모달 팝업창 (사진처럼 경기장 영역 전체를 덮도록 대폭 확대)[span_1](start_span)[span_1](end_span) */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -215,21 +215,25 @@
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 90vw;
-            max-width: 450px;
+            width: 92vw;
+            max-width: 520px;
+            height: 75vh;
+            max-height: 550px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 30px 20px 20px 20px;
+            padding: 40px 25px 25px 25px;
             position: relative;
             box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
         .modal-close-btn {
             position: absolute;
-            top: 14px; right: 14px;
-            width: 48px; height: 48px;
+            top: 16px; right: 16px;
+            width: 52px; height: 52px;
             border: 3.5px solid #000000;
             background: #ffffff;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -238,22 +242,22 @@
             outline: none;
         }
 
-        /* 세로 한 줄 리스트 형태로 변경된 캐릭터 선택 그리드 */
+        /* 선택 리스트 영역도 꽉 차게 확장 */
         .picker-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 50px;
-            max-height: 480px;
+            gap: 14px;
+            margin-top: 20px;
+            flex: 1;
             overflow-y: auto;
             padding-right: 4px;
         }
         .ball-select-btn {
             background: #4a4a4a;
             color: #ffffff;
-            border: 3.5px solid #000000;
-            padding: 20px 10px;
-            font-size: 24px;
+            border: 4px solid #000000;
+            padding: 24px 12px;
+            font-size: 26px;
             font-weight: 900;
             text-align: center;
             cursor: pointer;
@@ -357,7 +361,6 @@
             }, 2000);
         }
 
-        // 캐릭터 이름에서 '볼' 글자 제외[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
         const ballList = [
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
@@ -383,8 +386,8 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1 = { x: 150, y: 250, radius: 45, vx: 3.5, vy: 3, hp: 250, maxHp: 250, name: '', ballData: null };
-        let p2 = { x: 350, y: 250, radius: 45, vx: -3, vy: 3.5, hp: 250, maxHp: 250, name: '', ballData: null };
+        let p1 = { x: 150, y: 250, radius: 45, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
+        let p2 = { x: 350, y: 250, radius: 45, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null };
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -498,6 +501,13 @@
             ctx.restore();
         }
 
+        // 헬퍼 함수: 무작위 속도 생성 (0이 아닌 값, 최소 속도 보장)
+        function getRandomVelocity(min, max) {
+            let val = (Math.random() * (max - min) + min) * (Math.random() < 0.5 ? 1 : -1);
+            if (Math.abs(val) < min) val = val < 0 ? -min : min;
+            return val;
+        }
+
         function startMatch() {
             if (!selectedLeftBall || !selectedRightBall) {
                 showToast('양쪽 공을 모두 선택해 주세요!');
@@ -507,13 +517,17 @@
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = 150; p1.y = 250;
-            p1.vx = 3.5; p1.vy = 3;
+            // 시작할 때마다 매번 완전히 랜덤한 방향과 속도로 이동 설정
+            p1.vx = getRandomVelocity(2.5, 5);
+            p1.vy = getRandomVelocity(2.5, 5);
             p1.ballData = selectedLeftBall;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
-            p2.vx = -3; p2.vy = 3.5;
+            // 매번 랜덤한 방향과 속도로 설정
+            p2.vx = getRandomVelocity(2.5, 5);
+            p2.vy = getRandomVelocity(2.5, 5);
             p2.ballData = selectedRightBall;
 
             document.getElementById('p1-name-txt').innerText = p1.name;
