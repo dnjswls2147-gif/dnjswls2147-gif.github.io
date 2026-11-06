@@ -54,6 +54,27 @@
             margin-top: 2px;
         }
 
+        /* 게임플레이 및 로비 중 상단 전체를 가로지르는 대형 공지 배너 */
+        #global-announcement-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            background-color: rgba(231, 76, 60, 0.95);
+            color: #ffffff;
+            padding: 18px 20px;
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            z-index: 99999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            display: none;
+            border-bottom: 4px solid #000;
+        }
+        #global-announcement-banner.show {
+            display: block;
+        }
+
         /* 메인 컨테이너 */
         .app-container {
             width: 98vw;
@@ -289,30 +310,33 @@
             outline: none;
         }
 
-        /* 어드민 모달 스타일 (가운데 크게 배치) */
+        /* 릴리 전용 대형 어드민 패널 (경기장처럼 엄청 크게 확대 및 내부 스크롤 가능)[span_6](start_span)[span_6](end_span) */
         .admin-modal-box {
-            width: 92vw;
-            max-width: 480px;
+            width: 95vw;
+            max-width: 600px;
+            height: 85vh;
+            max-height: 750px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 35px 25px;
+            padding: 35px 30px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             position: relative;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            overflow-y: auto; /* 내용이 많으면 내부 스크롤 이동 가능[span_7](start_span)[span_7](end_span) */
         }
         .admin-title {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 900;
-            margin-bottom: 24px;
+            margin-bottom: 25px;
+            text-align: center;
         }
         .admin-input {
             width: 100%;
-            padding: 16px;
-            font-size: 20px;
+            padding: 18px;
+            font-size: 22px;
             border: 3.5px solid #000;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
             outline: none;
         }
@@ -323,8 +347,8 @@
         }
         .admin-btn {
             flex: 1;
-            padding: 16px 0;
-            font-size: 18px;
+            padding: 18px 0;
+            font-size: 20px;
             font-weight: bold;
             border: 3.5px solid #000;
             cursor: pointer;
@@ -332,16 +356,35 @@
         }
         .admin-btn-confirm { background: #2ecc71; color: #fff; }
         .admin-btn-cancel { background: #e74c3c; color: #fff; }
-        .admin-action-btn {
-            width: 100%;
-            padding: 18px 0;
-            font-size: 20px;
-            font-weight: 900;
+
+        /* 공지 및 투표 섹션 컨테이너 스타일 */
+        .admin-section-box {
+            background: #f8f9fa;
             border: 3.5px solid #000;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .admin-section-title {
+            font-size: 22px;
+            font-weight: 900;
+        }
+        .row-inline-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-send {
             background-color: #3498db;
             color: #ffffff;
+            border: 3.5px solid #000;
+            font-size: 20px;
+            font-weight: 900;
+            padding: 0 24px;
             cursor: pointer;
-            margin-top: 12px;
+            white-space: nowrap;
             outline: none;
         }
         .hidden { display: none !important; }
@@ -354,6 +397,9 @@
         <div class="admin-icon">🚫</div>
         <div class="admin-label">릴리 전용</div>
     </div>
+
+    <!-- 로비 및 게임플레이 중 상단 전체를 가로지르는 대형 공지 배너 -->
+    <div id="global-announcement-banner">공지 내용이 여기에 뜹니다!</div>
 
     <!-- 화면 상단 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
@@ -412,7 +458,7 @@
 
     <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal">
-        <div class="admin-modal-box">
+        <div class="admin-modal-box" style="height: auto; max-height: 450px;">
             <div class="admin-title">🔒 릴리 전용 어드민</div>
             <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력">
             <div class="admin-btn-group">
@@ -422,40 +468,35 @@
         </div>
     </div>
 
-    <!-- 어드민 패널 모달 (인증 성공 시 오픈, 공지/투표 버튼 포함)[span_3](start_span)[span_3](end_span) -->
+    <!-- 대형 어드민 패널 모달 (공지 및 투표 기능 통합)[span_8](start_span)[span_8](end_span) -->
     <div class="modal-overlay hidden" id="admin-panel-modal">
         <div class="admin-modal-box">
             <div class="admin-title">⚙️ 관리자 패널</div>
-            <div style="font-size:20px; font-weight:bold; margin-bottom:25px; text-align:center; line-height:1.4;">
-                어드민 패널을 사용하세요[span_4](start_span)[span_4](end_span)
+            <div style="font-size:22px; font-weight:900; margin-bottom:20px; text-align:center; color:#2c3e50;">
+                어드민 패널을 사용하세요[span_9](start_span)[span_9](end_span)
             </div>
-            <button class="admin-action-btn" onclick="openNoticeModal()">📢 공지</button>
-            <button class="admin-action-btn" onclick="openVoteModal()" style="background-color: #9b59b6;">📊 투표</button>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; margin-top:20px;" onclick="closeAdminPanel()">닫기</button>
-        </div>
-    </div>
 
-    <!-- 공지 설정 모달 -->
-    <div class="modal-overlay hidden" id="notice-modal">
-        <div class="admin-modal-box">
-            <div class="admin-title">📢 공지 관리</div>
-            <input type="text" id="notice-input" class="admin-input" placeholder="공지 내용을 입력하세요">
-            <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" onclick="submitNotice()">공지 등록</button>
-                <button class="admin-btn admin-btn-cancel" onclick="closeNoticeModal()">닫기</button>
+            <!-- 공지 작성 영역 -->
+            <div class="admin-section-box">
+                <div class="admin-section-title">📢 공지 보내기</div>
+                <div class="row-inline-group">
+                    <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용을 입력하세요">
+                    <button class="btn-send" onclick="sendNotice()">보내기</button>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- 투표 생성 모달 -->
-    <div class="modal-overlay hidden" id="vote-modal">
-        <div class="admin-modal-box">
-            <div class="admin-title">📊 투표 관리</div>
-            <input type="text" id="vote-input" class="admin-input" placeholder="투표 주제를 입력하세요">
-            <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" onclick="submitVote()" style="background-color: #9b59b6;">투표 시작</button>
-                <button class="admin-btn admin-btn-cancel" onclick="closeVoteModal()">닫기</button>
+            <!-- 투표 작성 영역 (1. 입력, 2. 입력) -->
+            <div class="admin-section-box">
+                <div class="admin-section-title">📊 투표 만들기</div>
+                <input type="text" id="admin-vote-title" class="admin-input" placeholder="투표 주제 입력">
+                <div class="row-inline-group">
+                    <input type="text" id="admin-vote-opt1" class="admin-input" style="margin-bottom:0;" placeholder="1. 입력">
+                    <input type="text" id="admin-vote-opt2" class="admin-input" style="margin-bottom:0;" placeholder="2. 입력">
+                </div>
+                <button class="btn-send" style="width:100%; margin-top:5px; background-color:#9b59b6;" onclick="sendVote()">투표 보내기</button>
             </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; margin-top:10px;" onclick="closeAdminPanel()">닫기</button>
         </div>
     </div>
 
@@ -517,33 +558,35 @@
             document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
-        // 공지 및 투표 모달 제어 함수
-        function openNoticeModal() {
-            document.getElementById('notice-input').value = '';
-            document.getElementById('notice-modal').classList.remove('hidden');
-        }
-        function closeNoticeModal() {
-            document.getElementById('notice-modal').classList.add('hidden');
-        }
-        function submitNotice() {
-            const text = document.getElementById('notice-input').value;
-            if(!text) { showToast('공지 내용을 입력하세요!'); return; }
-            showToast('📢 공지가 등록되었습니다!');
-            closeNoticeModal();
+        // 공지 전송 및 검증 로직
+        function sendNotice() {
+            const text = document.getElementById('admin-notice-input').value.trim();
+            if (!text) {
+                showToast('글씨를 적어주세요!');
+                return;
+            }
+            const banner = document.getElementById('global-announcement-banner');
+            banner.innerText = '📢 ' + text;
+            banner.classList.add('show');
+            showToast('공지가 전송되었습니다!');
+            closeAdminPanel();
         }
 
-        function openVoteModal() {
-            document.getElementById('vote-input').value = '';
-            document.getElementById('vote-modal').classList.remove('hidden');
-        }
-        function closeVoteModal() {
-            document.getElementById('vote-modal').classList.add('hidden');
-        }
-        function submitVote() {
-            const text = document.getElementById('vote-input').value;
-            if(!text) { showToast('투표 주제를 입력하세요!'); return; }
-            showToast('📊 투표가 시작되었습니다!');
-            closeVoteModal();
+        // 투표 전송 및 검증 로직
+        function sendVote() {
+            const title = document.getElementById('admin-vote-title').value.trim();
+            const opt1 = document.getElementById('admin-vote-opt1').value.trim();
+            const opt2 = document.getElementById('admin-vote-opt2').value.trim();
+
+            if (!title || !opt1 || !opt2) {
+                showToast('글씨를 적어주세요!');
+                return;
+            }
+            const banner = document.getElementById('global-announcement-banner');
+            banner.innerText = `📊 [투표] ${title} (1: ${opt1} vs 2: ${opt2})`;
+            banner.classList.add('show');
+            showToast('투표가 시작되었습니다!');
+            closeAdminPanel();
         }
 
         const ballList = [
