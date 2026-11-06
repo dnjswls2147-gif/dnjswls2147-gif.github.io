@@ -32,10 +32,10 @@
             left: 0;
         }
 
-        /* 화면 아래(좌측 하단)로 이동한 릴리 전용 어드민 아이콘 */
-        .admin-entry-box {
+        /* 왼쪽 상단 큼직한 프로필 아이콘 영역 */
+        .profile-entry-box {
             position: fixed;
-            bottom: 15px;
+            top: 15px;
             left: 15px;
             display: flex;
             flex-direction: column;
@@ -43,18 +43,40 @@
             cursor: pointer;
             z-index: 1000;
         }
-        .admin-icon {
-            font-size: 24px;
+        .profile-icon {
+            font-size: 38px;
             line-height: 1;
         }
-        .admin-label {
-            font-size: 11px;
-            font-weight: bold;
-            color: #555555;
+        .profile-label {
+            font-size: 16px;
+            font-weight: 900;
+            color: #000000;
             margin-top: 2px;
         }
 
-        /* 큼직하고 네모난 전면 공지/투표 배너 */
+        /* 화면 좌측 하단 2배 이상 더 크게 확대된 릴리 전용 어드민 아이콘 */
+        .admin-entry-box {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .admin-icon {
+            font-size: 42px;
+            line-height: 1;
+        }
+        .admin-label {
+            font-size: 18px;
+            font-weight: 900;
+            color: #333333;
+            margin-top: 4px;
+        }
+
+        /* 상단 대형 실시간 공지/투표 배너 */
         #global-announcement-banner {
             position: fixed;
             top: 0;
@@ -205,7 +227,7 @@
             box-shadow: 0 4px 0 #000000;
         }
 
-        /* 인게임 HP 바 영역 */
+        /* 인게임 대폭 확대된 HP 바 및 볼 이름 영역 */
         .ingame-status-panel {
             width: 100%;
             margin-top: 22px;
@@ -224,9 +246,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -236,9 +258,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 42px;
+            height: 54px;
             background: #e0e0e0;
-            border: 4px solid #000000;
+            border: 5px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -256,16 +278,16 @@
             align-items: center;
             justify-content: center;
             color: #ffffff;
-            font-weight: bold;
-            font-size: 22px;
-            text-shadow: 1px 1px 2px #000;
+            font-weight: 900;
+            font-size: 26px;
+            text-shadow: 2px 2px 4px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 10px;
+            height: 12px;
             background: #cccccc;
-            border: 1.5px solid #000000;
-            margin-top: 4px;
+            border: 2px solid #000000;
+            margin-top: 5px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -273,12 +295,12 @@
             width: 0%;
         }
 
-        /* 볼 선택 모달 팝업창 */
+        /* 일반 모달 공통 스타일 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.65);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -341,7 +363,7 @@
             outline: none;
         }
 
-        /* 초대형 드래그 이동 가능 관리자 패널 */
+        /* 관리자 패널 */
         .admin-draggable-panel {
             position: absolute;
             width: 95vw;
@@ -359,7 +381,6 @@
             transform: translate(-50%, -50%);
         }
 
-        /* 패널 드래그 헤더 (손으로 잡고 이동시키는 상단 바) */
         .admin-drag-header {
             background-color: #2c3e50;
             color: #ffffff;
@@ -373,7 +394,6 @@
             border-bottom: 5px solid #000;
         }
 
-        /* 자유 스크롤 내부 컨텐츠 영역 */
         .admin-scroll-body {
             padding: 25px;
             overflow-y: auto !important;
@@ -442,7 +462,13 @@
 </head>
 <body>
 
-    <!-- 화면 아래(좌측 하단)로 이동한 릴리 전용 아이콘 -->
+    /* 로비 좌측 상단 프로필 버튼 */
+    <div class="profile-entry-box" onclick="openProfileModal()">
+        <div class="profile-icon">👤</div>
+        <div class="profile-label">프로필</div>
+    </div>
+
+    <!-- 로비 좌측 하단 2배 확대된 릴리 전용 어드민 아이콘 -->
     <div class="admin-entry-box" onclick="openAdminPrompt()">
         <div class="admin-icon">🚫</div>
         <div class="admin-label">릴리 전용</div>
@@ -506,6 +532,29 @@
         </div>
     </div>
 
+    <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
+    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 100005;">
+        <div style="background:#fff; border:6px solid #000; padding:35px 25px; width:92vw; max-width:460px; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.4);">
+            <div style="font-size:32px; font-weight:900; margin-bottom:20px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:25px;">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:20px; font-size:24px; font-weight:900;" onclick="submitUserName()">등록하고 시작하기</button>
+        </div>
+    </div>
+
+    <!-- 내 프로필 정보 팝업 창 -->
+    <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100004;">
+        <div style="background:#fff; border:6px solid #000; padding:35px 25px; width:92vw; max-width:460px; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.4);">
+            <div style="font-size:36px; line-height:1;">👤</div>
+            <div style="font-size:28px; font-weight:900; margin-top:10px; margin-bottom:25px; border-bottom:4px solid #000; padding-bottom:10px;">내 프로필</div>
+            <div style="font-size:24px; font-weight:900; margin-bottom:15px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:20px; font-weight:bold; color:#555; margin-bottom:30px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div class="admin-btn-group">
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff;" onclick="editUserNamePrompt()">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" onclick="closeProfileModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal">
         <div style="background:#fff; border:6px solid #000; padding:30px; width:90vw; max-width:420px; text-align:center;">
@@ -518,14 +567,13 @@
         </div>
     </div>
 
-    <!-- 터치로 자유롭게 드래그해서 이동시키는 초대형 관리자 패널 -->
+    <!-- 초대형 관리자 패널 -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
-            <span>⚙️ 관리자 패널 (손으로 이동 가능)</span>
+            <span>⚙️ 관리자 패널</span>
             <span style="cursor:pointer;" onclick="closeAdminPanel()">✕</span>
         </div>
         <div class="admin-scroll-body">
-            <!-- 깔끔한 한글 안내 텍스트만 유지 -->
             <div style="font-size:24px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
             </div>
@@ -539,7 +587,7 @@
                 </div>
             </div>
 
-            <!-- 주제 선택 창 삭제! 1. 입력 / 2. 입력 바로 넣기 -->
+            <!-- 투표 만들기 영역 -->
             <div class="admin-section-box">
                 <div class="admin-section-title">📊 투표 만들기</div>
                 <div class="row-inline-group">
@@ -554,7 +602,7 @@
     </div>
 
     <script>
-        // 카카오톡 브라우저 강제 이동 (고정)
+        // 카카오톡 강제 크롬 이동
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
             const targetUrl = location.href;
@@ -568,7 +616,7 @@
             }
         })();
 
-        // 모바일 스크롤 바운싱 차단 (관리자 패널 내부/팝업 리스트는 터치 스크롤 허용)
+        // 화면 터치 고정 (스크롤 허용 요소 제외)
         document.addEventListener('touchmove', function(e) {
             if (e.target.closest('.admin-scroll-body') || e.target.closest('.picker-grid')) {
                 return;
@@ -576,7 +624,61 @@
             e.preventDefault();
         }, { passive: false });
 
-        // 화면 상단 토스트 메시지 띄우는 함수
+        // 이름 및 접속 날짜 저장 관리 로직
+        function getFormattedToday() {
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            return `${yyyy}/${mm}/${dd}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('lily_game_user_name');
+            let savedDate = localStorage.getItem('lily_game_login_date');
+
+            if (!savedDate) {
+                savedDate = getFormattedToday();
+                localStorage.setItem('lily_game_login_date', savedDate);
+            }
+
+            // 이름이 등록되어 있지 않거나 새로 접속했을 때 강제로 이름 쓰기 팝업 띄우기
+            if (!savedName) {
+                document.getElementById('name-input-modal').classList.remove('hidden');
+            }
+        });
+
+        function submitUserName() {
+            const inputVal = document.getElementById('user-name-input').value.trim();
+            if (!inputVal) {
+                showToast('이름을 입력해 주세요!');
+                return;
+            }
+            localStorage.setItem('lily_game_user_name', inputVal);
+            document.getElementById('name-input-modal').classList.add('hidden');
+            showToast(`환영합니다, ${inputVal}님!`);
+        }
+
+        function openProfileModal() {
+            const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
+            const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
+
+            document.getElementById('profile-name-txt').innerText = `이름: ${savedName}`;
+            document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${savedDate}`;
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        function editUserNamePrompt() {
+            closeProfileModal();
+            document.getElementById('user-name-input').value = localStorage.getItem('lily_game_user_name') || '';
+            document.getElementById('name-input-modal').classList.remove('hidden');
+        }
+
+        // 토스트 알림 함수
         let toastTimer = null;
         function showToast(message) {
             const toast = document.getElementById('toast-alert');
@@ -590,7 +692,7 @@
             }, 2000);
         }
 
-        // 비밀번호 인증 로직
+        // 비밀번호 인증
         function openAdminPrompt() {
             document.getElementById('admin-pw-input').value = '';
             document.getElementById('admin-password-modal').classList.remove('hidden');
@@ -618,7 +720,7 @@
             document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
-        // 공지 전송 기능
+        // 공지 전송
         function sendNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
             if (!text) {
@@ -632,13 +734,12 @@
             closeAdminPanel();
         }
 
-        // 투표 실시간 득표 상태 변수
+        // 투표 실시간 로직
         let voteCount1 = 0;
         let voteCount2 = 0;
         let voteOpt1Text = '';
         let voteOpt2Text = '';
 
-        // 투표 전송 기능 (주제 없이 1, 2 입력으로 전송)
         function sendVote() {
             const opt1 = document.getElementById('admin-vote-opt1').value.trim();
             const opt2 = document.getElementById('admin-vote-opt2').value.trim();
@@ -658,7 +759,6 @@
             closeAdminPanel();
         }
 
-        // 실시간 투표 선택 및 [명] 고름 갱신 처리
         function renderVoteBanner() {
             const banner = document.getElementById('global-announcement-banner');
             banner.innerHTML = `
@@ -684,7 +784,7 @@
             showToast('투표가 완료되었습니다!');
         }
 
-        // 관리자 패널 터치 & 마우스 드래그 이동 기능 로직 구현
+        // 어드민 패널 드래그 이동
         (function enablePanelDrag() {
             const panel = document.getElementById('admin-panel-modal');
             const header = document.getElementById('admin-drag-header-bar');
