@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,9 +12,9 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent; /* 터치 시 파란색 잔상 제거 */
+            -webkit-tap-highlight-color: transparent;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            touch-action: none; /* 화면 스크롤/바운싱 완전 고정 */
+            touch-action: none;
         }
         html, body {
             background-color: #ffffff;
@@ -25,14 +26,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* 화면 정중앙 고정 */
+            justify-content: center;
             overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
         }
 
-        /* 메인 컨테이너 (화면 너비를 98%까지 최대로 넓혀 3배 크게 확대) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 98vw;
             display: flex;
@@ -42,7 +43,30 @@
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (최대 크기로 대폭 확대) */
+        /* 화면 상단 토스트 알림 팝업 스타일 */
+        #toast-alert {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 100000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        #toast-alert.show {
+            opacity: 1;
+        }
+
+        /* 중앙 경기장 사각형 뷰포트 */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -236,6 +260,9 @@
 </head>
 <body>
 
+    <!-- 화면 상단 토스트 알림 메시지 -->
+    <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
+
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
@@ -289,7 +316,7 @@
     </div>
 
     <script>
-        // 카카오톡 브라우저 강제 이동 (고정 유지)
+        // 카카오톡 브라우저 강제 이동 (고정)
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
             const targetUrl = location.href;
@@ -307,6 +334,20 @@
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
+
+        // 화면 상단 토스트 메시지 띄우는 함수 (서서히 사라짐)
+        let toastTimer = null;
+        function showToast(message) {
+            const toast = document.getElementById('toast-alert');
+            toast.innerText = message;
+            toast.classList.add('show');
+
+            if (toastTimer) clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 1800); // 1.8초 뒤 서서히 사라짐
+        }
 
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
@@ -429,7 +470,7 @@
 
         function startMatch() {
             if (!selectedLeftBall || !selectedRightBall) {
-                alert('양쪽 공을 모두 선택해 주세요!');
+                showToast('양쪽 공을 모두 선택해 주세요!'); // alert 대신 상단 토스트 메시지 출력
                 return;
             }
 
@@ -498,9 +539,9 @@
                         isGaming = false;
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
-                                alert('🤝 무승부!');
+                                showToast('🤝 무승부!');
                             } else {
-                                alert(p1.hp > 0 ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
+                                showToast(p1.hp > 0 ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
                             }
                             exitMatch();
                         }, 100);
