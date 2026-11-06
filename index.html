@@ -133,10 +133,10 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (원래 크기로 넓게 확장) */
+        /* 메인 컨테이너 (두 번째 사진처럼 시원하고 큼직하게 확장) */
         .app-container {
             width: 98vw;
-            max-width: 600px;
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -168,15 +168,15 @@
             opacity: 1;
         }
 
-        /* 원래 크기로 완전히 복구된 중앙 경기장 뷰포트 */
+        /* 두 번째 사진처럼 큼직하고 시원하게 꽉 찬 중앙 경기장 뷰포트 */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 6px solid #000000;
+            border: 7px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         canvas {
             width: 100%;
@@ -622,7 +622,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 원래 크기로 복구된 중앙 경기장 뷰포트 -->
+        <!-- 두 번째 사진처럼 큼직하게 꽉 찬 중앙 경기장 뷰포트 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
