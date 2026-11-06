@@ -31,23 +31,22 @@
             left: 0;
         }
 
-        /* 메인 컨테이너 크기를 조금 더 아담하게 조절 */
+        /* 메인 컨테이너 (크롬에서도 카카오톡처럼 큼직하고 시원하게 꽉 차도록 수정) */
         .app-container {
-            width: 86vw;
-            max-width: 360px;
+            width: 92vw;
+            max-width: 420px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5px;
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (적당한 크기로 축소) */
+        /* 중앙 경기장 사각형 뷰포트 (시원하게 키움) */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 3px solid #000000;
+            border: 3.5px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
@@ -62,17 +61,17 @@
         /* 추가하기 / 공 선택 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 15px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 12px 0;
+            padding: 15px 0;
             background: #555555;
             color: #ffffff;
-            border: 2px solid #000000;
-            font-size: 15px;
+            border: 2.5px solid #000000;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
@@ -83,38 +82,38 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 15px;
-            width: 70%;
-            padding: 13px 0;
-            font-size: 18px;
+            margin-top: 18px;
+            width: 75%;
+            padding: 15px 0;
+            font-size: 20px;
             font-weight: 900;
-            border: 2px solid #000000;
+            border: 2.5px solid #000000;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: 0 3px 0 #000000;
+            box-shadow: 0 4px 0 #000000;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #000000;
+            box-shadow: 0 2px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 12px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
         .status-row-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -123,18 +122,18 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 900;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
         .player-name-p1 { color: #1e90ff; }
         .player-name-p2 { color: #e74c3c; text-align: right; }
 
         .hp-bar-outer {
             width: 100%;
-            height: 22px;
+            height: 24px;
             background: #e0e0e0;
-            border: 2px solid #000000;
+            border: 2.5px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -153,7 +152,7 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 13px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
@@ -185,7 +184,7 @@
 
         .picker-modal-box {
             width: 100%;
-            max-width: 340px;
+            max-width: 360px;
             background: #ffffff;
             border: 3px solid #000000;
             padding: 15px;
@@ -195,7 +194,7 @@
         .modal-close-btn {
             position: absolute;
             top: 10px; right: 10px;
-            width: 28px; height: 28px;
+            width: 30px; height: 30px;
             border: 2px solid #000000;
             background: #ffffff;
             font-size: 16px;
@@ -210,8 +209,8 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-top: 25px;
-            max-height: 300px;
+            margin-top: 30px;
+            max-height: 320px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -219,7 +218,7 @@
             background: #4a4a4a;
             color: #ffffff;
             border: 2px solid #000000;
-            padding: 12px 6px;
+            padding: 13px 6px;
             font-size: 14px;
             font-weight: bold;
             text-align: center;
@@ -286,22 +285,12 @@
     </div>
 
     <script>
+        // 모바일 화면 스크롤/바운스 방지
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
 
-        (function redirectToExternalBrowser() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const targetUrl = location.href;
-
-            if (userAgent.indexOf('kakaotalk') !== -1) {
-                if (userAgent.indexOf('android') !== -1) {
-                    location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=http;package=com.android.chrome;end';
-                } else if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1) {
-                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
-                }
-            }
-        })();
+        // 크롬과 카카오톡 모두 접속 가능하도록 강제 리다이렉트 코드는 제거했습니다.
 
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
