@@ -32,7 +32,7 @@
             left: 0;
         }
 
-        /* 왼쪽 상단 릴리 전용 어드민 진입 버튼 영역 */
+        /* 왼쪽 상단 릴리 전용 어드민 진입 아이콘 */
         .admin-entry-box {
             position: fixed;
             top: 15px;
@@ -289,13 +289,13 @@
             outline: none;
         }
 
-        /* 어드민 패널 모달 스타일 */
+        /* 어드민 모달 스타일 (가운데 크게 배치) */
         .admin-modal-box {
-            width: 90vw;
-            max-width: 400px;
+            width: 92vw;
+            max-width: 480px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 30px;
+            padding: 35px 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -303,34 +303,47 @@
             box-shadow: 0 16px 40px rgba(0,0,0,0.3);
         }
         .admin-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         .admin-input {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: 3px solid #000;
-            margin-bottom: 15px;
+            padding: 16px;
+            font-size: 20px;
+            border: 3.5px solid #000;
+            margin-bottom: 20px;
             text-align: center;
             outline: none;
         }
         .admin-btn-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
         }
         .admin-btn {
             flex: 1;
-            padding: 14px 0;
-            font-size: 16px;
+            padding: 16px 0;
+            font-size: 18px;
             font-weight: bold;
-            border: 3px solid #000;
+            border: 3.5px solid #000;
             cursor: pointer;
+            outline: none;
         }
         .admin-btn-confirm { background: #2ecc71; color: #fff; }
         .admin-btn-cancel { background: #e74c3c; color: #fff; }
+        .admin-action-btn {
+            width: 100%;
+            padding: 18px 0;
+            font-size: 20px;
+            font-weight: 900;
+            border: 3.5px solid #000;
+            background-color: #3498db;
+            color: #ffffff;
+            cursor: pointer;
+            margin-top: 12px;
+            outline: none;
+        }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -342,7 +355,7 @@
         <div class="admin-label">릴리 전용</div>
     </div>
 
-    <!-- 화면 상단 초대형 토스트 알림 메시지 -->
+    <!-- 화면 상단 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 메인 컨테이너 -->
@@ -409,14 +422,40 @@
         </div>
     </div>
 
-    <!-- 어드민 패널 모달 (인증 성공 시 오픈) -->
+    <!-- 어드민 패널 모달 (인증 성공 시 오픈, 공지/투표 버튼 포함)[span_3](start_span)[span_3](end_span) -->
     <div class="modal-overlay hidden" id="admin-panel-modal">
-        <div class="admin-modal-box" style="max-width: 450px;">
+        <div class="admin-modal-box">
             <div class="admin-title">⚙️ 관리자 패널</div>
-            <div style="font-size:16px; font-weight:bold; margin-bottom:20px; text-align:center;">
-                모든 밴 목록이 해제되었습니다!<br>현재 모든 유저가 자유롭게 이용 가능합니다.
+            <div style="font-size:20px; font-weight:bold; margin-bottom:25px; text-align:center; line-height:1.4;">
+                어드민 패널을 사용하세요[span_4](start_span)[span_4](end_span)
             </div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px;" onclick="closeAdminPanel()">닫기</button>
+            <button class="admin-action-btn" onclick="openNoticeModal()">📢 공지</button>
+            <button class="admin-action-btn" onclick="openVoteModal()" style="background-color: #9b59b6;">📊 투표</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; margin-top:20px;" onclick="closeAdminPanel()">닫기</button>
+        </div>
+    </div>
+
+    <!-- 공지 설정 모달 -->
+    <div class="modal-overlay hidden" id="notice-modal">
+        <div class="admin-modal-box">
+            <div class="admin-title">📢 공지 관리</div>
+            <input type="text" id="notice-input" class="admin-input" placeholder="공지 내용을 입력하세요">
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" onclick="submitNotice()">공지 등록</button>
+                <button class="admin-btn admin-btn-cancel" onclick="closeNoticeModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 투표 생성 모달 -->
+    <div class="modal-overlay hidden" id="vote-modal">
+        <div class="admin-modal-box">
+            <div class="admin-title">📊 투표 관리</div>
+            <input type="text" id="vote-input" class="admin-input" placeholder="투표 주제를 입력하세요">
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" onclick="submitVote()" style="background-color: #9b59b6;">투표 시작</button>
+                <button class="admin-btn admin-btn-cancel" onclick="closeVoteModal()">닫기</button>
+            </div>
         </div>
     </div>
 
@@ -476,6 +515,35 @@
 
         function closeAdminPanel() {
             document.getElementById('admin-panel-modal').classList.add('hidden');
+        }
+
+        // 공지 및 투표 모달 제어 함수
+        function openNoticeModal() {
+            document.getElementById('notice-input').value = '';
+            document.getElementById('notice-modal').classList.remove('hidden');
+        }
+        function closeNoticeModal() {
+            document.getElementById('notice-modal').classList.add('hidden');
+        }
+        function submitNotice() {
+            const text = document.getElementById('notice-input').value;
+            if(!text) { showToast('공지 내용을 입력하세요!'); return; }
+            showToast('📢 공지가 등록되었습니다!');
+            closeNoticeModal();
+        }
+
+        function openVoteModal() {
+            document.getElementById('vote-input').value = '';
+            document.getElementById('vote-modal').classList.remove('hidden');
+        }
+        function closeVoteModal() {
+            document.getElementById('vote-modal').classList.add('hidden');
+        }
+        function submitVote() {
+            const text = document.getElementById('vote-input').value;
+            if(!text) { showToast('투표 주제를 입력하세요!'); return; }
+            showToast('📊 투표가 시작되었습니다!');
+            closeVoteModal();
         }
 
         const ballList = [
