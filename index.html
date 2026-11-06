@@ -11,9 +11,9 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent; /* 버튼 터치 시 파란색 하이라이트 제거 */
+            -webkit-tap-highlight-color: transparent; /* 터치 시 파란색 잔상 제거 */
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            touch-action: none; /* 화면 위/아래/좌우 이동 차단 고정 */
+            touch-action: none; /* 화면 스크롤/바운싱 완전 고정 */
         }
         html, body {
             background-color: #ffffff;
@@ -25,17 +25,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* 정중앙 정렬 고정 */
+            justify-content: center; /* 화면 정중앙 고정 */
             overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
         }
 
-        /* 메인 컨테이너 (화면을 2배 가량 더 큼직하게 확장) */
+        /* 메인 컨테이너 (화면 너비를 98%까지 최대로 넓혀 3배 크게 확대) */
         .app-container {
             width: 98vw;
-            max-width: 650px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,7 +42,7 @@
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (2배 큼직하게) */
+        /* 중앙 경기장 사각형 뷰포트 (최대 크기로 대폭 확대) */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -51,7 +50,7 @@
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         }
         canvas {
             width: 100%;
@@ -62,18 +61,18 @@
         /* 추가하기 / 공 선택 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 18px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 24px 0;
+            padding: 22px 0;
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 900;
             cursor: pointer;
             text-align: center;
             outline: none;
@@ -84,10 +83,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 24px;
-            width: 85%;
-            padding: 24px 0;
-            font-size: 30px;
+            margin-top: 20px;
+            width: 90%;
+            padding: 22px 0;
+            font-size: 32px;
             font-weight: 900;
             border: 4px solid #000000;
             border-radius: 12px;
@@ -109,14 +108,14 @@
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 18px;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
         .status-row-group {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
         }
         .player-status-card {
@@ -125,7 +124,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 900;
             margin-bottom: 6px;
         }
@@ -134,7 +133,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 36px;
+            height: 38px;
             background: #e0e0e0;
             border: 4px solid #000000;
             position: relative;
@@ -155,12 +154,12 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 8px;
+            height: 9px;
             background: #cccccc;
             border: 1.5px solid #000000;
             margin-top: 4px;
@@ -186,8 +185,8 @@
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 100%;
-            max-width: 480px;
+            width: 90vw;
+            max-width: 500px;
             background: #ffffff;
             border: 5px solid #000000;
             padding: 24px;
@@ -197,10 +196,10 @@
         .modal-close-btn {
             position: absolute;
             top: 14px; right: 14px;
-            width: 42px; height: 42px;
+            width: 44px; height: 44px;
             border: 3px solid #000000;
             background: #ffffff;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -213,7 +212,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-top: 40px;
+            margin-top: 45px;
             max-height: 400px;
             overflow-y: auto;
             padding-right: 4px;
@@ -223,7 +222,7 @@
             color: #ffffff;
             border: 3.5px solid #000000;
             padding: 22px 10px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
@@ -242,7 +241,7 @@
 
         <!-- 경기장 뷰포트 사각형 -->
         <div class="arena-frame">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
 
         <!-- 로비 대기 화면 -->
@@ -290,7 +289,7 @@
     </div>
 
     <script>
-        // 카카오톡 접속 시 크롬으로 자동 이동 (고정)
+        // 카카오톡 브라우저 강제 이동 (고정 유지)
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
             const targetUrl = location.href;
@@ -304,7 +303,7 @@
             }
         })();
 
-        // 모바일 화면 터치 및 스크롤 바운싱 차단 (고정)
+        // 화면 이동/스크롤 완전 고정
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
@@ -323,8 +322,8 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1 = { x: 120, y: 200, radius: 35, vx: 3, vy: 2.5, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
-        let p2 = { x: 280, y: 200, radius: 35, vx: -2.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
+        let p1 = { x: 150, y: 250, radius: 42, vx: 3.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
+        let p2 = { x: 350, y: 250, radius: 42, vx: -3, vy: 3.5, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -397,18 +396,18 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(120, 200, p1.radius, selectedLeftBall.color, selectedLeftBall.name, "rgba(30, 144, 255, 0.15)");
+                drawBall(150, 250, p1.radius, selectedLeftBall.color, selectedLeftBall.name, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(280, 200, p2.radius, selectedRightBall.color, selectedRightBall.name, "rgba(231, 76, 60, 0.15)");
+                drawBall(350, 250, p2.radius, selectedRightBall.color, selectedRightBall.name, "rgba(231, 76, 60, 0.15)");
             }
         }
 
         function drawBall(x, y, radius, color, name, auraColor) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(x, y, radius + 18, 0, Math.PI * 2);
+            ctx.arc(x, y, radius + 22, 0, Math.PI * 2);
             ctx.fillStyle = auraColor;
             ctx.fill();
 
@@ -416,12 +415,12 @@
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 4.5;
             ctx.strokeStyle = "#000000";
             ctx.stroke();
 
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 13px sans-serif";
+            ctx.font = "bold 15px sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(name, x, y);
@@ -436,13 +435,13 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
-            p1.x = 120; p1.y = 200;
-            p1.vx = 3; p1.vy = 2.5;
+            p1.x = 150; p1.y = 250;
+            p1.vx = 3.5; p1.vy = 3;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
-            p2.x = 280; p2.y = 200;
-            p2.vx = -2.5; p2.vy = 3;
+            p2.x = 350; p2.y = 250;
+            p2.vx = -3; p2.vy = 3.5;
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
