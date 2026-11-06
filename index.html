@@ -2,9 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>릴리 볼 파이트</title>
     <style>
         * {
@@ -12,45 +10,38 @@
             user-select: none;
             -webkit-user-select: none;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            touch-action: none;
         }
-        html, body {
+        body {
             background-color: #ffffff;
             margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
+            padding: 15px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
+            justify-content: flex-start;
+            min-height: 100vh;
+            color: #111111;
         }
 
-        /* 메인 컨테이너 크기를 대폭 키워서 화면에 꽉 차게 설정 */
+        /* 메인 컨테이너 (첫 번째 사진처럼 큼직하고 시원한 비율) */
         .app-container {
-            width: 98vw;
-            max-width: 600px;
+            width: 100%;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             position: relative;
         }
 
-        /* 중앙 경기장 사각형 뷰포트 (2배 이상 큼직하게 확장) */
+        /* 중앙 경기장 사각형 뷰포트 (크기를 큼직하게 확장) */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 5px solid #000000;
+            border: 3.5px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         canvas {
             width: 100%;
@@ -61,20 +52,21 @@
         /* 추가하기 / 공 선택 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 15px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 20px 0;
+            padding: 16px 0;
             background: #555555;
             color: #ffffff;
-            border: 3.5px solid #000000;
-            font-size: 21px;
+            border: 2.5px solid #000000;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
+            transition: background 0.2s;
         }
         .btn-add-slot.selected {
             background: #27ae60;
@@ -82,38 +74,39 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 22px;
-            width: 80%;
-            padding: 20px 0;
-            font-size: 26px;
+            margin-top: 20px;
+            width: 70%;
+            max-width: 280px;
+            padding: 15px 0;
+            font-size: 20px;
             font-weight: 900;
-            border: 3.5px solid #000000;
-            border-radius: 10px;
+            border: 2.5px solid #000000;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 5px 0 #000000;
+            gap: 6px;
+            box-shadow: 0 4px 0 #000000;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
-        .btn-exit { background-color: #e74c3c; color: #ffffff; }
+        .btn-exit { background-color: #e74c3c; color: #ffffff; border-radius: 8px; }
         .btn-main-action:active {
-            transform: translateY(3px);
+            transform: translateY(2px);
             box-shadow: 0 2px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 18px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         .status-row-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -122,18 +115,18 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 19px;
+            font-size: 15px;
             font-weight: 900;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .player-name-p1 { color: #1e90ff; }
         .player-name-p2 { color: #e74c3c; text-align: right; }
 
         .hp-bar-outer {
             width: 100%;
-            height: 32px;
+            height: 24px;
             background: #e0e0e0;
-            border: 3.5px solid #000000;
+            border: 2.5px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -152,15 +145,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 13px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: #cccccc;
-            border: 1.5px solid #000000;
-            margin-top: 4px;
+            border: 1px solid #000000;
+            margin-top: 3px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -184,20 +177,20 @@
 
         .picker-modal-box {
             width: 100%;
-            max-width: 440px;
+            max-width: 380px;
             background: #ffffff;
-            border: 4px solid #000000;
-            padding: 20px;
+            border: 3px solid #000000;
+            padding: 15px;
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .modal-close-btn {
             position: absolute;
-            top: 12px; right: 12px;
-            width: 38px; height: 38px;
-            border: 2.5px solid #000000;
+            top: 10px; right: 10px;
+            width: 30px; height: 30px;
+            border: 2px solid #000000;
             background: #ffffff;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -208,18 +201,18 @@
         .picker-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 35px;
-            max-height: 380px;
+            gap: 8px;
+            margin-top: 30px;
+            max-height: 340px;
             overflow-y: auto;
             padding-right: 4px;
         }
         .ball-select-btn {
             background: #4a4a4a;
             color: #ffffff;
-            border: 3px solid #000000;
-            padding: 18px 8px;
-            font-size: 18px;
+            border: 2px solid #000000;
+            padding: 14px 6px;
+            font-size: 14px;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
@@ -285,11 +278,6 @@
     </div>
 
     <script>
-        // 모바일 스크롤/바운스 방지
-        document.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-
         const ballList = [
             { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
             { name: '미스터비스트 볼', hp: 250, color: '#e74c3c' },
@@ -304,8 +292,8 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1 = { x: 120, y: 200, radius: 35, vx: 3, vy: 2.5, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
-        let p2 = { x: 280, y: 200, radius: 35, vx: -2.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
+        let p1 = { x: 120, y: 200, radius: 30, vx: 3, vy: 2.5, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
+        let p2 = { x: 280, y: 200, radius: 30, vx: -2.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -389,7 +377,7 @@
         function drawBall(x, y, radius, color, name, auraColor) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(x, y, radius + 18, 0, Math.PI * 2);
+            ctx.arc(x, y, radius + 15, 0, Math.PI * 2);
             ctx.fillStyle = auraColor;
             ctx.fill();
 
@@ -397,12 +385,12 @@
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
-            ctx.lineWidth = 3.5;
+            ctx.lineWidth = 3;
             ctx.strokeStyle = "#000000";
             ctx.stroke();
 
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 13px sans-serif";
+            ctx.font = "bold 11px sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(name, x, y);
