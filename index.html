@@ -133,10 +133,10 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
+        /* 메인 컨테이너 (원래 크기로 넓게 확장) */
         .app-container {
-            width: 95vw;
-            max-width: 500px;
+            width: 98vw;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -168,7 +168,7 @@
             opacity: 1;
         }
 
-        /* 원래 크기로 복구된 중앙 경기장 뷰포트 */
+        /* 원래 크기로 완전히 복구된 중앙 경기장 뷰포트 */
         .arena-frame {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -865,7 +865,6 @@
             let lastResetDate = localStorage.getItem('lily_game_last_reset_date');
             const todayStr = getFormattedToday();
 
-            // 자정 지나면 채팅 초기화
             if (lastResetDate !== todayStr) {
                 localStorage.removeItem('lily_game_chat_logs');
                 localStorage.setItem('lily_game_last_reset_date', todayStr);
@@ -876,7 +875,6 @@
                 localStorage.setItem('lily_game_login_date', savedDate);
             }
 
-            // 플레이어 목록 등록/갱신
             registerPlayer(savedName, savedDate);
 
             if (!savedName) {
@@ -894,7 +892,7 @@
             if (!existing) {
                 players.push({ name: name, date: date });
             } else {
-                existing.date = date; // 갱신
+                existing.date = date;
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
         }
@@ -934,7 +932,6 @@
             document.getElementById('name-input-modal').classList.remove('hidden');
         }
 
-        // 다른 사람 프로필 보기
         function openOtherProfile(name) {
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let player = players.find(p => p.name === name);
@@ -949,7 +946,6 @@
             document.getElementById('other-profile-modal').classList.add('hidden');
         }
 
-        // 전체 채팅 관련 로직
         function openChatModal() {
             document.getElementById('chat-modal').classList.remove('hidden');
             loadChatLogs();
@@ -1020,7 +1016,6 @@
             const name = localStorage.getItem('lily_game_user_name') || '익명';
             const timeStr = getCurrentTimeString();
 
-            // 데이터 저장
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             chatData.push({ name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
@@ -1159,7 +1154,6 @@
             showToast('투표가 완료되었습니다!');
         }
 
-        // 드래그 로직
         (function enablePanelDrag() {
             const panel = document.getElementById('admin-panel-modal');
             const header = document.getElementById('admin-drag-header-bar');
