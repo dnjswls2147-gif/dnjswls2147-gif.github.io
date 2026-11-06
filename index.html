@@ -42,7 +42,7 @@
             position: relative;
         }
 
-        /* 화면 상단 토스트 알림 팝업 스타일 */
+        /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
             top: 25px;
@@ -50,9 +50,9 @@
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.85);
             color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 16px;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 18px;
             font-weight: bold;
             z-index: 100000;
             opacity: 0;
@@ -84,17 +84,17 @@
         /* 추가하기 / 공 선택 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 22px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 22px 0;
+            padding: 28px 0;
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -109,39 +109,39 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 20px;
-            width: 90%;
-            padding: 22px 0;
-            font-size: 32px;
+            margin-top: 24px;
+            width: 95%;
+            padding: 28px 0;
+            font-size: 36px;
             font-weight: 900;
             border: 4px solid #000000;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 6px 0 #000000;
+            gap: 12px;
+            box-shadow: 0 7px 0 #000000;
             outline: none;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(3px);
-            box-shadow: 0 3px 0 #000000;
+            box-shadow: 0 4px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 18px;
+            margin-top: 22px;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
         .status-row-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
         }
         .player-status-card {
@@ -150,7 +150,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 900;
             margin-bottom: 6px;
             white-space: nowrap;
@@ -162,7 +162,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 38px;
+            height: 42px;
             background: #e0e0e0;
             border: 4px solid #000000;
             position: relative;
@@ -183,12 +183,12 @@
             justify-content: center;
             color: #ffffff;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 22px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 9px;
+            height: 10px;
             background: #cccccc;
             border: 1.5px solid #000000;
             margin-top: 4px;
@@ -199,36 +199,36 @@
             width: 0%;
         }
 
-        /* 볼 선택 모달 */
+        /* 볼 선택 모달 팝업창 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            padding: 20px;
+            padding: 15px;
         }
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 90vw;
-            max-width: 500px;
+            width: 95vw;
+            max-width: 600px;
             background: #ffffff;
-            border: 5px solid #000000;
-            padding: 24px;
+            border: 6px solid #000000;
+            padding: 30px;
             position: relative;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
         }
         .modal-close-btn {
             position: absolute;
-            top: 14px; right: 14px;
-            width: 44px; height: 44px;
-            border: 3px solid #000000;
+            top: 16px; right: 16px;
+            width: 52px; height: 52px;
+            border: 3.5px solid #000000;
             background: #ffffff;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -240,19 +240,19 @@
         .picker-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 45px;
-            max-height: 400px;
+            gap: 16px;
+            margin-top: 50px;
+            max-height: 480px;
             overflow-y: auto;
             padding-right: 4px;
         }
         .ball-select-btn {
             background: #4a4a4a;
             color: #ffffff;
-            border: 3.5px solid #000000;
-            padding: 22px 10px;
-            font-size: 20px;
-            font-weight: bold;
+            border: 4px solid #000000;
+            padding: 28px 12px;
+            font-size: 24px;
+            font-weight: 900;
             text-align: center;
             cursor: pointer;
             white-space: nowrap;
@@ -340,7 +340,7 @@
             e.preventDefault();
         }, { passive: false });
 
-        // 화면 상단 토스트 메시지 띄우는 함수 (서서히 사라짐)
+        // 화면 상단 토스트 메시지 띄우는 함수
         let toastTimer = null;
         function showToast(message) {
             const toast = document.getElementById('toast-alert');
@@ -354,14 +354,24 @@
             }, 1800);
         }
 
-        // 볼 목록에 '왕클세종 볼', '본이 볼' 추가 완료
+        // 이미지 프로필 파일명 매칭 (본이 볼 제외)
         const ballList = [
-            { name: '동룡쓰 볼', hp: 250, color: '#1e90ff' },
-            { name: '미스터비스트 볼', hp: 250, color: '#e74c3c' },
-            { name: '상품컴퍼니 볼', hp: 250, color: '#f1c40f' },
-            { name: '왕클세종 볼', hp: 250, color: '#9b59b6' },
-            { name: '본이 볼', hp: 250, color: '#e67e22' }
+            { name: '동룡쓰 볼', hp: 250, imageSrc: 'dongryong.png' },
+            { name: '미스터비스트 볼', hp: 250, imageSrc: 'character.jpg' },
+            { name: '상품컴퍼니 볼', hp: 250, imageSrc: 'sangsampany.png' },
+            { name: '왕클세종 볼', hp: 250, imageSrc: 'wangkl.png' },
+            { name: '본이 볼', hp: 250, color: '#e67e22' } // 본이 볼은 기존 컬러 유지
         ];
+
+        // 이미지 미리 로드하기
+        const loadedImages = {};
+        ballList.forEach(ball => {
+            if (ball.imageSrc) {
+                const img = new Image();
+                img.src = ball.imageSrc;
+                loadedImages[ball.name] = img;
+            }
+        });
 
         let selectedLeftBall = null;
         let selectedRightBall = null;
@@ -371,14 +381,15 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1 = { x: 150, y: 250, radius: 42, vx: 3.5, vy: 3, hp: 250, maxHp: 250, name: '', color: '#1e90ff' };
-        let p2 = { x: 350, y: 250, radius: 42, vx: -3, vy: 3.5, hp: 250, maxHp: 250, name: '', color: '#e74c3c' };
+        let p1 = { x: 150, y: 250, radius: 45, vx: 3.5, vy: 3, hp: 250, maxHp: 250, name: '', ballData: null };
+        let p2 = { x: 350, y: 250, radius: 45, vx: -3, vy: 3.5, hp: 250, maxHp: 250, name: '', ballData: null };
 
         function handleSlotClick(side) {
             if (side === 'left') {
                 if (selectedLeftBall) {
                     selectedLeftBall = null;
                     p1.name = '';
+                    p1.ballData = null;
                     const slotBtn = document.getElementById('slot-left-btn');
                     slotBtn.innerText = '추가하기';
                     slotBtn.classList.remove('selected');
@@ -390,6 +401,7 @@
                 if (selectedRightBall) {
                     selectedRightBall = null;
                     p2.name = '';
+                    p2.ballData = null;
                     const slotBtn = document.getElementById('slot-right-btn');
                     slotBtn.innerText = '추가하기';
                     slotBtn.classList.remove('selected');
@@ -424,14 +436,14 @@
             if (currentTargetSide === 'left') {
                 selectedLeftBall = ball;
                 p1.name = ball.name;
-                p1.color = ball.color;
+                p1.ballData = ball;
                 const slotBtn = document.getElementById('slot-left-btn');
                 slotBtn.innerText = ball.name;
                 slotBtn.classList.add('selected');
             } else {
                 selectedRightBall = ball;
                 p2.name = ball.name;
-                p2.color = ball.color;
+                p2.ballData = ball;
                 const slotBtn = document.getElementById('slot-right-btn');
                 slotBtn.innerText = ball.name;
                 slotBtn.classList.add('selected');
@@ -445,34 +457,49 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(150, 250, p1.radius, selectedLeftBall.color, selectedLeftBall.name, "rgba(30, 144, 255, 0.15)");
+                drawBall(150, 250, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(350, 250, p2.radius, selectedRightBall.color, selectedRightBall.name, "rgba(231, 76, 60, 0.15)");
+                drawBall(350, 250, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
             }
         }
 
-        function drawBall(x, y, radius, color, name, auraColor) {
+        // 공 내부에 이미지 또는 색상 적용하여 그리기 함수
+        function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
+            // 오라(아우라) 효과
             ctx.beginPath();
             ctx.arc(x, y, radius + 22, 0, Math.PI * 2);
             ctx.fillStyle = auraColor;
             ctx.fill();
 
+            // 원형 클리핑 영역 설정 (프로필 이미지가 원 모양으로 깎이도록 함)
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = color;
-            ctx.fill();
+            ctx.save();
+            ctx.clip();
+
+            if (ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete) {
+                // 이미지가 로드되었으면 원 안에 이미지 채우기
+                ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
+            } else {
+                // 이미지가 없거나 색상형 볼(본이 볼)인 경우
+                ctx.fillStyle = ballObj.color || '#999999';
+                ctx.fill();
+                // 텍스트 표시
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 14px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(ballObj.name, x, y);
+            }
+            ctx.restore();
+
+            // 공 테두리 선
             ctx.lineWidth = 4.5;
             ctx.strokeStyle = "#000000";
             ctx.stroke();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 15px sans-serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(name, x, y);
             ctx.restore();
         }
 
@@ -486,11 +513,13 @@
             p1.hp = selectedLeftBall.hp;
             p1.x = 150; p1.y = 250;
             p1.vx = 3.5; p1.vy = 3;
+            p1.ballData = selectedLeftBall;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = 350; p2.y = 250;
             p2.vx = -3; p2.vy = 3.5;
+            p2.ballData = selectedRightBall;
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -505,11 +534,12 @@
         function exitMatch() {
             isGaming = false;
             
-            // 게임 종료/나가기 시 선택된 볼 정보를 초기화하여 다시 고르게 설정
             selectedLeftBall = null;
             selectedRightBall = null;
             p1.name = '';
             p2.name = '';
+            p1.ballData = null;
+            p2.ballData = null;
 
             const leftBtn = document.getElementById('slot-left-btn');
             leftBtn.innerText = '추가하기';
@@ -572,8 +602,8 @@
                 }
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawBall(p1.x, p1.y, p1.radius, p1.color, p1.name, "rgba(30, 144, 255, 0.15)");
-                drawBall(p2.x, p2.y, p2.radius, p2.color, p2.name, "rgba(231, 76, 60, 0.15)");
+                drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
+                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
             }
 
             requestAnimationFrame(runGameLoop);
