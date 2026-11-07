@@ -19,13 +19,16 @@
             margin: 0;
             padding: 0;
             width: 100vw;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden;
-            overflow-y: auto;
+            justify-content: center;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         /* 상단 대형 실시간 공지/투표 배너 */
@@ -46,7 +49,7 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -86,30 +89,29 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (중앙 정렬 및 대폭 확장) */
+        /* 메인 컨테이너 (화면 중앙 고정 및 여백 최적화) */
         .app-container {
             width: 100vw;
-            max-width: 620px;
-            margin: 0 auto;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 20px 10px;
+            padding: 4px 6px;
         }
 
-        /* 프로필 & 전체 채팅 아이콘 바 */
+        /* 프로필 & 전체 채팅 아이콘 바 (경기장 바로 위 좌측 정렬) */
         .top-menu-bar {
             width: 100%;
-            max-width: 620px;
+            max-width: 460px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px 0;
-            margin-bottom: 8px;
+            padding: 2px 0;
+            margin-bottom: 4px;
             z-index: 1000;
         }
 
@@ -120,11 +122,11 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 46px;
+            font-size: 36px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -143,7 +145,7 @@
             padding: 6px;
         }
         .admin-icon {
-            font-size: 38px;
+            font-size: 36px;
             line-height: 1;
         }
         .admin-label {
@@ -177,11 +179,12 @@
             opacity: 1;
         }
 
-        /* 경기장 대폭 확장 및 중앙 정렬 */
+        /* 경기장 크기 및 중앙 정렬 최적화 */
         .arena-frame {
-            width: 100vw;
-            max-width: 620px;
-            height: 620px;
+            width: 460px;
+            height: 460px;
+            max-width: 92vw;
+            max-height: 92vw;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -196,27 +199,27 @@
 
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
-            width: 100vw;
-            max-width: 620px;
+            width: 100%;
+            max-width: 460px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 6px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 18px 0;
+            padding: 14px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 20px;
+            font-size: 17px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -231,10 +234,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 10px;
+            margin-top: 6px;
             width: 100%;
-            padding: 20px 0;
-            font-size: 24px;
+            padding: 16px 0;
+            font-size: 20px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 8px;
@@ -258,11 +261,11 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
         .status-row-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .player-status-card {
@@ -271,9 +274,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 900;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -283,7 +286,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 32px;
+            height: 26px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -304,15 +307,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 12px;
             text-shadow: 2px 2px 3px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 20px;
+            height: 16px;
             background: #cccccc;
             border: 2px solid #000000;
-            margin-top: 4px;
+            margin-top: 3px;
             position: relative;
             overflow: hidden;
         }
@@ -328,7 +331,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             color: #000;
         }
@@ -351,9 +354,9 @@
 
         .picker-modal-box {
             width: 90vw;
-            max-width: 480px;
+            max-width: 440px;
             height: 75vh;
-            max-height: 580px;
+            max-height: 540px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 20px 20px 20px;
@@ -367,10 +370,10 @@
         .modal-close-btn {
             position: absolute;
             top: 12px; right: 12px;
-            width: 46px; height: 46px;
+            width: 44px; height: 44px;
             border: 3px solid #000000;
             background: #ffffff;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             cursor: pointer;
             display: flex;
@@ -409,7 +412,7 @@
 
         .profile-modal-box {
             width: 90vw;
-            max-width: 460px;
+            max-width: 440px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 25px;
@@ -428,9 +431,9 @@
             top: 50%;
             transform: translate(-50%, -50%);
             width: 90vw;
-            max-width: 680px;
+            max-width: 650px;
             height: 75vh;
-            max-height: 680px;
+            max-height: 650px;
             min-width: 300px;
             min-height: 300px;
             background: #ffffff;
@@ -508,7 +511,7 @@
 
         .players-modal-box {
             width: 90vw;
-            max-width: 460px;
+            max-width: 440px;
             height: 75vh;
             max-height: 580px;
             background: #ffffff;
@@ -736,7 +739,7 @@
 
     </div>
 
-    <!-- 전체 채팅창 (드래그 가능, 열릴 때 다른 창 자동 닫힘) -->
+    <!-- 전체 채팅창 -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
             <div style="font-size:16px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
@@ -799,7 +802,7 @@
         </div>
     </div>
 
-    <!-- 볼 선택 모달 팝업창 -->
+    <!-- 볼 선택 모달 팝업창 (NINO 삭제됨) -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
@@ -1099,7 +1102,6 @@
             updateOnlineOfflineCounts();
         }
 
-        // 아이콘 클릭 관리 (채팅창 열려있으면 다른 아이콘 누를 때 채팅창이 닫히고 해당 창이 뜸)
         function handleProfileClick() {
             closeChatModal();
             openProfileModal();
@@ -1281,7 +1283,6 @@
             localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
             loadChatLogs();
             showToast('모든 채팅이 삭제되었습니다!');
-            // 어드민 패널이 닫히지 않고 유지되도록 수정함
         }
 
         let toastTimer = null;
@@ -1334,14 +1335,12 @@
             localStorage.setItem('lily_game_announcement', JSON.stringify(noticeObj));
             applyAnnouncementData(JSON.stringify(noticeObj));
             showToast('공지가 모두에게 전송되었습니다!');
-            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function deleteNotice() {
             localStorage.removeItem('lily_game_announcement');
             document.getElementById('global-announcement-banner').classList.remove('show');
             showToast('공지가 삭제되었습니다!');
-            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         let voteCount1 = 0;
@@ -1369,14 +1368,12 @@
             localStorage.setItem('lily_game_vote_data', JSON.stringify(voteObj));
             applyVoteData(JSON.stringify(voteObj));
             showToast('투표가 모두에게 시작되었습니다!');
-            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function deleteVote() {
             localStorage.removeItem('lily_game_vote_data');
             document.getElementById('global-announcement-banner').classList.remove('show');
             showToast('투표가 삭제되었습니다!');
-            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function checkSavedAnnouncement() {
@@ -1557,14 +1554,14 @@
             document.addEventListener('touchend', onEnd);
         })();
 
+        /* NINO가 삭제된 볼 선택 목록 */
         const ballList = [
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, color: '#e67e22' },
-            { name: 'JINO', hp: 250, color: '#8e44ad' },
-            { name: 'NINO', hp: 250, color: '#e74c3c' }
+            { name: 'JINO', hp: 250, color: '#8e44ad' }
         ];
 
         const loadedImages = {};
