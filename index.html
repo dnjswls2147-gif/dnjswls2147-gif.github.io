@@ -794,7 +794,7 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~350) -->
+    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~250) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -812,16 +812,16 @@
                 <input type="range" id="sfx-volume-range" min="0" max="300" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <!-- 화면 확대 (0 ~ 350) -->
+            <!-- 화면 확대 (0 ~ 250) -->
             <div style="margin-bottom:30px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔍 화면 확대 (0 ~ 350)</span>
+                    <span>🔍 화면 확대 (0 ~ 250)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <input type="text" id="zoom-input-box" value="0" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="350" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="250" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
             <!-- 설정 저장하기 버튼 -->
@@ -988,7 +988,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~350)
+        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~250)
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1004,13 +1004,13 @@
             document.getElementById('sfx-input-box').value = v;
 
             let savedZoom = localStorage.getItem('lily_game_zoom_scale');
-            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 350) {
+            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 250) {
                 savedZoom = '0';
                 localStorage.setItem('lily_game_zoom_scale', '0');
             }
             let z = parseInt(savedZoom);
             if (z < 0) z = 0;
-            if (z > 350) z = 350;
+            if (z > 250) z = 250;
             
             document.getElementById('zoom-scale-range').value = z;
             document.getElementById('zoom-input-box').value = z;
@@ -1053,20 +1053,20 @@
             soundVolume = parseInt(val) / 100;
         }
 
-        // 화면 확대 입력 확인 (0 ~ 350 범위 제한)
+        // 화면 확대 입력 확인 (0 ~ 250 범위 제한)
         function applyZoomInput() {
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~350)');
+                showToast('숫자만 입력해 주세요! (0~250)');
                 box.value = '0';
                 val = 0;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
-            } else if (val > 350) {
-                val = 350;
-                box.value = '350';
+            } else if (val > 250) {
+                val = 250;
+                box.value = '250';
             }
             document.getElementById('zoom-scale-range').value = val;
             applyZoomScale(val);
@@ -1079,7 +1079,7 @@
         }
 
         function applyZoomScale(numVal) {
-            let scaleFactor = 1.15 + (numVal / 350) * 1.5;
+            let scaleFactor = 1.15 + (numVal / 250) * 1.5;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
         }
 
