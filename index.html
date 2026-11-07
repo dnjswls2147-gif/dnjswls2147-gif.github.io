@@ -1972,7 +1972,7 @@
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, color: '#e67e22' },
-            { name: 'JINO', hp: 250, color: '#8e44ad' }
+            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
 
         const loadedImages = {};
@@ -2146,7 +2146,6 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            // 시작하자마자 정확히 지정된 최대 시간(미스터비스트 10초, JINO 12초)부터 시작하도록 철저히 고정
             p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 0);
             p1.skeletons = [];
             p1.arrows = [];
@@ -2170,7 +2169,6 @@
             setupPlayerSkillUI('p1', p1);
             setupPlayerSkillUI('p2', p2);
 
-            // UI 렌더링 즉시 반영 (시작하자마자 0초나 잔재가 보이지 않도록 초기 게이지 바와 텍스트 세팅)
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
                 if (player.name === '미스터비스트' || player.name === 'JINO') {
@@ -2197,7 +2195,6 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // P1 스킬 타이머
                 if (p1.name === '미스터비스트' || p1.name === 'JINO') {
                     p1.skillTimer -= 1;
                     let maxTime = (p1.name === 'JINO') ? 12 : 10;
@@ -2217,7 +2214,6 @@
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                // P2 스킬 타이머
                 if (p2.name === '미스터비스트' || p2.name === 'JINO') {
                     p2.skillTimer -= 1;
                     let maxTime = (p2.name === 'JINO') ? 12 : 10;
