@@ -384,7 +384,7 @@
             outline: none;
         }
 
-        /* 2배 대폭 확대된 프로필 팝업 스타일 */
+        /* 프로필 팝업 스타일 */
         .profile-modal-box {
             width: 96vw;
             max-width: 680px;
@@ -398,64 +398,64 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.5);
         }
 
-        /* 2배 대폭 확대된 전체 채팅 팝업 스타일 */
+        /* 10배 확대된 초대형 전체 채팅 팝업 스타일 */
         .chat-modal-box {
             width: 98vw;
-            max-width: 750px;
-            height: 90vh;
-            max-height: 900px;
+            max-width: 960px;
+            height: 94vh;
+            max-height: 980px;
             background: #ffffff;
-            border: 9px solid #000000;
-            padding: 35px;
+            border: 10px solid #000000;
+            padding: 45px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+            box-shadow: 0 35px 80px rgba(0,0,0,0.6);
         }
         .chat-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             position: relative;
-            padding-right: 70px; /* X버튼 공간 확보 */
+            padding-right: 90px;
         }
         .chat-logs-area {
             flex: 1;
-            border: 5px solid #000;
+            border: 6px solid #000;
             background: #f8f9fa;
-            margin-bottom: 25px;
-            padding: 25px;
+            margin-bottom: 30px;
+            padding: 30px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 24px;
         }
         .chat-msg-card {
             background: #ffffff;
-            border: 4px solid #000;
-            padding: 18px 22px;
-            border-radius: 12px;
+            border: 5px solid #000;
+            padding: 24px 28px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .chat-sender-name {
-            font-size: 26px;
+            font-size: 32px;
             font-weight: 900;
             color: #2980b9;
             cursor: pointer;
             text-decoration: underline;
         }
         .chat-msg-text {
-            font-size: 28px;
+            font-size: 36px;
             font-weight: bold;
             word-break: break-all;
             color: #000;
         }
         .chat-msg-time {
-            font-size: 17px;
+            font-size: 20px;
             color: #666666;
             text-align: right;
             font-weight: bold;
@@ -508,8 +508,8 @@
             position: absolute;
             width: 95vw;
             max-width: 650px;
-            height: 82vh;
-            max-height: 780px;
+            height: 85vh;
+            max-height: 820px;
             background: #ffffff;
             border: 7px solid #000000;
             box-shadow: 0 25px 60px rgba(0,0,0,0.5);
@@ -620,7 +620,7 @@
         <div class="admin-label">릴리 전용</div>
     </div>
 
-    <!-- 상단 대형 실시간 공지/투표 배너 -->
+    <!-- 상단 대형 실시간 공지/투표 배너 (모두가 볼 수 있음) -->
     <div id="global-announcement-banner"></div>
 
     <!-- 화면 상단 토스트 알림 메시지 -->
@@ -676,13 +676,13 @@
 
     </div>
 
-    <!-- 2배 확대된 전체 채팅 모달 팝업 창 -->
+    <!-- 10배 확대된 초대형 전체 채팅 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="chat-modal" style="z-index: 100003;">
         <div class="chat-modal-box">
             <button class="modal-close-btn" onclick="closeChatModal()">✕</button>
             <div class="chat-header-row">
-                <div style="font-size:38px; font-weight:900;">📘 전체 채팅</div>
-                <div style="font-size:24px; font-weight:900; background:#eee; padding:10px 18px; border:3.5px solid #000; border-radius:10px; cursor:pointer;" onclick="openPlayersModal()">
+                <div style="font-size:46px; font-weight:900;">📘 전체 채팅</div>
+                <div style="font-size:28px; font-weight:900; background:#eee; padding:12px 22px; border:4px solid #000; border-radius:12px; cursor:pointer;" onclick="openPlayersModal()">
                     현재 인원수: <span id="online-count-txt">1</span>명 ➡️
                 </div>
             </div>
@@ -694,8 +694,8 @@
                 </div>
             </div>
             <div class="row-inline-group">
-                <input type="text" id="chat-input" class="admin-input" style="font-size:26px; padding:24px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                <button class="btn-send" style="font-size:28px; padding:0 40px;" onclick="sendChatMessage()">전송</button>
+                <input type="text" id="chat-input" class="admin-input" style="font-size:32px; padding:28px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="btn-send" style="font-size:32px; padding:0 45px;" onclick="sendChatMessage()">전송</button>
             </div>
         </div>
     </div>
@@ -709,7 +709,7 @@
         </div>
     </div>
 
-    <!-- 2배 확대된 내 프로필 정보 팝업 창 -->
+    <!-- 내 프로필 정보 팝업 창 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100004;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="closeProfileModal()">✕</button>
@@ -766,7 +766,7 @@
         </div>
     </div>
 
-    <!-- 관리자 패널 -->
+    <!-- 관리자 패널 (플레이어 목록 삭제 버튼 추가) -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
@@ -779,7 +779,7 @@
 
             <!-- 공지 작성 영역 -->
             <div class="admin-section-box">
-                <div class="admin-section-title">📢 공지 보내기</div>
+                <div class="admin-section-title">📢 공지 보내기 (모두에게 표시)</div>
                 <div class="row-inline-group">
                     <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용을 입력하세요">
                     <button class="btn-send" onclick="sendNotice()">보내기</button>
@@ -788,12 +788,18 @@
 
             <!-- 투표 만들기 영역 -->
             <div class="admin-section-box">
-                <div class="admin-section-title">📊 투표 만들기</div>
+                <div class="admin-section-title">📊 투표 만들기 (모두에게 표시)</div>
                 <div class="row-inline-group">
                     <input type="text" id="admin-vote-opt1" class="admin-input" style="margin-bottom:0;" placeholder="1. 입력">
                     <input type="text" id="admin-vote-opt2" class="admin-input" style="margin-bottom:0;" placeholder="2. 입력">
                 </div>
                 <button class="btn-send" style="width:100%; margin-top:5px; background-color:#9b59b6; padding:16px 0;" onclick="sendVote()">보내기</button>
+            </div>
+
+            <!-- 플레이어 목록 삭제 영역 -->
+            <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
+                <div class="admin-section-title" style="color: #c0392b;">🗑️ 플레이어 관리</div>
+                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:18px;" onclick="clearAllPlayers()">플레이어 목록 전체 삭제</button>
             </div>
 
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px;" onclick="closeAdminPanel()">닫기</button>
@@ -866,7 +872,6 @@
             return `${ampm} ${hours}:${minutes}`;
         }
 
-        // 고유 기기 ID 생성 (이름을 바꿔도 기존 계정을 유지하기 위함)
         function getDeviceUniqueId() {
             let uid = localStorage.getItem('lily_game_device_uid');
             if (!uid) {
@@ -876,7 +881,22 @@
             return uid;
         }
 
-        // 자정(오전 12시) 초기화 체크 및 유저 관리 로직
+        // 실시간 동기화 체크 (LocalStorage 변경 감지)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'lily_game_chat_logs') {
+                loadChatLogs();
+            }
+            if (e.key === 'lily_game_players_list') {
+                updateOnlineCount();
+            }
+            if (e.key === 'lily_game_announcement') {
+                applyAnnouncementData(e.newValue);
+            }
+            if (e.key === 'lily_game_vote_data') {
+                applyVoteData(e.newValue);
+            }
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             const myUid = getDeviceUniqueId();
             let savedName = localStorage.getItem('lily_game_user_name');
@@ -900,17 +920,16 @@
                 registerPlayer(myUid, savedName, savedDate);
                 loadChatLogs();
                 updateOnlineCount();
+                checkSavedAnnouncement();
             }
         });
 
-        // 플레이어 등록/수정 (기존 계정 유지 및 이름 변경 반영)
         function registerPlayer(uid, name, date) {
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let existing = players.find(p => p.uid === uid);
             
             if (!existing) {
-                // 기존 이름과 중복되는지 체크하여 새 계정 생성 방지
                 let nameMatch = players.find(p => p.name === name);
                 if (!nameMatch) {
                     players.push({ uid: uid, name: name, date: date });
@@ -920,6 +939,18 @@
                 existing.date = date;
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
+            updateOnlineCount();
+        }
+
+        // 관리자용 플레이어 전체 삭제 기능
+        function clearAllPlayers() {
+            localStorage.setItem('lily_game_players_list', JSON.stringify([]));
+            updateOnlineCount();
+            showToast('플레이어 목록이 모두 삭제되었습니다!');
+            closeAdminPanel();
+            if(!document.getElementById('players-modal').classList.contains('hidden')) {
+                openPlayersModal();
+            }
         }
 
         function submitUserName() {
@@ -990,7 +1021,7 @@
 
         function updateOnlineCount() {
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
-            let count = Math.max(1, players.length);
+            let count = Math.max(0, players.length);
             document.getElementById('online-count-txt').innerText = count;
         }
 
@@ -998,11 +1029,6 @@
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             const container = document.getElementById('players-list-container');
             container.innerHTML = '';
-
-            if (players.length === 0) {
-                const savedName = localStorage.getItem('lily_game_user_name');
-                if (savedName) players.push({ uid: getDeviceUniqueId(), name: savedName, date: localStorage.getItem('lily_game_login_date') });
-            }
 
             players.forEach(p => {
                 const item = document.createElement('div');
@@ -1049,7 +1075,6 @@
             const name = localStorage.getItem('lily_game_user_name') || '익명';
             const timeStr = getCurrentTimeString();
 
-            // 메시지 보낼 때도 플레이어 목록 동기화
             registerPlayer(getDeviceUniqueId(), name, localStorage.getItem('lily_game_login_date') || getFormattedToday());
 
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
@@ -1129,16 +1154,17 @@
             document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
+        // 공지 모두에게 전송
         function sendNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
             if (!text) {
                 showToast('글씨를 적어주세요!');
                 return;
             }
-            const banner = document.getElementById('global-announcement-banner');
-            banner.innerHTML = `<div class="banner-notice-text">📢 ${text}</div>`;
-            banner.classList.add('show');
-            showToast('공지가 전송되었습니다!');
+            const noticeObj = { type: 'notice', text: text };
+            localStorage.setItem('lily_game_announcement', JSON.stringify(noticeObj));
+            applyAnnouncementData(JSON.stringify(noticeObj));
+            showToast('공지가 모두에게 전송되었습니다!');
             closeAdminPanel();
         }
 
@@ -1147,6 +1173,7 @@
         let voteOpt1Text = '';
         let voteOpt2Text = '';
 
+        // 투표 모두에게 전송
         function sendVote() {
             const opt1 = document.getElementById('admin-vote-opt1').value.trim();
             const opt2 = document.getElementById('admin-vote-opt2').value.trim();
@@ -1161,9 +1188,41 @@
             voteOpt1Text = opt1;
             voteOpt2Text = opt2;
 
-            renderVoteBanner();
-            showToast('투표가 시작되었습니다!');
+            const voteObj = { type: 'vote', opt1: opt1, opt2: opt2, count1: 0, count2: 0 };
+            localStorage.setItem('lily_game_vote_data', JSON.stringify(voteObj));
+            applyVoteData(JSON.stringify(voteObj));
+            showToast('투표가 모두에게 시작되었습니다!');
             closeAdminPanel();
+        }
+
+        function checkSavedAnnouncement() {
+            const savedNotice = localStorage.getItem('lily_game_announcement');
+            if (savedNotice) applyAnnouncementData(savedNotice);
+
+            const savedVote = localStorage.getItem('lily_game_vote_data');
+            if (savedVote) applyVoteData(savedVote);
+        }
+
+        function applyAnnouncementData(jsonStr) {
+            try {
+                const data = JSON.parse(jsonStr);
+                if (data.type === 'notice') {
+                    const banner = document.getElementById('global-announcement-banner');
+                    banner.innerHTML = `<div class="banner-notice-text">📢 ${data.text}</div>`;
+                    banner.classList.add('show');
+                }
+            } catch(e) {}
+        }
+
+        function applyVoteData(jsonStr) {
+            try {
+                const data = JSON.parse(jsonStr);
+                voteOpt1Text = data.opt1;
+                voteOpt2Text = data.opt2;
+                voteCount1 = data.count1 || 0;
+                voteCount2 = data.count2 || 0;
+                renderVoteBanner();
+            } catch(e) {}
         }
 
         function renderVoteBanner() {
@@ -1187,6 +1246,10 @@
         function castVote(optionIndex) {
             if (optionIndex === 1) voteCount1++;
             if (optionIndex === 2) voteCount2++;
+            
+            const voteObj = { type: 'vote', opt1: voteOpt1Text, opt2: voteOpt2Text, count1: voteCount1, count2: voteCount2 };
+            localStorage.setItem('lily_game_vote_data', JSON.stringify(voteObj));
+
             renderVoteBanner();
             showToast('투표가 완료되었습니다!');
         }
