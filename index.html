@@ -2,9 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=1024, user-scalable=yes">
     <title>릴리 볼 파이트</title>
     <style>
         * {
@@ -20,17 +18,15 @@
             background-color: #ffffff;
             margin: 0;
             padding: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
-            height: 100dvh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
+            justify-content: center;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* 상단 대형 실시간 공지/투표 배너 */
@@ -38,7 +34,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             background-color: #2c3e50;
             color: #ffffff;
             padding: 10px 15px;
@@ -91,31 +87,30 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
+        /* 메인 컨테이너 (데스크톱 모드에서도 중앙 정렬 꽉 채움) */
         .app-container {
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 8px 6px;
-            overflow-y: auto;
+            padding: 15px 10px;
         }
 
-        /* 프로필 & 전체 채팅 아이콘 바 (2번째 사진처럼 깔끔한 정렬) */
+        /* 프로필 & 전체 채팅 아이콘 바 */
         .top-menu-bar {
-            width: 95vw;
-            max-width: 520px;
+            width: 100%;
+            max-width: 440px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px 2px;
-            margin-bottom: 2px;
+            padding: 4px 0;
+            margin-bottom: 4px;
             z-index: 1000;
         }
 
@@ -126,11 +121,11 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 38px;
+            font-size: 40px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -139,8 +134,8 @@
         /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             position: fixed;
-            bottom: 12px;
-            left: 12px;
+            bottom: 15px;
+            left: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -149,7 +144,7 @@
             padding: 6px;
         }
         .admin-icon {
-            font-size: 32px;
+            font-size: 36px;
             line-height: 1;
         }
         .admin-label {
@@ -162,7 +157,7 @@
         /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.92);
@@ -183,12 +178,11 @@
             opacity: 1;
         }
 
-        /* 경기장 꽉 채우기 (2번째 사진처럼 좌우 폭에 맞춘 시원한 대형 정사각형) */
+        /* 데스크톱 모드에서도 큼직하고 시원하게 꽉 차는 정사각형 경기장 */
         .arena-frame {
-            width: 95vw;
-            height: 95vw;
-            max-width: 520px;
-            max-height: 520px;
+            width: 100%;
+            width: 440px;
+            height: 440px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -201,14 +195,14 @@
             display: block;
         }
 
-        /* 로비 및 컨트롤 영역 (경기장 바로 아래 밀착) */
+        /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
-            width: 95vw;
-            max-width: 520px;
+            width: 100%;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
@@ -238,7 +232,7 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 6px;
+            margin-top: 8px;
             width: 100%;
             padding: 18px 0;
             font-size: 22px;
@@ -344,7 +338,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
@@ -355,8 +349,8 @@
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 92vw;
-            max-width: 460px;
+            width: 100%;
+            max-width: 440px;
             height: 75vh;
             max-height: 540px;
             background: #ffffff;
@@ -413,8 +407,8 @@
         }
 
         .profile-modal-box {
-            width: 92vw;
-            max-width: 460px;
+            width: 100%;
+            max-width: 440px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 25px;
@@ -432,12 +426,12 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 92vw;
-            max-width: 700px;
+            width: 90%;
+            max-width: 650px;
             height: 75vh;
-            max-height: 700px;
-            min-width: 280px;
-            min-height: 280px;
+            max-height: 650px;
+            min-width: 300px;
+            min-height: 300px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 16px;
@@ -512,8 +506,8 @@
         }
 
         .players-modal-box {
-            width: 92vw;
-            max-width: 460px;
+            width: 100%;
+            max-width: 440px;
             height: 75vh;
             max-height: 580px;
             background: #ffffff;
@@ -552,7 +546,7 @@
 
         .admin-draggable-panel {
             position: absolute;
-            width: 92vw;
+            width: 100%;
             max-width: 460px;
             height: 75vh;
             max-height: 640px;
@@ -671,7 +665,7 @@
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 릴리 전용 어드민 아이콘 -->
-    <div class="admin-entry-box" id="btn-admin-entry">
+    <div class="admin-entry-box" id="btn-admin-entry" onclick="playClickSound(); openAdminPrompt();">
         <div class="admin-icon">🚫</div>
         <div class="admin-label">릴리 전용</div>
     </div>
@@ -681,17 +675,17 @@
 
         <!-- 프로필 & 전체 채팅 메뉴 바 -->
         <div class="top-menu-bar">
-            <div class="profile-entry-box" id="btn-profile-entry">
+            <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); openProfileModal();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
             </div>
-            <div class="chat-entry-box" id="btn-chat-entry">
+            <div class="chat-entry-box" id="btn-chat-entry" onclick="playClickSound(); openChatModal();">
                 <div class="chat-icon">📘</div>
                 <div class="chat-label">전체 채팅</div>
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (좌우 폭에 맞춘 시원한 대형 정사각형) -->
+        <!-- 경기장 뷰포트 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
@@ -701,10 +695,10 @@
             <!-- 로비 대기 화면 -->
             <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
                 <div class="slot-container">
-                    <button class="btn-add-slot" id="slot-left-btn">볼 선택하기</button>
-                    <button class="btn-add-slot" id="slot-right-btn">볼 선택하기</button>
+                    <button class="btn-add-slot" id="slot-left-btn" onclick="playClickSound(); handleSlotClick('left');">볼 선택하기</button>
+                    <button class="btn-add-slot" id="slot-right-btn" onclick="playClickSound(); handleSlotClick('right');">볼 선택하기</button>
                 </div>
-                <button class="btn-main-action btn-start" id="btn-start-match">시작하기 ▶</button>
+                <button class="btn-main-action btn-start" id="btn-start-match" onclick="playClickSound(); startMatch();">시작하기 ▶</button>
             </div>
 
             <!-- 인게임 대결 화면 -->
@@ -735,7 +729,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn-main-action btn-exit" id="btn-exit-match">나가기 🚪</button>
+                <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
         </div>
 
@@ -746,10 +740,10 @@
         <div class="chat-header-row" id="chat-drag-header">
             <div style="font-size:16px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
             <div style="display:flex; gap:6px; align-items:center;">
-                <div style="font-size:13px; font-weight:900; background:#eee; padding:5px 8px; border:2px solid #000; border-radius:6px; cursor:pointer;" id="btn-open-players">
+                <div style="font-size:13px; font-weight:900; background:#eee; padding:5px 8px; border:2px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
                     플레이어 목록 ➡️
                 </div>
-                <button class="modal-close-btn" style="position:static; width:36px; height:36px; font-size:20px;" id="btn-close-chat">✕</button>
+                <button class="modal-close-btn" style="position:static; width:36px; height:36px; font-size:20px;" onclick="playClickSound(); closeChatModal();">✕</button>
             </div>
         </div>
         <div class="chat-logs-area" id="chat-logs">
@@ -761,14 +755,14 @@
         </div>
         <div class="row-inline-group">
             <input type="text" id="chat-input" class="admin-input" style="font-size:16px; padding:10px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:16px; padding:0 18px;" id="btn-send-chat">전송</button>
+            <button class="btn-send" style="font-size:16px; padding:0 18px;" onclick="playClickSound(); sendChatMessage();">전송</button>
         </div>
     </div>
 
     <!-- 플레이어 목록 팝업 창 -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
         <div class="players-modal-box">
-            <button class="modal-close-btn" id="btn-close-players">✕</button>
+            <button class="modal-close-btn" onclick="playClickSound(); closePlayersModal();">✕</button>
             <div style="font-size:22px; font-weight:900; text-align:center; margin-bottom:6px;">👥 플레이어 목록</div>
             <div style="font-size:15px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:6px;" id="online-offline-summary-txt">
                 온라인 [0명] | 오프라인 [0명]
@@ -780,14 +774,14 @@
     <!-- 내 프로필 정보 팝업 창 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" id="btn-close-profile">✕</button>
+            <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal();">✕</button>
             <div style="font-size:42px; line-height:1; margin-bottom:8px;">👤</div>
             <div style="font-size:22px; font-weight:900; margin-bottom:14px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">내 프로필</div>
             <div style="font-size:16px; font-weight:900; margin-bottom:12px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
             <div style="font-size:13px; font-weight:bold; color:#555; margin-bottom:20px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
-                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:10px 0; font-size:16px;" id="btn-edit-username">이름 변경</button>
-                <button class="admin-btn admin-btn-confirm" style="padding:10px 0; font-size:16px;" id="btn-close-profile-2">닫기</button>
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:10px 0; font-size:16px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:10px 0; font-size:16px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
             </div>
         </div>
     </div>
@@ -795,19 +789,19 @@
     <!-- 다른 사람 프로필 확인용 팝업 창 -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" id="btn-close-other-profile">✕</button>
+            <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
             <div style="font-size:42px; line-height:1; margin-bottom:8px;">👤</div>
             <div style="font-size:22px; font-weight:900; margin-bottom:14px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">플레이어 프로필</div>
             <div style="font-size:16px; font-weight:900; margin-bottom:12px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
             <div style="font-size:13px; font-weight:bold; color:#555; margin-bottom:20px;" id="other-profile-date-txt">접속한 날짜: -</div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:10px 0; font-size:16px;" id="btn-close-other-profile-2">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:10px 0; font-size:16px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
         </div>
     </div>
 
     <!-- 볼 선택 모달 팝업창 -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
-            <button class="modal-close-btn" id="btn-close-ball-picker">✕</button>
+            <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
             <div style="font-size:20px; font-weight:900; text-align:center; margin-bottom:6px;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
@@ -815,21 +809,21 @@
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:6px solid #000; padding:28px 18px; width:92vw; max-width:380px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:28px 18px; width:90%; max-width:380px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
             <div style="font-size:24px; font-weight:900; margin-bottom:16px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:16px; font-size:20px; padding:14px;">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px; font-weight:900;" id="btn-submit-username">등록하고 시작하기</button>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:16px; font-size:20px; padding:14px;" onkeydown="if(event.key==='Enter') submitUserName()">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px; font-weight:900;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
         </div>
     </div>
 
     <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal">
-        <div style="background:#fff; border:6px solid #000; padding:24px; width:92vw; max-width:340px; text-align:center;">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:90%; max-width:340px; text-align:center;">
             <div style="font-size:20px; font-weight:900; margin-bottom:14px;">🔒 릴리 전용 어드민</div>
-            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:14px;">
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:14px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
             <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" style="padding:10px 0; font-size:16px;" id="btn-verify-admin">확인</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:10px 0; font-size:16px;" id="btn-close-admin-pw">취소</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:10px 0; font-size:16px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:10px 0; font-size:16px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
             </div>
         </div>
     </div>
@@ -838,7 +832,7 @@
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
-            <span style="cursor:pointer;" id="btn-close-admin-panel">✕</span>
+            <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
         </div>
         <div class="admin-scroll-body">
             <div style="font-size:15px; font-weight:900; text-align:center; color:#2c3e50;">
@@ -849,9 +843,9 @@
                 <div class="admin-section-title">📢 공지 관리</div>
                 <div class="row-inline-group">
                     <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용 입력">
-                    <button class="btn-send" id="btn-send-notice">보내기</button>
+                    <button class="btn-send" onclick="playClickSound(); sendNotice();">보내기</button>
                 </div>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:8px; font-size:15px; margin-top:4px;" id="btn-delete-notice">공지 삭제</button>
+                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:8px; font-size:15px; margin-top:4px;" onclick="playClickSound(); deleteNotice();">공지 삭제</button>
             </div>
 
             <div class="admin-section-box">
@@ -860,16 +854,16 @@
                     <input type="text" id="admin-vote-opt1" class="admin-input" style="margin-bottom:0;" placeholder="1번 보기">
                     <input type="text" id="admin-vote-opt2" class="admin-input" style="margin-bottom:0;" placeholder="2번 보기">
                 </div>
-                <button class="btn-send" style="width:100%; margin-top:4px; background-color:#9b59b6; padding:10px 0;" id="btn-send-vote">투표 시작</button>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:8px; font-size:15px; margin-top:4px;" id="btn-delete-vote">투표 삭제</button>
+                <button class="btn-send" style="width:100%; margin-top:4px; background-color:#9b59b6; padding:10px 0;" onclick="playClickSound(); sendVote();">투표 시작</button>
+                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:8px; font-size:15px; margin-top:4px;" onclick="playClickSound(); deleteVote();">투표 삭제</button>
             </div>
 
             <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
                 <div class="admin-section-title" style="color: #c0392b;">💬 채팅 관리</div>
-                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:10px; font-size:16px;" id="btn-clear-chats">채팅 모두 삭제</button>
+                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:10px; font-size:16px;" onclick="playClickSound(); clearAllChats();">채팅 모두 삭제</button>
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:10px;" id="btn-close-admin-panel-2">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:10px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
         </div>
     </div>
 
@@ -957,16 +951,6 @@
             } catch(e) {}
         }
 
-        // 터치 및 클릭 시 버튼이 즉시 부드럽게 반응하도록 바인딩
-        function bindInstantClick(elementId, handler) {
-            const el = document.getElementById(elementId);
-            if (!el) return;
-            el.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                handler();
-            });
-        }
-
         function getFormattedToday() {
             const now = new Date();
             const yyyy = now.getFullYear();
@@ -1047,39 +1031,8 @@
                 updateOnlineOfflineCounts();
             }
 
-            initButtonListeners();
             drawPreview();
         });
-
-        function initButtonListeners() {
-            bindInstantClick('btn-admin-entry', () => { playClickSound(); openAdminPrompt(); });
-            bindInstantClick('btn-profile-entry', () => { playClickSound(); openProfileModal(); });
-            bindInstantClick('btn-chat-entry', () => { playClickSound(); openChatModal(); });
-            bindInstantClick('slot-left-btn', () => { playClickSound(); handleSlotClick('left'); });
-            bindInstantClick('slot-right-btn', () => { playClickSound(); handleSlotClick('right'); });
-            bindInstantClick('btn-start-match', () => { playClickSound(); startMatch(); });
-            bindInstantClick('btn-exit-match', () => { playClickSound(); exitMatch(); });
-            bindInstantClick('btn-open-players', () => { playClickSound(); openPlayersModal(); });
-            bindInstantClick('btn-close-chat', () => { playClickSound(); closeChatModal(); });
-            bindInstantClick('btn-send-chat', () => { playClickSound(); sendChatMessage(); });
-            bindInstantClick('btn-close-players', () => { playClickSound(); closePlayersModal(); });
-            bindInstantClick('btn-close-profile', () => { playClickSound(); closeProfileModal(); });
-            bindInstantClick('btn-close-profile-2', () => { playClickSound(); closeProfileModal(); });
-            bindInstantClick('btn-edit-username', () => { playClickSound(); editUserNamePrompt(); });
-            bindInstantClick('btn-close-other-profile', () => { playClickSound(); closeOtherProfileModal(); });
-            bindInstantClick('btn-close-other-profile-2', () => { playClickSound(); closeOtherProfileModal(); });
-            bindInstantClick('btn-close-ball-picker', () => { playClickSound(); closeBallPicker(); });
-            bindInstantClick('btn-submit-username', () => { playClickSound(); submitUserName(); });
-            bindInstantClick('btn-verify-admin', () => { playClickSound(); verifyAdminPassword(); });
-            bindInstantClick('btn-close-admin-pw', () => { playClickSound(); closeAdminPassword(); });
-            bindInstantClick('btn-close-admin-panel', () => { playClickSound(); closeAdminPanel(); });
-            bindInstantClick('btn-close-admin-panel-2', () => { playClickSound(); closeAdminPanel(); });
-            bindInstantClick('btn-send-notice', () => { playClickSound(); sendNotice(); });
-            bindInstantClick('btn-delete-notice', () => { playClickSound(); deleteNotice(); });
-            bindInstantClick('btn-send-vote', () => { playClickSound(); sendVote(); });
-            bindInstantClick('btn-delete-vote', () => { playClickSound(); deleteVote(); });
-            bindInstantClick('btn-clear-chats', () => { playClickSound(); clearAllChats(); });
-        }
 
         function registerPlayer(uid, name, date) {
             if (!name) return;
@@ -1218,7 +1171,7 @@
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
                 item.innerHTML = `<span>👤 ${p.name}</span> <span style="font-size:15px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>`;
-                bindInstantClick(item.id || (item.id = 'player_item_' + Math.random().toString(36).substr(2, 9)), () => { playClickSound(); openOtherProfile(p.name); });
+                item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
 
@@ -1279,7 +1232,7 @@
             const nameDiv = document.createElement('div');
             nameDiv.className = 'chat-sender-name';
             nameDiv.innerText = senderName;
-            bindInstantClick(nameDiv.id || (nameDiv.id = 'chat_sender_' + Math.random().toString(36).substr(2, 9)), () => { playClickSound(); openOtherProfile(senderName); });
+            nameDiv.onclick = () => { playClickSound(); openOtherProfile(senderName); };
 
             const textDiv = document.createElement('div');
             textDiv.className = 'chat-msg-text';
@@ -1446,10 +1399,10 @@
                     <div class="banner-vote-container">
                         <div style="font-size:16px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
                         <div class="vote-options-row">
-                            <button class="btn-vote-opt btn-vote-red" id="vote-btn-1">
+                            <button class="btn-vote-opt btn-vote-red" onclick="playClickSound(); castVote(1);">
                                 1. ${voteOpt1Text} [${voteCount1}명 고름]
                             </button>
-                            <button class="btn-vote-opt btn-vote-blue" id="vote-btn-2">
+                            <button class="btn-vote-opt btn-vote-blue" onclick="playClickSound(); castVote(2);">
                                 2. ${voteOpt2Text} [${voteCount2}명 고름]
                             </button>
                         </div>
@@ -1457,8 +1410,6 @@
                 </div>
             `;
             banner.classList.add('show');
-            bindInstantClick('vote-btn-1', () => { playClickSound(); castVote(1); });
-            bindInstantClick('vote-btn-2', () => { playClickSound(); castVote(2); });
         }
 
         function castVote(optionIndex) {
@@ -1656,9 +1607,7 @@
                 const btn = document.createElement('div');
                 btn.className = 'ball-select-btn';
                 btn.innerText = ball.name;
-                const btnId = 'ball_opt_' + Math.random().toString(36).substr(2, 9);
-                btn.id = btnId;
-                bindInstantClick(btnId, () => { playClickSound(); chooseBall(ball); });
+                btn.onclick = () => { playClickSound(); chooseBall(ball); };
                 grid.appendChild(btn);
             });
 
