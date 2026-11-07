@@ -618,6 +618,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 4px solid #000;
+            flex-shrink: 0;
         }
 
         .admin-scroll-body {
@@ -938,7 +939,7 @@
         </div>
     </div>
 
-    <!-- 최초 접속 시 이름 쓰기 팝업 창 (크기 2.5배 확대 및 완전 차단 배경) -->
+    <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
         <div style="background:#fff; border:8px solid #000; padding:50px 40px; width:92%; max-width:650px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
             <div style="font-size:36px; font-weight:900; margin-bottom:24px; color:#000;">✍️ 이름 쓰기</div>
@@ -1225,17 +1226,31 @@
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
+                // 화려하고 다채로운 사운드 추가 (트라이앵글 + 사인파 오실레이터 듀얼 연주)
+                let osc1 = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
                 let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(900, now + 0.25);
-                gain.gain.setValueAtTime(0.6 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain);
+
+                osc1.type = 'triangle';
+                osc2.type = 'sine';
+
+                osc1.frequency.setValueAtTime(250, now);
+                osc1.frequency.exponentialRampToValueAtTime(880, now + 0.3);
+
+                osc2.frequency.setValueAtTime(500, now);
+                osc2.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+
+                gain.gain.setValueAtTime(0.7 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
                 gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.35);
+                osc2.stop(now + 0.35);
             } catch(e) {}
         }
 
@@ -1350,7 +1365,6 @@
             }
         });
 
-        // 이름 미등록 체크 및 버튼 차단 함수
         function checkNameRegisteredOrBlock() {
             const savedName = localStorage.getItem('lily_game_user_name');
             if (!savedName) {
@@ -2309,26 +2323,36 @@
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
-            showToast(`${caster.name}의 한글 세종 공격 발동! 🇰🇷`);
+            showToast(`${caster.name}의 한글 세종 공격 발동! (오른쪽/왼쪽/가운데) 🇰🇷`);
             playSkillSuperSound();
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
             let chars = fullStr.split('');
+            let startX = caster.x;
             let startY = caster.y;
-            let startX = (caster === p1) ? caster.x + 30 : caster.x - 30;
-            let direction = (caster === p1) ? 1 : -1;
 
+            // ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 모든 글자를 오른쪽, 왼쪽, 가운데 세 방향으로 분산 발사
             chars.forEach((ch, idx) => {
-                let spacingX = startX + (idx * 22 * direction);
+                // 발사 각도 세팅: 오른쪽, 왼쪽, 가운데 정면 등 다채로운 방향으로 퍼짐
+                let spreadType = idx % 3; // 0: 정면/가운데, 1: 오른쪽 대각선, 2: 왼쪽 대각선
+                let baseAngle = Math.atan2(enemy.y - startY, enemy.x - startX);
+                let angleOffset = 0;
+
+                if (spreadType === 1) angleOffset = -0.45; // 오른쪽 치우침
+                else if (spreadType === 2) angleOffset = 0.45; // 왼쪽 치우침
+
+                let finalAngle = baseAngle + angleOffset;
+                let speed = 4.2 + (idx % 3) * 0.5;
+
                 moneyItems.push({
-                    x: spacingX,
-                    y: startY + ((idx % 2 === 0 ? 1 : -1) * 12),
-                    vx: direction * 5.0,
-                    vy: 0,
+                    x: startX,
+                    y: startY,
+                    vx: Math.cos(finalAngle) * speed,
+                    vy: Math.sin(finalAngle) * speed,
                     char: ch,
                     target: enemy,
-                    radius: 16,
-                    damage: 10,
+                    radius: 17,
+                    damage: 3, // 1개당 데미지 3 요청 반영
                     isLetter: true,
                     owner: caster === p1 ? 'p1' : 'p2',
                     color: (caster === p1) ? '#1e90ff' : '#e74c3c',
