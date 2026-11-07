@@ -938,12 +938,12 @@
         </div>
     </div>
 
-    <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
-    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:30px 20px; width:90%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
-            <div style="font-size:25px; font-weight:900; margin-bottom:16px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:16px; font-size:21px; padding:14px;" onkeydown="if(event.key==='Enter') submitUserName()">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:21px; font-weight:900;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
+    <!-- 최초 접속 시 이름 쓰기 팝업 창 (크기 2.5배 확대 및 완전 차단 배경) -->
+    <div class="modal-overlay" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
+        <div style="background:#fff; border:8px solid #000; padding:50px 40px; width:92%; max-width:650px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
+            <div style="font-size:36px; font-weight:900; margin-bottom:24px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:24px; font-size:28px; padding:22px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:22px; font-size:28px; font-weight:900; background:#2ecc71; border:4px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
         </div>
     </div>
 
@@ -1144,6 +1144,7 @@
         }
 
         function openSettingsModal() {
+            if (!checkNameRegisteredOrBlock()) return;
             document.getElementById('settings-modal').classList.remove('hidden');
         }
 
@@ -1349,6 +1350,17 @@
             }
         });
 
+        // 이름 미등록 체크 및 버튼 차단 함수
+        function checkNameRegisteredOrBlock() {
+            const savedName = localStorage.getItem('lily_game_user_name');
+            if (!savedName) {
+                showToast('이름을 등록하시요');
+                document.getElementById('name-input-modal').classList.remove('hidden');
+                return false;
+            }
+            return true;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             checkMidnightReset();
             loadSavedSettings();
@@ -1358,7 +1370,6 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            // 요구사항: 기존 접속자 포함 모든 접속자가 이름을 다시 정하게 함 (v2 플래그 확인)
             const forcedResetKey = 'lily_game_name_reset_v2';
             if (!localStorage.getItem(forcedResetKey)) {
                 localStorage.removeItem('lily_game_user_name');
@@ -1379,6 +1390,7 @@
                 checkSavedAnnouncement();
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
+                document.getElementById('name-input-modal').classList.add('hidden');
             }
 
             checkMaintenanceStatus();
@@ -1438,17 +1450,20 @@
         }
 
         function handleProfileClick() {
+            if (!checkNameRegisteredOrBlock()) return;
             closeChatModal();
             openProfileModal();
         }
 
         function handleChatClick() {
+            if (!checkNameRegisteredOrBlock()) return;
             closeProfileModal();
             closePlayersModal();
             openChatModal();
         }
 
         function openProfileModal() {
+            if (!checkNameRegisteredOrBlock()) return;
             const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
             const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
 
@@ -1475,6 +1490,7 @@
         let currentTargetProfileName = '';
 
         function openOtherProfile(name) {
+            if (!checkNameRegisteredOrBlock()) return;
             currentTargetProfileName = name;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let player = players.find(p => p.name === name);
@@ -1565,6 +1581,7 @@
         }
 
         function openChatModal() {
+            if (!checkNameRegisteredOrBlock()) return;
             document.getElementById('chat-floating-box').classList.remove('hidden');
             loadChatLogs();
             updateOnlineOfflineCounts();
@@ -1601,6 +1618,7 @@
         }
 
         function openPlayersModal() {
+            if (!checkNameRegisteredOrBlock()) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             const container = document.getElementById('players-list-container');
             container.innerHTML = '';
@@ -1613,7 +1631,6 @@
                 let isOnline = (nowTime - lastPing) < 6000;
                 if (p.uid === myUid) isOnline = true;
 
-                // 해당 플레이어의 오늘 채팅 내역 수집
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
                 let userChats = chatData.filter(c => c.name === p.name);
                 let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
@@ -1689,6 +1706,7 @@
         }
 
         function sendChatMessage() {
+            if (!checkNameRegisteredOrBlock()) return;
             const input = document.getElementById('chat-input');
             const msg = input.value.trim();
             if (!msg) return;
@@ -2059,6 +2077,7 @@
         let gameInterval = null;
 
         function handleSlotClick(side) {
+            if (!checkNameRegisteredOrBlock()) return;
             if (side === 'left') {
                 if (selectedLeftBall) {
                     selectedLeftBall = null;
@@ -2087,6 +2106,7 @@
         }
 
         function openBallPicker(side) {
+            if (!checkNameRegisteredOrBlock()) return;
             currentTargetSide = side;
             const grid = document.getElementById('ball-picker-grid');
             grid.innerHTML = '';
@@ -2183,6 +2203,7 @@
         }
 
         function startMatch() {
+            if (!checkNameRegisteredOrBlock()) return;
             if (!selectedLeftBall || !selectedRightBall) {
                 showToast('양쪽 공을 모두 선택해 주세요!');
                 return;
@@ -2330,7 +2351,7 @@
                     x: rx,
                     y: ry,
                     radius: 20,
-                    hp: 20, // 스켈레톤 초기 체력 20
+                    hp: 20,
                     maxHp: 20,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
@@ -2411,8 +2432,8 @@
             }, 800);
         }
 
-        // 캔버스 터치(클릭) 시 스켈레톤 실시간 삭제 기능
         canvas.addEventListener('pointerdown', (e) => {
+            if (!checkNameRegisteredOrBlock()) return;
             if (!isGaming) return;
             const rect = canvas.getBoundingClientRect();
             const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
@@ -2424,7 +2445,7 @@
                     if (dist < skel.radius + 15) {
                         playHitSound();
                         showToast('스켈레톤을 처치했습니다! 💀');
-                        return false; // 삭제
+                        return false;
                     }
                     return true;
                 });
@@ -2468,12 +2489,10 @@
                     playWallSound();
                 }
 
-                // 스켈레톤 생존 시간(10초) 및 체력 필터링
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 10000);
                 });
 
-                // 스켈레톤과 공들의 충돌 처리 (공에 부딪히면 10 데미지 및 튕김, 기술에 맞아도 데미지)
                 [p1, p2].forEach(player => {
                     player.skeletons.forEach(skel => {
                         [ { ball: p1, prefix: 'p1' }, { ball: p2, prefix: 'p2' } ].forEach(bObj => {
@@ -2484,14 +2503,13 @@
                                 bObj.ball.x += nx * 3;
                                 bObj.ball.y += ny * 3;
                                 
-                                skel.hp -= 10; // 충돌 시 스켈레톤 10 데미지
+                                skel.hp -= 10;
                                 playHitSound();
                             }
                         });
                     });
                 });
 
-                // 한글 글자 탄막(왕클세종 1기술) 및 화살 충돌 처리
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLetter) {
@@ -2525,7 +2543,6 @@
                             moneyItems.splice(i, 1);
                             continue;
                         }
-                        // 미스터비스트 초콜릿 먹기 (체력 20 회복)
                         let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                         let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
 
@@ -2556,7 +2573,6 @@
                             continue;
                         }
 
-                        // 화살이 스켈레톤이나 상대 공에 맞을 때
                         let hitSkel = false;
                         [pair.enemy, pair.shooter].forEach(pl => {
                             pl.skeletons.forEach(skel => {
@@ -2644,7 +2660,6 @@
                             ctx.fillStyle = '#bdc3c7';
                             ctx.fillRect(skel.x - 10, skel.y - 16, 20, 32);
                         }
-                        // 스켈레톤 위에 체력 표시 (예: 체력:20)
                         ctx.font = "bold 12px sans-serif";
                         ctx.fillStyle = "#e74c3c";
                         ctx.strokeStyle = "#ffffff";
