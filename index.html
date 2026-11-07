@@ -90,7 +90,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (화면 확대 및 상하 여백 완전 제거) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 100vw;
             max-width: 580px;
@@ -185,7 +185,7 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 540px로 화면에 딱 맞게 최적화 */
+        /* 경기장 크기 540px */
         .arena-frame {
             width: 540px;
             height: 540px;
@@ -430,7 +430,7 @@
             z-index: 100000;
         }
 
-        /* 전체 채팅창 (모든 꼭짓점 조절 가능 + 꼭짓점 크게 강조) */
+        /* 전체 채팅창 */
         .chat-floating-window {
             position: fixed;
             left: 50%;
@@ -1586,6 +1586,10 @@
         const skeletonImg = new Image();
         skeletonImg.src = '14108.jpg';
 
+        /* 화살 이미지 로드 (14215.png) */
+        const arrowImg = new Image();
+        arrowImg.src = '14215.png';
+
         let selectedLeftBall = null;
         let selectedRightBall = null;
         let currentTargetSide = null;
@@ -1821,6 +1825,7 @@
                         y: skel.y,
                         vx: Math.cos(angle) * 6.0,
                         vy: Math.sin(angle) * 6.0,
+                        angle: angle,
                         target: enemyPlayer
                     });
                 });
@@ -2062,13 +2067,19 @@
 
                     player.arrows.forEach(arrow => {
                         ctx.save();
-                        ctx.fillStyle = '#8e44ad';
-                        ctx.beginPath();
-                        ctx.arc(arrow.x, arrow.y, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = '#000';
-                        ctx.stroke();
+                        ctx.translate(arrow.x, arrow.y);
+                        ctx.rotate(arrow.angle);
+                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
+                            ctx.drawImage(arrowImg, -18, -9, 36, 18);
+                        } else {
+                            ctx.fillStyle = '#8e44ad';
+                            ctx.beginPath();
+                            ctx.arc(0, 0, 5, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = '#000';
+                            ctx.stroke();
+                        }
                         ctx.restore();
                     });
                 });
