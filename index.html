@@ -795,11 +795,6 @@
                                 <div class="choco-segment" id="p1-ch-2"></div>
                                 <div class="choco-segment" id="p1-ch-3"></div>
                                 <div class="choco-segment" id="p1-ch-4"></div>
-                                <div class="choco-segment" id="p1-ch-5"></div>
-                                <div class="choco-segment" id="p1-ch-6"></div>
-                                <div class="choco-segment" id="p1-ch-7"></div>
-                                <div class="choco-segment" id="p1-ch-8"></div>
-                                <div class="choco-segment" id="p1-ch-9"></div>
                             </div>
                         </div>
                         <div class="player-status-card" id="p2-status-card-container">
@@ -818,11 +813,6 @@
                                 <div class="choco-segment" id="p2-ch-2"></div>
                                 <div class="choco-segment" id="p2-ch-3"></div>
                                 <div class="choco-segment" id="p2-ch-4"></div>
-                                <div class="choco-segment" id="p2-ch-5"></div>
-                                <div class="choco-segment" id="p2-ch-6"></div>
-                                <div class="choco-segment" id="p2-ch-7"></div>
-                                <div class="choco-segment" id="p2-ch-8"></div>
-                                <div class="choco-segment" id="p2-ch-9"></div>
                             </div>
                         </div>
                     </div>
@@ -1980,7 +1970,7 @@
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png', color: '#f1c40f' },
+            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg', color: '#f1c40f' },
             { name: '본이', hp: 250, color: '#e67e22' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg', color: '#8e44ad' }
         ];
@@ -2010,12 +2000,13 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, subTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], rotatingOras: [], slowTimer: 0, baseSpeed: FIXED_SPEED };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, subTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], rotatingOras: [], slowTimer: 0, baseSpeed: FIXED_SPEED };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], activeOrbits: [] };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], activeOrbits: [] };
 
         let moneyItems = [];
         let bombProjectiles = [];
         let gameInterval = null;
+        let redDropInterval = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -2148,6 +2139,8 @@
             }
 
             if (gameInterval) clearInterval(gameInterval);
+            if (redDropInterval) clearInterval(redDropInterval);
+
             moneyItems = [];
             bombProjectiles = [];
 
@@ -2156,34 +2149,28 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 7 : 0));
-            p1.subTimer = (p1.name === '왕클세종') ? 3 : 0;
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 5 : 0));
             p1.skeletons = [];
             p1.arrows = [];
             p1.chocoCount = 0;
             p1.arrowTimer = 0;
             p1.textProjectiles = [];
             p1.textWarnings = [];
-            p1.rotatingOras = [];
-            p1.slowTimer = 0;
-            p1.baseSpeed = FIXED_SPEED;
+            p1.activeOrbits = [];
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 7 : 0));
-            p2.subTimer = (p2.name === '왕클세종') ? 3 : 0;
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 5 : 0));
             p2.skeletons = [];
             p2.arrows = [];
             p2.chocoCount = 0;
             p2.arrowTimer = 0;
             p2.textProjectiles = [];
             p2.textWarnings = [];
-            p2.rotatingOras = [];
-            p2.slowTimer = 0;
-            p2.baseSpeed = FIXED_SPEED;
+            p2.activeOrbits = [];
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2194,7 +2181,7 @@
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
                 if (player.name === '미스터비스트' || player.name === 'JINO' || player.name === '왕클세종') {
-                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 7);
+                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 5);
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
                 } else {
@@ -2214,13 +2201,34 @@
             updateChocoDisplay('p1', p1.chocoCount);
             updateChocoDisplay('p2', p2.chocoCount);
 
+            // 왕클세종 2번째 기술: 2초마다 랜덤 위치에서 빨간색 동그라미 아이템이 위에서 아래로 떨어짐
+            redDropInterval = setInterval(() => {
+                if (!isGaming) return;
+                [p1, p2].forEach(player => {
+                    if (player.name === '왕클세종') {
+                        let rx = Math.random() * (canvas.width - 60) + 30;
+                        moneyItems.push({
+                            x: rx,
+                            y: -20,
+                            destX: rx,
+                            destY: Math.random() * (canvas.height - 100) + 50,
+                            radius: 18,
+                            owner: player === p1 ? 'p1' : 'p2',
+                            isLanding: true,
+                            progress: 0,
+                            spawnTime: Date.now(),
+                            isRedCircle: true
+                        });
+                    }
+                });
+            }, 2000);
+
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // P1 1번 기술 타이머
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p1.name)) {
                     p1.skillTimer -= 1;
-                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 7);
+                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 5);
                     if (p1.skillTimer <= 0) {
                         p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
@@ -2228,7 +2236,7 @@
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
                         } else if (p1.name === '왕클세종') {
-                            triggerWangklSejongSkill(p1);
+                            triggerWangklSejongSkill(p1, p2);
                         }
                     }
                     let pct = ((maxTime - p1.skillTimer) / maxTime) * 100;
@@ -2239,24 +2247,9 @@
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                // P1 왕클세종 2번 기술 (3초마다 글자 채우기, 10칸)
-                if (p1.name === '왕클세종') {
-                    p1.subTimer -= 1;
-                    if (p1.subTimer <= 0) {
-                        p1.subTimer = 3;
-                        p1.chocoCount++;
-                        if (p1.chocoCount >= 10) {
-                            p1.chocoCount = 0;
-                            triggerWangklSejongSecondSkill(p1, p2);
-                        }
-                        updateChocoDisplay('p1', p1.chocoCount);
-                    }
-                }
-
-                // P2 1번 기술 타이머
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p2.name)) {
                     p2.skillTimer -= 1;
-                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 7);
+                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 5);
                     if (p2.skillTimer <= 0) {
                         p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
@@ -2264,7 +2257,7 @@
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
                         } else if (p2.name === '왕클세종') {
-                            triggerWangklSejongSkill(p2);
+                            triggerWangklSejongSkill(p2, p1);
                         }
                     }
                     let pct = ((maxTime - p2.skillTimer) / maxTime) * 100;
@@ -2273,20 +2266,6 @@
                 } else {
                     document.getElementById('p2-gauge-fill').style.width = '0%';
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
-                }
-
-                // P2 왕클세종 2번 기술 (3초마다 글자 채우기, 10칸)
-                if (p2.name === '왕클세종') {
-                    p2.subTimer -= 1;
-                    if (p2.subTimer <= 0) {
-                        p2.subTimer = 3;
-                        p2.chocoCount++;
-                        if (p2.chocoCount >= 10) {
-                            p2.chocoCount = 0;
-                            triggerWangklSejongSecondSkill(p2, p1);
-                        }
-                        updateChocoDisplay('p2', p2.chocoCount);
-                    }
                 }
 
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
@@ -2313,48 +2292,30 @@
             }, 1000);
         }
 
-        // 왕클세종 1번 기술: 탕탕특공대 스타일로 주변을 둥글게 감싸며 천천히 회전하는 원형 글자 오라 생성
-        function triggerWangklSejongSkill(caster) {
-            showToast(`왕클 세종 기술 발동 🇰🇷`);
-            let chars = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-            caster.rotatingOras = [];
-            let total = chars.length;
-            let radiusDist = 58; // 간격 넓고 길게
+        // 왕클세종 1번째 기술: 3배 넓은 반경에서 2.5배 느리게 둥글게 회전하며 3데미지 (기존 기술 안 사라지고 누적)
+        function triggerWangklSejongSkill(caster, enemy) {
+            showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷`);
+            
+            let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
+            let chars = fullStr.split('');
+            let orbitItems = [];
 
             chars.forEach((ch, idx) => {
-                let baseAngle = (idx / total) * Math.PI * 2;
-                caster.rotatingOras.push({
+                let baseAngle = (idx / chars.length) * Math.PI * 2;
+                orbitItems.push({
                     char: ch,
                     angle: baseAngle,
-                    radiusDist: radiusDist,
-                    damage: 5
+                    radius: 85, // 공에서 넉넉히 띄운 넓은 반경 (3배 넓게)
+                    speed: 0.008, // 기존보다 2.5배 더 느리게 회전
+                    damage: 3 // 데미지 3으로 변경
                 });
+            });
+
+            caster.activeOrbits.push({
+                items: orbitItems,
+                enemy: enemy
             });
             playArrowSound();
-        }
-
-        // 왕클세종 2번 기술: 10칸이 모두 차면 상대 공으로 ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 글자가 일제히 발사되어 폭발 (총 70 데미지)
-        function triggerWangklSejongSecondSkill(caster, enemy) {
-            showToast(`${caster.name}의 한글 폭탄 발사! 💥`);
-            let chars = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-            let startX = caster.x;
-            let startY = caster.y;
-            let angle = Math.atan2(enemy.y - startY, enemy.x - startX);
-
-            chars.forEach((ch, idx) => {
-                let spreadAngle = angle + (idx - chars.length / 2) * 0.08;
-                caster.textProjectiles.push({
-                    x: startX,
-                    y: startY,
-                    vx: Math.cos(spreadAngle) * 5.0,
-                    vy: Math.sin(spreadAngle) * 5.0,
-                    char: ch,
-                    target: enemy,
-                    radius: 14,
-                    damage: 5 // 총 맞으면 약 70 데미지
-                });
-            });
-            playBigExplosionSound();
         }
 
         function setupPlayerSkillUI(sidePrefix, player) {
@@ -2374,7 +2335,7 @@
         }
 
         function updateChocoDisplay(sidePrefix, count) {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 5; i++) {
                 const seg = document.getElementById(sidePrefix + '-ch-' + i);
                 if (seg) {
                     if (i < count) {
@@ -2414,7 +2375,8 @@
                     owner: ownerPlayer === p1 ? 'p1' : 'p2',
                     isLanding: true,
                     progress: 0,
-                    spawnTime: Date.now()
+                    spawnTime: Date.now(),
+                    isRedCircle: false
                 });
             }
             showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
@@ -2441,6 +2403,8 @@
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
+            if (redDropInterval) clearInterval(redDropInterval);
+
             moneyItems = [];
             bombProjectiles = [];
             
@@ -2458,8 +2422,8 @@
             p2.textProjectiles = [];
             p1.textWarnings = [];
             p2.textWarnings = [];
-            p1.rotatingOras = [];
-            p2.rotatingOras = [];
+            p1.activeOrbits = [];
+            p2.activeOrbits = [];
 
             const leftBtn = document.getElementById('slot-left-btn');
             leftBtn.innerText = '볼 선택하기';
@@ -2506,20 +2470,10 @@
             if (isGaming) {
                 const nowTimestamp = Date.now();
 
-                // 슬로우 디버프 처리 (원래 속도의 2.5배 느려짐)
-                [p1, p2].forEach(p => {
-                    if (p.slowTimer > 0) {
-                        p.slowTimer--;
-                        p.currentSpeed = p.baseSpeed / 2.5;
-                    } else {
-                        p.currentSpeed = p.baseSpeed;
-                    }
-                });
-
-                p1.x += (p1.vx / FIXED_SPEED) * p1.currentSpeed; 
-                p1.y += (p1.vy / FIXED_SPEED) * p1.currentSpeed;
-                p2.x += (p2.vx / FIXED_SPEED) * p2.currentSpeed; 
-                p2.y += (p2.vy / FIXED_SPEED) * p2.currentSpeed;
+                p1.x += p1.vx; 
+                p1.y += p1.vy;
+                p2.x += p2.vx; 
+                p2.y += p2.vy;
 
                 let hitWall = false;
 
@@ -2533,61 +2487,52 @@
                 if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = -p2.vy; hitWall = true; }
                 if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -p2.vy; hitWall = true; }
 
+                let speed1 = Math.hypot(p1.vx, p1.vy);
+                if (Math.abs(speed1 - FIXED_SPEED) > 0.01) {
+                    p1.vx = (p1.vx / (speed1 || 1)) * FIXED_SPEED;
+                    p1.vy = (p1.vy / (speed1 || 1)) * FIXED_SPEED;
+                }
+
+                let speed2 = Math.hypot(p2.vx, p2.vy);
+                if (Math.abs(speed2 - FIXED_SPEED) > 0.01) {
+                    p2.vx = (p2.vx / (speed2 || 1)) * FIXED_SPEED;
+                    p2.vy = (p2.vy / (speed2 || 1)) * FIXED_SPEED;
+                }
+
                 if (hitWall) {
                     playWallSound();
                 }
-
-                // 왕클세종 회전 오라 업데이트 및 충돌 체크 (슬로우 2.5배 느려짐 적용)
-                [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
-                    if (pair.caster.rotatingOras && pair.caster.rotatingOras.length > 0) {
-                        pair.caster.rotatingOras.forEach(ora => {
-                            ora.angle += 0.025; // 천천히 회전
-                            let cx = pair.caster.x + Math.cos(ora.angle) * ora.radiusDist;
-                            let cy = pair.caster.y + Math.sin(ora.angle) * ora.radiusDist;
-
-                            let dist = Math.hypot(pair.enemy.x - cx, pair.enemy.y - cy);
-                            if (dist < pair.enemy.radius + 12) {
-                                pair.enemy.hp = Math.max(0, pair.enemy.hp - ora.damage);
-                                pair.enemy.slowTimer = 90; // 슬로우 부여 (약 1.5초간 지속)
-                                playHitSound();
-                                updateHpBars();
-                            }
-                        });
-                    }
-                });
 
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
                 });
 
-                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
-                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
-                        let tp = pair.shooter.textProjectiles[i];
-                        tp.x += tp.vx;
-                        tp.y += tp.vy;
+                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌 체크
+                [ { caster: p1, enemy: p2, prefix: 'p1' }, { caster: p2, enemy: p1, prefix: 'p2' } ].forEach(pair => {
+                    pair.caster.activeOrbits.forEach(orbit => {
+                        orbit.items.forEach(item => {
+                            item.angle += item.speed;
+                            let charX = pair.caster.x + Math.cos(item.angle) * item.radius;
+                            let charY = pair.caster.y + Math.sin(item.angle) * item.radius;
 
-                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
-                            pair.shooter.textProjectiles.splice(i, 1);
-                            continue;
-                        }
+                            let dist = Math.hypot(pair.enemy.x - charX, pair.enemy.y - charY);
+                            if (dist < pair.enemy.radius + 10) {
+                                pair.enemy.hp = Math.max(0, pair.enemy.hp - item.damage);
+                                playHitSound();
+                                updateHpBars();
 
-                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
-                        if (dist < pair.enemy.radius + 12) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
-                            pair.shooter.textProjectiles.splice(i, 1);
-                            playHitSound();
-                            updateHpBars();
-
-                            if (pair.enemy.hp <= 0) {
-                                isGaming = false;
-                                if (gameInterval) clearInterval(gameInterval);
-                                setTimeout(() => {
-                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
-                                    exitMatch();
-                                }, 100);
+                                if (pair.enemy.hp <= 0) {
+                                    isGaming = false;
+                                    if (gameInterval) clearInterval(gameInterval);
+                                    if (redDropInterval) clearInterval(redDropInterval);
+                                    setTimeout(() => {
+                                        showToast(`🏆 ${pair.caster.name} 승리!`);
+                                        exitMatch();
+                                    }, 100);
+                                }
                             }
-                        }
-                    }
+                        });
+                    });
                 });
 
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
@@ -2611,6 +2556,7 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
+                                if (redDropInterval) clearInterval(redDropInterval);
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2640,6 +2586,7 @@
                         if (bp.target.hp <= 0) {
                             isGaming = false;
                             if (gameInterval) clearInterval(gameInterval);
+                            if (redDropInterval) clearInterval(redDropInterval);
                             setTimeout(() => {
                                 showToast(`🏆 승리!`);
                                 exitMatch();
@@ -2648,52 +2595,66 @@
                     }
                 }
 
-                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 5000);
+                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 6000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLanding) {
-                        m.progress += 0.02;
-                        m.x += (m.destX - m.x) * 0.05;
-                        m.y += (m.destY - m.y) * 0.05;
-                        if (m.progress >= 1.0) {
+                        m.progress += 0.03;
+                        m.y += (m.destY - m.y) * 0.08;
+                        if (Math.abs(m.destY - m.y) < 2 || m.progress >= 1.0) {
                             m.isLanding = false;
-                            playChocolateLandSound();
                         }
                     } else {
-                        if (m.owner === 'p1' && p1.name === '미스터비스트') {
+                        if (m.owner === 'p1') {
                             let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                             if (dist1 < p1.radius + m.radius) {
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 20);
                                 playHealSound();
-                                showHealingAnimation('p1');
                                 moneyItems.splice(i, 1);
-                                updateHpBars();
-
-                                p1.chocoCount++;
-                                if (p1.chocoCount >= 10) {
-                                    p1.chocoCount = 0;
-                                    triggerChocolateBombs(p1, p2);
+                                if (p1.name === '미스터비스트') {
+                                    p1.hp = Math.min(p1.maxHp, p1.hp + 20);
+                                    showHealingAnimation('p1');
+                                    updateHpBars();
+                                    p1.chocoCount++;
+                                    if (p1.chocoCount >= 5) {
+                                        p1.chocoCount = 0;
+                                        triggerChocolateBombs(p1, p2);
+                                    }
+                                    updateChocoDisplay('p1', p1.chocoCount);
+                                } else if (p1.name === '왕클세종') {
+                                    p1.chocoCount++;
+                                    if (p1.chocoCount >= 5) {
+                                        p1.chocoCount = 0;
+                                        triggerChocolateBombs(p1, p2);
+                                    }
+                                    updateChocoDisplay('p1', p1.chocoCount);
                                 }
-                                updateChocoDisplay('p1', p1.chocoCount);
                                 continue;
                             }
                         }
-                        if (m.owner === 'p2' && p2.name === '미스터비스트') {
+                        if (m.owner === 'p2') {
                             let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                             if (dist2 < p2.radius + m.radius) {
-                                p2.hp = Math.min(p2.maxHp, p2.hp + 20);
                                 playHealSound();
-                                showHealingAnimation('p2');
                                 moneyItems.splice(i, 1);
-                                updateHpBars();
-
-                                p2.chocoCount++;
-                                if (p2.chocoCount >= 10) {
-                                    p2.chocoCount = 0;
-                                    triggerChocolateBombs(p2, p1);
+                                if (p2.name === '미스터비스트') {
+                                    p2.hp = Math.min(p2.maxHp, p2.hp + 20);
+                                    showHealingAnimation('p2');
+                                    updateHpBars();
+                                    p2.chocoCount++;
+                                    if (p2.chocoCount >= 5) {
+                                        p2.chocoCount = 0;
+                                        triggerChocolateBombs(p2, p1);
+                                    }
+                                    updateChocoDisplay('p2', p2.chocoCount);
+                                } else if (p2.name === '왕클세종') {
+                                    p2.chocoCount++;
+                                    if (p2.chocoCount >= 5) {
+                                        p2.chocoCount = 0;
+                                        triggerChocolateBombs(p2, p1);
+                                    }
+                                    updateChocoDisplay('p2', p2.chocoCount);
                                 }
-                                updateChocoDisplay('p2', p2.chocoCount);
                             }
                         }
                     }
@@ -2729,6 +2690,7 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
+                        if (redDropInterval) clearInterval(redDropInterval);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -2742,24 +2704,25 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 왕클세종 회전 원형 오라 렌더링 (탕탕특공대 스타일)
+                // 왕클세종 활성 회전 궤도 글자들 렌더링
                 [p1, p2].forEach(player => {
-                    if (player.rotatingOras) {
-                        player.rotatingOras.forEach(ora => {
-                            let cx = player.x + Math.cos(ora.angle) * ora.radiusDist;
-                            let cy = player.y + Math.sin(ora.angle) * ora.radiusDist;
+                    player.activeOrbits.forEach(orbit => {
+                        orbit.items.forEach(item => {
+                            let charX = player.x + Math.cos(item.angle) * item.radius;
+                            let charY = player.y + Math.sin(item.angle) * item.radius;
+
                             ctx.save();
-                            ctx.font = "bold 22px sans-serif";
-                            ctx.fillStyle = "#f39c12";
+                            ctx.font = "bold 20px sans-serif";
+                            ctx.fillStyle = "#e67e22";
                             ctx.strokeStyle = "#ffffff";
                             ctx.lineWidth = 3;
                             ctx.textAlign = "center";
                             ctx.textBaseline = "middle";
-                            ctx.strokeText(ora.char, cx, cy);
-                            ctx.fillText(ora.char, cx, cy);
+                            ctx.strokeText(item.char, charX, charY);
+                            ctx.fillText(item.char, charX, charY);
                             ctx.restore();
                         });
-                    }
+                    });
                 });
 
                 [p1, p2].forEach(player => {
@@ -2794,34 +2757,29 @@
                         }
                         ctx.restore();
                     });
-
-                    player.textProjectiles.forEach(tp => {
-                        ctx.save();
-                        ctx.font = "bold 20px sans-serif";
-                        ctx.fillStyle = "#2c3e50";
-                        ctx.strokeStyle = "#ffffff";
-                        ctx.lineWidth = 3;
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.strokeText(tp.char, tp.x, tp.y);
-                        ctx.fillText(tp.char, tp.x, tp.y);
-                        ctx.restore();
-                    });
                 });
 
                 const rotAngle = (Date.now() / 200) % (Math.PI * 2);
                 moneyItems.forEach(m => {
                     ctx.save();
                     ctx.beginPath();
-                    ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
-                    ctx.lineWidth = 3;
-                    ctx.strokeStyle = '#2ecc71';
-                    ctx.stroke();
-
-                    ctx.font = "26px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText("🍫", m.x, m.y);
+                    if (m.isRedCircle) {
+                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = '#e74c3c';
+                        ctx.fill();
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = '#000';
+                        ctx.stroke();
+                    } else {
+                        ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = '#2ecc71';
+                        ctx.stroke();
+                        ctx.font = "26px sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText("🍫", m.x, m.y);
+                    }
                     ctx.restore();
                 });
 
