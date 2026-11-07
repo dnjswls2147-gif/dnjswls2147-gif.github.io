@@ -26,12 +26,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
-            touch-action: none;
         }
 
         /* 상단 대형 실시간 공지/투표 배너 */
@@ -92,7 +91,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (화면 중앙 정렬) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 100vw;
             height: 100vh;
@@ -100,20 +99,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             position: relative;
             z-index: 10;
-            padding: 8px;
+            padding: 10px 6px;
         }
 
-        /* 경기장 바로 위 왼쪽에 위치한 프로필 & 전체 채팅 아이콘 바 */
-        .top-left-menu-bar {
-            width: 94vw;
-            max-width: 440px;
+        /* 프로필 & 전체 채팅 아이콘 바 */
+        .top-menu-bar {
+            width: 100%;
+            max-width: 500px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
+            padding: 4px 6px;
             margin-bottom: 4px;
             z-index: 1000;
         }
@@ -123,14 +123,13 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            padding: 2px;
         }
         .profile-icon, .chat-icon {
-            font-size: 36px;
+            font-size: 38px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -183,12 +182,12 @@
             opacity: 1;
         }
 
-        /* 경기장 꽉 채우기 (이전처럼 시원하게 정사각형 대형 유지) */
+        /* 경기장 좌우로 꽉 채우기 (이전처럼 시원한 대형 정사각형) */
         .arena-frame {
-            width: 94vw;
-            height: 94vw;
-            max-width: 440px;
-            max-height: 440px;
+            width: 98vw;
+            height: 98vw;
+            max-width: 500px;
+            max-height: 500px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -203,12 +202,12 @@
 
         /* 로비 및 컨트롤 영역 (경기장 바로 아래 밀착) */
         .controls-wrapper {
-            width: 94vw;
-            max-width: 440px;
+            width: 98vw;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
@@ -219,7 +218,7 @@
         }
         .btn-add-slot {
             flex: 1;
-            padding: 14px 0;
+            padding: 16px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
@@ -238,9 +237,9 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 6px;
+            margin-top: 8px;
             width: 100%;
-            padding: 16px 0;
+            padding: 18px 0;
             font-size: 22px;
             font-weight: 900;
             border: 3px solid #000000;
@@ -290,7 +289,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 26px;
+            height: 28px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -356,9 +355,9 @@
 
         .picker-modal-box {
             width: 92vw;
-            max-width: 440px;
-            height: 72vh;
-            max-height: 520px;
+            max-width: 460px;
+            height: 75vh;
+            max-height: 540px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 20px 20px 20px;
@@ -414,7 +413,7 @@
 
         .profile-modal-box {
             width: 92vw;
-            max-width: 440px;
+            max-width: 460px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 25px;
@@ -433,9 +432,9 @@
             top: 50%;
             transform: translate(-50%, -50%);
             width: 92vw;
-            max-width: 680px;
-            height: 72vh;
-            max-height: 680px;
+            max-width: 700px;
+            height: 75vh;
+            max-height: 700px;
             min-width: 280px;
             min-height: 280px;
             background: #ffffff;
@@ -513,8 +512,8 @@
 
         .players-modal-box {
             width: 92vw;
-            max-width: 440px;
-            height: 72vh;
+            max-width: 460px;
+            height: 75vh;
             max-height: 580px;
             background: #ffffff;
             border: 6px solid #000000;
@@ -679,8 +678,8 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 프로필 & 전체 채팅 아이콘 바 -->
-        <div class="top-left-menu-bar">
+        <!-- 프로필 & 전체 채팅 메뉴 바 -->
+        <div class="top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
@@ -691,12 +690,12 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (화면 중앙에 큼직하게 꽉 채움) -->
+        <!-- 경기장 뷰포트 (좌우로 꽉 채움) -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
 
-        <!-- 컨트롤 래퍼 (경기장 바로 아래 밀착) -->
+        <!-- 로비 및 컨트롤 영역 -->
         <div class="controls-wrapper">
             <!-- 로비 대기 화면 -->
             <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
@@ -957,7 +956,7 @@
             } catch(e) {}
         }
 
-        // 모바일 터치 시 버튼이 즉시 부드럽게 반응하도록 바인딩
+        // 터치 및 클릭 시 버튼이 즉시 부드럽게 반응하도록 바인딩
         function bindInstantClick(elementId, handler) {
             const el = document.getElementById(elementId);
             if (!el) return;
