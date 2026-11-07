@@ -785,7 +785,7 @@
 
     </div>
 
-    <!-- 점검 중 오버레이 화면 (나만 빼고 실시간 적용) -->
+    <!-- 점검 중 오버레이 화면 -->
     <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
         <div style="width:450px; height:450px; max-width:90vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:20px;">
             <div style="font-size:50px; margin-bottom:15px;">🛠️</div>
@@ -794,7 +794,7 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (저장하기 버튼 포함) -->
+    <!-- 게임 설정 모달 팝업 창 (확대 범위 0 ~ 500) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -812,16 +812,16 @@
                 <input type="range" id="sfx-volume-range" min="0" max="300" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <!-- 화면 확대 (0 ~ 1000) -->
+            <!-- 화면 확대 (0 ~ 500) -->
             <div style="margin-bottom:30px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔍 화면 확대 (0 ~ 1000)</span>
+                    <span>🔍 화면 확대 (0 ~ 500)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <input type="text" id="zoom-input-box" value="0" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="1000" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="500" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
             <!-- 설정 저장하기 버튼 -->
@@ -922,7 +922,7 @@
         </div>
     </div>
 
-    <!-- 관리자 패널 (점검 켜기/끄기 추가) -->
+    <!-- 관리자 패널 -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
@@ -972,7 +972,7 @@
 
     <script>
         let audioCtx = null;
-        let soundVolume = 1.0; // 기본 효과음 볼륨
+        let soundVolume = 1.0; // 기본 효과음 볼륨 (100 기준 1.0)
 
         function getAudioContext() {
             if (!audioCtx) {
@@ -988,23 +988,29 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 적용
+        // 설정 불러오기 및 기본값(효과음 100, 확대 0) 적용 (비정상 값 자동 보정)
         function loadSavedSettings() {
-            const savedVol = localStorage.getItem('lily_game_sfx_vol');
-            if (savedVol !== null) {
-                let v = parseInt(savedVol);
-                soundVolume = v / 100;
-                document.getElementById('sfx-volume-range').value = v;
-                document.getElementById('sfx-input-box').value = v;
+            let savedVol = localStorage.getItem('lily_game_sfx_vol');
+            if (savedVol === null || isNaN(savedVol)) {
+                savedVol = '100';
+                localStorage.setItem('lily_game_sfx_vol', '100');
             }
+            let v = parseInt(savedVol);
+            if (v < 0 || v > 300) v = 100;
+            soundVolume = v / 100;
+            document.getElementById('sfx-volume-range').value = v;
+            document.getElementById('sfx-input-box').value = v;
 
-            const savedZoom = localStorage.getItem('lily_game_zoom_scale');
-            if (savedZoom !== null) {
-                let z = parseInt(savedZoom);
-                document.getElementById('zoom-scale-range').value = z;
-                document.getElementById('zoom-input-box').value = z;
-                applyZoomScale(z);
+            let savedZoom = localStorage.getItem('lily_game_zoom_scale');
+            // 너무 큰 값(예: 1000)이 저장되어 화면이 잘렸다면 안전하게 0으로 초기화
+            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 500) {
+                savedZoom = '0';
+                localStorage.setItem('lily_game_zoom_scale', '0');
             }
+            let z = parseInt(savedZoom);
+            document.getElementById('zoom-scale-range').value = z;
+            document.getElementById('zoom-input-box').value = z;
+            applyZoomScale(z);
         }
 
         function saveGameSettings() {
@@ -1045,15 +1051,15 @@
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~1000)');
+                showToast('숫자만 입력해 주세요! (0~500)');
                 box.value = '0';
                 val = 0;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
-            } else if (val > 1000) {
-                val = 1000;
-                box.value = '1000';
+            } else if (val > 500) {
+                val = 500;
+                box.value = '500';
             }
             document.getElementById('zoom-scale-range').value = val;
             applyZoomScale(val);
@@ -1065,7 +1071,7 @@
         }
 
         function applyZoomScale(numVal) {
-            let scaleFactor = 1.15 + (numVal / 1000) * 2.0;
+            let scaleFactor = 1.15 + (numVal / 500) * 1.5;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
         }
 
@@ -1201,11 +1207,8 @@
         setInterval(updateHeartbeat, 2000);
         updateHeartbeat();
 
-        // 실시간 점검 상태 체크 (나만 제외하고 적용)
         function checkMaintenanceStatus() {
             const isMaint = localStorage.getItem('lily_game_maintenance') === 'true';
-            const myUid = getDeviceUniqueId();
-            // 개발자 본인의 고유 ID 또는 릴리 어드민 권한 체크 (원하시는 경우 고유 ID 지정 가능, 여기서는 관리자 비밀번호를 인증한 경우 예외 처리)
             const isAdmin = localStorage.getItem('lily_game_is_admin') === 'true';
 
             const overlay = document.getElementById('maintenance-overlay');
@@ -1526,7 +1529,7 @@
             const pw = document.getElementById('admin-pw-input').value;
             if (pw === '걱스키비디야르7') {
                 closeAdminPassword();
-                localStorage.setItem('lily_game_is_admin', 'true'); // 관리자 인증 표시
+                localStorage.setItem('lily_game_is_admin', 'true');
                 const panel = document.getElementById('admin-panel-modal');
                 panel.style.left = '50%';
                 panel.style.top = '50%';
