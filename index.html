@@ -92,22 +92,25 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (모바일 화면에 꽉 차게 최적화) */
+        /* 메인 컨테이너 (화면 흔들림 방지 및 고정) */
         .app-container {
-            width: 95vw;
-            max-width: 460px;
+            width: 100vw;
+            max-width: 500px;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             z-index: 10;
+            padding: 10px;
         }
 
         /* 경기장 바로 위 왼쪽에 위치한 프로필 & 전체 채팅 아이콘 바 */
         .top-left-menu-bar {
-            width: 95vw;
-            max-width: 460px;
+            width: 100%;
+            max-width: 480px;
             display: flex;
             gap: 20px;
             align-items: center;
@@ -124,11 +127,11 @@
             padding: 4px;
         }
         .profile-icon, .chat-icon {
-            font-size: 46px;
+            font-size: 44px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -147,11 +150,11 @@
             padding: 8px;
         }
         .admin-icon {
-            font-size: 36px;
+            font-size: 34px;
             line-height: 1;
         }
         .admin-label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 900;
             color: #333333;
             margin-top: 2px;
@@ -181,12 +184,12 @@
             opacity: 1;
         }
 
-        /* 경기장 뷰포트 (화면에 꽉 차는 크기) */
+        /* 경기장 꽉 채우기 (스마트폰 화면에 맞게 대형화) */
         .arena-frame {
-            width: 95vw;
-            height: 95vw;
-            max-width: 460px;
-            max-height: 460px;
+            width: 88vw;
+            height: 88vw;
+            max-width: 480px;
+            max-height: 480px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -204,15 +207,16 @@
             display: flex;
             gap: 10px;
             width: 100%;
-            margin-top: 10px;
+            max-width: 480px;
+            margin-top: 8px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 16px 0;
+            padding: 14px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -227,10 +231,11 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 10px;
+            margin-top: 8px;
             width: 100%;
-            padding: 18px 0;
-            font-size: 26px;
+            max-width: 480px;
+            padding: 16px 0;
+            font-size: 24px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 10px;
@@ -252,7 +257,8 @@
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 10px;
+            max-width: 480px;
+            margin-top: 8px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -268,7 +274,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             margin-bottom: 4px;
             white-space: nowrap;
@@ -280,7 +286,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 34px;
+            height: 30px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -301,12 +307,12 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 16px;
+            font-size: 15px;
             text-shadow: 2px 2px 3px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 22px;
+            height: 20px;
             background: #cccccc;
             border: 2px solid #000000;
             margin-top: 4px;
@@ -325,7 +331,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             color: #000;
         }
@@ -684,7 +690,7 @@
         </div>
 
         <!-- 로비 대기 화면 -->
-        <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div id="lobby-controls" style="width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center;">
             <div class="slot-container">
                 <button class="btn-add-slot" id="slot-left-btn">볼 선택하기</button>
                 <button class="btn-add-slot" id="slot-right-btn">볼 선택하기</button>
@@ -693,7 +699,7 @@
         </div>
 
         <!-- 인게임 대결 화면 -->
-        <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div id="ingame-controls" class="hidden" style="width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center;">
             <div class="ingame-status-panel">
                 <div class="status-row-group">
                     <div class="player-status-card">
@@ -728,7 +734,7 @@
     <!-- 전체 채팅창 -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
-            <div style="font-size:20px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
+            <div style="font-size:18px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
             <div style="display:flex; gap:8px; align-items:center;">
                 <div style="font-size:14px; font-weight:900; background:#eee; padding:6px 10px; border:2px solid #000; border-radius:6px; cursor:pointer;" id="btn-open-players">
                     플레이어 목록 ➡️
@@ -744,8 +750,8 @@
             </div>
         </div>
         <div class="row-inline-group">
-            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:20px; padding:0 24px;" id="btn-send-chat">전송</button>
+            <input type="text" id="chat-input" class="admin-input" style="font-size:18px; padding:12px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:18px; padding:0 20px;" id="btn-send-chat">전송</button>
         </div>
     </div>
 
