@@ -133,7 +133,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (화면 가로 폭에 맞춰 시원하게 꽉 채움) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 96vw;
             max-width: none;
@@ -331,25 +331,25 @@
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 92vw;
-            max-width: 520px;
-            height: 75vh;
-            max-height: 550px;
+            width: 95vw;
+            max-width: 600px;
+            height: 80vh;
+            max-height: 650px;
             background: #ffffff;
-            border: 6px solid #000000;
-            padding: 40px 25px 25px 25px;
+            border: 7px solid #000000;
+            padding: 45px 30px 30px 30px;
             position: relative;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
         }
         .modal-close-btn {
             position: absolute;
             top: 16px; right: 16px;
-            width: 52px; height: 52px;
-            border: 3.5px solid #000000;
+            width: 58px; height: 58px;
+            border: 4px solid #000000;
             background: #ffffff;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -361,7 +361,7 @@
         .picker-grid {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             margin-top: 20px;
             flex: 1;
             overflow-y: auto;
@@ -372,8 +372,8 @@
             background: #4a4a4a;
             color: #ffffff;
             border: 4px solid #000000;
-            padding: 24px 12px;
-            font-size: 26px;
+            padding: 28px 15px;
+            font-size: 30px;
             font-weight: 900;
             text-align: center;
             cursor: pointer;
@@ -384,76 +384,78 @@
             outline: none;
         }
 
-        /* 3배 확대된 프로필 팝업 스타일 */
+        /* 2배 대폭 확대된 프로필 팝업 스타일 */
         .profile-modal-box {
-            width: 95vw;
-            max-width: 600px;
+            width: 96vw;
+            max-width: 680px;
             background: #ffffff;
-            border: 8px solid #000000;
-            padding: 45px 35px;
+            border: 9px solid #000000;
+            padding: 55px 45px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
         }
 
-        /* 대폭 확대된 전체 채팅 팝업 스타일 */
+        /* 2배 대폭 확대된 전체 채팅 팝업 스타일 */
         .chat-modal-box {
-            width: 96vw;
-            max-width: 650px;
-            height: 85vh;
-            max-height: 800px;
+            width: 98vw;
+            max-width: 750px;
+            height: 90vh;
+            max-height: 900px;
             background: #ffffff;
-            border: 8px solid #000000;
-            padding: 30px;
+            border: 9px solid #000000;
+            padding: 35px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
         }
         .chat-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-right: 70px; /* X버튼 공간 확보 */
         }
         .chat-logs-area {
             flex: 1;
-            border: 4.5px solid #000;
+            border: 5px solid #000;
             background: #f8f9fa;
-            margin-bottom: 20px;
-            padding: 20px;
+            margin-bottom: 25px;
+            padding: 25px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
         .chat-msg-card {
             background: #ffffff;
-            border: 3.5px solid #000;
-            padding: 14px 18px;
-            border-radius: 10px;
+            border: 4px solid #000;
+            padding: 18px 22px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .chat-sender-name {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 900;
             color: #2980b9;
             cursor: pointer;
             text-decoration: underline;
         }
         .chat-msg-text {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             word-break: break-all;
             color: #000;
         }
         .chat-msg-time {
-            font-size: 15px;
+            font-size: 17px;
             color: #666666;
             text-align: right;
             font-weight: bold;
@@ -461,40 +463,44 @@
 
         /* 플레이어 목록 팝업 스타일 */
         .players-modal-box {
-            width: 92vw;
-            max-width: 500px;
-            height: 70vh;
-            max-height: 600px;
+            width: 94vw;
+            max-width: 580px;
+            height: 75vh;
+            max-height: 680px;
             background: #ffffff;
-            border: 7px solid #000000;
-            padding: 30px;
+            border: 8px solid #000000;
+            padding: 35px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
         }
         .players-list-area {
             flex: 1;
-            border: 3.5px solid #000;
+            border: 4px solid #000;
             background: #f8f9fa;
-            margin-top: 15px;
-            padding: 15px;
+            margin-top: 18px;
+            padding: 18px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .player-item-card {
             background: #fff;
-            border: 2.5px solid #000;
-            padding: 14px;
-            border-radius: 6px;
-            font-size: 20px;
+            border: 3px solid #000;
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 24px;
             font-weight: 900;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+        }
+        .player-item-card:hover {
+            background: #f1f2f6;
         }
 
         /* 관리자 패널 */
@@ -540,23 +546,23 @@
 
         .admin-input {
             width: 100%;
-            padding: 18px;
-            font-size: 24px;
-            border: 3.5px solid #000;
+            padding: 22px;
+            font-size: 28px;
+            border: 4px solid #000;
             text-align: center;
             outline: none;
         }
         .admin-btn-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
         }
         .admin-btn {
             flex: 1;
-            padding: 20px 0;
-            font-size: 24px;
+            padding: 24px 0;
+            font-size: 28px;
             font-weight: 900;
-            border: 3.5px solid #000;
+            border: 4px solid #000;
             cursor: pointer;
             outline: none;
         }
@@ -583,10 +589,10 @@
         .btn-send {
             background-color: #3498db;
             color: #ffffff;
-            border: 3.5px solid #000;
-            font-size: 24px;
+            border: 4px solid #000;
+            font-size: 28px;
             font-weight: 900;
-            padding: 0 30px;
+            padding: 0 35px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
@@ -670,13 +676,13 @@
 
     </div>
 
-    <!-- 대폭 확대된 전체 채팅 모달 팝업 창 -->
+    <!-- 2배 확대된 전체 채팅 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="chat-modal" style="z-index: 100003;">
         <div class="chat-modal-box">
             <button class="modal-close-btn" onclick="closeChatModal()">✕</button>
             <div class="chat-header-row">
-                <div style="font-size:34px; font-weight:900;">📘 전체 채팅</div>
-                <div style="font-size:22px; font-weight:900; background:#eee; padding:8px 16px; border:3px solid #000; border-radius:8px; cursor:pointer;" onclick="openPlayersModal()">
+                <div style="font-size:38px; font-weight:900;">📘 전체 채팅</div>
+                <div style="font-size:24px; font-weight:900; background:#eee; padding:10px 18px; border:3.5px solid #000; border-radius:10px; cursor:pointer;" onclick="openPlayersModal()">
                     현재 인원수: <span id="online-count-txt">1</span>명 ➡️
                 </div>
             </div>
@@ -688,8 +694,8 @@
                 </div>
             </div>
             <div class="row-inline-group">
-                <input type="text" id="chat-input" class="admin-input" style="font-size:24px; padding:22px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                <button class="btn-send" style="font-size:26px; padding:0 35px;" onclick="sendChatMessage()">전송</button>
+                <input type="text" id="chat-input" class="admin-input" style="font-size:26px; padding:24px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="btn-send" style="font-size:28px; padding:0 40px;" onclick="sendChatMessage()">전송</button>
             </div>
         </div>
     </div>
@@ -698,19 +704,19 @@
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100006;">
         <div class="players-modal-box">
             <button class="modal-close-btn" onclick="closePlayersModal()">✕</button>
-            <div style="font-size:30px; font-weight:900; text-align:center;">👥 접속 중인 플레이어</div>
+            <div style="font-size:36px; font-weight:900; text-align:center;">👥 접속 중인 플레이어</div>
             <div class="players-list-area" id="players-list-container"></div>
         </div>
     </div>
 
-    <!-- 3배 대폭 확대된 내 프로필 정보 팝업 창 -->
+    <!-- 2배 확대된 내 프로필 정보 팝업 창 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100004;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="closeProfileModal()">✕</button>
-            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
-            <div style="font-size:36px; font-weight:900; margin-bottom:30px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">내 프로필</div>
-            <div style="font-size:28px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="font-size:24px; font-weight:bold; color:#555; margin-bottom:40px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div style="font-size:80px; line-height:1; margin-bottom:20px;">👤</div>
+            <div style="font-size:42px; font-weight:900; margin-bottom:35px; border-bottom:6px solid #000; padding-bottom:15px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:32px; font-weight:900; margin-bottom:25px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:26px; font-weight:bold; color:#555; margin-bottom:45px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
                 <button class="admin-btn" style="background-color:#f39c12; color:#fff;" onclick="editUserNamePrompt()">이름 변경</button>
                 <button class="admin-btn admin-btn-confirm" onclick="closeProfileModal()">닫기</button>
@@ -722,10 +728,10 @@
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100007;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="closeOtherProfileModal()">✕</button>
-            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
-            <div style="font-size:36px; font-weight:900; margin-bottom:30px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">플레이어 프로필</div>
-            <div style="font-size:28px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
-            <div style="font-size:24px; font-weight:bold; color:#555; margin-bottom:40px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <div style="font-size:80px; line-height:1; margin-bottom:20px;">👤</div>
+            <div style="font-size:42px; font-weight:900; margin-bottom:35px; border-bottom:6px solid #000; padding-bottom:15px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="font-size:32px; font-weight:900; margin-bottom:25px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+            <div style="font-size:26px; font-weight:bold; color:#555; margin-bottom:45px;" id="other-profile-date-txt">접속한 날짜: -</div>
             <button class="admin-btn admin-btn-confirm" style="width:100%;" onclick="closeOtherProfileModal()">닫기</button>
         </div>
     </div>
@@ -734,24 +740,25 @@
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="closeBallPicker()">✕</button>
+            <div style="font-size:34px; font-weight:900; text-align:center; margin-bottom:10px;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 100005;">
-        <div style="background:#fff; border:6px solid #000; padding:45px 30px; width:95vw; max-width:500px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-            <div style="font-size:36px; font-weight:900; margin-bottom:25px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:30px; font-size:26px; padding:22px;">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:22px; font-size:26px; font-weight:900;" onclick="submitUserName()">등록하고 시작하기</button>
+        <div style="background:#fff; border:8px solid #000; padding:50px 35px; width:96vw; max-width:580px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:40px; font-weight:900; margin-bottom:30px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:35px; font-size:30px; padding:25px;">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:25px; font-size:30px; font-weight:900;" onclick="submitUserName()">등록하고 시작하기</button>
         </div>
     </div>
 
     <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal">
-        <div style="background:#fff; border:6px solid #000; padding:30px; width:90vw; max-width:420px; text-align:center;">
-            <div style="font-size:26px; font-weight:900; margin-bottom:20px;">🔒 릴리 전용 어드민</div>
-            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:20px;">
+        <div style="background:#fff; border:7px solid #000; padding:35px; width:92vw; max-width:450px; text-align:center;">
+            <div style="font-size:30px; font-weight:900; margin-bottom:25px;">🔒 릴리 전용 어드민</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:25px;">
             <div class="admin-btn-group">
                 <button class="admin-btn admin-btn-confirm" onclick="verifyAdminPassword()">확인</button>
                 <button class="admin-btn admin-btn-cancel" onclick="closeAdminPassword()">취소</button>
@@ -859,9 +866,20 @@
             return `${ampm} ${hours}:${minutes}`;
         }
 
-        // 자정(오전 12시) 초기화 체크 및 채팅/유저 관리 로직
+        // 고유 기기 ID 생성 (이름을 바꿔도 기존 계정을 유지하기 위함)
+        function getDeviceUniqueId() {
+            let uid = localStorage.getItem('lily_game_device_uid');
+            if (!uid) {
+                uid = 'user_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+                localStorage.setItem('lily_game_device_uid', uid);
+            }
+            return uid;
+        }
+
+        // 자정(오전 12시) 초기화 체크 및 유저 관리 로직
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('lily_game_user_name');
+            const myUid = getDeviceUniqueId();
+            let savedName = localStorage.getItem('lily_game_user_name');
             let savedDate = localStorage.getItem('lily_game_login_date');
             let lastResetDate = localStorage.getItem('lily_game_last_reset_date');
             const todayStr = getFormattedToday();
@@ -876,23 +894,29 @@
                 localStorage.setItem('lily_game_login_date', savedDate);
             }
 
-            registerPlayer(savedName, savedDate);
-
             if (!savedName) {
                 document.getElementById('name-input-modal').classList.remove('hidden');
             } else {
+                registerPlayer(myUid, savedName, savedDate);
                 loadChatLogs();
                 updateOnlineCount();
             }
         });
 
-        function registerPlayer(name, date) {
+        // 플레이어 등록/수정 (기존 계정 유지 및 이름 변경 반영)
+        function registerPlayer(uid, name, date) {
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
-            let existing = players.find(p => p.name === name);
+            let existing = players.find(p => p.uid === uid);
+            
             if (!existing) {
-                players.push({ name: name, date: date });
+                // 기존 이름과 중복되는지 체크하여 새 계정 생성 방지
+                let nameMatch = players.find(p => p.name === name);
+                if (!nameMatch) {
+                    players.push({ uid: uid, name: name, date: date });
+                }
             } else {
+                existing.name = name;
                 existing.date = date;
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
@@ -904,9 +928,16 @@
                 showToast('이름을 입력해 주세요!');
                 return;
             }
+            const myUid = getDeviceUniqueId();
+            const today = getFormattedToday();
+
             localStorage.setItem('lily_game_user_name', inputVal);
-            localStorage.setItem('lily_game_login_date', getFormattedToday());
-            registerPlayer(inputVal, getFormattedToday());
+            if (!localStorage.getItem('lily_game_login_date')) {
+                localStorage.setItem('lily_game_login_date', today);
+            }
+            let savedDate = localStorage.getItem('lily_game_login_date');
+
+            registerPlayer(myUid, inputVal, savedDate);
 
             document.getElementById('name-input-modal').classList.add('hidden');
             showToast(`환영합니다, ${inputVal}님!`);
@@ -970,13 +1001,14 @@
 
             if (players.length === 0) {
                 const savedName = localStorage.getItem('lily_game_user_name');
-                if (savedName) players.push({ name: savedName, date: localStorage.getItem('lily_game_login_date') });
+                if (savedName) players.push({ uid: getDeviceUniqueId(), name: savedName, date: localStorage.getItem('lily_game_login_date') });
             }
 
             players.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
-                item.innerHTML = `<span>👤 ${p.name}</span><span style="font-size:15px; color:#555;">접속일: ${p.date}</span>`;
+                item.innerHTML = `<span>👤 ${p.name}</span><span style="font-size:18px; color:#555;">접속일: ${p.date}</span>`;
+                item.onclick = () => openOtherProfile(p.name);
                 container.appendChild(item);
             });
 
@@ -1017,12 +1049,16 @@
             const name = localStorage.getItem('lily_game_user_name') || '익명';
             const timeStr = getCurrentTimeString();
 
+            // 메시지 보낼 때도 플레이어 목록 동기화
+            registerPlayer(getDeviceUniqueId(), name, localStorage.getItem('lily_game_login_date') || getFormattedToday());
+
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             chatData.push({ name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
 
             appendChatBubble(name, msg, timeStr, true);
             input.value = '';
+            updateOnlineCount();
         }
 
         function appendChatBubble(senderName, msgText, timeText, shouldScroll) {
