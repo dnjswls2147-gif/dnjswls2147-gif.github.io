@@ -32,7 +32,6 @@
             overscroll-behavior: none;
         }
 
-        /* 상단 대형 실시간 공지/투표 배너 */
         #global-announcement-banner {
             position: fixed;
             top: 0;
@@ -90,7 +89,6 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
         .app-container {
             width: 100vw;
             max-width: 580px;
@@ -106,7 +104,6 @@
             transition: transform 0.2s ease;
         }
 
-        /* 프로필, 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
             max-width: 450px;
@@ -136,7 +133,6 @@
             margin-top: 2px;
         }
 
-        /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             display: flex;
             flex-direction: row;
@@ -162,7 +158,6 @@
             color: #333333;
         }
 
-        /* 경기장 상단 우측 설정(⚙️) 아이콘 영역 */
         .arena-container-wrapper {
             position: relative;
             width: 450px;
@@ -190,7 +185,6 @@
             box-shadow: none;
         }
 
-        /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
             top: 14px;
@@ -214,7 +208,6 @@
             opacity: 1;
         }
 
-        /* 경기장 프레임 (450 고정 크기) */
         .arena-frame {
             width: 450px;
             height: 450px;
@@ -233,7 +226,6 @@
             display: block;
         }
 
-        /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
             width: 100%;
             max-width: 450px;
@@ -243,7 +235,6 @@
             margin-top: 4px;
         }
 
-        /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
             gap: 8px;
@@ -268,7 +259,6 @@
             background: #27ae60;
         }
 
-        /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
             margin-top: 4px;
             width: 100%;
@@ -292,7 +282,6 @@
             box-shadow: 0 1px 0 #000000;
         }
 
-        /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
             display: flex;
@@ -373,7 +362,6 @@
             color: #000;
         }
 
-        /* 미스터 비스트 5칸 초콜릿 게이지 바 */
         .choco-segment-box {
             width: 100%;
             height: 18px;
@@ -417,7 +405,6 @@
             z-index: 500;
         }
 
-        /* 일반 모달 공통 스타일 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -505,7 +492,6 @@
             z-index: 100000;
         }
 
-        /* 전체 채팅창 */
         .chat-floating-window {
             position: fixed;
             left: 50%;
@@ -2018,7 +2004,7 @@
         let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0 };
 
         let moneyItems = [];
-        let bombProjectiles = []; // 초콜릿 폭탄 배열
+        let bombProjectiles = [];
         let gameInterval = null;
 
         function handleSlotClick(side) {
@@ -2151,7 +2137,6 @@
                 return;
             }
 
-            // 시작할 때 모든 변수 및 타이머 완벽하게 처음부터 초기화
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = [];
             bombProjectiles = [];
@@ -2161,6 +2146,7 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
+            // 시작하자마자 정확히 지정된 최대 시간(미스터비스트 10초, JINO 12초)부터 시작하도록 철저히 고정
             p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 0);
             p1.skeletons = [];
             p1.arrows = [];
@@ -2183,6 +2169,19 @@
 
             setupPlayerSkillUI('p1', p1);
             setupPlayerSkillUI('p2', p2);
+
+            // UI 렌더링 즉시 반영 (시작하자마자 0초나 잔재가 보이지 않도록 초기 게이지 바와 텍스트 세팅)
+            ['p1', 'p2'].forEach(prefix => {
+                const player = (prefix === 'p1') ? p1 : p2;
+                if (player.name === '미스터비스트' || player.name === 'JINO') {
+                    let maxTime = (player.name === 'JINO') ? 12 : 10;
+                    document.getElementById(prefix + '-gauge-fill').style.width = '0%';
+                    document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
+                } else {
+                    document.getElementById(prefix + '-gauge-fill').style.width = '0%';
+                    document.getElementById(prefix + '-gauge-txt').innerText = '기술 없음';
+                }
+            });
 
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
             document.getElementById('lobby-admin-entry').classList.add('hidden');
@@ -2238,7 +2237,6 @@
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
                 }
 
-                // JINO 스켈레톤 화살: 2초마다 1발씩 발사 (6초 지속 동안)
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
                     if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
                         pair.player.arrowTimer++;
@@ -2326,12 +2324,9 @@
             showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
         }
 
-        // 미스터 비스트 초콜릿 폭탄 시스템: 3개를 왼쪽, 가운데, 오른쪽으로 발사하여 맞히면 폭발 대미지 50
         function triggerChocolateBombs(ownerPlayer, enemyPlayer) {
             showToast(`${ownerPlayer.name}가 초콜릿 폭탄 3개 발사! 🍫💥`);
             let baseAngle = Math.atan2(enemyPlayer.y - ownerPlayer.y, enemyPlayer.x - ownerPlayer.x);
-            
-            // 왼쪽(-0.3라디안), 가운데(0라디안), 오른쪽(+0.3라디안) 방향으로 확산 발사
             let offsets = [-0.35, 0, 0.35];
 
             offsets.forEach(offset => {
@@ -2442,12 +2437,10 @@
                     playWallSound();
                 }
 
-                // 스켈레톤 만료 체크 (6초)
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
                 });
 
-                // JINO 스켈레톤 화살 데미지 20
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
                         let arrow = pair.shooter.arrows[i];
@@ -2461,7 +2454,7 @@
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 20); // 데미지 20
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 20);
                             pair.shooter.arrows.splice(i, 1);
                             playHitSound();
                             updateHpBars();
@@ -2478,13 +2471,11 @@
                     }
                 });
 
-                // 미스터 비스트 초콜릿 폭탄 업데이트 (상대 공에 명중 시 대미지 50 및 웅장한 폭발 효과음)
                 for (let i = bombProjectiles.length - 1; i >= 0; i--) {
                     let bp = bombProjectiles[i];
                     bp.x += bp.vx;
                     bp.y += bp.vy;
 
-                    // 화면 밖으로 나가면 제거
                     if (bp.x < 0 || bp.x > canvas.width || bp.y < 0 || bp.y > canvas.height) {
                         bombProjectiles.splice(i, 1);
                         continue;
@@ -2492,7 +2483,7 @@
 
                     let dist = Math.hypot(bp.target.x - bp.x, bp.target.y - bp.y);
                     if (dist < bp.target.radius + bp.radius) {
-                        bp.target.hp = Math.max(0, bp.target.hp - 50); // 폭탄 1개당 대미지 50
+                        bp.target.hp = Math.max(0, bp.target.hp - 50);
                         playBigExplosionSound();
                         updateHpBars();
                         bombProjectiles.splice(i, 1);
@@ -2508,7 +2499,6 @@
                     }
                 }
 
-                // 초콜릿 아이템 (5초 지나면 소멸, 회복 20)
                 moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 5000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2534,7 +2524,7 @@
                                 p1.chocoCount++;
                                 if (p1.chocoCount >= 5) {
                                     p1.chocoCount = 0;
-                                    triggerChocolateBombs(p1, p2); // 초콜릿 폭탄 3개 발사 (좌/중/우)
+                                    triggerChocolateBombs(p1, p2);
                                 }
                                 updateChocoDisplay('p1', p1.chocoCount);
                                 continue;
@@ -2552,7 +2542,7 @@
                                 p2.chocoCount++;
                                 if (p2.chocoCount >= 5) {
                                     p2.chocoCount = 0;
-                                    triggerChocolateBombs(p2, p1); // 초콜릿 폭탄 3개 발사 (좌/중/우)
+                                    triggerChocolateBombs(p2, p1);
                                 }
                                 updateChocoDisplay('p2', p2.chocoCount);
                             }
