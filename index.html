@@ -102,19 +102,20 @@
             justify-content: flex-start;
             position: relative;
             z-index: 10;
-            padding: 10px 6px;
+            padding: 8px 6px;
+            overflow-y: auto;
         }
 
-        /* 프로필 & 전체 채팅 아이콘 바 */
+        /* 프로필 & 전체 채팅 아이콘 바 (2번째 사진처럼 깔끔한 정렬) */
         .top-menu-bar {
-            width: 100%;
-            max-width: 500px;
+            width: 95vw;
+            max-width: 520px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px 6px;
-            margin-bottom: 4px;
+            padding: 4px 2px;
+            margin-bottom: 2px;
             z-index: 1000;
         }
 
@@ -182,12 +183,12 @@
             opacity: 1;
         }
 
-        /* 경기장 좌우로 꽉 채우기 (이전처럼 시원한 대형 정사각형) */
+        /* 경기장 꽉 채우기 (2번째 사진처럼 좌우 폭에 맞춘 시원한 대형 정사각형) */
         .arena-frame {
-            width: 98vw;
-            height: 98vw;
-            max-width: 500px;
-            max-height: 500px;
+            width: 95vw;
+            height: 95vw;
+            max-width: 520px;
+            max-height: 520px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -202,12 +203,12 @@
 
         /* 로비 및 컨트롤 영역 (경기장 바로 아래 밀착) */
         .controls-wrapper {
-            width: 98vw;
-            max-width: 500px;
+            width: 95vw;
+            max-width: 520px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
@@ -237,7 +238,7 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 8px;
+            margin-top: 6px;
             width: 100%;
             padding: 18px 0;
             font-size: 22px;
@@ -690,7 +691,7 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (좌우로 꽉 채움) -->
+        <!-- 경기장 뷰포트 (좌우 폭에 맞춘 시원한 대형 정사각형) -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
