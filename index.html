@@ -214,7 +214,7 @@
             opacity: 1;
         }
 
-        /* 경기장 프레임 (동적 크기 조절 연동) */
+        /* 경기장 프레임 (동적 크기 및 동그라미/네모 모양 연동) */
         .arena-frame {
             width: 450px;
             height: 450px;
@@ -225,6 +225,10 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 0px;
+        }
+        .arena-frame.circle-shape {
+            border-radius: 50% !important;
         }
         canvas {
             width: 100%;
@@ -371,6 +375,32 @@
             color: #000;
         }
 
+        /* 미스터 비스트 5칸 초콜릿 게이지 바 (ㅡㅡㅡㅡㅡ / |||||) */
+        .choco-segment-box {
+            width: 100%;
+            height: 18px;
+            background: #ffffff;
+            border: 3px solid #000;
+            display: flex;
+            margin-top: 3px;
+            gap: 1px;
+            padding: 1px;
+            background-color: #ddd;
+        }
+        .choco-segment {
+            flex: 1;
+            background: #e0e0e0;
+            height: 100%;
+            border-right: 1px solid #000;
+            transition: background 0.2s ease;
+        }
+        .choco-segment:last-child {
+            border-right: none;
+        }
+        .choco-segment.filled {
+            background: #2ecc71 !important;
+        }
+
         /* 일반 모달 공통 스타일 */
         .modal-overlay {
             position: fixed;
@@ -450,7 +480,7 @@
             max-width: 650px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 50px 30px;
+            padding: 40px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -759,9 +789,17 @@
                                 <div class="hp-bar-inner" id="p1-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p1-hp-txt">250 / 250</div>
                             </div>
-                            <div class="sub-gauge-bar">
+                            <div class="sub-gauge-bar" id="p1-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
-                                <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (10초)</div>
+                                <div class="sub-gauge-text" id="p1-gauge-txt">기술 없음</div>
+                            </div>
+                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
+                            <div class="choco-segment-box" id="p1-choco-segments" style="display:none;">
+                                <div class="choco-segment" id="p1-ch-0"></div>
+                                <div class="choco-segment" id="p1-ch-1"></div>
+                                <div class="choco-segment" id="p1-ch-2"></div>
+                                <div class="choco-segment" id="p1-ch-3"></div>
+                                <div class="choco-segment" id="p1-ch-4"></div>
                             </div>
                         </div>
                         <div class="player-status-card">
@@ -770,9 +808,17 @@
                                 <div class="hp-bar-inner" id="p2-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p2-hp-txt">250 / 250</div>
                             </div>
-                            <div class="sub-gauge-bar">
+                            <div class="sub-gauge-bar" id="p2-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
-                                <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (10초)</div>
+                                <div class="sub-gauge-text" id="p2-gauge-txt">기술 없음</div>
+                            </div>
+                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
+                            <div class="choco-segment-box" id="p2-choco-segments" style="display:none;">
+                                <div class="choco-segment" id="p2-ch-0"></div>
+                                <div class="choco-segment" id="p2-ch-1"></div>
+                                <div class="choco-segment" id="p2-ch-2"></div>
+                                <div class="choco-segment" id="p2-ch-3"></div>
+                                <div class="choco-segment" id="p2-ch-4"></div>
                             </div>
                         </div>
                     </div>
@@ -798,26 +844,35 @@
         </div>
     </div>
 
-    <!-- 경기장 설정 모달 팝업 창 (가로/세로 넓히기 + 초기화 버튼) -->
+    <!-- 경기장 설정 모달 팝업 창 (가로 450 제한, 모양 선택, 초기화) -->
     <div class="modal-overlay hidden" id="arena-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeArenaSettingModal();">✕</button>
-            <div style="font-size:32px; font-weight:900; margin-bottom:24px; color:#000;">🏟️ 경기장 크기 설정</div>
+            <div style="font-size:30px; font-weight:900; margin-bottom:20px; color:#000;">🏟️ 경기장 설정</div>
             
-            <!-- 가로 넓히기 (300 ~ 700) -->
-            <div style="margin-bottom:24px; text-align:left;">
+            <!-- 경기장 모양 선택 (동그라미 / 네모) -->
+            <div style="margin-bottom:20px; text-align:left;">
+                <div style="font-size:18px; font-weight:900; margin-bottom:8px;">🎨 경기장 모양 선택</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="admin-btn" id="shape-btn-square" style="background:#34495e; color:#fff; padding:12px 0;" onclick="playClickSound(); setArenaShape('square');">네모 (직사각형)</button>
+                    <button class="admin-btn" id="shape-btn-circle" style="background:#34495e; color:#fff; padding:12px 0;" onclick="playClickSound(); setArenaShape('circle');">동그라미 (450 최대)</button>
+                </div>
+            </div>
+
+            <!-- 가로 넓히기 (최대 450 고정) -->
+            <div style="margin-bottom:20px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>↔️ 경기장 가로 넓히기 (300 ~ 700)</span>
+                    <span>↔️ 경기장 가로 넓히기 (최대 450)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <input type="text" id="arena-width-input" value="450" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyArenaWidthInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="arena-width-range" min="300" max="700" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaWidthRange(this.value)">
+                <input type="range" id="arena-width-range" min="300" max="450" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaWidthRange(this.value)">
             </div>
 
             <!-- 세로 넓히기 (300 ~ 700) -->
-            <div style="margin-bottom:24px; text-align:left;">
+            <div style="margin-bottom:22px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>↕️ 경기장 세로 넓히기 (300 ~ 700)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
@@ -828,7 +883,7 @@
                 <input type="range" id="arena-height-range" min="300" max="700" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaHeightRange(this.value)">
             </div>
 
-            <!-- 저장 및 초기화 버튼 그룹 -->
+            <!-- 초기화 및 저장 버튼 -->
             <div style="display:flex; gap:8px;">
                 <button class="admin-btn" style="flex:1; padding:14px; font-size:18px; font-weight:900; background-color:#e74c3c; color:#fff;" onclick="playClickSound(); resetArenaSettings();">🔄 초기화</button>
                 <button class="admin-btn admin-btn-confirm" style="flex:2; padding:14px; font-size:18px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveArenaSettings();">💾 크기 저장</button>
@@ -836,13 +891,12 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (효과음 0~1000, 화면 확대 0~150, 기본값 50) -->
+    <!-- 게임 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
             <div style="font-size:32px; font-weight:900; margin-bottom:24px; color:#000;">⚙️ 게임 설정</div>
             
-            <!-- 효과음 소리 (0 ~ 1000) -->
             <div style="margin-bottom:24px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔊 효과음 소리 (0 ~ 1000)</span>
@@ -854,7 +908,6 @@
                 <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <!-- 화면 확대 (0 ~ 150) -->
             <div style="margin-bottom:30px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔍 화면 확대 (0 ~ 150)</span>
@@ -866,7 +919,6 @@
                 <input type="range" id="zoom-scale-range" min="0" max="150" value="50" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
-            <!-- 설정 저장하기 버튼 -->
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
         </div>
     </div>
@@ -922,15 +974,37 @@
         </div>
     </div>
 
-    <!-- 다른 사람 프로필 확인용 팝업 창 -->
+    <!-- 다른 사람 프로필 확인용 팝업 창 (신고 버튼 포함) -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
-            <div style="font-size:48px; line-height:1; margin-bottom:10px;">👤</div>
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">플레이어 프로필</div>
-            <div style="font-size:20px; font-weight:900; margin-bottom:14px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+            <div style="font-size:48px; line-height:1; margin-bottom:6px;">👤</div>
+            <div style="font-size:24px; font-weight:900; margin-bottom:10px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px; width:100%;">
+                <div style="font-size:20px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+                <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:6px 12px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
+            </div>
             <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="other-profile-date-txt">접속한 날짜: -</div>
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px 0; font-size:18px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
+        </div>
+    </div>
+
+    <!-- 신고 작성 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:24px; font-weight:900; margin-bottom:14px; color:#c0392b;">🚨 플레이어 신고하기</div>
+            <div style="font-size:16px; font-weight:900; margin-bottom:8px; text-align:left;" id="report-target-name-txt">대상: -</div>
+            
+            <div style="font-size:16px; font-weight:900; margin-bottom:6px; text-align:left;">신고 사유</div>
+            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 플레이 등" style="margin-bottom:14px; font-size:18px; padding:10px;">
+
+            <div style="font-size:16px; font-weight:900; margin-bottom:6px; text-align:left;">그사람에게 전할 말</div>
+            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지를 적어주세요" style="margin-bottom:16px; font-size:16px; height:90px; text-align:left; resize:none; padding:10px;"></textarea>
+
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:12px 0; font-size:18px;" onclick="playClickSound(); submitReport();">전하기</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:12px 0; font-size:18px;" onclick="playClickSound(); closeReportModal();">취소</button>
+            </div>
         </div>
     </div>
 
@@ -1030,7 +1104,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용 (효과음 0~1000, 확대 0~150, 경기장 크기)
+        // 설정 불러오기 및 기본값 적용 (효과음 0~1000, 확대 0~150, 경기장 크기 및 모양)
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1058,10 +1132,14 @@
             document.getElementById('zoom-input-box').value = z;
             applyZoomScale(z);
 
-            // 경기장 크기 불러오기 (기본값 450)
+            // 경기장 크기 불러오기 (가로 최대 450 제한)
             let savedArenaW = parseInt(localStorage.getItem('lily_game_arena_w') || '450');
+            if (savedArenaW > 450) savedArenaW = 450;
             let savedArenaH = parseInt(localStorage.getItem('lily_game_arena_h') || '450');
+            let savedShape = localStorage.getItem('lily_game_arena_shape') || 'square';
+
             applyArenaSize(savedArenaW, savedArenaH);
+            applyArenaShapeUI(savedShape);
         }
 
         function saveGameSettings() {
@@ -1075,12 +1153,10 @@
             closeSettingsModal();
         }
 
-        // 효과음 소리 입력 확인 (0 ~ 1000 범위 제한)
         function applySfxInput() {
             const box = document.getElementById('sfx-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~1000)');
                 box.value = '100';
                 val = 100;
             } else if (val < 0) {
@@ -1100,12 +1176,10 @@
             soundVolume = parseInt(val) / 100;
         }
 
-        // 화면 확대 입력 확인 (0 ~ 150 범위 제한)
         function applyZoomInput() {
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~150)');
                 box.value = '50';
                 val = 50;
             } else if (val < 0) {
@@ -1133,11 +1207,16 @@
         // 경기장 설정 모달 관련 함수
         function openArenaSettingModal() {
             let w = parseInt(localStorage.getItem('lily_game_arena_w') || '450');
+            if (w > 450) w = 450;
             let h = parseInt(localStorage.getItem('lily_game_arena_h') || '450');
+            let shape = localStorage.getItem('lily_game_arena_shape') || 'square';
+
             document.getElementById('arena-width-input').value = w;
             document.getElementById('arena-width-range').value = w;
             document.getElementById('arena-height-input').value = h;
             document.getElementById('arena-height-range').value = h;
+            applyArenaShapeUI(shape);
+
             document.getElementById('arena-setting-modal').classList.remove('hidden');
         }
 
@@ -1145,16 +1224,48 @@
             document.getElementById('arena-setting-modal').classList.add('hidden');
         }
 
+        function setArenaShape(shape) {
+            localStorage.setItem('lily_game_arena_shape', shape);
+            applyArenaShapeUI(shape);
+            if (shape === 'circle') {
+                document.getElementById('arena-width-input').value = 450;
+                document.getElementById('arena-width-range').value = 450;
+                document.getElementById('arena-height-input').value = 450;
+                document.getElementById('arena-height-range').value = 450;
+                applyArenaSize(450, 450);
+                showToast('동그라미 모양 (450 최대)이 적용되었습니다!');
+            } else {
+                showToast('네모 모양이 적용되었습니다!');
+            }
+        }
+
+        function applyArenaShapeUI(shape) {
+            const sqBtn = document.getElementById('shape-btn-square');
+            const ciBtn = document.getElementById('shape-btn-circle');
+            const frame = document.getElementById('arena-frame-box');
+
+            if (shape === 'circle') {
+                sqBtn.style.background = '#34495e';
+                ciBtn.style.background = '#27ae60';
+                frame.classList.add('circle-shape');
+            } else {
+                sqBtn.style.background = '#27ae60';
+                ciBtn.style.background = '#34495e';
+                frame.classList.remove('circle-shape');
+            }
+        }
+
         function applyArenaWidthInput() {
             const box = document.getElementById('arena-width-input');
             let val = parseInt(box.value);
             if (isNaN(val) || val < 300) val = 300;
-            if (val > 700) val = 700;
+            if (val > 450) val = 450; // 가로 최대 450 고정
             box.value = val;
             document.getElementById('arena-width-range').value = val;
         }
 
         function syncArenaWidthRange(val) {
+            if (parseInt(val) > 450) val = 450;
             document.getElementById('arena-width-input').value = val;
         }
 
@@ -1173,30 +1284,36 @@
 
         function saveArenaSettings() {
             let w = parseInt(document.getElementById('arena-width-input').value);
+            if (isNaN(w) || w > 450) w = 450;
             let h = parseInt(document.getElementById('arena-height-input').value);
-            if (isNaN(w)) w = 450;
             if (isNaN(h)) h = 450;
+
+            let shape = localStorage.getItem('lily_game_arena_shape') || 'square';
+            if (shape === 'circle') {
+                w = 450; h = 450;
+            }
 
             localStorage.setItem('lily_game_arena_w', w);
             localStorage.setItem('lily_game_arena_h', h);
 
             applyArenaSize(w, h);
-            showToast('경기장 크기가 저장되었습니다! 🏟️');
+            showToast('경기장 설정이 저장되었습니다! 🏟️');
             closeArenaSettingModal();
         }
 
-        // 경기장 설정 초기화 (기본값 450 x 450)
         function resetArenaSettings() {
             localStorage.setItem('lily_game_arena_w', '450');
             localStorage.setItem('lily_game_arena_h', '450');
+            localStorage.setItem('lily_game_arena_shape', 'square');
 
             document.getElementById('arena-width-input').value = 450;
             document.getElementById('arena-width-range').value = 450;
             document.getElementById('arena-height-input').value = 450;
             document.getElementById('arena-height-range').value = 450;
+            applyArenaShapeUI('square');
 
             applyArenaSize(450, 450);
-            showToast('경기장 크기가 기본값으로 초기화되었습니다! 🔄');
+            showToast('경기장 설정이 기본값으로 초기화되었습니다! 🔄');
             closeArenaSettingModal();
         }
 
@@ -1209,6 +1326,8 @@
                 canv.width = w;
                 canv.height = h;
             }
+            let shape = localStorage.getItem('lily_game_arena_shape') || 'square';
+            applyArenaShapeUI(shape);
         }
 
         function openSettingsModal() {
@@ -1237,7 +1356,7 @@
             } catch(e) {}
         }
 
-        // 공과 공끼리 부딪히는 타격음
+        // 타격음
         function playHitSound() {
             try {
                 let ctx = getAudioContext();
@@ -1255,7 +1374,7 @@
             } catch(e) {}
         }
 
-        // 경기장 벽에 부딪히는 소리
+        // 벽 부딪힘 소리
         function playWallSound() {
             try {
                 let ctx = getAudioContext();
@@ -1273,7 +1392,7 @@
             } catch(e) {}
         }
 
-        // 스켈레톤 화살 발사 소리
+        // 스켈레톤 화살 소리
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1291,7 +1410,7 @@
             } catch(e) {}
         }
 
-        // 초콜릿이 땅에 닿을 때 '탁!' 소리
+        // 초콜릿 땅에 닿을 때 소리
         function playChocolateLandSound() {
             try {
                 let ctx = getAudioContext();
@@ -1309,7 +1428,7 @@
             } catch(e) {}
         }
 
-        // 초콜릿을 먹는 효과음 ("드~ 뜨!")
+        // 초콜릿 먹는 소리
         function playChocolateEatSound() {
             try {
                 let ctx = getAudioContext();
@@ -1540,18 +1659,65 @@
             document.getElementById('name-input-modal').classList.remove('hidden');
         }
 
+        let currentTargetProfileName = '';
+
         function openOtherProfile(name) {
+            currentTargetProfileName = name;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let player = players.find(p => p.name === name);
             let joinDate = player ? player.date : (localStorage.getItem('lily_game_login_date') || getFormattedToday());
 
             document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
             document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
+
+            const myName = localStorage.getItem('lily_game_user_name');
+            const reportBtn = document.getElementById('btn-report-player');
+            if (name === myName) {
+                reportBtn.style.display = 'none'; // 내 프로필에는 신고 버튼 숨김
+            } else {
+                reportBtn.style.display = 'inline-block'; // 다른 사람에게는 신고 버튼 표시
+            }
+
             document.getElementById('other-profile-modal').classList.remove('hidden');
         }
 
         function closeOtherProfileModal() {
             document.getElementById('other-profile-modal').classList.add('hidden');
+        }
+
+        function openReportModal() {
+            document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
+            document.getElementById('report-reason-input').value = '';
+            document.getElementById('report-message-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        function submitReport() {
+            const reason = document.getElementById('report-reason-input').value.trim();
+            const message = document.getElementById('report-message-input').value.trim();
+
+            if (!reason) {
+                showToast('신고 사유를 적어주세요!');
+                return;
+            }
+
+            let reports = JSON.parse(localStorage.getItem('lily_game_reports') || '[]');
+            reports.push({
+                target: currentTargetProfileName,
+                reporter: localStorage.getItem('lily_game_user_name') || '익명',
+                reason: reason,
+                message: message,
+                date: getCurrentTimeString()
+            });
+            localStorage.setItem('lily_game_reports', JSON.stringify(reports));
+
+            showToast(`"${currentTargetProfileName}"님에 대한 신고가 접수되었습니다.`);
+            closeReportModal();
+            closeOtherProfileModal();
         }
 
         function openChatModal() {
@@ -1998,10 +2164,11 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [] };
-        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [] };
+        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [], chocoCount: 0 };
+        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [], chocoCount: 0 };
 
         let moneyItems = [];
+        let homingProjectiles = [];
         let gameInterval = null;
 
         function handleSlotClick(side) {
@@ -2139,23 +2306,30 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = 10;
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : 10;
             p1.skeletons = [];
             p1.arrows = [];
+            p1.chocoCount = 0;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = 10;
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : 10;
             p2.skeletons = [];
             p2.arrows = [];
+            p2.chocoCount = 0;
 
             moneyItems = [];
+            homingProjectiles = [];
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
+
+            // UI 표시 설정 (미스터 비스트일 때만 5칸 게이지 바 표시)
+            setupPlayerSkillUI('p1', p1);
+            setupPlayerSkillUI('p2', p2);
 
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
             document.getElementById('lobby-admin-entry').classList.add('hidden');
@@ -2165,56 +2339,85 @@
 
             isGaming = true;
             updateHpBars();
+            updateChocoDisplay('p1', p1.chocoCount);
+            updateChocoDisplay('p2', p2.chocoCount);
 
             if (gameInterval) clearInterval(gameInterval);
-            // 1초 단위 실제 시간 타이머
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // P1 스킬 타이머 (1초씩 감소)
+                // P1 스킬 타이머
                 if (p1.name === '미스터비스트' || p1.name === 'JINO') {
                     p1.skillTimer -= 1;
+                    let maxTime = (p1.name === 'JINO') ? 12 : 10;
                     if (p1.skillTimer <= 0) {
-                        p1.skillTimer = 10;
+                        p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
                             spawnChocolateSlowly(p1);
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
                         }
                     }
-                    let pct = ((10 - p1.skillTimer) / 10) * 100;
+                    let pct = ((maxTime - p1.skillTimer) / maxTime) * 100;
                     document.getElementById('p1-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p1-gauge-txt').innerText = (p1.name === 'JINO' || p1.name === '미스터비스트') ? `기술 충전중 (${p1.skillTimer}초)` : '기술 없음';
+                    document.getElementById('p1-gauge-txt').innerText = `기술 충전중 (${p1.skillTimer}초)`;
                 } else {
                     document.getElementById('p1-gauge-fill').style.width = '0%';
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                // P2 스킬 타이머 (1초씩 감소)
+                // P2 스킬 타이머
                 if (p2.name === '미스터비스트' || p2.name === 'JINO') {
                     p2.skillTimer -= 1;
+                    let maxTime = (p2.name === 'JINO') ? 12 : 10;
                     if (p2.skillTimer <= 0) {
-                        p2.skillTimer = 10;
+                        p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
                             spawnChocolateSlowly(p2);
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
                         }
                     }
-                    let pct = ((10 - p2.skillTimer) / 10) * 100;
+                    let pct = ((maxTime - p2.skillTimer) / maxTime) * 100;
                     document.getElementById('p2-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p2-gauge-txt').innerText = (p2.name === 'JINO' || p2.name === '미스터비스트') ? `기술 충전중 (${p2.skillTimer}초)` : '기술 없음';
+                    document.getElementById('p2-gauge-txt').innerText = `기술 충전중 (${p2.skillTimer}초)`;
                 } else {
                     document.getElementById('p2-gauge-fill').style.width = '0%';
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
                 }
 
-                if (Math.random() < 0.2) {
+                if (Math.random() < 0.25) {
                     triggerSkeletonsShoot(p1, p2);
                     triggerSkeletonsShoot(p2, p1);
                 }
 
             }, 1000);
+        }
+
+        function setupPlayerSkillUI(sidePrefix, player) {
+            const subBarWrapper = document.getElementById(sidePrefix + '-sub-bar-wrapper');
+            const chocoBox = document.getElementById(sidePrefix + '-choco-segments');
+
+            if (player.name === '미스터비스트') {
+                subBarWrapper.style.display = 'none';
+                chocoBox.style.display = 'flex';
+            } else {
+                subBarWrapper.style.display = 'block';
+                chocoBox.style.display = 'none';
+            }
+        }
+
+        function updateChocoDisplay(sidePrefix, count) {
+            for (let i = 0; i < 5; i++) {
+                const seg = document.getElementById(sidePrefix + '-ch-' + i);
+                if (seg) {
+                    if (i < count) {
+                        seg.classList.add('filled');
+                    } else {
+                        seg.classList.remove('filled');
+                    }
+                }
+            }
         }
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
@@ -2233,8 +2436,8 @@
                     shooterPlayer.arrows.push({
                         x: skel.x,
                         y: skel.y,
-                        vx: Math.cos(angle) * 6.0,
-                        vy: Math.sin(angle) * 6.0,
+                        vx: Math.cos(angle) * 5.5,
+                        vy: Math.sin(angle) * 5.5,
                         angle: angle,
                         target: enemyPlayer
                     });
@@ -2261,10 +2464,30 @@
             showToast(`${ownerPlayer.name}가 초콜릿을 서서히 투척했습니다! 🍫`);
         }
 
+        // 초콜릿 5개 모으면 초콜릿 3개를 상대방에게 슬로우 모션으로 유도 발사
+        function triggerHomingChocolates(ownerPlayer, enemyPlayer) {
+            const sidePrefix = ownerPlayer === p1 ? 'p1' : 'p2';
+            showToast(`${ownerPlayer.name}가 초콜릿 5개를 모아 초콜릿 3개 투척! 🍫🔥`);
+            
+            for (let i = 0; i < 3; i++) {
+                homingProjectiles.push({
+                    x: ownerPlayer.x,
+                    y: ownerPlayer.y,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    speed: 2.2, // 슬로우 모션 속도
+                    target: enemyPlayer,
+                    ownerSide: sidePrefix,
+                    radius: 16
+                });
+            }
+        }
+
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = [];
+            homingProjectiles = [];
             
             selectedLeftBall = null;
             selectedRightBall = null;
@@ -2339,6 +2562,7 @@
                     playWallSound();
                 }
 
+                // JINO 스켈레톤 화살 업데이트 (15 데미지)
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
                         let arrow = pair.shooter.arrows[i];
@@ -2352,7 +2576,7 @@
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 10);
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 15); // 15 데미지
                             pair.shooter.arrows.splice(i, 1);
                             playHitSound();
                             updateHpBars();
@@ -2369,6 +2593,35 @@
                     }
                 });
 
+                // 미스터 비스트 유도 초콜릿 업데이트 (맞지 않아도 상대방 추적, 데미지 20)
+                for (let i = homingProjectiles.length - 1; i >= 0; i--) {
+                    let hp = homingProjectiles[i];
+                    let target = hp.target;
+                    let angle = Math.atan2(target.y - hp.y, target.x - hp.x);
+                    hp.vx = Math.cos(angle) * hp.speed;
+                    hp.vy = Math.sin(angle) * hp.speed;
+                    hp.x += hp.vx;
+                    hp.y += hp.vy;
+
+                    let dist = Math.hypot(target.x - hp.x, target.y - hp.y);
+                    if (dist < target.radius + hp.radius) {
+                        target.hp = Math.max(0, target.hp - 20); // 1개당 20 데미지
+                        playHitSound();
+                        updateHpBars();
+                        homingProjectiles.splice(i, 1);
+
+                        if (target.hp <= 0) {
+                            isGaming = false;
+                            if (gameInterval) clearInterval(gameInterval);
+                            setTimeout(() => {
+                                showToast(`🏆 승리!`);
+                                exitMatch();
+                            }, 100);
+                        }
+                    }
+                }
+
+                // 일반 초콜릿 먹기 로직 (체력 회복 15, 5개 모으면 유도 발사)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLanding) {
@@ -2380,23 +2633,37 @@
                             playChocolateLandSound();
                         }
                     } else {
-                        if (m.owner === 'p1') {
+                        if (m.owner === 'p1' && p1.name === '미스터비스트') {
                             let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                             if (dist1 < p1.radius + m.radius) {
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 20);
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 15); // 회복 15
                                 playChocolateEatSound();
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
+
+                                p1.chocoCount++;
+                                if (p1.chocoCount >= 5) {
+                                    p1.chocoCount = 0;
+                                    triggerHomingChocolates(p1, p2);
+                                }
+                                updateChocoDisplay('p1', p1.chocoCount);
                                 continue;
                             }
                         }
-                        if (m.owner === 'p2') {
+                        if (m.owner === 'p2' && p2.name === '미스터비스트') {
                             let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                             if (dist2 < p2.radius + m.radius) {
-                                p2.hp = Math.min(p2.maxHp, p2.hp + 20);
+                                p2.hp = Math.min(p2.maxHp, p2.hp + 15);
                                 playChocolateEatSound();
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
+
+                                p2.chocoCount++;
+                                if (p2.chocoCount >= 5) {
+                                    p2.chocoCount = 0;
+                                    triggerHomingChocolates(p2, p1);
+                                }
+                                updateChocoDisplay('p2', p2.chocoCount);
                             }
                         }
                     }
@@ -2485,6 +2752,15 @@
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillText("🍫", m.x, m.y);
+                    ctx.restore();
+                });
+
+                homingProjectiles.forEach(hp => {
+                    ctx.save();
+                    ctx.font = "26px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("🍫", hp.x, hp.y);
                     ctx.restore();
                 });
 
