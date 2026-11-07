@@ -794,7 +794,7 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~250) -->
+    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~150) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -812,16 +812,16 @@
                 <input type="range" id="sfx-volume-range" min="0" max="300" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <!-- 화면 확대 (0 ~ 250) -->
+            <!-- 화면 확대 (0 ~ 150) -->
             <div style="margin-bottom:30px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔍 화면 확대 (0 ~ 250)</span>
+                    <span>🔍 화면 확대 (0 ~ 150)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <input type="text" id="zoom-input-box" value="0" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="250" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
             <!-- 설정 저장하기 버튼 -->
@@ -988,7 +988,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~250)
+        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~150)
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1004,13 +1004,13 @@
             document.getElementById('sfx-input-box').value = v;
 
             let savedZoom = localStorage.getItem('lily_game_zoom_scale');
-            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 250) {
+            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 150) {
                 savedZoom = '0';
                 localStorage.setItem('lily_game_zoom_scale', '0');
             }
             let z = parseInt(savedZoom);
             if (z < 0) z = 0;
-            if (z > 250) z = 250;
+            if (z > 150) z = 150;
             
             document.getElementById('zoom-scale-range').value = z;
             document.getElementById('zoom-input-box').value = z;
@@ -1053,20 +1053,20 @@
             soundVolume = parseInt(val) / 100;
         }
 
-        // 화면 확대 입력 확인 (0 ~ 250 범위 제한)
+        // 화면 확대 입력 확인 (0 ~ 150 범위 제한)
         function applyZoomInput() {
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~250)');
+                showToast('숫자만 입력해 주세요! (0~150)');
                 box.value = '0';
                 val = 0;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
-            } else if (val > 250) {
-                val = 250;
-                box.value = '250';
+            } else if (val > 150) {
+                val = 150;
+                box.value = '150';
             }
             document.getElementById('zoom-scale-range').value = val;
             applyZoomScale(val);
@@ -1079,7 +1079,7 @@
         }
 
         function applyZoomScale(numVal) {
-            let scaleFactor = 1.15 + (numVal / 250) * 1.5;
+            let scaleFactor = 1.15 + (numVal / 150) * 1.5;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
         }
 
@@ -1091,6 +1091,7 @@
             document.getElementById('settings-modal').classList.add('hidden');
         }
 
+        // UI 클릭 효과음
         function playClickSound() {
             try {
                 let ctx = getAudioContext();
@@ -1108,32 +1109,71 @@
             } catch(e) {}
         }
 
+        // 1. 공과 공끼리 부딪히는 타격음 (이상하지 않고 박진감 넘치는 소리)
         function playHitSound() {
             try {
                 let ctx = getAudioContext();
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(220, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.4 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.45 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start();
-                osc.stop(ctx.currentTime + 0.08);
+                osc.stop(ctx.currentTime + 0.09);
             } catch(e) {}
         }
 
+        // 2. 경기장 벽에 부딪히는 소리 (텅텅 울리는 통통 튀는 사운드)
         function playWallSound() {
             try {
                 let ctx = getAudioContext();
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
+                gain.gain.setValueAtTime(0.35 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.07);
+            } catch(e) {}
+        }
+
+        // 3. 스켈레톤 화살 발사 소리 (마인크래프트 스켈레톤 활 쏘는 느낌 변형)
+        function playArrowSound() {
+            try {
+                let ctx = getAudioContext();
+                // 노이즈 버스트 + 피치 하락으로 활시위 튕기는 느낌 구현
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(950, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.12);
+            } catch(e) {}
+        }
+
+        // 4. 초콜릿이 땅에 닿을 때 '탁!' 소리
+        function playChocolateLandSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(150, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.06);
-                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.06);
+                gain.gain.setValueAtTime(0.4 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -1142,20 +1182,37 @@
             } catch(e) {}
         }
 
-        function playArrowSound() {
+        // 5. 초콜릿을 먹는 효과음 ("드~ 뜨!")
+        function playChocolateEatSound() {
             try {
                 let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.1);
+                let now = ctx.currentTime;
+
+                // '드~' (낮고 부드러운 음)
+                let osc1 = ctx.createOscillator();
+                let gain1 = ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(330, now);
+                osc1.frequency.exponentialRampToValueAtTime(440, now + 0.12);
+                gain1.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.12);
+
+                // '뜨!' (높고 톡 쏘는 음)
+                let osc2 = ctx.createOscillator();
+                let gain2 = ctx.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(660, now + 0.12);
+                osc2.frequency.exponentialRampToValueAtTime(880, now + 0.25);
+                gain2.gain.setValueAtTime(0.45 * soundVolume, now + 0.12);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(now + 0.12);
+                osc2.stop(now + 0.25);
             } catch(e) {}
         }
 
@@ -1816,8 +1873,8 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
-        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, isCastingSkill: false, skillAnimTimer: 0, skeletons: [], arrows: [] };
+        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, isCastingSkill: false, skillAnimTimer: 0, skeletons: [], arrows: [] };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1958,6 +2015,8 @@
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
             p1.skillTimer = 10.0;
+            p1.isCastingSkill = false;
+            p1.skillAnimTimer = 0;
             p1.skeletons = [];
             p1.arrows = [];
 
@@ -1967,6 +2026,8 @@
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
             p2.skillTimer = 10.0;
+            p2.isCastingSkill = false;
+            p2.skillAnimTimer = 0;
             p2.skeletons = [];
             p2.arrows = [];
 
@@ -1988,31 +2049,60 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
+                // P1 스킬 타이머
                 if (p1.name === '미스터비스트' || p1.name === 'JINO') {
-                    p1.skillTimer -= 0.1;
-                    if (p1.skillTimer <= 0) {
-                        p1.skillTimer = 10.0;
-                        if (p1.name === '미스터비스트') spawnMoney('p1');
-                        if (p1.name === 'JINO') spawnSkeletons(p1, 'p2');
+                    if (!p1.isCastingSkill) {
+                        p1.skillTimer -= 0.1;
+                        if (p1.skillTimer <= 0) {
+                            p1.skillTimer = 10.0;
+                            if (p1.name === '미스터비스트') {
+                                // 1초 동안 멈춰 서서 초콜릿 투척 시전
+                                p1.isCastingSkill = true;
+                                p1.skillAnimTimer = 1.0;
+                            } else if (p1.name === 'JINO') {
+                                spawnSkeletons(p1, 'p2');
+                            }
+                        }
+                    } else {
+                        p1.skillAnimTimer -= 0.1;
+                        if (p1.skillAnimTimer <= 0) {
+                            p1.isCastingSkill = false;
+                            spawnChocolate(p1);
+                        }
                     }
+
                     let pct = ((10.0 - p1.skillTimer) / 10.0) * 100;
                     document.getElementById('p1-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p1-gauge-txt').innerText = p1.name === 'JINO' ? `스켈레톤 소환 (${p1.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p1.skillTimer.toFixed(1)}초)`;
+                    document.getElementById('p1-gauge-txt').innerText = p1.isCastingSkill ? '초콜릿 던지는 중...' : (p1.name === 'JINO' ? `스켈레톤 소환 (${p1.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p1.skillTimer.toFixed(1)}초)`);
                 } else {
                     document.getElementById('p1-gauge-fill').style.width = '0%';
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
+                // P2 스킬 타이머
                 if (p2.name === '미스터비스트' || p2.name === 'JINO') {
-                    p2.skillTimer -= 0.1;
-                    if (p2.skillTimer <= 0) {
-                        p2.skillTimer = 10.0;
-                        if (p2.name === '미스터비스트') spawnMoney('p2');
-                        if (p2.name === 'JINO') spawnSkeletons(p2, 'p1');
+                    if (!p2.isCastingSkill) {
+                        p2.skillTimer -= 0.1;
+                        if (p2.skillTimer <= 0) {
+                            p2.skillTimer = 10.0;
+                            if (p2.name === '미스터비스트') {
+                                p2.isCastingSkill = true;
+                                p2.skillAnimTimer = 1.0;
+                            } else if (p2.name === 'JINO') {
+                                spawnSkeletons(p2, 'p1');
+                            }
+                        }
+                    } else {
+                        p2.skillAnimTimer -= 0.1;
+                        if (p2.skillAnimTimer <= 0) {
+                            p2.isCastingSkill = false;
+                            spawnChocolate(p2);
+                        }
                     }
+
                     let pct = ((10.0 - p2.skillTimer) / 10.0) * 100;
                     document.getElementById('p2-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p2-gauge-txt').innerText = p2.name === 'JINO' ? `스켈레톤 소환 (${p2.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p2.skillTimer.toFixed(1)}초)`;
+                    document.getElementById('p2-gauge-txt').innerText = p2.isCastingSkill ? '초콜릿 던지는 중...' : (p2.name === 'JINO' ? `스켈레톤 소환 (${p2.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p2.skillTimer.toFixed(1)}초)`);
                 } else {
                     document.getElementById('p2-gauge-fill').style.width = '0%';
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
@@ -2052,12 +2142,15 @@
             }
         }
 
-        function spawnMoney(owner) {
+        function spawnChocolate(ownerPlayer) {
+            // 아무 곳이나 땅에 초콜릿 2개 생성 후 '탁!' 소리 재생
             for (let i = 0; i < 2; i++) {
                 let mx = Math.random() * 380 + 35;
                 let my = Math.random() * 380 + 35;
-                moneyItems.push({ x: mx, y: my, radius: 18, owner: owner });
+                moneyItems.push({ x: mx, y: my, radius: 18, owner: ownerPlayer === p1 ? 'p1' : 'p2' });
             }
+            playChocolateLandSound();
+            showToast(`${ownerPlayer.name}가 땅에 초콜릿을 던졌습니다! 🍫`);
         }
 
         function exitMatch() {
@@ -2105,8 +2198,15 @@
 
         function runGameLoop() {
             if (isGaming) {
-                p1.x += p1.vx; p1.y += p1.vy;
-                p2.x += p2.vx; p2.y += p2.vy;
+                // 미스터비스트가 초콜릿 던지는 중(isCastingSkill)일 때는 제자리에 멈춰 서서 모션 유지
+                if (!p1.isCastingSkill) {
+                    p1.x += p1.vx; 
+                    p1.y += p1.vy;
+                }
+                if (!p2.isCastingSkill) {
+                    p2.x += p2.vx; 
+                    p2.y += p2.vy;
+                }
 
                 let hitWall = false;
 
@@ -2121,13 +2221,13 @@
                 if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -p2.vy; hitWall = true; }
 
                 let speed1 = Math.hypot(p1.vx, p1.vy);
-                if (Math.abs(speed1 - FIXED_SPEED) > 0.01) {
+                if (Math.abs(speed1 - FIXED_SPEED) > 0.01 && !p1.isCastingSkill) {
                     p1.vx = (p1.vx / (speed1 || 1)) * FIXED_SPEED;
                     p1.vy = (p1.vy / (speed1 || 1)) * FIXED_SPEED;
                 }
 
                 let speed2 = Math.hypot(p2.vx, p2.vy);
-                if (Math.abs(speed2 - FIXED_SPEED) > 0.01) {
+                if (Math.abs(speed2 - FIXED_SPEED) > 0.01 && !p2.isCastingSkill) {
                     p2.vx = (p2.vx / (speed2 || 1)) * FIXED_SPEED;
                     p2.vy = (p2.vy / (speed2 || 1)) * FIXED_SPEED;
                 }
@@ -2166,13 +2266,14 @@
                     }
                 });
 
+                // 초콜릿 아이템 먹기 로직 ("드~ 뜨!" 효과음 재생)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.owner === 'p1') {
                         let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                         if (dist1 < p1.radius + m.radius) {
                             p1.hp = Math.min(p1.maxHp, p1.hp + 25);
-                            playHitSound();
+                            playChocolateEatSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                             continue;
@@ -2182,7 +2283,7 @@
                         let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                         if (dist2 < p2.radius + m.radius) {
                             p2.hp = Math.min(p2.maxHp, p2.hp + 25);
-                            playHitSound();
+                            playChocolateEatSound();
                             moneyItems.splice(i, 1);
                             updateHpBars();
                         }
@@ -2268,15 +2369,32 @@
 
                 moneyItems.forEach(m => {
                     ctx.save();
-                    ctx.font = "28px sans-serif";
+                    ctx.font = "26px sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText("💸", m.x, m.y);
+                    ctx.fillText("🍫", m.x, m.y);
                     ctx.restore();
                 });
 
                 drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
-                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
+                drawBall(p2.x, p2.y, p2.radius, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
+                // 만약 p1이 스킬(초콜릿 던지기) 시전 중일 때 머리 위에 모션 텍스트 표시
+                if (p1.isCastingSkill) {
+                    ctx.save();
+                    ctx.fillStyle = "#e67e22";
+                    ctx.font = "bold 14px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("🍫 던지는 중...", p1.x, p1.y - p1.radius - 10);
+                    ctx.restore();
+                }
+                if (p2.isCastingSkill) {
+                    ctx.save();
+                    ctx.fillStyle = "#e67e22";
+                    ctx.font = "bold 14px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("🍫 던지는 중...", p2.x, p2.y - p2.radius - 10);
+                    ctx.restore();
+                }
             }
 
             requestAnimationFrame(runGameLoop);
