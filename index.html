@@ -362,31 +362,6 @@
             color: #000;
         }
 
-        .choco-segment-box {
-            width: 100%;
-            height: 18px;
-            background: #ffffff;
-            border: 3px solid #000;
-            display: flex;
-            margin-top: 3px;
-            gap: 1px;
-            padding: 1px;
-            background-color: #ddd;
-        }
-        .choco-segment {
-            flex: 1;
-            background: #e0e0e0;
-            height: 100%;
-            border-right: 1px solid #000;
-            transition: background 0.2s ease;
-        }
-        .choco-segment:last-child {
-            border-right: none;
-        }
-        .choco-segment.filled {
-            background: #2ecc71 !important;
-        }
-
         @keyframes floatPlusAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
             100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
@@ -600,18 +575,18 @@
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
         .player-item-card {
             background: #fff;
             border: 3px solid #000;
             padding: 12px;
             border-radius: 6px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 6px;
             cursor: pointer;
         }
 
@@ -789,13 +764,6 @@
                                 <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p1-gauge-txt">기술 없음</div>
                             </div>
-                            <div class="choco-segment-box" id="p1-choco-segments" style="display:none;">
-                                <div class="choco-segment" id="p1-ch-0"></div>
-                                <div class="choco-segment" id="p1-ch-1"></div>
-                                <div class="choco-segment" id="p1-ch-2"></div>
-                                <div class="choco-segment" id="p1-ch-3"></div>
-                                <div class="choco-segment" id="p1-ch-4"></div>
-                            </div>
                         </div>
                         <div class="player-status-card" id="p2-status-card-container">
                             <div class="player-name-label player-name-p2" id="p2-name-txt">미스터비스트</div>
@@ -806,13 +774,6 @@
                             <div class="sub-gauge-bar" id="p2-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p2-gauge-txt">기술 없음</div>
-                            </div>
-                            <div class="choco-segment-box" id="p2-choco-segments" style="display:none;">
-                                <div class="choco-segment" id="p2-ch-0"></div>
-                                <div class="choco-segment" id="p2-ch-1"></div>
-                                <div class="choco-segment" id="p2-ch-2"></div>
-                                <div class="choco-segment" id="p2-ch-3"></div>
-                                <div class="choco-segment" id="p2-ch-4"></div>
                             </div>
                         </div>
                     </div>
@@ -940,6 +901,15 @@
         </div>
     </div>
 
+    <!-- 신고 내역 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="reports-list-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:550px; height:70vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" onclick="playClickSound(); closeReportsListModal();">✕</button>
+            <div style="font-size:24px; font-weight:900; margin-bottom:14px; text-align:center; color:#c0392b;">🚨 신고 내역 목록</div>
+            <div class="players-list-area" id="reports-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
     <!-- 신고 작성 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
@@ -998,6 +968,18 @@
         <div class="admin-scroll-body">
             <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
+            </div>
+
+            <!-- 기본 칸 (플레이어 목록) -->
+            <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
+                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 (기본 칸)</div>
+                <div class="players-list-area" id="admin-players-list-container" style="max-height: 200px; margin-top:4px;"></div>
+            </div>
+
+            <!-- 신고 내역 칸 -->
+            <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
+                <div class="admin-section-title" style="color: #c0392b;">🚨 신고 내역 관리</div>
+                <button class="admin-btn" style="background-color: #c0392b; color: #fff; width:100%; padding:12px; font-size:18px;" onclick="playClickSound(); openReportsListModal();">신고 내역 확인하기</button>
             </div>
 
             <div class="admin-section-box" style="background: #e8f8f5; border-color: #16a085;">
@@ -1360,6 +1342,7 @@
             }
             if (e.key === 'lily_game_players_list') {
                 updateOnlineOfflineCounts();
+                renderAdminPlayersList();
             }
             if (e.key === 'lily_game_maintenance') {
                 checkMaintenanceStatus();
@@ -1375,6 +1358,14 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
+            // 요구사항: 기존 접속자 포함 모든 접속자가 이름을 다시 정하게 함 (v2 플래그 확인)
+            const forcedResetKey = 'lily_game_name_reset_v2';
+            if (!localStorage.getItem(forcedResetKey)) {
+                localStorage.removeItem('lily_game_user_name');
+                localStorage.setItem(forcedResetKey, 'true');
+                savedName = null;
+            }
+
             if (!savedDate) {
                 savedDate = todayStr;
                 localStorage.setItem('lily_game_login_date', savedDate);
@@ -1387,6 +1378,7 @@
                 loadChatLogs();
                 checkSavedAnnouncement();
                 updateOnlineOfflineCounts();
+                renderAdminPlayersList();
             }
 
             checkMaintenanceStatus();
@@ -1406,6 +1398,7 @@
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
             updateOnlineOfflineCounts();
+            renderAdminPlayersList();
         }
 
         function submitUserName() {
@@ -1441,6 +1434,7 @@
             showToast(`환영합니다, ${inputVal}님!`);
             loadChatLogs();
             updateOnlineOfflineCounts();
+            renderAdminPlayersList();
         }
 
         function handleProfileClick() {
@@ -1533,13 +1527,41 @@
                 reporter: localStorage.getItem('lily_game_user_name') || '익명',
                 reason: reason,
                 message: message,
-                date: getCurrentTimeString()
+                date: getCurrentTimeString(),
+                rawDate: getFormattedToday()
             });
             localStorage.setItem('lily_game_reports', JSON.stringify(reports));
 
             showToast(`"${currentTargetProfileName}"님에 대한 신고가 접수되었습니다.`);
             closeReportModal();
             closeOtherProfileModal();
+        }
+
+        function openReportsListModal() {
+            let reports = JSON.parse(localStorage.getItem('lily_game_reports') || '[]');
+            const container = document.getElementById('reports-list-container');
+            container.innerHTML = '';
+
+            if (reports.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:18px; font-weight:900; color:#555; padding:20px;">신고 사유 없음</div>`;
+            } else {
+                reports.forEach((rep, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'player-item-card';
+                    card.style.background = '#fff5f5';
+                    card.innerHTML = `
+                        <div style="font-size:17px; color:#c0392b;">[신고 #${idx+1}] 대상: ${rep.target} (신고자: ${rep.reporter})</div>
+                        <div style="font-size:16px; color:#333;">사유: ${rep.reason}</div>
+                        <div style="font-size:14px; color:#666;">메시지: ${rep.message || '없음'} (${rep.date})</div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('reports-list-modal').classList.remove('hidden');
+        }
+
+        function closeReportsListModal() {
+            document.getElementById('reports-list-modal').classList.add('hidden');
         }
 
         function openChatModal() {
@@ -1591,15 +1613,53 @@
                 let isOnline = (nowTime - lastPing) < 6000;
                 if (p.uid === myUid) isOnline = true;
 
+                // 해당 플레이어의 오늘 채팅 내역 수집
+                let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+                let userChats = chatData.filter(c => c.name === p.name);
+                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
+
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
-                item.innerHTML = `<span>👤 ${p.name}</span> <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>`;
+                item.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>👤 ${p.name} (${p.date || '가입일 정보 없음'})</span>
+                        <span style="font-size:16px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
+                    </div>
+                    <div style="font-size:14px; font-weight:bold; color:#555;">오늘 채팅 내역: ${chatSummaryText}</div>
+                `;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
 
             updateOnlineOfflineCounts();
             document.getElementById('players-modal').classList.remove('hidden');
+        }
+
+        function renderAdminPlayersList() {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            const container = document.getElementById('admin-players-list-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (players.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:15px; font-weight:bold; color:#555;">가입한 플레이어가 없습니다.</div>`;
+                return;
+            }
+
+            players.forEach(p => {
+                let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+                let userChats = chatData.filter(c => c.name === p.name);
+                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}"`).join(', ') : '없음';
+
+                const card = document.createElement('div');
+                card.className = 'player-item-card';
+                card.style.fontSize = '16px';
+                card.innerHTML = `
+                    <div>🔹 [${p.name}] ${p.date || '가입일'} 처음 접속</div>
+                    <div style="font-size:13px; color:#444; font-weight:normal;">채팅 내역: ${chatSummaryText}</div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         function closePlayersModal() {
@@ -1633,7 +1693,12 @@
             const msg = input.value.trim();
             if (!msg) return;
 
-            const name = localStorage.getItem('lily_game_user_name') || '익명';
+            let name = localStorage.getItem('lily_game_user_name');
+            if (!name) {
+                document.getElementById('name-input-modal').classList.remove('hidden');
+                return;
+            }
+
             const myUid = getDeviceUniqueId();
             const timeStr = getCurrentTimeString();
 
@@ -1645,6 +1710,7 @@
 
             appendChatBubble(myUid, name, msg, timeStr, true);
             input.value = '';
+            renderAdminPlayersList();
         }
 
         function appendChatBubble(uid, senderName, msgText, timeText, shouldScroll) {
@@ -1678,6 +1744,7 @@
         function clearAllChats() {
             localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
             loadChatLogs();
+            renderAdminPlayersList();
             showToast('모든 채팅이 삭제되었습니다!');
         }
 
@@ -1713,6 +1780,7 @@
                 panel.style.top = '50%';
                 panel.style.transform = 'translate(-50%, -50%)';
                 panel.classList.remove('hidden');
+                renderAdminPlayersList();
                 checkMaintenanceStatus();
             } else {
                 showToast('비밀번호가 틀렸습니다!');
@@ -1984,14 +2052,11 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], activeOrbits: [] };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [], activeOrbits: [] };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0 };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0 };
 
         let moneyItems = [];
-        let bombProjectiles = [];
-        let warningRects = [];
         let gameInterval = null;
-        let redBallDropInterval = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -2124,39 +2189,28 @@
             }
 
             if (gameInterval) clearInterval(gameInterval);
-            if (redBallDropInterval) clearInterval(redBallDropInterval);
 
             moneyItems = [];
-            bombProjectiles = [];
-            warningRects = [];
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 8 : 0));
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 8);
             p1.skeletons = [];
             p1.arrows = [];
-            p1.chocoCount = 0;
             p1.arrowTimer = 0;
-            p1.textProjectiles = [];
-            p1.textWarnings = [];
-            p1.activeOrbits = [];
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 8 : 0));
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 8);
             p2.skeletons = [];
             p2.arrows = [];
-            p2.chocoCount = 0;
             p2.arrowTimer = 0;
-            p2.textProjectiles = [];
-            p2.textWarnings = [];
-            p2.activeOrbits = [];
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2166,7 +2220,7 @@
 
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
-                if (player.name === '미스터비스트' || player.name === 'JINO' || player.name === '왕클세종') {
+                if (['미스터비스트', 'JINO', '왕클세종'].includes(player.name)) {
                     let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 8);
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
@@ -2184,92 +2238,30 @@
 
             isGaming = true;
             updateHpBars();
-            updateChocoDisplay('p1', p1.chocoCount);
-            updateChocoDisplay('p2', p2.chocoCount);
-
-            // 왕클세종 2번째 기술: 5초마다 상대방 공 위치 위에 빨간색 네모 경고 표시 후 1초 뒤 빨간색 볼 낙하
-            redBallDropInterval = setInterval(() => {
-                if (!isGaming) return;
-                [ { caster: p1, target: p2, prefix: 'p1' }, { caster: p2, target: p1, prefix: 'p2' } ].forEach(pair => {
-                    if (pair.caster.name === '왕클세종') {
-                        let targetX = pair.target.x;
-                        let targetY = pair.target.y;
-                        let spawnTime = Date.now();
-
-                        playSkillSuperSound();
-                        showToast(`${pair.caster.name}의 어둠의 힘 타겟팅! 🔴`);
-
-                        warningRects.push({
-                            x: targetX,
-                            y: targetY,
-                            spawnTime: spawnTime,
-                            duration: 1000
-                        });
-
-                        setTimeout(() => {
-                            if (!isGaming) return;
-                            moneyItems.push({
-                                x: targetX,
-                                y: targetY - 100,
-                                destX: targetX,
-                                destY: targetY,
-                                radius: 18,
-                                owner: pair.prefix,
-                                isLanding: true,
-                                progress: 0,
-                                spawnTime: Date.now(),
-                                isRedBall: true
-                            });
-                            playArrowSound();
-                        }, 1000);
-                    }
-                });
-            }, 5000);
 
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                if (['미스터비스트', 'JINO', '왕클세종'].includes(p1.name)) {
-                    p1.skillTimer -= 1;
-                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 8);
-                    if (p1.skillTimer <= 0) {
-                        p1.skillTimer = maxTime;
-                        if (p1.name === '미스터비스트') {
-                            spawnChocolateSlowly(p1, 2);
-                        } else if (p1.name === 'JINO') {
-                            spawnSkeletons(p1, 'p2');
-                        } else if (p1.name === '왕클세종') {
-                            triggerWangklSejongSkill(p1, p2, 'p1');
+                [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
+                    if (['미스터비스트', 'JINO', '왕클세종'].includes(pair.player.name)) {
+                        let maxTime = (pair.player.name === 'JINO') ? 12 : (pair.player.name === '미스터비스트' ? 10 : 8);
+                        pair.player.skillTimer -= 1;
+                        if (pair.player.skillTimer <= 0) {
+                            pair.player.skillTimer = maxTime;
+                            if (pair.player.name === '미스터비스트') {
+                                spawnChocolate(pair.player, 2);
+                            } else if (pair.player.name === 'JINO') {
+                                spawnSkeletons(pair.player, pair.enemy === p2 ? 'p2' : 'p1');
+                            } else if (pair.player.name === '왕클세종') {
+                                triggerWangklSejongSkill(pair.player, pair.enemy);
+                            }
                         }
+                        let prefix = (pair.player === p1) ? 'p1' : 'p2';
+                        let pct = ((maxTime - pair.player.skillTimer) / maxTime) * 100;
+                        document.getElementById(prefix + '-gauge-fill').style.width = pct + '%';
+                        document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${pair.player.skillTimer}초)`;
                     }
-                    let pct = ((maxTime - p1.skillTimer) / maxTime) * 100;
-                    document.getElementById('p1-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p1-gauge-txt').innerText = `기술 충전중 (${p1.skillTimer}초)`;
-                } else {
-                    document.getElementById('p1-gauge-fill').style.width = '0%';
-                    document.getElementById('p1-gauge-txt').innerText = '기술 없음';
-                }
-
-                if (['미스터비스트', 'JINO', '왕클세종'].includes(p2.name)) {
-                    p2.skillTimer -= 1;
-                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 8);
-                    if (p2.skillTimer <= 0) {
-                        p2.skillTimer = maxTime;
-                        if (p2.name === '미스터비스트') {
-                            spawnChocolateSlowly(p2, 2);
-                        } else if (p2.name === 'JINO') {
-                            spawnSkeletons(p2, 'p1');
-                        } else if (p2.name === '왕클세종') {
-                            triggerWangklSejongSkill(p2, p1, 'p2');
-                        }
-                    }
-                    let pct = ((maxTime - p2.skillTimer) / maxTime) * 100;
-                    document.getElementById('p2-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p2-gauge-txt').innerText = `기술 충전중 (${p2.skillTimer}초)`;
-                } else {
-                    document.getElementById('p2-gauge-fill').style.width = '0%';
-                    document.getElementById('p2-gauge-txt').innerText = '기술 없음';
-                }
+                });
 
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
                     if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
@@ -2295,89 +2287,38 @@
             }, 1000);
         }
 
-        // 왕클세종 1번째 기술: 8초 충전, 4초 지속, 데미지 3
-        function triggerWangklSejongSkill(caster, enemy, prefix) {
-            showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷 (4초 지속)`);
+        function triggerWangklSejongSkill(caster, enemy) {
+            showToast(`${caster.name}의 한글 세종 공격 발동! 🇰🇷`);
             playSkillSuperSound();
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
             let chars = fullStr.split('');
-            let orbitItems = [];
+            let startY = caster.y;
+            let startX = (caster === p1) ? caster.x + 30 : caster.x - 30;
+            let direction = (caster === p1) ? 1 : -1;
 
             chars.forEach((ch, idx) => {
-                let baseAngle = (idx / chars.length) * Math.PI * 2;
-                orbitItems.push({
-                    char: ch,
-                    angle: baseAngle,
-                    radius: 85,
-                    speed: 0.012,
-                    damage: 3,
-                    lastHitTimes: {}
-                });
-            });
-
-            caster.activeOrbits.push({
-                items: orbitItems,
-                enemy: enemy,
-                prefix: prefix,
-                spawnTime: Date.now()
-            });
-        }
-
-        // 왕클세종 2번째 기술 완성 시: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 글자들이 가로 한 줄로 일렬로 공격 (글자당 10 데미지)
-        function triggerWangklSejongHorizontalLine(ownerPlayer, enemyPlayer, prefix) {
-            showToast(`${ownerPlayer.name}의 한글 가로 일렬 공격! 🇰🇷💥`);
-            playBigExplosionSound();
-
-            let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
-            let chars = fullStr.split('');
-            let startY = ownerPlayer.y;
-            let startX = (prefix === 'p1') ? ownerPlayer.x + 30 : ownerPlayer.x - 30;
-            let direction = (prefix === 'p1') ? 1 : -1;
-
-            chars.forEach((ch, idx) => {
-                let spacingX = startX + (idx * 25 * direction);
-                ownerPlayer.textProjectiles.push({
+                let spacingX = startX + (idx * 22 * direction);
+                moneyItems.push({
                     x: spacingX,
-                    y: startY + ((idx % 2 === 0 ? 1 : -1) * 10),
-                    vx: direction * 5.2,
+                    y: startY + ((idx % 2 === 0 ? 1 : -1) * 12),
+                    vx: direction * 5.0,
                     vy: 0,
                     char: ch,
-                    target: enemyPlayer,
+                    target: enemy,
                     radius: 16,
-                    damage: 10, // 글자당 10 데미지
-                    color: (prefix === 'p1') ? '#1e90ff' : '#e74c3c'
+                    damage: 10,
+                    isLetter: true,
+                    owner: caster === p1 ? 'p1' : 'p2',
+                    color: (caster === p1) ? '#1e90ff' : '#e74c3c',
+                    spawnTime: Date.now()
                 });
             });
         }
 
         function setupPlayerSkillUI(sidePrefix, player) {
             const subBarWrapper = document.getElementById(sidePrefix + '-sub-bar-wrapper');
-            const chocoBox = document.getElementById(sidePrefix + '-choco-segments');
-
-            if (player.name === '미스터비스트' || player.name === '왕클세종') {
-                subBarWrapper.style.display = 'block';
-                chocoBox.style.display = 'flex';
-            } else if (player.name === 'JINO') {
-                subBarWrapper.style.display = 'block';
-                chocoBox.style.display = 'none';
-            } else {
-                subBarWrapper.style.display = 'block';
-                chocoBox.style.display = 'none';
-            }
-        }
-
-        function updateChocoDisplay(sidePrefix, count) {
-            for (let i = 0; i < 5; i++) {
-                const seg = document.getElementById(sidePrefix + '-ch-' + i);
-                if (seg) {
-                    if (i < count) {
-                        seg.classList.add('filled');
-                    } else {
-                        seg.classList.remove('filled');
-                    }
-                }
-            }
+            subBarWrapper.style.display = 'block';
         }
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
@@ -2389,7 +2330,7 @@
                     x: rx,
                     y: ry,
                     radius: 20,
-                    hp: 20, // 스켈레톤 체력 20
+                    hp: 20, // 스켈레톤 초기 체력 20
                     maxHp: 20,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
@@ -2398,21 +2339,17 @@
             showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 20) 💀`);
         }
 
-        function spawnChocolateSlowly(ownerPlayer, count) {
+        function spawnChocolate(ownerPlayer, count) {
             for (let i = 0; i < count; i++) {
                 let targetX = Math.random() * (canvas.width - 60) + 30;
                 let targetY = Math.random() * (canvas.height - 60) + 30;
                 moneyItems.push({
-                    x: ownerPlayer.x,
-                    y: ownerPlayer.y,
-                    destX: targetX,
-                    destY: targetY,
+                    x: targetX,
+                    y: targetY,
                     radius: 18,
                     owner: ownerPlayer === p1 ? 'p1' : 'p2',
-                    isLanding: true,
-                    progress: 0,
-                    spawnTime: Date.now(),
-                    isRedBall: false
+                    isChoco: true,
+                    spawnTime: Date.now()
                 });
             }
         }
@@ -2420,12 +2357,8 @@
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
-            if (redBallDropInterval) clearInterval(redBallDropInterval);
 
             moneyItems = [];
-            bombProjectiles = [];
-            warningRects = [];
-            
             selectedLeftBall = null;
             selectedRightBall = null;
             p1.name = '';
@@ -2436,12 +2369,6 @@
             p1.arrows = [];
             p2.skeletons = [];
             p2.arrows = [];
-            p1.textProjectiles = [];
-            p2.textProjectiles = [];
-            p1.textWarnings = [];
-            p2.textWarnings = [];
-            p1.activeOrbits = [];
-            p2.activeOrbits = [];
 
             const leftBtn = document.getElementById('slot-left-btn');
             leftBtn.innerText = '볼 선택하기';
@@ -2484,6 +2411,26 @@
             }, 800);
         }
 
+        // 캔버스 터치(클릭) 시 스켈레톤 실시간 삭제 기능
+        canvas.addEventListener('pointerdown', (e) => {
+            if (!isGaming) return;
+            const rect = canvas.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
+            const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
+
+            [p1, p2].forEach(player => {
+                player.skeletons = player.skeletons.filter(skel => {
+                    let dist = Math.hypot(clickX - skel.x, clickY - skel.y);
+                    if (dist < skel.radius + 15) {
+                        playHitSound();
+                        showToast('스켈레톤을 처치했습니다! 💀');
+                        return false; // 삭제
+                    }
+                    return true;
+                });
+            });
+        });
+
         function runGameLoop() {
             if (isGaming) {
                 const nowTimestamp = Date.now();
@@ -2521,95 +2468,84 @@
                     playWallSound();
                 }
 
-                // 스켈레톤 생존 시간(6초) 및 체력 필터링
+                // 스켈레톤 생존 시간(10초) 및 체력 필터링
                 [p1, p2].forEach(player => {
-                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 6000);
-                    player.activeOrbits = player.activeOrbits.filter(orbit => (nowTimestamp - orbit.spawnTime) < 4000);
+                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 10000);
                 });
 
-                warningRects = warningRects.filter(w => (nowTimestamp - w.spawnTime) < w.duration);
-
-                // 스켈레톤과 공들의 충돌 처리
+                // 스켈레톤과 공들의 충돌 처리 (공에 부딪히면 10 데미지 및 튕김, 기술에 맞아도 데미지)
                 [p1, p2].forEach(player => {
                     player.skeletons.forEach(skel => {
-                        [p1, p2].forEach(ball => {
-                            let dist = Math.hypot(ball.x - skel.x, ball.y - skel.y);
-                            if (dist < ball.radius + skel.radius) {
-                                let nx = (ball.x - skel.x) / (dist || 1);
-                                let ny = (ball.y - skel.y) / (dist || 1);
-                                ball.x += nx * 2;
-                                ball.y += ny * 2;
+                        [ { ball: p1, prefix: 'p1' }, { ball: p2, prefix: 'p2' } ].forEach(bObj => {
+                            let dist = Math.hypot(bObj.ball.x - skel.x, bObj.ball.y - skel.y);
+                            if (dist < bObj.ball.radius + skel.radius) {
+                                let nx = (bObj.ball.x - skel.x) / (dist || 1);
+                                let ny = (bObj.ball.y - skel.y) / (dist || 1);
+                                bObj.ball.x += nx * 3;
+                                bObj.ball.y += ny * 3;
+                                
+                                skel.hp -= 10; // 충돌 시 스켈레톤 10 데미지
                                 playHitSound();
                             }
                         });
                     });
                 });
 
-                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌
-                [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
-                    pair.caster.activeOrbits.forEach(orbit => {
-                        orbit.items.forEach(item => {
-                            item.angle += item.speed;
-                            let charX = pair.caster.x + Math.cos(item.angle) * item.radius;
-                            let charY = pair.caster.y + Math.sin(item.angle) * item.radius;
+                // 한글 글자 탄막(왕클세종 1기술) 및 화살 충돌 처리
+                for (let i = moneyItems.length - 1; i >= 0; i--) {
+                    let m = moneyItems[i];
+                    if (m.isLetter) {
+                        m.x += m.vx;
+                        m.y += m.vy;
 
-                            let dist = Math.hypot(pair.enemy.x - charX, pair.enemy.y - charY);
-                            if (dist < pair.enemy.radius + 12) {
-                                let lastHit = item.lastHitTimes[item.char] || 0;
-                                if (nowTimestamp - lastHit > 500) {
-                                    item.lastHitTimes[item.char] = nowTimestamp;
-                                    pair.enemy.hp = Math.max(0, pair.enemy.hp - item.damage);
-                                    playHitSound();
-                                    updateHpBars();
-
-                                    if (pair.enemy.hp <= 0) {
-                                        isGaming = false;
-                                        if (gameInterval) clearInterval(gameInterval);
-                                        if (redBallDropInterval) clearInterval(redBallDropInterval);
-                                        setTimeout(() => {
-                                            showToast(`🏆 ${pair.caster.name} 승리!`);
-                                            exitMatch();
-                                        }, 100);
-                                    }
-                                }
-                            }
-                        });
-                    });
-                });
-
-                // 2번째 기술 가로 일렬 탄막 글자들 충돌 처리 (글자당 10 데미지)
-                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
-                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
-                        let tp = pair.shooter.textProjectiles[i];
-                        tp.x += tp.vx;
-                        tp.y += tp.vy;
-
-                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
-                            pair.shooter.textProjectiles.splice(i, 1);
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
+                            moneyItems.splice(i, 1);
                             continue;
                         }
 
-                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
-                        if (dist < pair.enemy.radius + tp.radius) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
-                            pair.shooter.textProjectiles.splice(i, 1);
+                        let enemy = (m.owner === 'p1') ? p2 : p1;
+                        let dist = Math.hypot(enemy.x - m.x, enemy.y - m.y);
+                        if (dist < enemy.radius + m.radius) {
+                            enemy.hp = Math.max(0, enemy.hp - m.damage);
+                            moneyItems.splice(i, 1);
                             playHitSound();
                             updateHpBars();
 
-                            if (pair.enemy.hp <= 0) {
+                            if (enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
-                                if (redBallDropInterval) clearInterval(redBallDropInterval);
                                 setTimeout(() => {
-                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
+                                    showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
                                     exitMatch();
                                 }, 100);
                             }
                         }
-                    }
-                });
+                    } else if (m.isChoco) {
+                        if ((nowTimestamp - m.spawnTime) > 8000) {
+                            moneyItems.splice(i, 1);
+                            continue;
+                        }
+                        // 미스터비스트 초콜릿 먹기 (체력 20 회복)
+                        let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
+                        let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
 
-                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
+                        if (m.owner === 'p1' && dist1 < p1.radius + m.radius) {
+                            playHealSound();
+                            p1.hp = Math.min(p1.maxHp, p1.hp + 20);
+                            showHealingAnimation('p1', 20);
+                            updateHpBars();
+                            moneyItems.splice(i, 1);
+                        } else if (m.owner === 'p2' && dist2 < p2.radius + m.radius) {
+                            playHealSound();
+                            p2.hp = Math.min(p2.maxHp, p2.hp + 20);
+                            showHealingAnimation('p2', 20);
+                            updateHpBars();
+                            moneyItems.splice(i, 1);
+                        }
+                    }
+                }
+
+                [ { shooter: p1, enemy: p2, prefix: 'p1' }, { shooter: p2, enemy: p1, prefix: 'p2' } ].forEach(pair => {
                     for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
                         let arrow = pair.shooter.arrows[i];
                         arrow.x += arrow.vx;
@@ -2620,7 +2556,7 @@
                             continue;
                         }
 
-                        // 화살과 스켈레톤 체력 연동
+                        // 화살이 스켈레톤이나 상대 공에 맞을 때
                         let hitSkel = false;
                         [pair.enemy, pair.shooter].forEach(pl => {
                             pl.skeletons.forEach(skel => {
@@ -2639,7 +2575,7 @@
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 20);
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
                             pair.shooter.arrows.splice(i, 1);
                             playHitSound();
                             updateHpBars();
@@ -2647,7 +2583,6 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
-                                if (redBallDropInterval) clearInterval(redBallDropInterval);
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2656,57 +2591,6 @@
                         }
                     }
                 });
-
-                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 8000);
-
-                for (let i = moneyItems.length - 1; i >= 0; i--) {
-                    let m = moneyItems[i];
-                    if (m.isLanding) {
-                        m.progress += 0.05;
-                        m.y += (m.destY - m.y) * 0.15;
-                        if (Math.abs(m.destY - m.y) < 2 || m.progress >= 1.0) {
-                            m.isLanding = false;
-                        }
-                    } else {
-                        if (m.owner === 'p1') {
-                            let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
-                            if (dist1 < p1.radius + m.radius) {
-                                playHealSound();
-                                moneyItems.splice(i, 1);
-                                if (p1.name === '왕클세종') {
-                                    p1.chocoCount++;
-                                    if (p1.chocoCount >= 5) {
-                                        p1.chocoCount = 0;
-                                        p1.hp = Math.min(p1.maxHp, p1.hp + 25); // 체력 25 회복
-                                        showHealingAnimation('p1', 25);
-                                        updateHpBars();
-                                        triggerWangklSejongHorizontalLine(p1, p2, 'p1');
-                                    }
-                                    updateChocoDisplay('p1', p1.chocoCount);
-                                }
-                                continue;
-                            }
-                        }
-                        if (m.owner === 'p2') {
-                            let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
-                            if (dist2 < p2.radius + m.radius) {
-                                playHealSound();
-                                moneyItems.splice(i, 1);
-                                if (p2.name === '왕클세종') {
-                                    p2.chocoCount++;
-                                    if (p2.chocoCount >= 5) {
-                                        p2.chocoCount = 0;
-                                        p2.hp = Math.min(p2.maxHp, p2.hp + 25); // 체력 25 회복
-                                        showHealingAnimation('p2', 25);
-                                        updateHpBars();
-                                        triggerWangklSejongHorizontalLine(p2, p1, 'p2');
-                                    }
-                                    updateChocoDisplay('p2', p2.chocoCount);
-                                }
-                            }
-                        }
-                    }
-                }
 
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
@@ -2738,7 +2622,6 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
-                        if (redBallDropInterval) clearInterval(redBallDropInterval);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -2752,38 +2635,6 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 빨간색 네모 경고 표시 렌더링
-                warningRects.forEach(w => {
-                    ctx.save();
-                    ctx.strokeStyle = '#e74c3c';
-                    ctx.lineWidth = 4;
-                    ctx.strokeRect(w.x - 35, w.y - 35, 70, 70);
-                    ctx.fillStyle = 'rgba(231, 76, 60, 0.25)';
-                    ctx.fillRect(w.x - 35, w.y - 35, 70, 70);
-                    ctx.restore();
-                });
-
-                // 왕클세종 활성 회전 궤도 글자들 렌더링
-                [p1, p2].forEach(player => {
-                    player.activeOrbits.forEach(orbit => {
-                        orbit.items.forEach(item => {
-                            let charX = player.x + Math.cos(item.angle) * item.radius;
-                            let charY = player.y + Math.sin(item.angle) * item.radius;
-
-                            ctx.save();
-                            ctx.font = "bold 20px sans-serif";
-                            ctx.fillStyle = (orbit.prefix === 'p1') ? "#1e90ff" : "#e74c3c";
-                            ctx.strokeStyle = "#ffffff";
-                            ctx.lineWidth = 3;
-                            ctx.textAlign = "center";
-                            ctx.textBaseline = "middle";
-                            ctx.strokeText(item.char, charX, charY);
-                            ctx.fillText(item.char, charX, charY);
-                            ctx.restore();
-                        });
-                    });
-                });
-
                 [p1, p2].forEach(player => {
                     player.skeletons.forEach(skel => {
                         ctx.save();
@@ -2792,10 +2643,15 @@
                         } else {
                             ctx.fillStyle = '#bdc3c7';
                             ctx.fillRect(skel.x - 10, skel.y - 16, 20, 32);
-                            ctx.fillStyle = '#000';
-                            ctx.font = "bold 10px sans-serif";
-                            ctx.fillText("💀", skel.x - 6, skel.y);
                         }
+                        // 스켈레톤 위에 체력 표시 (예: 체력:20)
+                        ctx.font = "bold 12px sans-serif";
+                        ctx.fillStyle = "#e74c3c";
+                        ctx.strokeStyle = "#ffffff";
+                        ctx.lineWidth = 3;
+                        ctx.textAlign = "center";
+                        ctx.strokeText(`체력:${skel.hp}`, skel.x, skel.y - 30);
+                        ctx.fillText(`체력:${skel.hp}`, skel.x, skel.y - 30);
                         ctx.restore();
                     });
 
@@ -2810,19 +2666,17 @@
                             ctx.beginPath();
                             ctx.arc(0, 0, 8, 0, Math.PI * 2);
                             ctx.fill();
-                            ctx.lineWidth = 2;
-                            ctx.strokeStyle = '#000';
-                            ctx.stroke();
                         }
                         ctx.restore();
                     });
+                });
 
-                    // 2번째 기술 가로 일렬 탄막 글자들 렌더링
-                    player.textProjectiles.forEach(tp => {
-                        ctx.save();
+                moneyItems.forEach(m => {
+                    ctx.save();
+                    if (m.isLetter) {
                         ctx.beginPath();
-                        ctx.arc(tp.x, tp.y, tp.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = tp.color;
+                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = m.color;
                         ctx.fill();
                         ctx.lineWidth = 2;
                         ctx.strokeStyle = '#000000';
@@ -2832,46 +2686,13 @@
                         ctx.fillStyle = "#ffffff";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
-                        ctx.fillText(tp.char, tp.x, tp.y);
-                        ctx.restore();
-                    });
-                });
-
-                // 빨간색 볼 아이템 및 "왕클세종의 어둠의 힘!" 텍스트 렌더링
-                moneyItems.forEach(m => {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = '#e74c3c';
-                    ctx.fill();
-                    ctx.lineWidth = 3;
-                    ctx.strokeStyle = '#000000';
-                    ctx.stroke();
-
-                    ctx.font = "bold 13px sans-serif";
-                    ctx.fillStyle = "#ffffff";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText("🔴", m.x, m.y);
-
-                    if (m.isRedBall) {
-                        ctx.font = "bold 13px sans-serif";
-                        ctx.fillStyle = "#e74c3c";
-                        ctx.strokeStyle = "#ffffff";
-                        ctx.lineWidth = 3;
+                        ctx.fillText(m.char, m.x, m.y);
+                    } else if (m.isChoco) {
+                        ctx.font = "24px sans-serif";
                         ctx.textAlign = "center";
-                        ctx.strokeText("왕클세종의 어둠의 힘!", m.x, m.y - 25);
-                        ctx.fillText("왕클세종의 어둠의 힘!", m.x, m.y - 25);
+                        ctx.textBaseline = "middle";
+                        ctx.fillText("🍫", m.x, m.y);
                     }
-                    ctx.restore();
-                });
-
-                bombProjectiles.forEach(bp => {
-                    ctx.save();
-                    ctx.font = "26px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText("🍫", bp.x, bp.y);
                     ctx.restore();
                 });
 
