@@ -35,7 +35,7 @@
         /* 로비 좌측 상단 메뉴 (프로필 & 전체 채팅) */
         .top-left-menu-bar {
             position: fixed;
-            top: 35px;
+            top: 30px;
             left: 20px;
             display: flex;
             gap: 25px;
@@ -133,10 +133,10 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (두 번째 사진처럼 시원하고 큼직하게 확장) */
+        /* 메인 컨테이너 (화면 가로 폭에 맞춰 시원하게 꽉 채움) */
         .app-container {
-            width: 98vw;
-            max-width: 680px;
+            width: 96vw;
+            max-width: none;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -168,10 +168,11 @@
             opacity: 1;
         }
 
-        /* 두 번째 사진처럼 큼직하고 시원하게 꽉 찬 중앙 경기장 뷰포트 */
+        /* 스마트폰 화면에 꽉 찬 초대형 경기장 뷰포트 */
         .arena-frame {
-            width: 100%;
-            aspect-ratio: 1 / 1;
+            width: 96vw;
+            height: 96vw;
+            max-height: 58vh;
             border: 7px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -189,15 +190,15 @@
             display: flex;
             gap: 14px;
             width: 100%;
-            margin-top: 22px;
+            margin-top: 18px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 28px 0;
+            padding: 22px 0;
             background: #555555;
             color: #ffffff;
             border: 4px solid #000000;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -212,10 +213,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 24px;
+            margin-top: 18px;
             width: 100%;
-            padding: 28px 0;
-            font-size: 36px;
+            padding: 24px 0;
+            font-size: 32px;
             font-weight: 900;
             border: 4px solid #000000;
             border-radius: 14px;
@@ -224,23 +225,23 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            box-shadow: 0 7px 0 #000000;
+            box-shadow: 0 6px 0 #000000;
             outline: none;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
             transform: translateY(3px);
-            box-shadow: 0 4px 0 #000000;
+            box-shadow: 0 3px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 22px;
+            margin-top: 18px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .status-row-group {
             display: flex;
@@ -253,9 +254,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -265,9 +266,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 60px;
+            height: 48px;
             background: #e0e0e0;
-            border: 5px solid #000000;
+            border: 4px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -286,15 +287,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 28px;
+            font-size: 24px;
             text-shadow: 2px 2px 4px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 36px;
+            height: 30px;
             background: #cccccc;
             border: 3px solid #000000;
-            margin-top: 8px;
+            margin-top: 6px;
             position: relative;
             overflow: hidden;
         }
@@ -310,7 +311,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
             color: #000;
         }
@@ -622,7 +623,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 두 번째 사진처럼 큼직하게 꽉 찬 중앙 경기장 뷰포트 -->
+        <!-- 스마트폰 화면에 꽉 찬 초대형 경기장 뷰포트 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
