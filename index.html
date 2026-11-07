@@ -214,7 +214,7 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 1.2배 낮춤 (450px) */
+        /* 경기장 크기 (450px) */
         .arena-frame {
             width: 450px;
             height: 450px;
@@ -291,7 +291,7 @@
             box-shadow: 0 1px 0 #000000;
         }
 
-        /* 인게임 HP 바 영역 (1.7배 더 크고 선명하게) */
+        /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
             display: flex;
@@ -714,7 +714,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필 & 전체 채팅 메뉴 바 (게임 중에는 숨김 처리됨) -->
+        <!-- 프로필 & 전체 채팅 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
@@ -776,7 +776,7 @@
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
 
-            <!-- 릴리 전용 어드민 아이콘 (게임 중에는 숨김 처리됨) -->
+            <!-- 릴리 전용 어드민 아이콘 -->
             <div class="admin-entry-box" id="lobby-admin-entry" onclick="playClickSound(); openAdminPrompt();">
                 <div class="admin-icon">🚫</div>
                 <div class="admin-label">릴리 전용</div>
@@ -785,7 +785,16 @@
 
     </div>
 
-    <!-- 설정 모달 팝업 창 (픽셀 2배 더 커짐, 0~300 효과음 및 0~1000 확대 입력 확인 기능) -->
+    <!-- 점검 중 오버레이 화면 (나만 빼고 실시간 적용) -->
+    <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div style="width:450px; height:450px; max-width:90vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:20px;">
+            <div style="font-size:50px; margin-bottom:15px;">🛠️</div>
+            <div style="font-size:24px; font-weight:900; color:#e74c3c; margin-bottom:10px;">현재 점검 중입니다</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
+        </div>
+    </div>
+
+    <!-- 게임 설정 모달 팝업 창 (저장하기 버튼 포함) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -815,7 +824,8 @@
                 <input type="range" id="zoom-scale-range" min="0" max="1000" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900;" onclick="playClickSound(); closeSettingsModal();">설정 완료</button>
+            <!-- 설정 저장하기 버튼 -->
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
         </div>
     </div>
 
@@ -912,7 +922,7 @@
         </div>
     </div>
 
-    <!-- 관리자 패널 -->
+    <!-- 관리자 패널 (점검 켜기/끄기 추가) -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
@@ -921,6 +931,15 @@
         <div class="admin-scroll-body">
             <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
+            </div>
+
+            <!-- 서버 점검 관리 -->
+            <div class="admin-section-box" style="background: #e8f8f5; border-color: #16a085;">
+                <div class="admin-section-title" style="color: #16a085;">🛠️ 서버 점검 관리</div>
+                <div class="admin-btn-group">
+                    <button class="admin-btn" style="background-color: #e74c3c; color: #fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); setMaintenance(true);">점검 켜기</button>
+                    <button class="admin-btn" style="background-color: #27ae60; color: #fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); setMaintenance(false);">점검 끄기</button>
+                </div>
             </div>
 
             <div class="admin-section-box">
@@ -953,7 +972,7 @@
 
     <script>
         let audioCtx = null;
-        let soundVolume = 1.0; // 기본 효과음 볼륨 (100 기준 1.0)
+        let soundVolume = 1.0; // 기본 효과음 볼륨
 
         function getAudioContext() {
             if (!audioCtx) {
@@ -969,7 +988,36 @@
             getAudioContext();
         }, { once: true });
 
-        // 효과음 소리 입력 확인 (0 ~ 300 범위 제한 및 문자 예외 처리)
+        // 설정 불러오기 및 적용
+        function loadSavedSettings() {
+            const savedVol = localStorage.getItem('lily_game_sfx_vol');
+            if (savedVol !== null) {
+                let v = parseInt(savedVol);
+                soundVolume = v / 100;
+                document.getElementById('sfx-volume-range').value = v;
+                document.getElementById('sfx-input-box').value = v;
+            }
+
+            const savedZoom = localStorage.getItem('lily_game_zoom_scale');
+            if (savedZoom !== null) {
+                let z = parseInt(savedZoom);
+                document.getElementById('zoom-scale-range').value = z;
+                document.getElementById('zoom-input-box').value = z;
+                applyZoomScale(z);
+            }
+        }
+
+        function saveGameSettings() {
+            const sfxVal = document.getElementById('sfx-input-box').value;
+            const zoomVal = document.getElementById('zoom-input-box').value;
+
+            localStorage.setItem('lily_game_sfx_vol', sfxVal);
+            localStorage.setItem('lily_game_zoom_scale', zoomVal);
+
+            showToast('설정이 성공적으로 저장되었습니다! 💾');
+            closeSettingsModal();
+        }
+
         function applySfxInput() {
             const box = document.getElementById('sfx-input-box');
             let val = parseInt(box.value);
@@ -986,7 +1034,6 @@
             }
             soundVolume = val / 100;
             document.getElementById('sfx-volume-range').value = val;
-            showToast(`효과음 소리가 ${val}(으)로 설정되었습니다.`);
         }
 
         function syncSfxRange(val) {
@@ -994,7 +1041,6 @@
             soundVolume = parseInt(val) / 100;
         }
 
-        // 화면 확대 입력 확인 (0 ~ 1000 범위 제한 및 문자 예외 처리)
         function applyZoomInput() {
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
@@ -1011,7 +1057,6 @@
             }
             document.getElementById('zoom-scale-range').value = val;
             applyZoomScale(val);
-            showToast(`화면 확대가 ${val}(으)로 설정되었습니다.`);
         }
 
         function syncZoomRange(val) {
@@ -1020,7 +1065,6 @@
         }
 
         function applyZoomScale(numVal) {
-            // 0일 때 1.15배, 1000일 때 약 3.15배로 확대
             let scaleFactor = 1.15 + (numVal / 1000) * 2.0;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
         }
@@ -1150,11 +1194,33 @@
                 registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
             }
 
+            checkMaintenanceStatus();
             updateOnlineOfflineCounts();
         }
 
-        setInterval(updateHeartbeat, 3000);
+        setInterval(updateHeartbeat, 2000);
         updateHeartbeat();
+
+        // 실시간 점검 상태 체크 (나만 제외하고 적용)
+        function checkMaintenanceStatus() {
+            const isMaint = localStorage.getItem('lily_game_maintenance') === 'true';
+            const myUid = getDeviceUniqueId();
+            // 개발자 본인의 고유 ID 또는 릴리 어드민 권한 체크 (원하시는 경우 고유 ID 지정 가능, 여기서는 관리자 비밀번호를 인증한 경우 예외 처리)
+            const isAdmin = localStorage.getItem('lily_game_is_admin') === 'true';
+
+            const overlay = document.getElementById('maintenance-overlay');
+            if (isMaint && !isAdmin) {
+                overlay.classList.remove('hidden');
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function setMaintenance(status) {
+            localStorage.setItem('lily_game_maintenance', status ? 'true' : 'false');
+            showToast(status ? '🛠️ 서버 점검을 켰습니다.' : '✅ 서버 점검을 껐습니다.');
+            checkMaintenanceStatus();
+        }
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'lily_game_chat_logs') {
@@ -1169,10 +1235,15 @@
             if (e.key === 'lily_game_players_list') {
                 updateOnlineOfflineCounts();
             }
+            if (e.key === 'lily_game_maintenance') {
+                checkMaintenanceStatus();
+            }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
             checkMidnightReset();
+            loadSavedSettings();
+
             const myUid = getDeviceUniqueId();
             let savedName = localStorage.getItem('lily_game_user_name');
             let savedDate = localStorage.getItem('lily_game_login_date');
@@ -1192,6 +1263,7 @@
                 updateOnlineOfflineCounts();
             }
 
+            checkMaintenanceStatus();
             drawPreview();
         });
 
@@ -1454,11 +1526,13 @@
             const pw = document.getElementById('admin-pw-input').value;
             if (pw === '걱스키비디야르7') {
                 closeAdminPassword();
+                localStorage.setItem('lily_game_is_admin', 'true'); // 관리자 인증 표시
                 const panel = document.getElementById('admin-panel-modal');
                 panel.style.left = '50%';
                 panel.style.top = '50%';
                 panel.style.transform = 'translate(-50%, -50%)';
                 panel.classList.remove('hidden');
+                checkMaintenanceStatus();
             } else {
                 showToast('비밀번호가 틀렸습니다!');
             }
@@ -1729,7 +1803,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 공 속도 고정 (속도가 변하지 않고 일정하게 감)
         const FIXED_SPEED = 3.2;
 
         let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
@@ -1891,7 +1964,6 @@
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
 
-            // 게임 시작 시 로비 아이콘들(프로필, 전체 채팅, 릴리 전용) 숨기기
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
             document.getElementById('lobby-admin-entry').classList.add('hidden');
 
@@ -2001,7 +2073,6 @@
             rightBtn.innerText = '볼 선택하기';
             rightBtn.classList.remove('selected');
 
-            // 게임 종료/나가기 시 로비 아이콘들 다시 보이기
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('lobby-admin-entry').classList.remove('hidden');
 
@@ -2028,49 +2099,16 @@
 
                 let hitWall = false;
 
-                if (p1.x - p1.radius < 0) { 
-                    p1.x = p1.radius; 
-                    p1.vx = -p1.vx; 
-                    hitWall = true; 
-                }
-                if (p1.x + p1.radius > canvas.width) { 
-                    p1.x = canvas.width - p1.radius; 
-                    p1.vx = -p1.vx; 
-                    hitWall = true; 
-                }
-                if (p1.y - p1.radius < 0) { 
-                    p1.y = p1.radius; 
-                    p1.vy = -p1.vy; 
-                    hitWall = true; 
-                }
-                if (p1.y + p1.radius > canvas.height) { 
-                    p1.y = canvas.height - p1.radius; 
-                    p1.vy = -p1.vy; 
-                    hitWall = true; 
-                }
+                if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx = -p1.vx; hitWall = true; }
+                if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx = -p1.vx; hitWall = true; }
+                if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy = -p1.vy; hitWall = true; }
+                if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius; p1.vy = -p1.vy; hitWall = true; }
 
-                if (p2.x - p2.radius < 0) { 
-                    p2.x = p2.radius; 
-                    p2.vx = -p2.vx; 
-                    hitWall = true; 
-                }
-                if (p2.x + p2.radius > canvas.width) { 
-                    p2.x = canvas.width - p2.radius; 
-                    p2.vx = -p2.vx; 
-                    hitWall = true; 
-                }
-                if (p2.y - p2.radius < 0) { 
-                    p2.y = p2.radius; 
-                    p2.vy = -p2.vy; 
-                    hitWall = true; 
-                }
-                if (p2.y + p2.radius > canvas.height) { 
-                    p2.y = canvas.height - p2.radius; 
-                    p2.vy = -p2.vy; 
-                    hitWall = true; 
-                }
+                if (p2.x - p2.radius < 0) { p2.x = p2.radius; p2.vx = -p2.vx; hitWall = true; }
+                if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius; p2.vx = -p2.vx; hitWall = true; }
+                if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = -p2.vy; hitWall = true; }
+                if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -p2.vy; hitWall = true; }
 
-                // 속도가 변하지 않고 항상 일정하게 유지되도록 보정
                 let speed1 = Math.hypot(p1.vx, p1.vy);
                 if (Math.abs(speed1 - FIXED_SPEED) > 0.01) {
                     p1.vx = (p1.vx / (speed1 || 1)) * FIXED_SPEED;
@@ -2099,7 +2137,6 @@
                         }
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
-                        // 데미지 10으로 설정
                         if (dist < pair.enemy.radius + 15) {
                             pair.enemy.hp = Math.max(0, pair.enemy.hp - 10);
                             pair.shooter.arrows.splice(i, 1);
@@ -2199,7 +2236,6 @@
                         ctx.restore();
                     });
 
-                    // 화살 크기 3배로 확대 (54px × 27px)
                     player.arrows.forEach(arrow => {
                         ctx.save();
                         ctx.translate(arrow.x, arrow.y);
