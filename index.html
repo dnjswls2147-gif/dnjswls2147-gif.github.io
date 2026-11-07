@@ -13,7 +13,6 @@
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            touch-action: none;
         }
         html, body {
             background-color: #ffffff;
@@ -48,6 +47,7 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
+            padding: 10px;
         }
         .profile-icon, .chat-icon {
             font-size: 64px;
@@ -70,6 +70,7 @@
             align-items: center;
             cursor: pointer;
             z-index: 1000;
+            padding: 10px;
         }
         .admin-icon {
             font-size: 42px;
@@ -364,9 +365,8 @@
             gap: 16px;
             margin-top: 20px;
             flex: 1;
-            overflow-y: auto !important;
+            overflow-y: auto;
             padding-right: 4px;
-            touch-action: pan-y !important;
         }
         .ball-select-btn {
             background: #4a4a4a;
@@ -398,7 +398,7 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.5);
         }
 
-        /* 세로로 대폭 늘리고 스크로 가능한 전체 채팅 팝업 스타일 */
+        /* 세로로 대폭 늘린 전체 채팅 팝업 스타일 */
         .chat-modal-box {
             width: 98vw;
             max-width: 960px;
@@ -426,8 +426,7 @@
             background: #f8f9fa;
             margin-bottom: 30px;
             padding: 30px;
-            overflow-y: auto !important;
-            touch-action: pan-y !important;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -461,7 +460,7 @@
             font-weight: bold;
         }
 
-        /* 플레이어 목록 팝업 스타일 (세로 스크롤 및 개별 삭제 버튼 포함) */
+        /* 플레이어 목록 팝업 스타일 */
         .players-modal-box {
             width: 96vw;
             max-width: 680px;
@@ -481,8 +480,7 @@
             background: #f8f9fa;
             margin-top: 20px;
             padding: 20px;
-            overflow-y: auto !important;
-            touch-action: pan-y !important;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -554,8 +552,7 @@
 
         .admin-scroll-body {
             padding: 25px;
-            overflow-y: auto !important;
-            touch-action: pan-y !important;
+            overflow-y: auto;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -718,7 +715,7 @@
         </div>
     </div>
 
-    <!-- 플레이어 목록 팝업 창 (온라인, 오프라인 표시 및 개별 삭제 버튼 포함) -->
+    <!-- 플레이어 목록 팝업 창 -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100006;">
         <div class="players-modal-box">
             <button class="modal-close-btn" onclick="closePlayersModal()">✕</button>
@@ -822,6 +819,20 @@
     </div>
 
     <script>
+        // 카카오톡 등 인앱 브라우저 감지 시 크롬 브라우저로 강제 오픈
+        (function forceOpenInChrome() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const targetUrl = location.href;
+
+            if (userAgent.indexOf('kakaotalk') !== -1) {
+                if (userAgent.indexOf('android') !== -1) {
+                    location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=http;package=com.android.chrome;end';
+                } else if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1) {
+                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
+                }
+            }
+        })();
+
         function playYamSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -845,26 +856,6 @@
                 }
             } catch(e) {}
         }
-
-        (function forceOpenInChrome() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const targetUrl = location.href;
-
-            if (userAgent.indexOf('kakaotalk') !== -1) {
-                if (userAgent.indexOf('android') !== -1) {
-                    location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=http;package=com.android.chrome;end';
-                } else if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1) {
-                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
-                }
-            }
-        })();
-
-        document.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.admin-scroll-body') || e.target.closest('.picker-grid') || e.target.closest('.chat-logs-area') || e.target.closest('.players-list-area')) {
-                return;
-            }
-            e.preventDefault();
-        }, { passive: false });
 
         function getFormattedToday() {
             const now = new Date();
@@ -894,7 +885,6 @@
             return uid;
         }
 
-        // 주기적으로 온라인 상태 핑(Ping) 전송 (마지막 활동 시간 기록)
         function updateHeartbeat() {
             const myUid = getDeviceUniqueId();
             localStorage.setItem('lily_game_ping_' + myUid, Date.now());
@@ -906,9 +896,6 @@
         window.addEventListener('storage', (e) => {
             if (e.key === 'lily_game_chat_logs') {
                 loadChatLogs();
-            }
-            if (e.key === 'lily_game_players_list') {
-                // 동기화
             }
             if (e.key === 'lily_game_announcement') {
                 applyAnnouncementData(e.newValue);
@@ -944,7 +931,6 @@
             }
         });
 
-        // 플레이어 등록 (이름 쓰고 접속하면 무조건 목록에 추가되며 나가도 남음)
         function registerPlayer(uid, name, date) {
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
@@ -963,7 +949,6 @@
             updateHeartbeat();
         }
 
-        // 개별 플레이어 삭제 기능
         function deletePlayerByUid(uid, event) {
             event.stopPropagation();
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
@@ -997,7 +982,7 @@
 
         function openProfileModal() {
             const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
-            const savedDate = localStorage.getItem('lily_game_login_date'] || getFormattedToday();
+            const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
 
             document.getElementById('profile-name-txt').innerText = `이름: ${savedName}`;
             document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${savedDate}`;
@@ -1037,7 +1022,6 @@
             document.getElementById('chat-modal').classList.add('hidden');
         }
 
-        // 플레이어 목록 모달 렌더링 (온라인 / 오프라인 집계)
         function openPlayersModal() {
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             const container = document.getElementById('players-list-container');
@@ -1048,11 +1032,9 @@
             const nowTime = Date.now();
 
             players.forEach(p => {
-                // 최근 6초 이내 핑이 있으면 온라인으로 판별
                 let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
                 let isOnline = (nowTime - lastPing) < 6000;
 
-                // 현재 본인은 무조건 온라인으로 처리
                 if (p.uid === getDeviceUniqueId()) {
                     isOnline = true;
                 }
