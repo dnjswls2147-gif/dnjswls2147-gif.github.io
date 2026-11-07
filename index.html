@@ -90,7 +90,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
+        /* 메인 컨테이너 (확대 설정 연동) */
         .app-container {
             width: 100vw;
             max-width: 580px;
@@ -103,6 +103,7 @@
             padding: 0 6px;
             transform: scale(1.15);
             transform-origin: center center;
+            transition: transform 0.2s ease;
         }
 
         /* 프로필 & 전체 채팅 아이콘 바 */
@@ -161,6 +162,34 @@
             color: #333333;
         }
 
+        /* 경기장 상단 우측 설정(⚙️) 아이콘 영역 (게임 플레이 중에도 항상 표시) */
+        .arena-container-wrapper {
+            position: relative;
+            width: 540px;
+            max-width: 94vw;
+        }
+        .settings-gear-btn {
+            position: absolute;
+            top: -36px;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: #f1f2f6;
+            border: 2px solid #000;
+            border-radius: 6px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 2px 0 #000;
+        }
+        .settings-gear-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
         /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
@@ -189,7 +218,7 @@
         .arena-frame {
             width: 540px;
             height: 540px;
-            max-width: 94vw;
+            max-width: 100%;
             max-height: 56vh;
             border: 5px solid #000000;
             background-color: #ffffff;
@@ -683,10 +712,10 @@
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 메인 컨테이너 -->
-    <div class="app-container">
+    <div class="app-container" id="main-app-container">
 
-        <!-- 프로필 & 전체 채팅 메뉴 바 -->
-        <div class="top-menu-bar">
+        <!-- 프로필 & 전체 채팅 메뉴 바 (게임 중에는 숨김 처리됨) -->
+        <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
@@ -697,9 +726,12 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (540px) -->
-        <div class="arena-frame">
-            <canvas id="gameCanvas" width="540" height="540"></canvas>
+        <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘 래퍼 -->
+        <div class="arena-container-wrapper">
+            <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
+            <div class="arena-frame">
+                <canvas id="gameCanvas" width="540" height="540"></canvas>
+            </div>
         </div>
 
         <!-- 로비 및 컨트롤 영역 -->
@@ -744,13 +776,41 @@
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
 
-            <!-- 릴리 전용 어드민 아이콘 -->
-            <div class="admin-entry-box" id="btn-admin-entry" onclick="playClickSound(); openAdminPrompt();">
+            <!-- 릴리 전용 어드민 아이콘 (게임 중에는 숨김 처리됨) -->
+            <div class="admin-entry-box" id="lobby-admin-entry" onclick="playClickSound(); openAdminPrompt();">
                 <div class="admin-icon">🚫</div>
                 <div class="admin-label">릴리 전용</div>
             </div>
         </div>
 
+    </div>
+
+    <!-- 설정 모달 팝업 창 (효과음 & 화면 확대 조절) -->
+    <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px 24px; width:90%; max-width:440px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" onclick="playClickSound(); closeSettingsModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#000;">⚙️ 게임 설정</div>
+            
+            <!-- 효과음 슬라이더 (0 ~ 150) -->
+            <div style="margin-bottom:18px; text-align:left;">
+                <div style="font-size:16px; font-weight:900; margin-bottom:6px; display:flex; justify-content:space-between;">
+                    <span>🔊 효과음 소리</span>
+                    <span id="sfx-val-txt">100</span>
+                </div>
+                <input type="range" id="sfx-volume-range" min="0" max="150" value="100" style="width:100%; cursor:pointer;" oninput="updateSfxVolume(this.value)">
+            </div>
+
+            <!-- 화면 확대 슬라이더 (0 ~ 150, 현재 0은 0.5배, 100은 기본 1.15배, 150은 1.6배) -->
+            <div style="margin-bottom:24px; text-align:left;">
+                <div style="font-size:16px; font-weight:900; margin-bottom:6px; display:flex; justify-content:space-between;">
+                    <span>🔍 화면 확대</span>
+                    <span id="zoom-val-txt">0</span>
+                </div>
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="0" style="width:100%; cursor:pointer;" oninput="updateGameZoom(this.value)">
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px; font-weight:900;" onclick="playClickSound(); closeSettingsModal();">확인</button>
+        </div>
     </div>
 
     <!-- 전체 채팅창 -->
@@ -887,6 +947,8 @@
 
     <script>
         let audioCtx = null;
+        let soundVolume = 1.0; // 기본 효과음 볼륨 (100 기준 1.0)
+
         function getAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -901,6 +963,27 @@
             getAudioContext();
         }, { once: true });
 
+        function updateSfxVolume(val) {
+            soundVolume = parseInt(val) / 100;
+            document.getElementById('sfx-val-txt').innerText = val;
+        }
+
+        function updateGameZoom(val) {
+            const numVal = parseInt(val);
+            document.getElementById('zoom-val-txt').innerText = val;
+            // 0일 때 1.15배, 150일 때 약 1.6배로 확대
+            let scaleFactor = 1.15 + (numVal / 150) * 0.45;
+            document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
         function playClickSound() {
             try {
                 let ctx = getAudioContext();
@@ -909,7 +992,7 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(500, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -926,7 +1009,7 @@
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(220, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.setValueAtTime(0.4 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -943,7 +1026,7 @@
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(150, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.06);
-                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -960,7 +1043,7 @@
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(800, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -1586,7 +1669,6 @@
         const skeletonImg = new Image();
         skeletonImg.src = '14108.jpg';
 
-        /* 화살 이미지 로드 (14215.png) */
         const arrowImg = new Image();
         arrowImg.src = '14215.png';
 
@@ -1759,6 +1841,10 @@
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
 
+            // 게임 시작 시 로비 아이콘들(프로필, 전체 채팅, 릴리 전용) 숨기기
+            document.getElementById('lobby-top-menu-bar').classList.add('hidden');
+            document.getElementById('lobby-admin-entry').classList.add('hidden');
+
             document.getElementById('lobby-controls').classList.add('hidden');
             document.getElementById('ingame-controls').classList.remove('hidden');
 
@@ -1864,6 +1950,10 @@
             const rightBtn = document.getElementById('slot-right-btn');
             rightBtn.innerText = '볼 선택하기';
             rightBtn.classList.remove('selected');
+
+            // 게임 종료/나가기 시 로비 아이콘들 다시 보이기
+            document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
+            document.getElementById('lobby-admin-entry').classList.remove('hidden');
 
             document.getElementById('ingame-controls').classList.add('hidden');
             document.getElementById('lobby-controls').classList.remove('hidden');
