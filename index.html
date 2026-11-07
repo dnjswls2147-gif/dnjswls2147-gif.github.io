@@ -1991,7 +1991,7 @@
         let bombProjectiles = [];
         let warningRects = [];
         let gameInterval = null;
-        let seolDropInterval = null;
+        let redBallDropInterval = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -2124,7 +2124,7 @@
             }
 
             if (gameInterval) clearInterval(gameInterval);
-            if (seolDropInterval) clearInterval(seolDropInterval);
+            if (redBallDropInterval) clearInterval(redBallDropInterval);
 
             moneyItems = [];
             bombProjectiles = [];
@@ -2187,8 +2187,8 @@
             updateChocoDisplay('p1', p1.chocoCount);
             updateChocoDisplay('p2', p2.chocoCount);
 
-            // 왕클세종 2번째 기술: 4초마다 상대방 공 위치에 빨간색 네모 경고 표시 후 1초 뒤 낙하
-            seolDropInterval = setInterval(() => {
+            // 왕클세종 2번째 기술: 5초마다 상대방 공 위치 위에 빨간색 네모 경고 표시 후 1초 뒤 빨간색 볼 낙하
+            redBallDropInterval = setInterval(() => {
                 if (!isGaming) return;
                 [ { caster: p1, target: p2, prefix: 'p1' }, { caster: p2, target: p1, prefix: 'p2' } ].forEach(pair => {
                     if (pair.caster.name === '왕클세종') {
@@ -2197,38 +2197,34 @@
                         let spawnTime = Date.now();
 
                         playSkillSuperSound();
-                        showToast(`${pair.caster.name}가 상대방 공을 겨냥합니다! 🎯`);
+                        showToast(`${pair.caster.name}의 어둠의 힘 타겟팅! 🔴`);
 
-                        // 1초간 빨간색 네모 경고 표시
                         warningRects.push({
                             x: targetX,
                             y: targetY,
                             spawnTime: spawnTime,
-                            duration: 1000,
-                            owner: pair.prefix,
-                            targetObj: pair.target
+                            duration: 1000
                         });
 
-                        // 1초 뒤에 실제 공 낙하
                         setTimeout(() => {
                             if (!isGaming) return;
                             moneyItems.push({
                                 x: targetX,
-                                y: targetY - 100, // 위에서 아래로 낙하 모션 시작점
+                                y: targetY - 100,
                                 destX: targetX,
                                 destY: targetY,
-                                radius: 20,
+                                radius: 18,
                                 owner: pair.prefix,
                                 isLanding: true,
                                 progress: 0,
                                 spawnTime: Date.now(),
-                                showTargetText: true // "너는 내 표적이다!" 텍스트 표시
+                                isRedBall: true
                             });
                             playArrowSound();
                         }, 1000);
                     }
                 });
-            }, 4000);
+            }, 5000);
 
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
@@ -2299,7 +2295,7 @@
             }, 1000);
         }
 
-        // 왕클세종 1번째 기술: 8초 충전, 4초 지속, 1.5배 빠른 회전, 데미지 3, 동일 글자 0.5초 쿨타임
+        // 왕클세종 1번째 기술: 8초 충전, 4초 지속, 데미지 3
         function triggerWangklSejongSkill(caster, enemy, prefix) {
             showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷 (4초 지속)`);
             playSkillSuperSound();
@@ -2315,7 +2311,7 @@
                     angle: baseAngle,
                     radius: 85,
                     speed: 0.012,
-                    damage: 3, // 데미지 3
+                    damage: 3,
                     lastHitTimes: {}
                 });
             });
@@ -2325,6 +2321,33 @@
                 enemy: enemy,
                 prefix: prefix,
                 spawnTime: Date.now()
+            });
+        }
+
+        // 왕클세종 2번째 기술 완성 시: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 글자들이 가로 한 줄로 일렬로 공격 (글자당 10 데미지)
+        function triggerWangklSejongHorizontalLine(ownerPlayer, enemyPlayer, prefix) {
+            showToast(`${ownerPlayer.name}의 한글 가로 일렬 공격! 🇰🇷💥`);
+            playBigExplosionSound();
+
+            let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
+            let chars = fullStr.split('');
+            let startY = ownerPlayer.y;
+            let startX = (prefix === 'p1') ? ownerPlayer.x + 30 : ownerPlayer.x - 30;
+            let direction = (prefix === 'p1') ? 1 : -1;
+
+            chars.forEach((ch, idx) => {
+                let spacingX = startX + (idx * 25 * direction);
+                ownerPlayer.textProjectiles.push({
+                    x: spacingX,
+                    y: startY + ((idx % 2 === 0 ? 1 : -1) * 10),
+                    vx: direction * 5.2,
+                    vy: 0,
+                    char: ch,
+                    target: enemyPlayer,
+                    radius: 16,
+                    damage: 10, // 글자당 10 데미지
+                    color: (prefix === 'p1') ? '#1e90ff' : '#e74c3c'
+                });
             });
         }
 
@@ -2365,11 +2388,14 @@
                 ownerPlayer.skeletons.push({
                     x: rx,
                     y: ry,
+                    radius: 20,
+                    hp: 20, // 스켈레톤 체력 20
+                    maxHp: 20,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
                 });
             }
-            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (6초 지속)`);
+            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 20) 💀`);
         }
 
         function spawnChocolateSlowly(ownerPlayer, count) {
@@ -2386,16 +2412,15 @@
                     isLanding: true,
                     progress: 0,
                     spawnTime: Date.now(),
-                    showTargetText: false
+                    isRedBall: false
                 });
             }
-            showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! 🍫`);
         }
 
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
-            if (seolDropInterval) clearInterval(seolDropInterval);
+            if (redBallDropInterval) clearInterval(redBallDropInterval);
 
             moneyItems = [];
             bombProjectiles = [];
@@ -2445,13 +2470,13 @@
             document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
         }
 
-        function showHealingAnimation(sidePrefix) {
+        function showHealingAnimation(sidePrefix, amount) {
             const cardContainer = document.getElementById(sidePrefix + '-status-card-container');
             if (!cardContainer) return;
 
             const popup = document.createElement('div');
             popup.className = 'healing-popup-text';
-            popup.innerText = '➕5';
+            popup.innerText = `+${amount}`;
             cardContainer.appendChild(popup);
 
             setTimeout(() => {
@@ -2496,16 +2521,31 @@
                     playWallSound();
                 }
 
+                // 스켈레톤 생존 시간(6초) 및 체력 필터링
                 [p1, p2].forEach(player => {
-                    player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
-                    // 1번째 기술 4초 지나면 자동 소멸
+                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 6000);
                     player.activeOrbits = player.activeOrbits.filter(orbit => (nowTimestamp - orbit.spawnTime) < 4000);
                 });
 
-                // 빨간색 네모 경고 필터링 (1초 유지)
                 warningRects = warningRects.filter(w => (nowTimestamp - w.spawnTime) < w.duration);
 
-                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌 및 0.5초 쿨타임 체크
+                // 스켈레톤과 공들의 충돌 처리
+                [p1, p2].forEach(player => {
+                    player.skeletons.forEach(skel => {
+                        [p1, p2].forEach(ball => {
+                            let dist = Math.hypot(ball.x - skel.x, ball.y - skel.y);
+                            if (dist < ball.radius + skel.radius) {
+                                let nx = (ball.x - skel.x) / (dist || 1);
+                                let ny = (ball.y - skel.y) / (dist || 1);
+                                ball.x += nx * 2;
+                                ball.y += ny * 2;
+                                playHitSound();
+                            }
+                        });
+                    });
+                });
+
+                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌
                 [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
                     pair.caster.activeOrbits.forEach(orbit => {
                         orbit.items.forEach(item => {
@@ -2525,7 +2565,7 @@
                                     if (pair.enemy.hp <= 0) {
                                         isGaming = false;
                                         if (gameInterval) clearInterval(gameInterval);
-                                        if (seolDropInterval) clearInterval(seolDropInterval);
+                                        if (redBallDropInterval) clearInterval(redBallDropInterval);
                                         setTimeout(() => {
                                             showToast(`🏆 ${pair.caster.name} 승리!`);
                                             exitMatch();
@@ -2535,6 +2575,38 @@
                             }
                         });
                     });
+                });
+
+                // 2번째 기술 가로 일렬 탄막 글자들 충돌 처리 (글자당 10 데미지)
+                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
+                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
+                        let tp = pair.shooter.textProjectiles[i];
+                        tp.x += tp.vx;
+                        tp.y += tp.vy;
+
+                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            continue;
+                        }
+
+                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
+                        if (dist < pair.enemy.radius + tp.radius) {
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            playHitSound();
+                            updateHpBars();
+
+                            if (pair.enemy.hp <= 0) {
+                                isGaming = false;
+                                if (gameInterval) clearInterval(gameInterval);
+                                if (redBallDropInterval) clearInterval(redBallDropInterval);
+                                setTimeout(() => {
+                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
+                                    exitMatch();
+                                }, 100);
+                            }
+                        }
+                    }
                 });
 
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
@@ -2548,6 +2620,23 @@
                             continue;
                         }
 
+                        // 화살과 스켈레톤 체력 연동
+                        let hitSkel = false;
+                        [pair.enemy, pair.shooter].forEach(pl => {
+                            pl.skeletons.forEach(skel => {
+                                if (Math.hypot(skel.x - arrow.x, skel.y - arrow.y) < skel.radius + 8) {
+                                    skel.hp -= 10;
+                                    hitSkel = true;
+                                }
+                            });
+                        });
+
+                        if (hitSkel) {
+                            pair.shooter.arrows.splice(i, 1);
+                            playHitSound();
+                            continue;
+                        }
+
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
                             pair.enemy.hp = Math.max(0, pair.enemy.hp - 20);
@@ -2558,7 +2647,7 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
-                                if (seolDropInterval) clearInterval(seolDropInterval);
+                                if (redBallDropInterval) clearInterval(redBallDropInterval);
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2568,7 +2657,6 @@
                     }
                 });
 
-                // 떨어진 공(초콜릿 아이템) 8초 뒤 사라지도록 설정
                 moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 8000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2585,9 +2673,17 @@
                             if (dist1 < p1.radius + m.radius) {
                                 playHealSound();
                                 moneyItems.splice(i, 1);
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 5); // 체력 5 회복
-                                showHealingAnimation('p1');
-                                updateHpBars();
+                                if (p1.name === '왕클세종') {
+                                    p1.chocoCount++;
+                                    if (p1.chocoCount >= 5) {
+                                        p1.chocoCount = 0;
+                                        p1.hp = Math.min(p1.maxHp, p1.hp + 25); // 체력 25 회복
+                                        showHealingAnimation('p1', 25);
+                                        updateHpBars();
+                                        triggerWangklSejongHorizontalLine(p1, p2, 'p1');
+                                    }
+                                    updateChocoDisplay('p1', p1.chocoCount);
+                                }
                                 continue;
                             }
                         }
@@ -2596,9 +2692,17 @@
                             if (dist2 < p2.radius + m.radius) {
                                 playHealSound();
                                 moneyItems.splice(i, 1);
-                                p2.hp = Math.min(p2.maxHp, p2.hp + 5); // 체력 5 회복
-                                showHealingAnimation('p2');
-                                updateHpBars();
+                                if (p2.name === '왕클세종') {
+                                    p2.chocoCount++;
+                                    if (p2.chocoCount >= 5) {
+                                        p2.chocoCount = 0;
+                                        p2.hp = Math.min(p2.maxHp, p2.hp + 25); // 체력 25 회복
+                                        showHealingAnimation('p2', 25);
+                                        updateHpBars();
+                                        triggerWangklSejongHorizontalLine(p2, p1, 'p2');
+                                    }
+                                    updateChocoDisplay('p2', p2.chocoCount);
+                                }
                             }
                         }
                     }
@@ -2634,7 +2738,7 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
-                        if (seolDropInterval) clearInterval(seolDropInterval);
+                        if (redBallDropInterval) clearInterval(redBallDropInterval);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -2712,30 +2816,52 @@
                         }
                         ctx.restore();
                     });
+
+                    // 2번째 기술 가로 일렬 탄막 글자들 렌더링
+                    player.textProjectiles.forEach(tp => {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(tp.x, tp.y, tp.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = tp.color;
+                        ctx.fill();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = '#000000';
+                        ctx.stroke();
+
+                        ctx.font = "bold 16px sans-serif";
+                        ctx.fillStyle = "#ffffff";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(tp.char, tp.x, tp.y);
+                        ctx.restore();
+                    });
                 });
 
-                const rotAngle = (Date.now() / 200) % (Math.PI * 2);
+                // 빨간색 볼 아이템 및 "왕클세종의 어둠의 힘!" 텍스트 렌더링
                 moneyItems.forEach(m => {
                     ctx.save();
                     ctx.beginPath();
-                    ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
+                    ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fill();
                     ctx.lineWidth = 3;
-                    ctx.strokeStyle = '#2ecc71';
+                    ctx.strokeStyle = '#000000';
                     ctx.stroke();
-                    ctx.font = "26px sans-serif";
+
+                    ctx.font = "bold 13px sans-serif";
+                    ctx.fillStyle = "#ffffff";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText("🍫", m.x, m.y);
+                    ctx.fillText("🔴", m.x, m.y);
 
-                    // "너는 내 표적이다!" 텍스트 표시 모션
-                    if (m.showTargetText) {
-                        ctx.font = "bold 14px sans-serif";
+                    if (m.isRedBall) {
+                        ctx.font = "bold 13px sans-serif";
                         ctx.fillStyle = "#e74c3c";
                         ctx.strokeStyle = "#ffffff";
                         ctx.lineWidth = 3;
                         ctx.textAlign = "center";
-                        ctx.strokeText("너는 내 표적이다!", m.x, m.y - 28);
-                        ctx.fillText("너는 내 표적이다!", m.x, m.y - 28);
+                        ctx.strokeText("왕클세종의 어둠의 힘!", m.x, m.y - 25);
+                        ctx.fillText("왕클세종의 어둠의 힘!", m.x, m.y - 25);
                     }
                     ctx.restore();
                 });
