@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>릴리 볼 파이트</title>
     <style>
         * {
@@ -12,7 +12,7 @@
             -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            touch-action: none;
+            touch-action: manipulation;
         }
         html, body {
             background-color: #ffffff;
@@ -25,11 +25,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-            overscroll-behavior: none;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
         }
 
         #global-announcement-banner {
@@ -98,8 +96,8 @@
             justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 0 6px;
-            transform: scale(1.65);
+            padding: 10px 6px;
+            transform: scale(1.35);
             transform-origin: center center;
             transition: transform 0.2s ease;
         }
@@ -212,7 +210,7 @@
             width: 450px;
             height: 450px;
             max-width: 100%;
-            max-height: 50vh;
+            max-height: 45vh;
             border: 5px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -398,8 +396,8 @@
         .picker-modal-box {
             width: 94vw;
             max-width: 650px;
-            height: 80vh;
-            max-height: 800px;
+            height: 75vh;
+            max-height: 700px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 24px 24px 24px;
@@ -432,7 +430,7 @@
             gap: 12px;
             margin-top: 16px;
             flex: 1;
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             padding-right: 6px;
         }
@@ -473,9 +471,9 @@
             top: 50%;
             transform: translate(-50%, -50%);
             width: 94vw;
-            max-width: 900px;
-            height: 80vh;
-            max-height: 900px;
+            max-width: 750px;
+            height: 75vh;
+            max-height: 750px;
             min-width: 300px;
             min-height: 300px;
             background: #ffffff;
@@ -518,7 +516,7 @@
             background: #f8f9fa;
             margin: 10px 0;
             padding: 16px;
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
@@ -556,8 +554,8 @@
         .players-modal-box {
             width: 94vw;
             max-width: 650px;
-            height: 80vh;
-            max-height: 800px;
+            height: 75vh;
+            max-height: 750px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 34px;
@@ -573,7 +571,7 @@
             background: #f8f9fa;
             margin: 10px 0;
             padding: 14px;
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
@@ -596,8 +594,8 @@
             position: absolute;
             width: 94vw;
             max-width: 650px;
-            height: 80vh;
-            max-height: 800px;
+            height: 78vh;
+            max-height: 750px;
             background: #ffffff;
             border: 6px solid #000000;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
@@ -625,7 +623,7 @@
 
         .admin-scroll-body {
             padding: 18px;
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             flex: 1;
             display: flex;
@@ -709,9 +707,6 @@
         document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
         document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
         document.addEventListener('gestureend', function(e) { e.preventDefault(); });
-        document.addEventListener('touchmove', function(e) {
-            if (e.scale && e.scale !== 1) e.preventDefault();
-        }, { passive: false });
     </script>
 
     <!-- 상단 대형 실시간 공지/투표 배너 -->
@@ -824,11 +819,11 @@
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔍 화면 확대 (0 ~ 150)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="zoom-input-box" value="50" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
+                        <input type="text" id="zoom-input-box" value="35" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="150" value="50" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
@@ -1056,8 +1051,8 @@
 
             let savedZoom = localStorage.getItem('lily_game_zoom_scale');
             if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 150) {
-                savedZoom = '50';
-                localStorage.setItem('lily_game_zoom_scale', '50');
+                savedZoom = '35'; // 데스크톱 사이트 기본 맞춤 스케일
+                localStorage.setItem('lily_game_zoom_scale', '35');
             }
             let z = parseInt(savedZoom);
             if (z < 0) z = 0;
@@ -1123,8 +1118,8 @@
             const box = document.getElementById('zoom-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                box.value = '50';
-                val = 50;
+                box.value = '35';
+                val = 35;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
@@ -1407,9 +1402,6 @@
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
                 document.getElementById('name-input-modal').classList.add('hidden');
-                
-                // 접속 하자마자 플레이어 목록 바로 띄우기 요청 반영
-                openPlayersModal();
             }
 
             checkMaintenanceStatus();
@@ -1466,9 +1458,6 @@
             loadChatLogs();
             updateOnlineOfflineCounts();
             renderAdminPlayersList();
-
-            // 이름 등록 직후에도 플레이어 목록 바로 띄우기
-            openPlayersModal();
         }
 
         function handleProfileClick() {
@@ -2341,10 +2330,9 @@
             let startX = caster.x;
             let startY = caster.y;
 
-            // 주위 3배 더 넓게 퍼지도록 오프셋 및 속도 스케일링, 조금 느리게 설정
             chars.forEach((ch, idx) => {
                 let angle = (idx / chars.length) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
-                let speed = 2.0 + Math.random() * 0.8; // 기존보다 느리게 조정
+                let speed = 2.0 + Math.random() * 0.8;
 
                 moneyItems.push({
                     x: startX,
@@ -2354,7 +2342,7 @@
                     char: ch,
                     target: enemy,
                     radius: 17,
-                    damage: 4, // 1개당 데미지 4 요청 반영
+                    damage: 4,
                     isLetter: true,
                     owner: caster === p1 ? 'p1' : 'p2',
                     color: (caster === p1) ? '#1e90ff' : '#e74c3c',
@@ -2550,12 +2538,11 @@
                         let enemy = (m.owner === 'p1') ? p2 : p1;
                         let dist = Math.hypot(enemy.x - m.x, enemy.y - m.y);
                         if (dist < enemy.radius + m.radius) {
-                            // 0.5초(500ms) 연속 공격 방지 로직 적용
                             let hitKey = m.char;
                             let lastHitTime = enemy.lastHitMap[hitKey] || 0;
                             if (nowTimestamp - lastHitTime >= 500) {
                                 enemy.lastHitMap[hitKey] = nowTimestamp;
-                                enemy.hp = Math.max(0, enemy.hp - m.damage); // 데미지 4
+                                enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 playHitSound();
                                 updateHpBars();
 
