@@ -399,7 +399,6 @@
             background: #2ecc71 !important;
         }
 
-        /* 체력 회복 시 초록색 ➕️➕️ 플로팅 애니메이션 효과 */
         @keyframes floatPlusAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
             100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
@@ -728,7 +727,6 @@
 </head>
 <body>
 
-    <!-- 카카오톡 등 인앱 브라우저 감지 시 크롬으로 강제 여는 스크립트 -->
     <script>
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
@@ -801,12 +799,10 @@
                                 <div class="hp-bar-inner" id="p1-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p1-hp-txt">250 / 250</div>
                             </div>
-                            <!-- 미스터 비스트 기술 충전중 게이지 바 -->
                             <div class="sub-gauge-bar" id="p1-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p1-gauge-txt">기술 없음</div>
                             </div>
-                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
                             <div class="choco-segment-box" id="p1-choco-segments" style="display:none;">
                                 <div class="choco-segment" id="p1-ch-0"></div>
                                 <div class="choco-segment" id="p1-ch-1"></div>
@@ -821,12 +817,10 @@
                                 <div class="hp-bar-inner" id="p2-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p2-hp-txt">250 / 250</div>
                             </div>
-                            <!-- 미스터 비스트 기술 충전중 게이지 바 -->
                             <div class="sub-gauge-bar" id="p2-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p2-gauge-txt">기술 없음</div>
                             </div>
-                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
                             <div class="choco-segment-box" id="p2-choco-segments" style="display:none;">
                                 <div class="choco-segment" id="p2-ch-0"></div>
                                 <div class="choco-segment" id="p2-ch-1"></div>
@@ -1109,7 +1103,7 @@
         function changeProfileColor(colorHex) {
             localStorage.setItem('lily_game_profile_color', colorHex);
             applyProfileColorUI(colorHex);
-            showToast('프로필 아이콘 색상이 변경되었습니다!');
+            showToast('아이콘 색상이 변경되었습니다!');
         }
 
         function applyProfileColorUI(colorHex) {
@@ -1189,7 +1183,6 @@
             document.getElementById('settings-modal').classList.add('hidden');
         }
 
-        // UI 효과음
         function playClickSound() {
             try {
                 let ctx = getAudioContext();
@@ -1207,7 +1200,6 @@
             } catch(e) {}
         }
 
-        // 일반 타격음
         function playHitSound() {
             try {
                 let ctx = getAudioContext();
@@ -1225,7 +1217,6 @@
             } catch(e) {}
         }
 
-        // 벽 부딪힘 소리
         function playWallSound() {
             try {
                 let ctx = getAudioContext();
@@ -1243,7 +1234,6 @@
             } catch(e) {}
         }
 
-        // 스켈레톤 화살 소리
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1261,7 +1251,6 @@
             } catch(e) {}
         }
 
-        // 초콜릿 땅에 닿을 때 소리
         function playChocolateLandSound() {
             try {
                 let ctx = getAudioContext();
@@ -1279,7 +1268,6 @@
             } catch(e) {}
         }
 
-        // 초콜릿 먹을 때 회복 효과음 (청량하고 밝은 사운드)
         function playHealSound() {
             try {
                 let ctx = getAudioContext();
@@ -1287,8 +1275,8 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.2); // C6
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.2);
                 gain.gain.setValueAtTime(0.5 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                 osc.connect(gain);
@@ -1298,22 +1286,17 @@
             } catch(e) {}
         }
 
-        // 초콜릿 3개 상대 공 폭발 시 크고 웅장한 폭발 효과음
         function playBigExplosionSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                
-                // 저음 노이즈/오실레이터 폭발음
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, now);
                 osc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
-                
                 gain.gain.setValueAtTime(0.8 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-                
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
@@ -1900,7 +1883,6 @@
             showToast('투표가 완료되었습니다!');
         }
 
-        // 채팅창 드래그 이동 기능
         (function enableChatDrag() {
             const box = document.getElementById('chat-floating-box');
             const header = document.getElementById('chat-drag-header');
@@ -1950,7 +1932,6 @@
             document.addEventListener('touchend', onEnd);
         })();
 
-        // 어드민 패널 드래그 이동
         (function enablePanelDrag() {
             const panel = document.getElementById('admin-panel-modal');
             const header = document.getElementById('admin-drag-header-bar');
@@ -2033,11 +2014,11 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [], chocoCount: 0 };
-        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [], chocoCount: 0 };
+        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0 };
+        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0 };
 
         let moneyItems = [];
-        let homingProjectiles = [];
+        let bombProjectiles = []; // 초콜릿 폭탄 배열
         let gameInterval = null;
 
         function handleSlotClick(side) {
@@ -2170,30 +2151,32 @@
                 return;
             }
 
-            // 시작할 때 모든 상태 철저히 초기화 (이전 경기 데이터 이어지지 않도록 완벽 분리)
+            // 시작할 때 모든 변수 및 타이머 완벽하게 처음부터 초기화
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = [];
-            homingProjectiles = [];
+            bombProjectiles = [];
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 10);
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 0);
             p1.skeletons = [];
             p1.arrows = [];
             p1.chocoCount = 0;
+            p1.arrowTimer = 0;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 10);
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 0);
             p2.skeletons = [];
             p2.arrows = [];
             p2.chocoCount = 0;
+            p2.arrowTimer = 0;
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2222,7 +2205,7 @@
                     if (p1.skillTimer <= 0) {
                         p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
-                            spawnChocolateSlowly(p1, 2); // 10초마다 초콜릿 2개 투입
+                            spawnChocolateSlowly(p1, 2);
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
                         }
@@ -2242,7 +2225,7 @@
                     if (p2.skillTimer <= 0) {
                         p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
-                            spawnChocolateSlowly(p2, 2); // 10초마다 초콜릿 2개 투입
+                            spawnChocolateSlowly(p2, 2);
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
                         }
@@ -2255,10 +2238,27 @@
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
                 }
 
-                if (Math.random() < 0.25) {
-                    triggerSkeletonsShoot(p1, p2);
-                    triggerSkeletonsShoot(p2, p1);
-                }
+                // JINO 스켈레톤 화살: 2초마다 1발씩 발사 (6초 지속 동안)
+                [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
+                    if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
+                        pair.player.arrowTimer++;
+                        if (pair.player.arrowTimer >= 2) {
+                            pair.player.arrowTimer = 0;
+                            pair.player.skeletons.forEach(skel => {
+                                let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
+                                pair.player.arrows.push({
+                                    x: skel.x,
+                                    y: skel.y,
+                                    vx: Math.cos(angle) * 5.5,
+                                    vy: Math.sin(angle) * 5.5,
+                                    angle: angle,
+                                    target: pair.enemy
+                                });
+                            });
+                            playArrowSound();
+                        }
+                    }
+                });
 
             }, 1000);
         }
@@ -2292,8 +2292,8 @@
             }
         }
 
-        // 스켈레톤 (6초 지나면 소멸, 데미지 15)
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
+            ownerPlayer.arrowTimer = 0;
             for (let i = 0; i < 2; i++) {
                 let rx = Math.random() * (canvas.width - 60) + 30;
                 let ry = Math.random() * (canvas.height - 60) + 30;
@@ -2301,30 +2301,12 @@
                     x: rx,
                     y: ry,
                     target: targetOwnerStr,
-                    spawnTime: Date.now() // 생성 시간 기록 (6초 디스폰용)
+                    spawnTime: Date.now()
                 });
             }
-            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (6초 후 소멸)`);
+            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (6초 지속)`);
         }
 
-        function triggerSkeletonsShoot(shooterPlayer, enemyPlayer) {
-            if (shooterPlayer.skeletons && shooterPlayer.skeletons.length > 0) {
-                shooterPlayer.skeletons.forEach(skel => {
-                    let angle = Math.atan2(enemyPlayer.y - skel.y, enemyPlayer.x - skel.x);
-                    shooterPlayer.arrows.push({
-                        x: skel.x,
-                        y: skel.y,
-                        vx: Math.cos(angle) * 5.5,
-                        vy: Math.sin(angle) * 5.5,
-                        angle: angle,
-                        target: enemyPlayer
-                    });
-                });
-                playArrowSound();
-            }
-        }
-
-        // 초콜릿 투입 (5초 지나면 디스폰)
         function spawnChocolateSlowly(ownerPlayer, count) {
             for (let i = 0; i < count; i++) {
                 let targetX = Math.random() * (canvas.width - 60) + 30;
@@ -2338,35 +2320,38 @@
                     owner: ownerPlayer === p1 ? 'p1' : 'p2',
                     isLanding: true,
                     progress: 0,
-                    spawnTime: Date.now() // 5초 디스폰용
+                    spawnTime: Date.now()
                 });
             }
             showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
         }
 
-        function triggerHomingChocolates(ownerPlayer, enemyPlayer) {
-            const sidePrefix = ownerPlayer === p1 ? 'p1' : 'p2';
-            showToast(`${ownerPlayer.name}가 초콜릿 5개를 모아 유도 공격! 🍫🔥`);
+        // 미스터 비스트 초콜릿 폭탄 시스템: 3개를 왼쪽, 가운데, 오른쪽으로 발사하여 맞히면 폭발 대미지 50
+        function triggerChocolateBombs(ownerPlayer, enemyPlayer) {
+            showToast(`${ownerPlayer.name}가 초콜릿 폭탄 3개 발사! 🍫💥`);
+            let baseAngle = Math.atan2(enemyPlayer.y - ownerPlayer.y, enemyPlayer.x - ownerPlayer.x);
             
-            for (let i = 0; i < 3; i++) {
-                homingProjectiles.push({
+            // 왼쪽(-0.3라디안), 가운데(0라디안), 오른쪽(+0.3라디안) 방향으로 확산 발사
+            let offsets = [-0.35, 0, 0.35];
+
+            offsets.forEach(offset => {
+                let angle = baseAngle + offset;
+                bombProjectiles.push({
                     x: ownerPlayer.x,
                     y: ownerPlayer.y,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    speed: 2.2,
+                    vx: Math.cos(angle) * 4.2,
+                    vy: Math.sin(angle) * 4.2,
                     target: enemyPlayer,
-                    ownerSide: sidePrefix,
                     radius: 16
                 });
-            }
+            });
         }
 
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = [];
-            homingProjectiles = [];
+            bombProjectiles = [];
             
             selectedLeftBall = null;
             selectedRightBall = null;
@@ -2406,7 +2391,6 @@
             document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
         }
 
-        // 체력 회복 시 초록색 ➕️➕️ 플로팅 애니메이션 효과 표시
         function showHealingAnimation(sidePrefix) {
             const cardContainer = document.getElementById(sidePrefix + '-status-card-container');
             if (!cardContainer) return;
@@ -2458,12 +2442,12 @@
                     playWallSound();
                 }
 
-                // 스켈레톤 만료 체크 (6초 지나면 소멸)
+                // 스켈레톤 만료 체크 (6초)
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
                 });
 
-                // JINO 스켈레톤 화살 업데이트 (15 데미지)
+                // JINO 스켈레톤 화살 데미지 20
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
                         let arrow = pair.shooter.arrows[i];
@@ -2477,7 +2461,7 @@
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 20); // 데미지 20
                             pair.shooter.arrows.splice(i, 1);
                             playHitSound();
                             updateHpBars();
@@ -2494,24 +2478,26 @@
                     }
                 });
 
-                // 미스터 비스트 유도 초콜릿 업데이트 (폭발 효과음 적용, 데미지 20)
-                for (let i = homingProjectiles.length - 1; i >= 0; i--) {
-                    let hp = homingProjectiles[i];
-                    let target = hp.target;
-                    let angle = Math.atan2(target.y - hp.y, target.x - hp.x);
-                    hp.vx = Math.cos(angle) * hp.speed;
-                    hp.vy = Math.sin(angle) * hp.speed;
-                    hp.x += hp.vx;
-                    hp.y += hp.vy;
+                // 미스터 비스트 초콜릿 폭탄 업데이트 (상대 공에 명중 시 대미지 50 및 웅장한 폭발 효과음)
+                for (let i = bombProjectiles.length - 1; i >= 0; i--) {
+                    let bp = bombProjectiles[i];
+                    bp.x += bp.vx;
+                    bp.y += bp.vy;
 
-                    let dist = Math.hypot(target.x - hp.x, target.y - hp.y);
-                    if (dist < target.radius + hp.radius) {
-                        target.hp = Math.max(0, target.hp - 20);
-                        playBigExplosionSound(); // 웅장한 폭발 효과음 재생!
+                    // 화면 밖으로 나가면 제거
+                    if (bp.x < 0 || bp.x > canvas.width || bp.y < 0 || bp.y > canvas.height) {
+                        bombProjectiles.splice(i, 1);
+                        continue;
+                    }
+
+                    let dist = Math.hypot(bp.target.x - bp.x, bp.target.y - bp.y);
+                    if (dist < bp.target.radius + bp.radius) {
+                        bp.target.hp = Math.max(0, bp.target.hp - 50); // 폭탄 1개당 대미지 50
+                        playBigExplosionSound();
                         updateHpBars();
-                        homingProjectiles.splice(i, 1);
+                        bombProjectiles.splice(i, 1);
 
-                        if (target.hp <= 0) {
+                        if (bp.target.hp <= 0) {
                             isGaming = false;
                             if (gameInterval) clearInterval(gameInterval);
                             setTimeout(() => {
@@ -2522,7 +2508,7 @@
                     }
                 }
 
-                // 초콜릿 아이템 (5초 지나면 디스폰, 회복 20, ➕️➕️ 모션 및 효과음)
+                // 초콜릿 아이템 (5초 지나면 소멸, 회복 20)
                 moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 5000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2539,16 +2525,16 @@
                         if (m.owner === 'p1' && p1.name === '미스터비스트') {
                             let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                             if (dist1 < p1.radius + m.radius) {
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 20); // 회복 20
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 20);
                                 playHealSound();
-                                showHealingAnimation('p1'); // 초록색 ➕️➕️ 애니메이션
+                                showHealingAnimation('p1');
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
 
                                 p1.chocoCount++;
                                 if (p1.chocoCount >= 5) {
                                     p1.chocoCount = 0;
-                                    triggerHomingChocolates(p1, p2);
+                                    triggerChocolateBombs(p1, p2); // 초콜릿 폭탄 3개 발사 (좌/중/우)
                                 }
                                 updateChocoDisplay('p1', p1.chocoCount);
                                 continue;
@@ -2557,16 +2543,16 @@
                         if (m.owner === 'p2' && p2.name === '미스터비스트') {
                             let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                             if (dist2 < p2.radius + m.radius) {
-                                p2.hp = Math.min(p2.maxHp, p2.hp + 20); // 회복 20
+                                p2.hp = Math.min(p2.maxHp, p2.hp + 20);
                                 playHealSound();
-                                showHealingAnimation('p2'); // 초록색 ➕️➕️ 애니메이션
+                                showHealingAnimation('p2');
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
 
                                 p2.chocoCount++;
                                 if (p2.chocoCount >= 5) {
                                     p2.chocoCount = 0;
-                                    triggerHomingChocolates(p2, p1);
+                                    triggerChocolateBombs(p2, p1); // 초콜릿 폭탄 3개 발사 (좌/중/우)
                                 }
                                 updateChocoDisplay('p2', p2.chocoCount);
                             }
@@ -2651,11 +2637,9 @@
                     });
                 });
 
-                // 초콜릿 근처에 초록색 원형 오라/회전 링 렌더링
                 const rotAngle = (Date.now() / 200) % (Math.PI * 2);
                 moneyItems.forEach(m => {
                     ctx.save();
-                    // 초록색 회전 링 그리기
                     ctx.beginPath();
                     ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
                     ctx.lineWidth = 3;
@@ -2669,12 +2653,12 @@
                     ctx.restore();
                 });
 
-                homingProjectiles.forEach(hp => {
+                bombProjectiles.forEach(bp => {
                     ctx.save();
                     ctx.font = "26px sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText("🍫", hp.x, hp.y);
+                    ctx.fillText("🍫", bp.x, bp.y);
                     ctx.restore();
                 });
 
