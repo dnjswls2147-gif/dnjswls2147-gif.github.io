@@ -49,7 +49,7 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 600px;
+            max-width: 680px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -92,7 +92,7 @@
         /* 메인 컨테이너 (화면 중앙 고정 및 여백 최적화) */
         .app-container {
             width: 100vw;
-            max-width: 480px;
+            max-width: 660px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -105,13 +105,13 @@
         /* 프로필 & 전체 채팅 아이콘 바 (경기장 바로 위 좌측 정렬) */
         .top-menu-bar {
             width: 100%;
-            max-width: 460px;
+            max-width: 650px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
             padding: 2px 0;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             z-index: 1000;
         }
 
@@ -122,11 +122,11 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 36px;
+            font-size: 40px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -145,7 +145,7 @@
             padding: 6px;
         }
         .admin-icon {
-            font-size: 36px;
+            font-size: 38px;
             line-height: 1;
         }
         .admin-label {
@@ -179,12 +179,12 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 및 중앙 정렬 최적화 */
+        /* 경기장 대폭 확장 (좌우, 위아래 화면 끝까지) */
         .arena-frame {
-            width: 460px;
-            height: 460px;
-            max-width: 92vw;
-            max-height: 92vw;
+            width: 650px;
+            height: 650px;
+            max-width: 96vw;
+            max-height: 72vh;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -200,26 +200,26 @@
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
             width: 100%;
-            max-width: 460px;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 14px 0;
+            padding: 16px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 17px;
+            font-size: 19px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -234,10 +234,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 6px;
+            margin-top: 8px;
             width: 100%;
-            padding: 16px 0;
-            font-size: 20px;
+            padding: 18px 0;
+            font-size: 22px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 8px;
@@ -265,7 +265,7 @@
         }
         .status-row-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -274,7 +274,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 900;
             margin-bottom: 2px;
             white-space: nowrap;
@@ -286,7 +286,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 26px;
+            height: 28px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -307,12 +307,12 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 12px;
+            font-size: 13px;
             text-shadow: 2px 2px 3px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 16px;
+            height: 18px;
             background: #cccccc;
             border: 2px solid #000000;
             margin-top: 3px;
@@ -689,9 +689,9 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 -->
+        <!-- 경기장 뷰포트 (대폭 확장) -->
         <div class="arena-frame">
-            <canvas id="gameCanvas" width="500" height="500"></canvas>
+            <canvas id="gameCanvas" width="650" height="650"></canvas>
         </div>
 
         <!-- 로비 및 컨트롤 영역 -->
@@ -802,7 +802,7 @@
         </div>
     </div>
 
-    <!-- 볼 선택 모달 팝업창 (NINO 삭제됨) -->
+    <!-- 볼 선택 모달 팝업창 -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
@@ -1055,10 +1055,7 @@
             let existing = players.find(p => p.uid === uid);
             
             if (!existing) {
-                let nameMatch = players.find(p => p.name === name);
-                if (!nameMatch) {
-                    players.push({ uid: uid, name: name, date: date });
-                }
+                players.push({ uid: uid, name: name, date: date });
             } else {
                 existing.name = name;
                 existing.date = date;
@@ -1554,7 +1551,6 @@
             document.addEventListener('touchend', onEnd);
         })();
 
-        /* NINO가 삭제된 볼 선택 목록 */
         const ballList = [
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
@@ -1586,8 +1582,8 @@
 
         const FIXED_SPEED = 2.8;
 
-        let p1 = { x: 150, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
-        let p2 = { x: 350, y: 250, radius: 22.5, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p1 = { x: 160, y: 325, radius: 24, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p2 = { x: 490, y: 325, radius: 24, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1665,11 +1661,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(150, 250, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
+                drawBall(180, 325, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(350, 250, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
+                drawBall(470, 325, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
             }
         }
 
@@ -1709,8 +1705,8 @@
             let vx = Math.cos(angle) * FIXED_SPEED;
             let vy = Math.sin(angle) * FIXED_SPEED;
 
-            if (Math.abs(vx) < 0.8) vx = vx > 0 ? 0.8 : -0.8;
-            if (Math.abs(vy) < 0.8) vy = vy > 0 ? 0.8 : -0.8;
+            if (Math.abs(vx) < 1.0) vx = vx > 0 ? 1.2 : -1.2;
+            if (Math.abs(vy) < 1.0) vy = vy > 0 ? 1.2 : -1.2;
 
             obj.vx = vx;
             obj.vy = vy;
@@ -1724,7 +1720,7 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
-            p1.x = 150; p1.y = 250;
+            p1.x = 180; p1.y = 325;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
             p1.skillTimer = 10.0;
@@ -1733,7 +1729,7 @@
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
-            p2.x = 350; p2.y = 250;
+            p2.x = 470; p2.y = 325;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
             p2.skillTimer = 10.0;
@@ -1795,8 +1791,8 @@
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
             for (let i = 0; i < 2; i++) {
-                let rx = Math.random() * 400 + 50;
-                let ry = Math.random() * 400 + 50;
+                let rx = Math.random() * 550 + 50;
+                let ry = Math.random() * 550 + 50;
                 ownerPlayer.skeletons.push({ x: rx, y: ry, target: targetOwnerStr });
             }
             showToast(`${ownerPlayer.name}의 스켈레톤 2마리 소환!`);
@@ -1809,8 +1805,8 @@
                     shooterPlayer.arrows.push({
                         x: skel.x,
                         y: skel.y,
-                        vx: Math.cos(angle) * 5.0,
-                        vy: Math.sin(angle) * 5.0,
+                        vx: Math.cos(angle) * 5.5,
+                        vy: Math.sin(angle) * 5.5,
                         target: enemyPlayer
                     });
                 });
@@ -1820,8 +1816,8 @@
 
         function spawnMoney(owner) {
             for (let i = 0; i < 2; i++) {
-                let mx = Math.random() * 400 + 50;
-                let my = Math.random() * 400 + 50;
+                let mx = Math.random() * 550 + 50;
+                let my = Math.random() * 550 + 50;
                 moneyItems.push({ x: mx, y: my, radius: 18, owner: owner });
             }
         }
@@ -1872,20 +1868,70 @@
                 p2.x += p2.vx; p2.y += p2.vy;
 
                 let hitWall = false;
-                if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx = Math.abs(p1.vx) + (Math.random()*0.4); hitWall = true; }
-                if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx = -(Math.abs(p1.vx) + (Math.random()*0.4)); hitWall = true; }
-                if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy = Math.abs(p1.vy) + (Math.random()*0.4); hitWall = true; }
-                if (p1.y + p1.radius > canvas.height) { p1.y = canvas.height - p1.radius; p1.vy = -(Math.abs(p1.vy) + (Math.random()*0.4)); hitWall = true; }
 
-                if (p2.x - p2.radius < 0) { p2.x = p2.radius; p2.vx = Math.abs(p2.vx) + (Math.random()*0.4); hitWall = true; }
-                if (p2.x + p2.radius > canvas.width) { p2.x = canvas.width - p2.radius; p2.vx = -(Math.abs(p2.vx) + (Math.random()*0.4)); hitWall = true; }
-                if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = Math.abs(p2.vy) + (Math.random()*0.4); hitWall = true; }
-                if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -(Math.abs(p2.vy) + (Math.random()*0.4)); hitWall = true; }
+                // 벽 충돌 시 수직/수평 고착 방지 및 완벽한 무작위 튕김 각도 적용
+                if (p1.x - p1.radius < 0) { 
+                    p1.x = p1.radius; 
+                    p1.vx = Math.abs(p1.vx) + (Math.random() * 1.2); 
+                    p1.vy += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p1.x + p1.radius > canvas.width) { 
+                    p1.x = canvas.width - p1.radius; 
+                    p1.vx = -(Math.abs(p1.vx) + (Math.random() * 1.2)); 
+                    p1.vy += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p1.y - p1.radius < 0) { 
+                    p1.y = p1.radius; 
+                    p1.vy = Math.abs(p1.vy) + (Math.random() * 1.2); 
+                    p1.vx += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p1.y + p1.radius > canvas.height) { 
+                    p1.y = canvas.height - p1.radius; 
+                    p1.vy = -(Math.abs(p1.vy) + (Math.random() * 1.2)); 
+                    p1.vx += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
 
-                if (Math.abs(p1.vx) < 0.5) p1.vx = p1.vx >= 0 ? 1.0 : -1.0;
-                if (Math.abs(p1.vy) < 0.5) p1.vy = p1.vy >= 0 ? 1.0 : -1.0;
-                if (Math.abs(p2.vx) < 0.5) p2.vx = p2.vx >= 0 ? 1.0 : -1.0;
-                if (Math.abs(p2.vy) < 0.5) p2.vy = p2.vy >= 0 ? 1.0 : -1.0;
+                if (p2.x - p2.radius < 0) { 
+                    p2.x = p2.radius; 
+                    p2.vx = Math.abs(p2.vx) + (Math.random() * 1.2); 
+                    p2.vy += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p2.x + p2.radius > canvas.width) { 
+                    p2.x = canvas.width - p2.radius; 
+                    p2.vx = -(Math.abs(p2.vx) + (Math.random() * 1.2)); 
+                    p2.vy += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p2.y - p2.radius < 0) { 
+                    p2.y = p2.radius; 
+                    p2.vy = Math.abs(p2.vy) + (Math.random() * 1.2); 
+                    p2.vx += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+                if (p2.y + p2.radius > canvas.height) { 
+                    p2.y = canvas.height - p2.radius; 
+                    p2.vy = -(Math.abs(p2.vy) + (Math.random() * 1.2)); 
+                    p2.vx += (Math.random() - 0.5) * 1.5; 
+                    hitWall = true; 
+                }
+
+                // 속도 크기 정규화 및 최소 속도 보장
+                let speed1 = Math.hypot(p1.vx, p1.vy);
+                if (speed1 < 2.0 || speed1 > 5.0) {
+                    p1.vx = (p1.vx / (speed1 || 1)) * FIXED_SPEED;
+                    p1.vy = (p1.vy / (speed1 || 1)) * FIXED_SPEED;
+                }
+
+                let speed2 = Math.hypot(p2.vx, p2.vy);
+                if (speed2 < 2.0 || speed2 > 5.0) {
+                    p2.vx = (p2.vx / (speed2 || 1)) * FIXED_SPEED;
+                    p2.vy = (p2.vy / (speed2 || 1)) * FIXED_SPEED;
+                }
 
                 if (hitWall) {
                     playWallSound();
@@ -1959,7 +2005,7 @@
                     p2.x += nx * (overlap / 2);
                     p2.y += ny * (overlap / 2);
 
-                    let angle = Math.atan2(ny, nx);
+                    let angle = Math.atan2(ny, nx) + (Math.random() - 0.5) * 0.5;
                     p1.vx = -Math.cos(angle) * FIXED_SPEED;
                     p1.vy = -Math.sin(angle) * FIXED_SPEED;
                     p2.vx = Math.cos(angle) * FIXED_SPEED;
