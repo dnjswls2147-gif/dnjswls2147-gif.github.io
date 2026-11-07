@@ -50,7 +50,7 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 760px;
+            max-width: 700px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -90,10 +90,10 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (화면 가득 채우기 위해 크기 및 여백 최적화) */
+        /* 메인 컨테이너 (위아래 여백 최소화) */
         .app-container {
             width: 100vw;
-            max-width: 760px;
+            max-width: 700px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -101,14 +101,12 @@
             position: relative;
             z-index: 10;
             padding: 0 10px;
-            transform: scale(1.02);
-            transform-origin: center center;
         }
 
         /* 프로필 & 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
-            max-width: 720px;
+            max-width: 650px;
             display: flex;
             gap: 15px;
             align-items: center;
@@ -135,7 +133,7 @@
             margin-top: 1px;
         }
 
-        /* 릴리 전용 어드민 아이콘 (시작하기 버튼 바로 밑에 위치) */
+        /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             display: flex;
             flex-direction: row;
@@ -147,7 +145,7 @@
             background: #f1f2f6;
             border: 3px solid #000;
             border-radius: 6px;
-            margin-top: 6px;
+            margin-top: 4px;
             align-self: flex-start;
             box-shadow: 0 2px 0 #000;
         }
@@ -185,12 +183,12 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 720px 설정 (화면 꽉 차게 확대) */
+        /* 경기장 크기 650px로 조정 */
         .arena-frame {
-            width: 720px;
-            height: 720px;
+            width: 650px;
+            height: 650px;
             max-width: 95vw;
-            max-height: 62vh;
+            max-height: 60vh;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -206,7 +204,7 @@
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
             width: 100%;
-            max-width: 720px;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -221,11 +219,11 @@
         }
         .btn-add-slot {
             flex: 1;
-            padding: 12px 0;
+            padding: 10px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -242,8 +240,8 @@
         .btn-main-action {
             margin-top: 4px;
             width: 100%;
-            padding: 14px 0;
-            font-size: 20px;
+            padding: 12px 0;
+            font-size: 19px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 8px;
@@ -280,7 +278,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 900;
             margin-bottom: 2px;
             white-space: nowrap;
@@ -292,7 +290,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 24px;
+            height: 22px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -318,7 +316,7 @@
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 15px;
+            height: 14px;
             background: #cccccc;
             border: 2px solid #000000;
             margin-top: 2px;
@@ -430,6 +428,7 @@
             z-index: 100000;
         }
 
+        /* 전체 채팅창 (모든 모서리/꼭짓점에서 크기 조절 가능 + 꼭짓점 크기 크게 강조) */
         .chat-floating-window {
             position: fixed;
             left: 50%;
@@ -453,14 +452,15 @@
         }
         .chat-floating-window.hidden { display: none !important; }
 
+        /* 채팅창 조절 꼭짓점 크게 키우기 (오른쪽 아래 및 기타 모서리 영역 강조) */
         .chat-floating-window::after {
             content: '';
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, transparent 50%, #000 50%);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, transparent 40%, #000 40%);
             cursor: se-resize;
             z-index: 1000;
         }
@@ -696,9 +696,9 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (720px) -->
+        <!-- 경기장 뷰포트 (650px) -->
         <div class="arena-frame">
-            <canvas id="gameCanvas" width="720" height="720"></canvas>
+            <canvas id="gameCanvas" width="650" height="650"></canvas>
         </div>
 
         <!-- 로비 및 컨트롤 영역 -->
@@ -743,7 +743,7 @@
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
 
-            <!-- 릴리 전용 어드민 아이콘 (시작하기 버튼 바로 아래 왼쪽 정렬) -->
+            <!-- 릴리 전용 어드민 아이콘 -->
             <div class="admin-entry-box" id="btn-admin-entry" onclick="playClickSound(); openAdminPrompt();">
                 <div class="admin-icon">🚫</div>
                 <div class="admin-label">릴리 전용</div>
@@ -1595,8 +1595,8 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 200, y: 360, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
-        let p2 = { x: 520, y: 360, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p1 = { x: 180, y: 325, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p2 = { x: 470, y: 325, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1674,11 +1674,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(200, 360, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
+                drawBall(180, 325, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(520, 360, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
+                drawBall(470, 325, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
             }
         }
 
@@ -1733,7 +1733,7 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
-            p1.x = 200; p1.y = 360;
+            p1.x = 180; p1.y = 325;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
             p1.skillTimer = 10.0;
@@ -1742,7 +1742,7 @@
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
-            p2.x = 520; p2.y = 360;
+            p2.x = 470; p2.y = 325;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
             p2.skillTimer = 10.0;
@@ -1804,8 +1804,8 @@
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
             for (let i = 0; i < 2; i++) {
-                let rx = Math.random() * 620 + 50;
-                let ry = Math.random() * 620 + 50;
+                let rx = Math.random() * 550 + 50;
+                let ry = Math.random() * 550 + 50;
                 ownerPlayer.skeletons.push({ x: rx, y: ry, target: targetOwnerStr });
             }
             showToast(`${ownerPlayer.name}의 스켈레톤 2마리 소환!`);
@@ -1829,8 +1829,8 @@
 
         function spawnMoney(owner) {
             for (let i = 0; i < 2; i++) {
-                let mx = Math.random() * 620 + 50;
-                let my = Math.random() * 620 + 50;
+                let mx = Math.random() * 550 + 50;
+                let my = Math.random() * 550 + 50;
                 moneyItems.push({ x: mx, y: my, radius: 20, owner: owner });
             }
         }
