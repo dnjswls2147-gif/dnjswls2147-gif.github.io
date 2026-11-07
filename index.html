@@ -509,18 +509,20 @@
             margin-bottom: 10px;
             cursor: move;
             user-select: none;
+            padding: 6px 0;
+            flex-shrink: 0;
         }
         .chat-logs-area {
             flex: 1;
             border: 4px solid #000;
             background: #f8f9fa;
-            margin-bottom: 12px;
-            padding: 12px;
+            margin: 10px 0;
+            padding: 16px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         .chat-msg-card {
             background: #ffffff;
@@ -569,8 +571,8 @@
             flex: 1;
             border: 3px solid #000;
             background: #f8f9fa;
-            margin-top: 12px;
-            padding: 12px;
+            margin: 10px 0;
+            padding: 14px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
@@ -610,7 +612,7 @@
         .admin-drag-header {
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 12px 16px;
+            padding: 14px 18px;
             font-size: 20px;
             font-weight: 900;
             cursor: move;
@@ -622,13 +624,13 @@
         }
 
         .admin-scroll-body {
-            padding: 16px;
+            padding: 18px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .admin-input {
@@ -659,10 +661,11 @@
         .admin-section-box {
             background: #f8f9fa;
             border: 3px solid #000;
-            padding: 14px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
+            margin-bottom: 4px;
         }
         .admin-section-title {
             font-size: 18px;
@@ -850,7 +853,7 @@
                 <div class="chat-msg-time">오전 12:00</div>
             </div>
         </div>
-        <div class="row-inline-group">
+        <div class="row-inline-group" style="flex-shrink:0;">
             <input type="text" id="chat-input" class="admin-input" style="font-size:18px; padding:12px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
             <button class="btn-send" style="font-size:18px; padding:0 20px;" onclick="playClickSound(); sendChatMessage();">전송</button>
         </div>
@@ -860,8 +863,8 @@
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
         <div class="players-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closePlayersModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; text-align:center; margin-bottom:6px;">👥 플레이어 목록</div>
-            <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:6px;" id="online-offline-summary-txt">
+            <div style="font-size:24px; font-weight:900; text-align:center; margin-bottom:6px; flex-shrink:0;">👥 플레이어 목록</div>
+            <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:6px; flex-shrink:0;" id="online-offline-summary-txt">
                 온라인 [0명] | 오프라인 [0명]
             </div>
             <div class="players-list-area" id="players-list-container"></div>
@@ -906,7 +909,7 @@
     <div class="modal-overlay hidden" id="reports-list-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:550px; height:70vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" onclick="playClickSound(); closeReportsListModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; text-align:center; color:#c0392b;">🚨 신고 내역 목록</div>
+            <div style="font-size:24px; font-weight:900; margin-bottom:14px; text-align:center; color:#c0392b; flex-shrink:0;">🚨 신고 내역 목록</div>
             <div class="players-list-area" id="reports-list-container" style="flex:1;"></div>
         </div>
     </div>
@@ -934,7 +937,7 @@
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
-            <div style="font-size:22px; font-weight:900; text-align:center; margin-bottom:6px;">⚽ 볼 선택하기</div>
+            <div style="font-size:22px; font-weight:900; text-align:center; margin-bottom:6px; flex-shrink:0;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
@@ -1226,7 +1229,6 @@
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                // 화려하고 다채로운 사운드 추가 (트라이앵글 + 사인파 오실레이터 듀얼 연주)
                 let osc1 = ctx.createOscillator();
                 let osc2 = ctx.createOscillator();
                 let gain = ctx.createGain();
@@ -1368,7 +1370,7 @@
         function checkNameRegisteredOrBlock() {
             const savedName = localStorage.getItem('lily_game_user_name');
             if (!savedName) {
-                showToast('이름을 등록하시요');
+                showToast('이름을 등록하세요');
                 document.getElementById('name-input-modal').classList.remove('hidden');
                 return false;
             }
@@ -1405,6 +1407,9 @@
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
                 document.getElementById('name-input-modal').classList.add('hidden');
+                
+                // 접속 하자마자 플레이어 목록 바로 띄우기 요청 반영
+                openPlayersModal();
             }
 
             checkMaintenanceStatus();
@@ -1461,6 +1466,9 @@
             loadChatLogs();
             updateOnlineOfflineCounts();
             renderAdminPlayersList();
+
+            // 이름 등록 직후에도 플레이어 목록 바로 띄우기
+            openPlayersModal();
         }
 
         function handleProfileClick() {
@@ -2084,8 +2092,8 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0 };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0 };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {} };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {} };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -2236,6 +2244,7 @@
             p1.skeletons = [];
             p1.arrows = [];
             p1.arrowTimer = 0;
+            p1.lastHitMap = {};
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
@@ -2246,6 +2255,7 @@
             p2.skeletons = [];
             p2.arrows = [];
             p2.arrowTimer = 0;
+            p2.lastHitMap = {};
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2323,7 +2333,7 @@
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
-            showToast(`${caster.name}의 한글 세종 공격 발동! (오른쪽/왼쪽/가운데) 🇰🇷`);
+            showToast(`${caster.name}의 한글 세종 공격 발동! (3배 넓은 범위) 🇰🇷`);
             playSkillSuperSound();
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
@@ -2331,28 +2341,20 @@
             let startX = caster.x;
             let startY = caster.y;
 
-            // ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 모든 글자를 오른쪽, 왼쪽, 가운데 세 방향으로 분산 발사
+            // 주위 3배 더 넓게 퍼지도록 오프셋 및 속도 스케일링, 조금 느리게 설정
             chars.forEach((ch, idx) => {
-                // 발사 각도 세팅: 오른쪽, 왼쪽, 가운데 정면 등 다채로운 방향으로 퍼짐
-                let spreadType = idx % 3; // 0: 정면/가운데, 1: 오른쪽 대각선, 2: 왼쪽 대각선
-                let baseAngle = Math.atan2(enemy.y - startY, enemy.x - startX);
-                let angleOffset = 0;
-
-                if (spreadType === 1) angleOffset = -0.45; // 오른쪽 치우침
-                else if (spreadType === 2) angleOffset = 0.45; // 왼쪽 치우침
-
-                let finalAngle = baseAngle + angleOffset;
-                let speed = 4.2 + (idx % 3) * 0.5;
+                let angle = (idx / chars.length) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
+                let speed = 2.0 + Math.random() * 0.8; // 기존보다 느리게 조정
 
                 moneyItems.push({
                     x: startX,
                     y: startY,
-                    vx: Math.cos(finalAngle) * speed,
-                    vy: Math.sin(finalAngle) * speed,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
                     char: ch,
                     target: enemy,
                     radius: 17,
-                    damage: 3, // 1개당 데미지 3 요청 반영
+                    damage: 4, // 1개당 데미지 4 요청 반영
                     isLetter: true,
                     owner: caster === p1 ? 'p1' : 'p2',
                     color: (caster === p1) ? '#1e90ff' : '#e74c3c',
@@ -2548,19 +2550,25 @@
                         let enemy = (m.owner === 'p1') ? p2 : p1;
                         let dist = Math.hypot(enemy.x - m.x, enemy.y - m.y);
                         if (dist < enemy.radius + m.radius) {
-                            enemy.hp = Math.max(0, enemy.hp - m.damage);
-                            moneyItems.splice(i, 1);
-                            playHitSound();
-                            updateHpBars();
+                            // 0.5초(500ms) 연속 공격 방지 로직 적용
+                            let hitKey = m.char;
+                            let lastHitTime = enemy.lastHitMap[hitKey] || 0;
+                            if (nowTimestamp - lastHitTime >= 500) {
+                                enemy.lastHitMap[hitKey] = nowTimestamp;
+                                enemy.hp = Math.max(0, enemy.hp - m.damage); // 데미지 4
+                                playHitSound();
+                                updateHpBars();
 
-                            if (enemy.hp <= 0) {
-                                isGaming = false;
-                                if (gameInterval) clearInterval(gameInterval);
-                                setTimeout(() => {
-                                    showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
-                                    exitMatch();
-                                }, 100);
+                                if (enemy.hp <= 0) {
+                                    isGaming = false;
+                                    if (gameInterval) clearInterval(gameInterval);
+                                    setTimeout(() => {
+                                        showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
+                                        exitMatch();
+                                    }, 100);
+                                }
                             }
+                            moneyItems.splice(i, 1);
                         }
                     } else if (m.isChoco) {
                         if ((nowTimestamp - m.spawnTime) > 8000) {
