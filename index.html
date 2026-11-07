@@ -90,7 +90,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (확대 설정 연동) */
+        /* 메인 컨테이너 (기본 확대 50 연동) */
         .app-container {
             width: 100vw;
             max-width: 580px;
@@ -101,7 +101,7 @@
             position: relative;
             z-index: 10;
             padding: 0 6px;
-            transform: scale(1.15);
+            transform: scale(1.65);
             transform-origin: center center;
             transition: transform 0.2s ease;
         }
@@ -794,7 +794,7 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~150) -->
+    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~150, 기본값 50) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -817,11 +817,11 @@
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔍 화면 확대 (0 ~ 150)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="zoom-input-box" value="0" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
+                        <input type="text" id="zoom-input-box" value="50" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="150" value="0" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="50" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
             </div>
 
             <!-- 설정 저장하기 버튼 -->
@@ -988,7 +988,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~150)
+        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~150, 기본값 50)
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1005,8 +1005,8 @@
 
             let savedZoom = localStorage.getItem('lily_game_zoom_scale');
             if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 150) {
-                savedZoom = '0';
-                localStorage.setItem('lily_game_zoom_scale', '0');
+                savedZoom = '50';
+                localStorage.setItem('lily_game_zoom_scale', '50');
             }
             let z = parseInt(savedZoom);
             if (z < 0) z = 0;
@@ -1059,8 +1059,8 @@
             let val = parseInt(box.value);
             if (isNaN(val)) {
                 showToast('숫자만 입력해 주세요! (0~150)');
-                box.value = '0';
-                val = 0;
+                box.value = '50';
+                val = 50;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
@@ -1079,7 +1079,7 @@
         }
 
         function applyZoomScale(numVal) {
-            let scaleFactor = 1.15 + (numVal / 150) * 1.5;
+            let scaleFactor = 1.0 + (numVal / 150) * 1.0;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
         }
 
@@ -1109,7 +1109,7 @@
             } catch(e) {}
         }
 
-        // 1. 공과 공끼리 부딪히는 타격음 (이상하지 않고 박진감 넘치는 소리)
+        // 공과 공끼리 부딪히는 타격음
         function playHitSound() {
             try {
                 let ctx = getAudioContext();
@@ -1127,7 +1127,7 @@
             } catch(e) {}
         }
 
-        // 2. 경기장 벽에 부딪히는 소리 (텅텅 울리는 통통 튀는 사운드)
+        // 경기장 벽에 부딪히는 소리
         function playWallSound() {
             try {
                 let ctx = getAudioContext();
@@ -1145,11 +1145,10 @@
             } catch(e) {}
         }
 
-        // 3. 스켈레톤 화살 발사 소리 (마인크래프트 스켈레톤 활 쏘는 느낌 변형)
+        // 스켈레톤 화살 발사 소리
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
-                // 노이즈 버스트 + 피치 하락으로 활시위 튕기는 느낌 구현
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
@@ -1164,7 +1163,7 @@
             } catch(e) {}
         }
 
-        // 4. 초콜릿이 땅에 닿을 때 '탁!' 소리
+        // 초콜릿이 땅에 닿을 때 '탁!' 소리
         function playChocolateLandSound() {
             try {
                 let ctx = getAudioContext();
@@ -1182,13 +1181,12 @@
             } catch(e) {}
         }
 
-        // 5. 초콜릿을 먹는 효과음 ("드~ 뜨!")
+        // 초콜릿을 먹는 효과음 ("드~ 뜨!")
         function playChocolateEatSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
 
-                // '드~' (낮고 부드러운 음)
                 let osc1 = ctx.createOscillator();
                 let gain1 = ctx.createGain();
                 osc1.type = 'sine';
@@ -1201,7 +1199,6 @@
                 osc1.start(now);
                 osc1.stop(now + 0.12);
 
-                // '뜨!' (높고 톡 쏘는 음)
                 let osc2 = ctx.createOscillator();
                 let gain2 = ctx.createGain();
                 osc2.type = 'triangle';
@@ -1972,16 +1969,16 @@
             ctx.save();
             ctx.clip();
 
-            if (ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete) {
+            if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete) {
                 ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
             } else {
-                ctx.fillStyle = ballObj.color || '#999999';
+                ctx.fillStyle = (ballObj && ballObj.color) || '#999999';
                 ctx.fill();
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 12px sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText(ballObj.name, x, y);
+                ctx.fillText((ballObj && ballObj.name) || '', x, y);
             }
             ctx.restore();
 
@@ -2056,7 +2053,6 @@
                         if (p1.skillTimer <= 0) {
                             p1.skillTimer = 10.0;
                             if (p1.name === '미스터비스트') {
-                                // 1초 동안 멈춰 서서 초콜릿 투척 시전
                                 p1.isCastingSkill = true;
                                 p1.skillAnimTimer = 1.0;
                             } else if (p1.name === 'JINO') {
@@ -2143,7 +2139,6 @@
         }
 
         function spawnChocolate(ownerPlayer) {
-            // 아무 곳이나 땅에 초콜릿 2개 생성 후 '탁!' 소리 재생
             for (let i = 0; i < 2; i++) {
                 let mx = Math.random() * 380 + 35;
                 let my = Math.random() * 380 + 35;
@@ -2198,7 +2193,6 @@
 
         function runGameLoop() {
             if (isGaming) {
-                // 미스터비스트가 초콜릿 던지는 중(isCastingSkill)일 때는 제자리에 멈춰 서서 모션 유지
                 if (!p1.isCastingSkill) {
                     p1.x += p1.vx; 
                     p1.y += p1.vy;
@@ -2266,7 +2260,6 @@
                     }
                 });
 
-                // 초콜릿 아이템 먹기 로직 ("드~ 뜨!" 효과음 재생)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.owner === 'p1') {
@@ -2377,8 +2370,9 @@
                 });
 
                 drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
-                drawBall(p2.x, p2.y, p2.radius, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
-                // 만약 p1이 스킬(초콜릿 던지기) 시전 중일 때 머리 위에 모션 텍스트 표시
+                // 오른쪽 공 그리기 오류(undefined 문제) 수정 완료
+                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
+
                 if (p1.isCastingSkill) {
                     ctx.save();
                     ctx.fillStyle = "#e67e22";
