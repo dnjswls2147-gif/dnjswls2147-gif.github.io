@@ -1970,9 +1970,9 @@
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg' },
+            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg', color: '#f1c40f' },
             { name: '본이', hp: 250, color: '#e67e22' },
-            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
+            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg', color: '#8e44ad' }
         ];
 
         const loadedImages = {};
@@ -1998,7 +1998,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 공 속도 살짝 상향 (3.2 -> 3.6) 및 공 크기(radius) 29로 살짝 증가
+        // 공 속도 (3.6) 및 공 크기(radius) 29
         const FIXED_SPEED = 3.6;
 
         let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [] };
@@ -2101,13 +2101,13 @@
             ctx.save();
             ctx.clip();
 
-            if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete) {
+            if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
                 ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
             } else {
-                ctx.fillStyle = (ballObj && ballObj.color) || '#999999';
+                ctx.fillStyle = (ballObj && ballObj.color) || '#7f8c8d';
                 ctx.fill();
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 12px sans-serif";
+                ctx.font = "bold 11px sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillText((ballObj && ballObj.name) || '', x, y);
@@ -2200,7 +2200,6 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // P1 스킬 타이머
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p1.name)) {
                     p1.skillTimer -= 1;
                     let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 5);
@@ -2222,7 +2221,6 @@
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                // P2 스킬 타이머
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p2.name)) {
                     p2.skillTimer -= 1;
                     let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 5);
@@ -2268,31 +2266,22 @@
             }, 1000);
         }
 
-        // 왕클세종 스킬: 1초 미리 예고(경고 상자) 후 텍스트 네모 격자로 발사 (글자당 8 데미지)
         function triggerWangklSejongSkill(caster, enemy) {
             showToast(`${caster.name}의 한글 세종 스킬 준비! 🇰🇷`);
             
-            // 상대방이 있는 방향 계산 (좌측에서 쏘면 오른쪽, 우측에서 쏘면 왼쪽)
-            let isLeft = (caster.x < canvas.width / 2);
-            let targetX = isLeft ? enemy.x : enemy.x;
+            let targetX = enemy.x;
             let targetY = enemy.y;
 
-            // 1초 미리 보여줄 경고 영역 데이터 생성
             let warningObj = {
                 x: targetX - 55,
                 y: targetY - 65,
                 width: 110,
                 height: 130,
-                startTime: Date.now(),
-                caster: caster,
-                enemy: enemy,
-                isLeft: isLeft
+                startTime: Date.now()
             };
             caster.textWarnings.push(warningObj);
 
-            // 1초 뒤에 실제로 네모 형태의 텍스트 탄막 발사
             setTimeout(() => {
-                // 경고 제거
                 caster.textWarnings = caster.textWarnings.filter(w => w !== warningObj);
                 if (!isGaming) return;
 
@@ -2304,7 +2293,6 @@
                 lines.forEach((lineText, rIdx) => {
                     for (let cIdx = 0; cIdx < lineText.length; cIdx++) {
                         let char = lineText[cIdx];
-                        // 네모난 격자 배치 간격
                         let offsetX = (cIdx - 1) * 22;
                         let offsetY = (rIdx - 2) * 22;
 
@@ -2316,7 +2304,7 @@
                             char: char,
                             target: enemy,
                             radius: 14,
-                            damage: 8 // 글자 1개당 8 데미지
+                            damage: 8
                         });
                     }
                 });
@@ -2508,7 +2496,6 @@
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
                 });
 
-                // 왕클세종 텍스트 탄막 업데이트 (글자당 8 데미지)
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
                         let tp = pair.shooter.textProjectiles[i];
@@ -2691,7 +2678,6 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 왕클세종 1초 미리 보여주는 경고 이펙트 렌더링
                 [p1, p2].forEach(player => {
                     player.textWarnings.forEach(w => {
                         ctx.save();
@@ -2738,7 +2724,6 @@
                         ctx.restore();
                     });
 
-                    // 왕클세종 텍스트 탄막 렌더링
                     player.textProjectiles.forEach(tp => {
                         ctx.save();
                         ctx.font = "bold 20px sans-serif";
