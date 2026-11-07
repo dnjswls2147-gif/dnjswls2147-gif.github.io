@@ -40,9 +40,9 @@
             width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 10px 15px;
+            padding: 8px 12px;
             z-index: 99999;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             display: none;
             border-bottom: 4px solid #000;
         }
@@ -50,14 +50,14 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 820px;
+            max-width: 760px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .banner-notice-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 900;
             text-align: center;
             line-height: 1.3;
@@ -66,19 +66,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             width: 100%;
         }
         .vote-options-row {
             display: flex;
             gap: 6px;
             width: 100%;
-            margin-top: 4px;
+            margin-top: 2px;
         }
         .btn-vote-opt {
             flex: 1;
-            padding: 8px 4px;
-            font-size: 14px;
+            padding: 6px 4px;
+            font-size: 13px;
             font-weight: 900;
             border: 3px solid #000000;
             color: #ffffff;
@@ -90,30 +90,31 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (여백 최소화) */
+        /* 메인 컨테이너 (화면 가득 채우기 위해 크기 및 여백 최적화) */
         .app-container {
             width: 100vw;
-            max-width: 820px;
+            max-width: 760px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 0;
-            margin: 0;
+            padding: 0 10px;
+            transform: scale(1.02);
+            transform-origin: center center;
         }
 
         /* 프로필 & 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
-            max-width: 800px;
+            max-width: 720px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
             padding: 0;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             z-index: 1000;
         }
 
@@ -124,50 +125,53 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 38px;
+            font-size: 34px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 900;
             color: #000000;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
-        /* 릴리 전용 어드민 아이콘 (위로 많이 끌어올림) */
+        /* 릴리 전용 어드민 아이콘 (시작하기 버튼 바로 밑에 위치) */
         .admin-entry-box {
-            position: fixed;
-            bottom: 75px;
-            left: 15px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
+            gap: 6px;
             cursor: pointer;
             z-index: 1000;
-            padding: 6px;
+            padding: 4px 8px;
+            background: #f1f2f6;
+            border: 3px solid #000;
+            border-radius: 6px;
+            margin-top: 6px;
+            align-self: flex-start;
+            box-shadow: 0 2px 0 #000;
         }
         .admin-icon {
-            font-size: 36px;
+            font-size: 22px;
             line-height: 1;
         }
         .admin-label {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 900;
             color: #333333;
-            margin-top: 2px;
         }
 
         /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.92);
             color: #ffffff;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 30px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 900;
             z-index: 100000;
             opacity: 0;
@@ -181,12 +185,12 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 800px 설정 */
+        /* 경기장 크기 720px 설정 (화면 꽉 차게 확대) */
         .arena-frame {
-            width: 800px;
-            height: 800px;
-            max-width: 96vw;
-            max-height: 68vh;
+            width: 720px;
+            height: 720px;
+            max-width: 95vw;
+            max-height: 62vh;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -202,26 +206,26 @@
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
             width: 100%;
-            max-width: 800px;
+            max-width: 720px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 14px 0;
+            padding: 12px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -236,10 +240,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 6px;
+            margin-top: 4px;
             width: 100%;
-            padding: 16px 0;
-            font-size: 21px;
+            padding: 14px 0;
+            font-size: 20px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 8px;
@@ -267,7 +271,7 @@
         }
         .status-row-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .player-status-card {
@@ -276,7 +280,7 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             margin-bottom: 2px;
             white-space: nowrap;
@@ -288,7 +292,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 26px;
+            height: 24px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -309,15 +313,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 12px;
+            font-size: 11px;
             text-shadow: 2px 2px 3px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 16px;
+            height: 15px;
             background: #cccccc;
             border: 2px solid #000000;
-            margin-top: 3px;
+            margin-top: 2px;
             position: relative;
             overflow: hidden;
         }
@@ -333,7 +337,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 900;
             color: #000;
         }
@@ -354,7 +358,6 @@
         .modal-overlay.hidden { display: none !important; }
         .modal-overlay > * { pointer-events: auto; }
 
-        /* 아이콘 클릭 화면 1.7배 확대 적용 */
         .picker-modal-box {
             width: 94vw;
             max-width: 750px;
@@ -427,7 +430,6 @@
             z-index: 100000;
         }
 
-        /* 전체 채팅 팝업 스타일 (1.7배 확대) */
         .chat-floating-window {
             position: fixed;
             left: 50%;
@@ -679,12 +681,6 @@
     <!-- 화면 상단 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
-    <!-- 릴리 전용 어드민 아이콘 -->
-    <div class="admin-entry-box" id="btn-admin-entry" onclick="playClickSound(); openAdminPrompt();">
-        <div class="admin-icon">🚫</div>
-        <div class="admin-label">릴리 전용</div>
-    </div>
-
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
@@ -700,9 +696,9 @@
             </div>
         </div>
 
-        <!-- 경기장 뷰포트 (800px) -->
+        <!-- 경기장 뷰포트 (720px) -->
         <div class="arena-frame">
-            <canvas id="gameCanvas" width="800" height="800"></canvas>
+            <canvas id="gameCanvas" width="720" height="720"></canvas>
         </div>
 
         <!-- 로비 및 컨트롤 영역 -->
@@ -745,6 +741,12 @@
                     </div>
                 </div>
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
+            </div>
+
+            <!-- 릴리 전용 어드민 아이콘 (시작하기 버튼 바로 아래 왼쪽 정렬) -->
+            <div class="admin-entry-box" id="btn-admin-entry" onclick="playClickSound(); openAdminPrompt();">
+                <div class="admin-icon">🚫</div>
+                <div class="admin-label">릴리 전용</div>
             </div>
         </div>
 
@@ -1427,7 +1429,7 @@
             banner.innerHTML = `
                 <div class="banner-inner-content">
                     <div class="banner-vote-container">
-                        <div style="font-size:18px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
+                        <div style="font-size:16px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
                         <div class="vote-options-row">
                             <button class="btn-vote-opt btn-vote-red" onclick="playClickSound(); castVote(1);">
                                 1. ${voteOpt1Text} [${voteCount1}명 고름]
@@ -1593,8 +1595,8 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 200, y: 400, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
-        let p2 = { x: 600, y: 400, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p1 = { x: 200, y: 360, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
+        let p2 = { x: 520, y: 360, radius: 28, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, skeletons: [], arrows: [] };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1672,11 +1674,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(220, 400, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
+                drawBall(200, 360, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(580, 400, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
+                drawBall(520, 360, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
             }
         }
 
@@ -1731,7 +1733,7 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
-            p1.x = 220; p1.y = 400;
+            p1.x = 200; p1.y = 360;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
             p1.skillTimer = 10.0;
@@ -1740,7 +1742,7 @@
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
-            p2.x = 580; p2.y = 400;
+            p2.x = 520; p2.y = 360;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
             p2.skillTimer = 10.0;
@@ -1802,8 +1804,8 @@
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
             for (let i = 0; i < 2; i++) {
-                let rx = Math.random() * 700 + 50;
-                let ry = Math.random() * 700 + 50;
+                let rx = Math.random() * 620 + 50;
+                let ry = Math.random() * 620 + 50;
                 ownerPlayer.skeletons.push({ x: rx, y: ry, target: targetOwnerStr });
             }
             showToast(`${ownerPlayer.name}의 스켈레톤 2마리 소환!`);
@@ -1827,8 +1829,8 @@
 
         function spawnMoney(owner) {
             for (let i = 0; i < 2; i++) {
-                let mx = Math.random() * 700 + 50;
-                let my = Math.random() * 700 + 50;
+                let mx = Math.random() * 620 + 50;
+                let my = Math.random() * 620 + 50;
                 moneyItems.push({ x: mx, y: my, radius: 20, owner: owner });
             }
         }
