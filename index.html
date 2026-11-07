@@ -106,7 +106,7 @@
             transition: transform 0.2s ease;
         }
 
-        /* 프로필, 전체 채팅 아이콘 바 (경기장 설정 삭제됨) */
+        /* 프로필, 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
             max-width: 450px;
@@ -308,6 +308,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         .player-name-label {
             font-size: 15px;
@@ -396,6 +397,25 @@
         }
         .choco-segment.filled {
             background: #2ecc71 !important;
+        }
+
+        /* 체력 회복 시 초록색 ➕️➕️ 플로팅 애니메이션 효과 */
+        @keyframes floatPlusAnim {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
+        }
+        .healing-popup-text {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #2ecc71;
+            font-size: 20px;
+            font-weight: 900;
+            text-shadow: 1px 1px 2px #000;
+            pointer-events: none;
+            animation: floatPlusAnim 0.8s ease-out forwards;
+            z-index: 500;
         }
 
         /* 일반 모달 공통 스타일 */
@@ -723,7 +743,6 @@
             }
         })();
 
-        // 모바일 제스처 확대/축소 및 스크롤 원천 차단
         document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
         document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
         document.addEventListener('gestureend', function(e) { e.preventDefault(); });
@@ -741,7 +760,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 전체 채팅 메뉴 바 (경기장 설정 삭제됨) -->
+        <!-- 프로필, 전체 채팅 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
@@ -776,18 +795,18 @@
             <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
                 <div class="ingame-status-panel">
                     <div class="status-row-group">
-                        <div class="player-status-card">
+                        <div class="player-status-card" id="p1-status-card-container">
                             <div class="player-name-label player-name-p1" id="p1-name-txt">동룡쓰</div>
                             <div class="hp-bar-outer">
                                 <div class="hp-bar-inner" id="p1-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p1-hp-txt">250 / 250</div>
                             </div>
-                            <!-- 미스터 비스트 기술 충전중 게이지 바 (10초마다 초콜릿 2개 던지는 기술) -->
+                            <!-- 미스터 비스트 기술 충전중 게이지 바 -->
                             <div class="sub-gauge-bar" id="p1-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p1-gauge-txt">기술 없음</div>
                             </div>
-                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 (그 밑에 추가) -->
+                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
                             <div class="choco-segment-box" id="p1-choco-segments" style="display:none;">
                                 <div class="choco-segment" id="p1-ch-0"></div>
                                 <div class="choco-segment" id="p1-ch-1"></div>
@@ -796,18 +815,18 @@
                                 <div class="choco-segment" id="p1-ch-4"></div>
                             </div>
                         </div>
-                        <div class="player-status-card">
+                        <div class="player-status-card" id="p2-status-card-container">
                             <div class="player-name-label player-name-p2" id="p2-name-txt">미스터비스트</div>
                             <div class="hp-bar-outer">
                                 <div class="hp-bar-inner" id="p2-hp-fill"></div>
                                 <div class="hp-text-overlay" id="p2-hp-txt">250 / 250</div>
                             </div>
-                            <!-- 미스터 비스트 기술 충전중 게이지 바 (10초마다 초콜릿 2개 던지는 기술) -->
+                            <!-- 미스터 비스트 기술 충전중 게이지 바 -->
                             <div class="sub-gauge-bar" id="p2-sub-bar-wrapper">
                                 <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
                                 <div class="sub-gauge-text" id="p2-gauge-txt">기술 없음</div>
                             </div>
-                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 (그 밑에 추가) -->
+                            <!-- 미스터 비스트 5칸 초콜릿 게이지 바 -->
                             <div class="choco-segment-box" id="p2-choco-segments" style="display:none;">
                                 <div class="choco-segment" id="p2-ch-0"></div>
                                 <div class="choco-segment" id="p2-ch-1"></div>
@@ -839,7 +858,7 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (경기장 설정 삭제됨) -->
+    <!-- 게임 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
@@ -907,23 +926,17 @@
         </div>
     </div>
 
-    <!-- 내 프로필 정보 팝업 창 (⬛️ 네모 아이콘 및 색상 선택 기능 추가) -->
+    <!-- 내 프로필 정보 팝업 창 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal();">✕</button>
-            
-            <!-- 👤 아이콘 대신 ⬛️ 네모난 아이콘 (색상 지정 가능) -->
             <div id="my-profile-square-icon" style="width:55px; height:55px; background:#2c3e50; border:4px solid #000; border-radius:6px; margin-bottom:10px; box-shadow:0 3px 0 #000;"></div>
-            
             <div style="font-size:24px; font-weight:900; margin-bottom:14px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">내 프로필</div>
             <div style="font-size:20px; font-weight:900; margin-bottom:10px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            
-            <!-- 색상 선택 팔레트 (빨주노초파남보 등 모든 색상 선택 가능) -->
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
                 <span style="font-size:16px; font-weight:900;">아이콘 색상:</span>
                 <input type="color" id="profile-color-picker" value="#2c3e50" style="width:45px; height:32px; border:3px solid #000; cursor:pointer; background:none; outline:none;" onchange="changeProfileColor(this.value)">
             </div>
-
             <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
                 <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
@@ -932,7 +945,7 @@
         </div>
     </div>
 
-    <!-- 다른 사람 프로필 확인용 팝업 창 (신고 버튼 포함) -->
+    <!-- 다른 사람 프로필 확인용 팝업 창 -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
@@ -1007,7 +1020,6 @@
                 어드민 패널을 사용하세요
             </div>
 
-            <!-- 서버 점검 관리 -->
             <div class="admin-section-box" style="background: #e8f8f5; border-color: #16a085;">
                 <div class="admin-section-title" style="color: #16a085;">🛠️ 서버 점검 관리</div>
                 <div class="admin-btn-group">
@@ -1062,7 +1074,6 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1090,7 +1101,6 @@
             document.getElementById('zoom-input-box').value = z;
             applyZoomScale(z);
 
-            // 프로필 색상 불러오기
             let savedColor = localStorage.getItem('lily_game_profile_color') || '#2c3e50';
             document.getElementById('profile-color-picker').value = savedColor;
             applyProfileColorUI(savedColor);
@@ -1179,7 +1189,7 @@
             document.getElementById('settings-modal').classList.add('hidden');
         }
 
-        // UI 클릭 효과음
+        // UI 효과음
         function playClickSound() {
             try {
                 let ctx = getAudioContext();
@@ -1197,7 +1207,7 @@
             } catch(e) {}
         }
 
-        // 타격음
+        // 일반 타격음
         function playHitSound() {
             try {
                 let ctx = getAudioContext();
@@ -1269,35 +1279,45 @@
             } catch(e) {}
         }
 
-        // 초콜릿 먹는 소리
-        function playChocolateEatSound() {
+        // 초콜릿 먹을 때 회복 효과음 (청량하고 밝은 사운드)
+        function playHealSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.2); // C6
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch(e) {}
+        }
 
-                let osc1 = ctx.createOscillator();
-                let gain1 = ctx.createGain();
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(330, now);
-                osc1.frequency.exponentialRampToValueAtTime(440, now + 0.12);
-                gain1.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start(now);
-                osc1.stop(now + 0.12);
-
-                let osc2 = ctx.createOscillator();
-                let gain2 = ctx.createGain();
-                osc2.type = 'triangle';
-                osc2.frequency.setValueAtTime(660, now + 0.12);
-                osc2.frequency.exponentialRampToValueAtTime(880, now + 0.25);
-                gain2.gain.setValueAtTime(0.45 * soundVolume, now + 0.12);
-                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.start(now + 0.12);
-                osc2.stop(now + 0.25);
+        // 초콜릿 3개 상대 공 폭발 시 크고 웅장한 폭발 효과음
+        function playBigExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                
+                // 저음 노이즈/오실레이터 폭발음
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+                
+                gain.gain.setValueAtTime(0.8 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.45);
             } catch(e) {}
         }
 
@@ -2150,6 +2170,11 @@
                 return;
             }
 
+            // 시작할 때 모든 상태 철저히 초기화 (이전 경기 데이터 이어지지 않도록 완벽 분리)
+            if (gameInterval) clearInterval(gameInterval);
+            moneyItems = [];
+            homingProjectiles = [];
+
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
@@ -2170,9 +2195,6 @@
             p2.arrows = [];
             p2.chocoCount = 0;
 
-            moneyItems = [];
-            homingProjectiles = [];
-
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
 
@@ -2190,7 +2212,6 @@
             updateChocoDisplay('p1', p1.chocoCount);
             updateChocoDisplay('p2', p2.chocoCount);
 
-            if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
@@ -2201,7 +2222,7 @@
                     if (p1.skillTimer <= 0) {
                         p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
-                            spawnChocolateSlowly(p1, 2); // 10초마다 초콜릿 2개 던지기
+                            spawnChocolateSlowly(p1, 2); // 10초마다 초콜릿 2개 투입
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
                         }
@@ -2221,7 +2242,7 @@
                     if (p2.skillTimer <= 0) {
                         p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
-                            spawnChocolateSlowly(p2, 2); // 10초마다 초콜릿 2개 던지기
+                            spawnChocolateSlowly(p2, 2); // 10초마다 초콜릿 2개 투입
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
                         }
@@ -2247,8 +2268,8 @@
             const chocoBox = document.getElementById(sidePrefix + '-choco-segments');
 
             if (player.name === '미스터비스트') {
-                subBarWrapper.style.display = 'block'; // 미스터비스트 기술 충전중 게이지 바 표시
-                chocoBox.style.display = 'flex';       // 5칸 초콜릿 게이지 바 표시
+                subBarWrapper.style.display = 'block';
+                chocoBox.style.display = 'flex';
             } else if (player.name === 'JINO') {
                 subBarWrapper.style.display = 'block';
                 chocoBox.style.display = 'none';
@@ -2271,13 +2292,19 @@
             }
         }
 
+        // 스켈레톤 (6초 지나면 소멸, 데미지 15)
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
             for (let i = 0; i < 2; i++) {
                 let rx = Math.random() * (canvas.width - 60) + 30;
                 let ry = Math.random() * (canvas.height - 60) + 30;
-                ownerPlayer.skeletons.push({ x: rx, y: ry, target: targetOwnerStr });
+                ownerPlayer.skeletons.push({
+                    x: rx,
+                    y: ry,
+                    target: targetOwnerStr,
+                    spawnTime: Date.now() // 생성 시간 기록 (6초 디스폰용)
+                });
             }
-            showToast(`${ownerPlayer.name}의 스켈레톤 2마리 소환!`);
+            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (6초 후 소멸)`);
         }
 
         function triggerSkeletonsShoot(shooterPlayer, enemyPlayer) {
@@ -2297,6 +2324,7 @@
             }
         }
 
+        // 초콜릿 투입 (5초 지나면 디스폰)
         function spawnChocolateSlowly(ownerPlayer, count) {
             for (let i = 0; i < count; i++) {
                 let targetX = Math.random() * (canvas.width - 60) + 30;
@@ -2309,15 +2337,16 @@
                     radius: 18,
                     owner: ownerPlayer === p1 ? 'p1' : 'p2',
                     isLanding: true,
-                    progress: 0
+                    progress: 0,
+                    spawnTime: Date.now() // 5초 디스폰용
                 });
             }
-            showToast(`${ownerPlayer.name}가 초콜릿 ${count}개를 투척했습니다! 🍫`);
+            showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
         }
 
         function triggerHomingChocolates(ownerPlayer, enemyPlayer) {
             const sidePrefix = ownerPlayer === p1 ? 'p1' : 'p2';
-            showToast(`${ownerPlayer.name}가 초콜릿 5개를 모아 초콜릿 3개 투척! 🍫🔥`);
+            showToast(`${ownerPlayer.name}가 초콜릿 5개를 모아 유도 공격! 🍫🔥`);
             
             for (let i = 0; i < 3; i++) {
                 homingProjectiles.push({
@@ -2377,8 +2406,25 @@
             document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
         }
 
+        // 체력 회복 시 초록색 ➕️➕️ 플로팅 애니메이션 효과 표시
+        function showHealingAnimation(sidePrefix) {
+            const cardContainer = document.getElementById(sidePrefix + '-status-card-container');
+            if (!cardContainer) return;
+
+            const popup = document.createElement('div');
+            popup.className = 'healing-popup-text';
+            popup.innerText = '➕️➕️';
+            cardContainer.appendChild(popup);
+
+            setTimeout(() => {
+                popup.remove();
+            }, 800);
+        }
+
         function runGameLoop() {
             if (isGaming) {
+                const nowTimestamp = Date.now();
+
                 p1.x += p1.vx; 
                 p1.y += p1.vy;
                 p2.x += p2.vx; 
@@ -2412,6 +2458,11 @@
                     playWallSound();
                 }
 
+                // 스켈레톤 만료 체크 (6초 지나면 소멸)
+                [p1, p2].forEach(player => {
+                    player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
+                });
+
                 // JINO 스켈레톤 화살 업데이트 (15 데미지)
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
@@ -2443,7 +2494,7 @@
                     }
                 });
 
-                // 미스터 비스트 유도 초콜릿 업데이트 (데미지 20)
+                // 미스터 비스트 유도 초콜릿 업데이트 (폭발 효과음 적용, 데미지 20)
                 for (let i = homingProjectiles.length - 1; i >= 0; i--) {
                     let hp = homingProjectiles[i];
                     let target = hp.target;
@@ -2456,7 +2507,7 @@
                     let dist = Math.hypot(target.x - hp.x, target.y - hp.y);
                     if (dist < target.radius + hp.radius) {
                         target.hp = Math.max(0, target.hp - 20);
-                        playHitSound();
+                        playBigExplosionSound(); // 웅장한 폭발 효과음 재생!
                         updateHpBars();
                         homingProjectiles.splice(i, 1);
 
@@ -2471,7 +2522,9 @@
                     }
                 }
 
-                // 초콜릿 먹기 로직 (회복 15)
+                // 초콜릿 아이템 (5초 지나면 디스폰, 회복 20, ➕️➕️ 모션 및 효과음)
+                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 5000);
+
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLanding) {
@@ -2486,8 +2539,9 @@
                         if (m.owner === 'p1' && p1.name === '미스터비스트') {
                             let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                             if (dist1 < p1.radius + m.radius) {
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 15);
-                                playChocolateEatSound();
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 20); // 회복 20
+                                playHealSound();
+                                showHealingAnimation('p1'); // 초록색 ➕️➕️ 애니메이션
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
 
@@ -2503,8 +2557,9 @@
                         if (m.owner === 'p2' && p2.name === '미스터비스트') {
                             let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
                             if (dist2 < p2.radius + m.radius) {
-                                p2.hp = Math.min(p2.maxHp, p2.hp + 15);
-                                playChocolateEatSound();
+                                p2.hp = Math.min(p2.maxHp, p2.hp + 20); // 회복 20
+                                playHealSound();
+                                showHealingAnimation('p2'); // 초록색 ➕️➕️ 애니메이션
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
 
@@ -2596,8 +2651,17 @@
                     });
                 });
 
+                // 초콜릿 근처에 초록색 원형 오라/회전 링 렌더링
+                const rotAngle = (Date.now() / 200) % (Math.PI * 2);
                 moneyItems.forEach(m => {
                     ctx.save();
+                    // 초록색 회전 링 그리기
+                    ctx.beginPath();
+                    ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#2ecc71';
+                    ctx.stroke();
+
                     ctx.font = "26px sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
