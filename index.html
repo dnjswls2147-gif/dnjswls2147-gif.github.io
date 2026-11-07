@@ -19,12 +19,11 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100vh;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -87,15 +86,15 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (데스크톱 모드에서도 중앙 정렬 꽉 채움) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             position: relative;
             z-index: 10;
             padding: 15px 10px;
@@ -104,13 +103,13 @@
         /* 프로필 & 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
-            max-width: 440px;
+            max-width: 500px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
             padding: 4px 0;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             z-index: 1000;
         }
 
@@ -121,7 +120,7 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 40px;
+            font-size: 42px;
             line-height: 1;
         }
         .profile-label, .chat-label {
@@ -178,11 +177,11 @@
             opacity: 1;
         }
 
-        /* 데스크톱 모드에서도 큼직하고 시원하게 꽉 차는 정사각형 경기장 */
+        /* 경기장 꽉 채우기 */
         .arena-frame {
             width: 100%;
-            width: 440px;
-            height: 440px;
+            max-width: 500px;
+            height: 500px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -198,11 +197,11 @@
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
             width: 100%;
-            max-width: 440px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
@@ -334,19 +333,25 @@
             color: #000;
         }
 
-        /* 일반 모달 공통 스타일 */
+        /* 일반 모달 공통 스타일 (배경 어두움 제거) */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0); /* 배경 어둡지 않게 투명 처리 */
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99999;
+            pointer-events: none; /* 뒤로 터치가 통과되도록 하여 다른 버튼 조작 가능 */
             padding: 15px;
         }
         .modal-overlay.hidden { display: none !important; }
+        
+        /* 모달 박스 자체는 터치 가능하도록 설정 */
+        .modal-overlay > * {
+            pointer-events: auto;
+        }
 
         .picker-modal-box {
             width: 100%;
@@ -420,9 +425,9 @@
             z-index: 100000;
         }
 
-        /* 전체 채팅 팝업 스타일 */
+        /* 전체 채팅 팝업 스타일 (드래그 가능, 배경 어두움 없음) */
         .chat-floating-window {
-            position: absolute;
+            position: fixed;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -735,7 +740,7 @@
 
     </div>
 
-    <!-- 전체 채팅창 -->
+    <!-- 전체 채팅창 (자유 이동 가능) -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
             <div style="font-size:16px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
@@ -798,7 +803,7 @@
         </div>
     </div>
 
-    <!-- 볼 선택 모달 팝업창 -->
+    <!-- 볼 선택 모달 팝업창 (3번째 사진처럼 순서 나열 및 스크롤) -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
@@ -808,7 +813,7 @@
     </div>
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
-    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 200000;">
+    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:28px 18px; width:90%; max-width:380px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
             <div style="font-size:24px; font-weight:900; margin-bottom:16px; color:#000;">✍️ 이름 쓰기</div>
             <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:16px; font-size:20px; padding:14px;" onkeydown="if(event.key==='Enter') submitUserName()">
@@ -817,7 +822,7 @@
     </div>
 
     <!-- 어드민 비밀번호 입력 모달 -->
-    <div class="modal-overlay hidden" id="admin-password-modal">
+    <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:24px; width:90%; max-width:340px; text-align:center;">
             <div style="font-size:20px; font-weight:900; margin-bottom:14px;">🔒 릴리 전용 어드민</div>
             <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:14px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
@@ -979,7 +984,20 @@
             return uid;
         }
 
+        // 자정(오전 12시)이 지나면 채팅 초기화 기능
+        function checkMidnightReset() {
+            const todayStr = getFormattedToday();
+            let lastChatDate = localStorage.getItem('lily_game_last_chat_date');
+            if (!lastChatDate) {
+                localStorage.setItem('lily_game_last_chat_date', todayStr);
+            } else if (lastChatDate !== todayStr) {
+                localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
+                localStorage.setItem('lily_game_last_chat_date', todayStr);
+            }
+        }
+
         function updateHeartbeat() {
+            checkMidnightReset();
             const myUid = getDeviceUniqueId();
             localStorage.setItem('lily_game_ping_' + myUid, Date.now());
 
@@ -1004,18 +1022,17 @@
             if (e.key === 'lily_game_vote_data') {
                 applyVoteData(e.newValue);
             }
+            if (e.key === 'lily_game_players_list') {
+                updateOnlineOfflineCounts();
+            }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            checkMidnightReset();
             const myUid = getDeviceUniqueId();
             let savedName = localStorage.getItem('lily_game_user_name');
             let savedDate = localStorage.getItem('lily_game_login_date');
-            let lastResetDate = localStorage.getItem('lily_game_last_reset_date');
             const todayStr = getFormattedToday();
-
-            if (lastResetDate !== todayStr) {
-                localStorage.setItem('lily_game_last_reset_date', todayStr);
-            }
 
             if (!savedDate) {
                 savedDate = todayStr;
@@ -1049,7 +1066,7 @@
                 existing.date = date;
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
-            updateHeartbeat();
+            updateOnlineOfflineCounts();
         }
 
         function submitUserName() {
@@ -1084,6 +1101,7 @@
             document.getElementById('name-input-modal').classList.add('hidden');
             showToast(`환영합니다, ${inputVal}님!`);
             loadChatLogs();
+            updateOnlineOfflineCounts();
         }
 
         function openProfileModal() {
@@ -1433,7 +1451,7 @@
             showToast('투표가 완료되었습니다!');
         }
 
-        // 채팅창 드래그 이동
+        // 채팅창 드래그 이동 기능
         (function enableChatDrag() {
             const box = document.getElementById('chat-floating-box');
             const header = document.getElementById('chat-drag-header');
