@@ -364,7 +364,7 @@
             gap: 16px;
             margin-top: 20px;
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto !important;
             padding-right: 4px;
             touch-action: pan-y !important;
         }
@@ -398,7 +398,7 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.5);
         }
 
-        /* 10배 확대된 초대형 전체 채팅 팝업 스타일 */
+        /* 세로로 대폭 늘리고 스크로 가능한 전체 채팅 팝업 스타일 */
         .chat-modal-box {
             width: 98vw;
             max-width: 960px;
@@ -461,15 +461,15 @@
             font-weight: bold;
         }
 
-        /* 플레이어 목록 팝업 스타일 */
+        /* 플레이어 목록 팝업 스타일 (세로 스크롤 및 개별 삭제 버튼 포함) */
         .players-modal-box {
-            width: 94vw;
-            max-width: 580px;
-            height: 75vh;
-            max-height: 680px;
+            width: 96vw;
+            max-width: 680px;
+            height: 85vh;
+            max-height: 800px;
             background: #ffffff;
-            border: 8px solid #000000;
-            padding: 35px;
+            border: 9px solid #000000;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -477,30 +477,48 @@
         }
         .players-list-area {
             flex: 1;
-            border: 4px solid #000;
+            border: 5px solid #000;
             background: #f8f9fa;
-            margin-top: 18px;
-            padding: 18px;
+            margin-top: 20px;
+            padding: 20px;
             overflow-y: auto !important;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
         }
         .player-item-card {
             background: #fff;
-            border: 3px solid #000;
-            padding: 18px;
-            border-radius: 8px;
-            font-size: 24px;
+            border: 4px solid #000;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 26px;
             font-weight: 900;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
         }
-        .player-item-card:hover {
-            background: #f1f2f6;
+        .player-info-part {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn-delete-player {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border: 3px solid #000;
+            padding: 10px 18px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 6px;
+            outline: none;
+            white-space: nowrap;
         }
 
         /* 관리자 패널 */
@@ -620,7 +638,7 @@
         <div class="admin-label">릴리 전용</div>
     </div>
 
-    <!-- 상단 대형 실시간 공지/투표 배너 (모두가 볼 수 있음) -->
+    <!-- 상단 대형 실시간 공지/투표 배너 -->
     <div id="global-announcement-banner"></div>
 
     <!-- 화면 상단 토스트 알림 메시지 -->
@@ -676,14 +694,14 @@
 
     </div>
 
-    <!-- 10배 확대된 초대형 전체 채팅 모달 팝업 창 -->
+    <!-- 세로로 대폭 늘린 전체 채팅 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="chat-modal" style="z-index: 100003;">
         <div class="chat-modal-box">
             <button class="modal-close-btn" onclick="closeChatModal()">✕</button>
             <div class="chat-header-row">
                 <div style="font-size:46px; font-weight:900;">📘 전체 채팅</div>
-                <div style="font-size:28px; font-weight:900; background:#eee; padding:12px 22px; border:4px solid #000; border-radius:12px; cursor:pointer;" onclick="openPlayersModal()">
-                    현재 인원수: <span id="online-count-txt">1</span>명 ➡️
+                <div style="font-size:26px; font-weight:900; background:#eee; padding:12px 20px; border:4px solid #000; border-radius:12px; cursor:pointer;" onclick="openPlayersModal()">
+                    플레이어 목록 ➡️
                 </div>
             </div>
             <div class="chat-logs-area" id="chat-logs">
@@ -700,11 +718,14 @@
         </div>
     </div>
 
-    <!-- 플레이어 목록 팝업 창 -->
+    <!-- 플레이어 목록 팝업 창 (온라인, 오프라인 표시 및 개별 삭제 버튼 포함) -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100006;">
         <div class="players-modal-box">
             <button class="modal-close-btn" onclick="closePlayersModal()">✕</button>
-            <div style="font-size:36px; font-weight:900; text-align:center;">👥 접속 중인 플레이어</div>
+            <div style="font-size:38px; font-weight:900; text-align:center; margin-bottom:10px;">👥 플레이어 목록</div>
+            <div style="font-size:22px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:10px;" id="online-offline-summary-txt">
+                온라인 [0명] | 오프라인 [0명]
+            </div>
             <div class="players-list-area" id="players-list-container"></div>
         </div>
     </div>
@@ -766,7 +787,7 @@
         </div>
     </div>
 
-    <!-- 관리자 패널 (플레이어 목록 삭제 버튼 추가) -->
+    <!-- 관리자 패널 -->
     <div class="admin-draggable-panel hidden" id="admin-panel-modal">
         <div class="admin-drag-header" id="admin-drag-header-bar">
             <span>⚙️ 관리자 패널</span>
@@ -796,18 +817,11 @@
                 <button class="btn-send" style="width:100%; margin-top:5px; background-color:#9b59b6; padding:16px 0;" onclick="sendVote()">보내기</button>
             </div>
 
-            <!-- 플레이어 목록 삭제 영역 -->
-            <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
-                <div class="admin-section-title" style="color: #c0392b;">🗑️ 플레이어 관리</div>
-                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:18px;" onclick="clearAllPlayers()">플레이어 목록 전체 삭제</button>
-            </div>
-
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px;" onclick="closeAdminPanel()">닫기</button>
         </div>
     </div>
 
     <script>
-        // '얌 얌 얌' 사운드 효과 구현
         function playYamSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -832,7 +846,6 @@
             } catch(e) {}
         }
 
-        // 카카오톡 강제 크롬 이동
         (function forceOpenInChrome() {
             const userAgent = navigator.userAgent.toLowerCase();
             const targetUrl = location.href;
@@ -881,13 +894,21 @@
             return uid;
         }
 
-        // 실시간 동기화 체크 (LocalStorage 변경 감지)
+        // 주기적으로 온라인 상태 핑(Ping) 전송 (마지막 활동 시간 기록)
+        function updateHeartbeat() {
+            const myUid = getDeviceUniqueId();
+            localStorage.setItem('lily_game_ping_' + myUid, Date.now());
+        }
+
+        setInterval(updateHeartbeat, 3000);
+        updateHeartbeat();
+
         window.addEventListener('storage', (e) => {
             if (e.key === 'lily_game_chat_logs') {
                 loadChatLogs();
             }
             if (e.key === 'lily_game_players_list') {
-                updateOnlineCount();
+                // 동기화
             }
             if (e.key === 'lily_game_announcement') {
                 applyAnnouncementData(e.newValue);
@@ -919,11 +940,11 @@
             } else {
                 registerPlayer(myUid, savedName, savedDate);
                 loadChatLogs();
-                updateOnlineCount();
                 checkSavedAnnouncement();
             }
         });
 
+        // 플레이어 등록 (이름 쓰고 접속하면 무조건 목록에 추가되며 나가도 남음)
         function registerPlayer(uid, name, date) {
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
@@ -939,18 +960,17 @@
                 existing.date = date;
             }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
-            updateOnlineCount();
+            updateHeartbeat();
         }
 
-        // 관리자용 플레이어 전체 삭제 기능
-        function clearAllPlayers() {
-            localStorage.setItem('lily_game_players_list', JSON.stringify([]));
-            updateOnlineCount();
-            showToast('플레이어 목록이 모두 삭제되었습니다!');
-            closeAdminPanel();
-            if(!document.getElementById('players-modal').classList.contains('hidden')) {
-                openPlayersModal();
-            }
+        // 개별 플레이어 삭제 기능
+        function deletePlayerByUid(uid, event) {
+            event.stopPropagation();
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            players = players.filter(p => p.uid !== uid);
+            localStorage.setItem('lily_game_players_list', JSON.stringify(players));
+            showToast('플레이어가 삭제되었습니다.');
+            openPlayersModal();
         }
 
         function submitUserName() {
@@ -973,12 +993,11 @@
             document.getElementById('name-input-modal').classList.add('hidden');
             showToast(`환영합니다, ${inputVal}님!`);
             loadChatLogs();
-            updateOnlineCount();
         }
 
         function openProfileModal() {
             const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
-            const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
+            const savedDate = localStorage.getItem('lily_game_login_date'] || getFormattedToday();
 
             document.getElementById('profile-name-txt').innerText = `이름: ${savedName}`;
             document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${savedDate}`;
@@ -1012,32 +1031,57 @@
         function openChatModal() {
             document.getElementById('chat-modal').classList.remove('hidden');
             loadChatLogs();
-            updateOnlineCount();
         }
 
         function closeChatModal() {
             document.getElementById('chat-modal').classList.add('hidden');
         }
 
-        function updateOnlineCount() {
-            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
-            let count = Math.max(0, players.length);
-            document.getElementById('online-count-txt').innerText = count;
-        }
-
+        // 플레이어 목록 모달 렌더링 (온라인 / 오프라인 집계)
         function openPlayersModal() {
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             const container = document.getElementById('players-list-container');
             container.innerHTML = '';
 
+            let onlineCount = 0;
+            let offlineCount = 0;
+            const nowTime = Date.now();
+
             players.forEach(p => {
+                // 최근 6초 이내 핑이 있으면 온라인으로 판별
+                let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
+                let isOnline = (nowTime - lastPing) < 6000;
+
+                // 현재 본인은 무조건 온라인으로 처리
+                if (p.uid === getDeviceUniqueId()) {
+                    isOnline = true;
+                }
+
+                if (isOnline) {
+                    onlineCount++;
+                } else {
+                    offlineCount++;
+                }
+
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
-                item.innerHTML = `<span>👤 ${p.name}</span><span style="font-size:18px; color:#555;">접속일: ${p.date}</span>`;
-                item.onclick = () => openOtherProfile(p.name);
+
+                const infoPart = document.createElement('div');
+                infoPart.className = 'player-info-part';
+                infoPart.innerHTML = `<span>👤 ${p.name}</span> <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>`;
+                infoPart.onclick = () => openOtherProfile(p.name);
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-delete-player';
+                delBtn.innerText = '삭제';
+                delBtn.onclick = (e) => deletePlayerByUid(p.uid, e);
+
+                item.appendChild(infoPart);
+                item.appendChild(delBtn);
                 container.appendChild(item);
             });
 
+            document.getElementById('online-offline-summary-txt').innerText = `온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명]`;
             document.getElementById('players-modal').classList.remove('hidden');
         }
 
@@ -1083,7 +1127,6 @@
 
             appendChatBubble(name, msg, timeStr, true);
             input.value = '';
-            updateOnlineCount();
         }
 
         function appendChatBubble(senderName, msgText, timeText, shouldScroll) {
@@ -1154,7 +1197,6 @@
             document.getElementById('admin-panel-modal').classList.add('hidden');
         }
 
-        // 공지 모두에게 전송
         function sendNotice() {
             const text = document.getElementById('admin-notice-input').value.trim();
             if (!text) {
@@ -1173,7 +1215,6 @@
         let voteOpt1Text = '';
         let voteOpt2Text = '';
 
-        // 투표 모두에게 전송
         function sendVote() {
             const opt1 = document.getElementById('admin-vote-opt1').value.trim();
             const opt2 = document.getElementById('admin-vote-opt2').value.trim();
