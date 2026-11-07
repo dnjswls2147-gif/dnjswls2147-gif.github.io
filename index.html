@@ -1970,9 +1970,9 @@
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg', color: '#f1c40f' },
+            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg' },
             { name: '본이', hp: 250, color: '#e67e22' },
-            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg', color: '#8e44ad' }
+            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
 
         const loadedImages = {};
@@ -2201,7 +2201,7 @@
             updateChocoDisplay('p1', p1.chocoCount);
             updateChocoDisplay('p2', p2.chocoCount);
 
-            // 왕클세종 2번째 기술: 2초마다 랜덤 위치에서 빨간색 동그라미 아이템이 위에서 아래로 떨어짐
+            // 왕클세종 2번째 기술 아이템(빨간 동그라미) 2초마다 낙하
             redDropInterval = setInterval(() => {
                 if (!isGaming) return;
                 [p1, p2].forEach(player => {
@@ -2236,7 +2236,7 @@
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
                         } else if (p1.name === '왕클세종') {
-                            triggerWangklSejongSkill(p1, p2);
+                            triggerWangklSejongSkill(p1, p2, 'p1');
                         }
                     }
                     let pct = ((maxTime - p1.skillTimer) / maxTime) * 100;
@@ -2257,7 +2257,7 @@
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
                         } else if (p2.name === '왕클세종') {
-                            triggerWangklSejongSkill(p2, p1);
+                            triggerWangklSejongSkill(p2, p1, 'p2');
                         }
                     }
                     let pct = ((maxTime - p2.skillTimer) / maxTime) * 100;
@@ -2292,8 +2292,8 @@
             }, 1000);
         }
 
-        // 왕클세종 1번째 기술: 3배 넓은 반경에서 2.5배 느리게 둥글게 회전하며 3데미지 (기존 기술 안 사라지고 누적)
-        function triggerWangklSejongSkill(caster, enemy) {
+        // 왕클세종 1번째 기술: 4초 지속, 1.5배 빠른 회전, 데미지 4, 동일 글자 0.5초 쿨타임 적용
+        function triggerWangklSejongSkill(caster, enemy, prefix) {
             showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷`);
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
@@ -2305,15 +2305,47 @@
                 orbitItems.push({
                     char: ch,
                     angle: baseAngle,
-                    radius: 85, // 공에서 넉넉히 띄운 넓은 반경 (3배 넓게)
-                    speed: 0.008, // 기존보다 2.5배 더 느리게 회전
-                    damage: 3 // 데미지 3으로 변경
+                    radius: 85,
+                    speed: 0.012, // 1.5배 더 빠른 회전
+                    damage: 4,     // 데미지 4
+                    lastHitTimes: {} // 글자별 타격 쿨타임 관리용
                 });
             });
 
             caster.activeOrbits.push({
                 items: orbitItems,
-                enemy: enemy
+                enemy: enemy,
+                prefix: prefix,
+                spawnTime: Date.now()
+            });
+            playArrowSound();
+        }
+
+        // 왕클세종 2번째 기술 완성 시: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 순서로 글자가 담긴 공 발사 (파란팀=파란색, 빨간팀=빨간색)
+        function triggerWangklSejongTextBalls(ownerPlayer, enemyPlayer, prefix) {
+            showToast(`${ownerPlayer.name}의 한글 문자 공 발사! 🇰🇷✨`);
+            let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
+            let chars = fullStr.split('');
+            let startX = ownerPlayer.x;
+            let startY = ownerPlayer.y;
+            let baseAngle = Math.atan2(enemyPlayer.y - startY, enemyPlayer.x - startX);
+
+            chars.forEach((ch, idx) => {
+                let angleOffset = (idx - 6) * 0.08;
+                let angle = baseAngle + angleOffset;
+                let color = (prefix === 'p1') ? '#1e90ff' : '#e74c3c'; // 파란팀 파란색, 빨간팀 빨간색
+
+                ownerPlayer.textProjectiles.push({
+                    x: startX,
+                    y: startY,
+                    vx: Math.cos(angle) * 4.8,
+                    vy: Math.sin(angle) * 4.8,
+                    char: ch,
+                    target: enemyPlayer,
+                    radius: 16, // 공 형태의 크기
+                    damage: 8,
+                    color: color
+                });
             });
             playArrowSound();
         }
@@ -2380,24 +2412,6 @@
                 });
             }
             showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
-        }
-
-        function triggerChocolateBombs(ownerPlayer, enemyPlayer) {
-            showToast(`${ownerPlayer.name}가 초콜릿 폭탄 3개 발사! 🍫💥`);
-            let baseAngle = Math.atan2(enemyPlayer.y - ownerPlayer.y, enemyPlayer.x - ownerPlayer.x);
-            let offsets = [-0.35, 0, 0.35];
-
-            offsets.forEach(offset => {
-                let angle = baseAngle + offset;
-                bombProjectiles.push({
-                    x: ownerPlayer.x,
-                    y: ownerPlayer.y,
-                    vx: Math.cos(angle) * 4.2,
-                    vy: Math.sin(angle) * 4.2,
-                    target: enemyPlayer,
-                    radius: 16
-                });
-            });
         }
 
         function exitMatch() {
@@ -2505,10 +2519,12 @@
 
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
+                    // 1번째 기술 궤도 4초 지나면 자동 소멸
+                    player.activeOrbits = player.activeOrbits.filter(orbit => (nowTimestamp - orbit.spawnTime) < 4000);
                 });
 
-                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌 체크
-                [ { caster: p1, enemy: p2, prefix: 'p1' }, { caster: p2, enemy: p1, prefix: 'p2' } ].forEach(pair => {
+                // 왕클세종 회전 궤도 글자들과 상대방 공 충돌 및 0.5초 쿨타임 체크
+                [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
                     pair.caster.activeOrbits.forEach(orbit => {
                         orbit.items.forEach(item => {
                             item.angle += item.speed;
@@ -2516,23 +2532,59 @@
                             let charY = pair.caster.y + Math.sin(item.angle) * item.radius;
 
                             let dist = Math.hypot(pair.enemy.x - charX, pair.enemy.y - charY);
-                            if (dist < pair.enemy.radius + 10) {
-                                pair.enemy.hp = Math.max(0, pair.enemy.hp - item.damage);
-                                playHitSound();
-                                updateHpBars();
+                            if (dist < pair.enemy.radius + 12) {
+                                let lastHit = item.lastHitTimes[item.char] || 0;
+                                if (nowTimestamp - lastHit > 500) { // 0.5초(500ms) 쿨타임
+                                    item.lastHitTimes[item.char] = nowTimestamp;
+                                    pair.enemy.hp = Math.max(0, pair.enemy.hp - item.damage);
+                                    playHitSound();
+                                    updateHpBars();
 
-                                if (pair.enemy.hp <= 0) {
-                                    isGaming = false;
-                                    if (gameInterval) clearInterval(gameInterval);
-                                    if (redDropInterval) clearInterval(redDropInterval);
-                                    setTimeout(() => {
-                                        showToast(`🏆 ${pair.caster.name} 승리!`);
-                                        exitMatch();
-                                    }, 100);
+                                    if (pair.enemy.hp <= 0) {
+                                        isGaming = false;
+                                        if (gameInterval) clearInterval(gameInterval);
+                                        if (redDropInterval) clearInterval(redDropInterval);
+                                        setTimeout(() => {
+                                            showToast(`🏆 ${pair.caster.name} 승리!`);
+                                            exitMatch();
+                                        }, 100);
+                                    }
                                 }
                             }
                         });
                     });
+                });
+
+                // 2번째 기술 문자 공 탄막 업데이트
+                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
+                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
+                        let tp = pair.shooter.textProjectiles[i];
+                        tp.x += tp.vx;
+                        tp.y += tp.vy;
+
+                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            continue;
+                        }
+
+                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
+                        if (dist < pair.enemy.radius + tp.radius) {
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            playHitSound();
+                            updateHpBars();
+
+                            if (pair.enemy.hp <= 0) {
+                                isGaming = false;
+                                if (gameInterval) clearInterval(gameInterval);
+                                if (redDropInterval) clearInterval(redDropInterval);
+                                setTimeout(() => {
+                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
+                                    exitMatch();
+                                }, 100);
+                            }
+                        }
+                    }
                 });
 
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
@@ -2566,35 +2618,6 @@
                     }
                 });
 
-                for (let i = bombProjectiles.length - 1; i >= 0; i--) {
-                    let bp = bombProjectiles[i];
-                    bp.x += bp.vx;
-                    bp.y += bp.vy;
-
-                    if (bp.x < 0 || bp.x > canvas.width || bp.y < 0 || bp.y > canvas.height) {
-                        bombProjectiles.splice(i, 1);
-                        continue;
-                    }
-
-                    let dist = Math.hypot(bp.target.x - bp.x, bp.target.y - bp.y);
-                    if (dist < bp.target.radius + bp.radius) {
-                        bp.target.hp = Math.max(0, bp.target.hp - 50);
-                        playBigExplosionSound();
-                        updateHpBars();
-                        bombProjectiles.splice(i, 1);
-
-                        if (bp.target.hp <= 0) {
-                            isGaming = false;
-                            if (gameInterval) clearInterval(gameInterval);
-                            if (redDropInterval) clearInterval(redDropInterval);
-                            setTimeout(() => {
-                                showToast(`🏆 승리!`);
-                                exitMatch();
-                            }, 100);
-                        }
-                    }
-                }
-
                 moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 6000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2618,14 +2641,14 @@
                                     p1.chocoCount++;
                                     if (p1.chocoCount >= 5) {
                                         p1.chocoCount = 0;
-                                        triggerChocolateBombs(p1, p2);
+                                        spawnChocolateSlowly(p1, 3);
                                     }
                                     updateChocoDisplay('p1', p1.chocoCount);
                                 } else if (p1.name === '왕클세종') {
                                     p1.chocoCount++;
                                     if (p1.chocoCount >= 5) {
                                         p1.chocoCount = 0;
-                                        triggerChocolateBombs(p1, p2);
+                                        triggerWangklSejongTextBalls(p1, p2, 'p1');
                                     }
                                     updateChocoDisplay('p1', p1.chocoCount);
                                 }
@@ -2644,14 +2667,14 @@
                                     p2.chocoCount++;
                                     if (p2.chocoCount >= 5) {
                                         p2.chocoCount = 0;
-                                        triggerChocolateBombs(p2, p1);
+                                        spawnChocolateSlowly(p2, 3);
                                     }
                                     updateChocoDisplay('p2', p2.chocoCount);
                                 } else if (p2.name === '왕클세종') {
                                     p2.chocoCount++;
                                     if (p2.chocoCount >= 5) {
                                         p2.chocoCount = 0;
-                                        triggerChocolateBombs(p2, p1);
+                                        triggerWangklSejongTextBalls(p2, p1, 'p2');
                                     }
                                     updateChocoDisplay('p2', p2.chocoCount);
                                 }
@@ -2713,7 +2736,7 @@
 
                             ctx.save();
                             ctx.font = "bold 20px sans-serif";
-                            ctx.fillStyle = "#e67e22";
+                            ctx.fillStyle = (orbit.prefix === 'p1') ? "#1e90ff" : "#e74c3c";
                             ctx.strokeStyle = "#ffffff";
                             ctx.lineWidth = 3;
                             ctx.textAlign = "center";
@@ -2755,6 +2778,25 @@
                             ctx.strokeStyle = '#000';
                             ctx.stroke();
                         }
+                        ctx.restore();
+                    });
+
+                    // 2번째 기술 문자 공 탄막 렌더링 (공 모양 배경 + 글자)
+                    player.textProjectiles.forEach(tp => {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(tp.x, tp.y, tp.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = tp.color;
+                        ctx.fill();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = '#000000';
+                        ctx.stroke();
+
+                        ctx.font = "bold 16px sans-serif";
+                        ctx.fillStyle = "#ffffff";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(tp.char, tp.x, tp.y);
                         ctx.restore();
                     });
                 });
