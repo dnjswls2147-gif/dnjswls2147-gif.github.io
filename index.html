@@ -32,7 +32,7 @@
             overscroll-behavior: none;
         }
 
-        /* 상단 대형 실시간 공지/투표 배너 */
+        /* 상단 대형 실시간 공지/투표 배너 (텍스트 3배 확대) */
         #global-announcement-banner {
             position: fixed;
             top: 0;
@@ -40,7 +40,7 @@
             width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 10px 14px;
+            padding: 14px 18px;
             z-index: 99999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             display: none;
@@ -57,7 +57,7 @@
             align-items: center;
         }
         .banner-notice-text {
-            font-size: 16px;
+            font-size: 24px;
             font-weight: 900;
             text-align: center;
             line-height: 1.3;
@@ -66,19 +66,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             width: 100%;
         }
         .vote-options-row {
             display: flex;
             gap: 8px;
             width: 100%;
-            margin-top: 2px;
+            margin-top: 4px;
         }
         .btn-vote-opt {
             flex: 1;
-            padding: 8px 6px;
-            font-size: 14px;
+            padding: 12px 8px;
+            font-size: 20px;
             font-weight: 900;
             border: 3px solid #000000;
             color: #ffffff;
@@ -90,7 +90,7 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 (기본 확대 50 연동) */
+        /* 메인 컨테이너 */
         .app-container {
             width: 100vw;
             max-width: 580px;
@@ -106,7 +106,7 @@
             transition: transform 0.2s ease;
         }
 
-        /* 프로필 & 전체 채팅 아이콘 바 */
+        /* 프로필, 전체 채팅, 경기장 설정 아이콘 바 */
         .top-menu-bar {
             width: 100%;
             max-width: 450px;
@@ -119,18 +119,18 @@
             z-index: 1000;
         }
 
-        .profile-entry-box, .chat-entry-box {
+        .profile-entry-box, .chat-entry-box, .arena-setting-entry-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
         }
-        .profile-icon, .chat-icon {
+        .profile-icon, .chat-icon, .arena-setting-icon {
             font-size: 32px;
             line-height: 1;
         }
-        .profile-label, .chat-label {
-            font-size: 11px;
+        .profile-label, .chat-label, .arena-setting-label {
+            font-size: 14px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -190,7 +190,7 @@
             box-shadow: none;
         }
 
-        /* 화면 상단 토스트 알림 메시지 */
+        /* 화면 상단 토스트 알림 메시지 (텍스트 크기 확대) */
         #toast-alert {
             position: fixed;
             top: 14px;
@@ -198,9 +198,9 @@
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.92);
             color: #ffffff;
-            padding: 10px 18px;
+            padding: 12px 22px;
             border-radius: 30px;
-            font-size: 16px;
+            font-size: 22px;
             font-weight: 900;
             z-index: 100000;
             opacity: 0;
@@ -214,7 +214,7 @@
             opacity: 1;
         }
 
-        /* 경기장 크기 (450px) */
+        /* 경기장 프레임 (동적 크기 조절 연동) */
         .arena-frame {
             width: 450px;
             height: 450px;
@@ -714,7 +714,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필 & 전체 채팅 메뉴 바 -->
+        <!-- 프로필, 전체 채팅, 경기장 설정 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
@@ -724,12 +724,16 @@
                 <div class="chat-icon">📘</div>
                 <div class="chat-label">전체 채팅</div>
             </div>
+            <div class="arena-setting-entry-box" id="btn-arena-setting-entry" onclick="playClickSound(); openArenaSettingModal();">
+                <div class="arena-setting-icon">🏟️</div>
+                <div class="arena-setting-label">경기장 설정</div>
+            </div>
         </div>
 
         <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘 래퍼 -->
         <div class="arena-container-wrapper">
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
-            <div class="arena-frame">
+            <div class="arena-frame" id="arena-frame-box">
                 <canvas id="gameCanvas" width="450" height="450"></canvas>
             </div>
         </div>
@@ -757,7 +761,7 @@
                             </div>
                             <div class="sub-gauge-bar">
                                 <div class="sub-gauge-fill" id="p1-gauge-fill" style="width:0%;"></div>
-                                <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (10.0초)</div>
+                                <div class="sub-gauge-text" id="p1-gauge-txt">기술 충전중 (10초)</div>
                             </div>
                         </div>
                         <div class="player-status-card">
@@ -768,7 +772,7 @@
                             </div>
                             <div class="sub-gauge-bar">
                                 <div class="sub-gauge-fill" id="p2-gauge-fill" style="width:0%;"></div>
-                                <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (10.0초)</div>
+                                <div class="sub-gauge-text" id="p2-gauge-txt">기술 충전중 (10초)</div>
                             </div>
                         </div>
                     </div>
@@ -794,22 +798,57 @@
         </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 (효과음 0~300, 화면 확대 0~150, 기본값 50) -->
+    <!-- 경기장 설정 모달 팝업 창 (가로/세로 넓히기) -->
+    <div class="modal-overlay hidden" id="arena-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeArenaSettingModal();">✕</button>
+            <div style="font-size:32px; font-weight:900; margin-bottom:24px; color:#000;">🏟️ 경기장 크기 설정</div>
+            
+            <!-- 가로 넓히기 (300 ~ 700) -->
+            <div style="margin-bottom:24px; text-align:left;">
+                <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>↔️ 경기장 가로 넓히기 (300 ~ 700)</span>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <input type="text" id="arena-width-input" value="450" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
+                        <button onclick="playClickSound(); applyArenaWidthInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
+                    </div>
+                </div>
+                <input type="range" id="arena-width-range" min="300" max="700" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaWidthRange(this.value)">
+            </div>
+
+            <!-- 세로 넓히기 (300 ~ 700) -->
+            <div style="margin-bottom:30px; text-align:left;">
+                <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>↕️ 경기장 세로 넓히기 (300 ~ 700)</span>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <input type="text" id="arena-height-input" value="450" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
+                        <button onclick="playClickSound(); applyArenaHeightInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
+                    </div>
+                </div>
+                <input type="range" id="arena-height-range" min="300" max="700" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaHeightRange(this.value)">
+            </div>
+
+            <!-- 설정 저장하기 버튼 -->
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveArenaSettings();">💾 경기장 크기 저장</button>
+        </div>
+    </div>
+
+    <!-- 게임 설정 모달 팝업 창 (효과음 0~1000, 화면 확대 0~150, 기본값 50) -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
             <div style="font-size:32px; font-weight:900; margin-bottom:24px; color:#000;">⚙️ 게임 설정</div>
             
-            <!-- 효과음 소리 (0 ~ 300) -->
+            <!-- 효과음 소리 (0 ~ 1000) -->
             <div style="margin-bottom:24px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔊 효과음 소리 (0 ~ 300)</span>
+                    <span>🔊 효과음 소리 (0 ~ 1000)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="sfx-input-box" value="100" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
+                        <input type="text" id="sfx-input-box" value="100" style="width:82px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
                         <button onclick="playClickSound(); applySfxInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="sfx-volume-range" min="0" max="300" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
+                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
             </div>
 
             <!-- 화면 확대 (0 ~ 150) -->
@@ -988,7 +1027,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 설정 불러오기 및 기본값 적용 (효과음 0~300, 확대 0~150, 기본값 50)
+        // 설정 불러오기 및 기본값 적용 (효과음 0~1000, 확대 0~150, 경기장 크기)
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -997,7 +1036,7 @@
             }
             let v = parseInt(savedVol);
             if (v < 0) v = 0;
-            if (v > 300) v = 300;
+            if (v > 1000) v = 1000;
             
             soundVolume = v / 100;
             document.getElementById('sfx-volume-range').value = v;
@@ -1015,6 +1054,11 @@
             document.getElementById('zoom-scale-range').value = z;
             document.getElementById('zoom-input-box').value = z;
             applyZoomScale(z);
+
+            // 경기장 크기 불러오기
+            let savedArenaW = parseInt(localStorage.getItem('lily_game_arena_w') || '450');
+            let savedArenaH = parseInt(localStorage.getItem('lily_game_arena_h') || '450');
+            applyArenaSize(savedArenaW, savedArenaH);
         }
 
         function saveGameSettings() {
@@ -1028,20 +1072,20 @@
             closeSettingsModal();
         }
 
-        // 효과음 소리 입력 확인 (0 ~ 300 범위 제한)
+        // 효과음 소리 입력 확인 (0 ~ 1000 범위 제한)
         function applySfxInput() {
             const box = document.getElementById('sfx-input-box');
             let val = parseInt(box.value);
             if (isNaN(val)) {
-                showToast('숫자만 입력해 주세요! (0~300)');
+                showToast('숫자만 입력해 주세요! (0~1000)');
                 box.value = '100';
                 val = 100;
             } else if (val < 0) {
                 val = 0;
                 box.value = '0';
-            } else if (val > 300) {
-                val = 300;
-                box.value = '300';
+            } else if (val > 1000) {
+                val = 1000;
+                box.value = '1000';
             }
             soundVolume = val / 100;
             document.getElementById('sfx-volume-range').value = val;
@@ -1081,6 +1125,72 @@
         function applyZoomScale(numVal) {
             let scaleFactor = 1.0 + (numVal / 150) * 1.0;
             document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
+        }
+
+        // 경기장 설정 모달 관련 함수
+        function openArenaSettingModal() {
+            let w = parseInt(localStorage.getItem('lily_game_arena_w') || '450');
+            let h = parseInt(localStorage.getItem('lily_game_arena_h') || '450');
+            document.getElementById('arena-width-input').value = w;
+            document.getElementById('arena-width-range').value = w;
+            document.getElementById('arena-height-input').value = h;
+            document.getElementById('arena-height-range').value = h;
+            document.getElementById('arena-setting-modal').classList.remove('hidden');
+        }
+
+        function closeArenaSettingModal() {
+            document.getElementById('arena-setting-modal').classList.add('hidden');
+        }
+
+        function applyArenaWidthInput() {
+            const box = document.getElementById('arena-width-input');
+            let val = parseInt(box.value);
+            if (isNaN(val) || val < 300) val = 300;
+            if (val > 700) val = 700;
+            box.value = val;
+            document.getElementById('arena-width-range').value = val;
+        }
+
+        function syncArenaWidthRange(val) {
+            document.getElementById('arena-width-input').value = val;
+        }
+
+        function applyArenaHeightInput() {
+            const box = document.getElementById('arena-height-input');
+            let val = parseInt(val = box.value);
+            if (isNaN(val) || val < 300) val = 300;
+            if (val > 700) val = 700;
+            box.value = val;
+            document.getElementById('arena-height-range').value = val;
+        }
+
+        function syncArenaHeightRange(val) {
+            document.getElementById('arena-height-input').value = val;
+        }
+
+        function saveArenaSettings() {
+            let w = parseInt(document.getElementById('arena-width-input').value);
+            let h = parseInt(document.getElementById('arena-height-input').value);
+            if (isNaN(w)) w = 450;
+            if (isNaN(h)) h = 450;
+
+            localStorage.setItem('lily_game_arena_w', w);
+            localStorage.setItem('lily_game_arena_h', h);
+
+            applyArenaSize(w, h);
+            showToast('경기장 크기가 저장되었습니다! 🏟️');
+            closeArenaSettingModal();
+        }
+
+        function applyArenaSize(w, h) {
+            const frame = document.getElementById('arena-frame-box');
+            const canv = document.getElementById('gameCanvas');
+            if (frame && canv) {
+                frame.style.width = w + 'px';
+                frame.style.height = h + 'px';
+                canv.width = w;
+                canv.height = h;
+            }
         }
 
         function openSettingsModal() {
@@ -1701,7 +1811,7 @@
             banner.innerHTML = `
                 <div class="banner-inner-content">
                     <div class="banner-vote-container">
-                        <div style="font-size:16px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
+                        <div style="font-size:22px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
                         <div class="vote-options-row">
                             <button class="btn-vote-opt btn-vote-red" onclick="playClickSound(); castVote(1);">
                                 1. ${voteOpt1Text} [${voteCount1}명 고름]
@@ -1870,8 +1980,8 @@
 
         const FIXED_SPEED = 3.2;
 
-        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, isCastingSkill: false, skillAnimTimer: 0, skeletons: [], arrows: [] };
-        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10.0, isCastingSkill: false, skillAnimTimer: 0, skeletons: [], arrows: [] };
+        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [] };
+        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 10, skeletons: [], arrows: [] };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -1949,11 +2059,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(125, 225, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
+                drawBall(canvas.width * 0.3, canvas.height * 0.5, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
             }
 
             if (selectedRightBall) {
-                drawBall(325, 225, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
+                drawBall(canvas.width * 0.7, canvas.height * 0.5, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
             }
         }
 
@@ -2008,23 +2118,19 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
-            p1.x = 125; p1.y = 225;
+            p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = 10.0;
-            p1.isCastingSkill = false;
-            p1.skillAnimTimer = 0;
+            p1.skillTimer = 10;
             p1.skeletons = [];
             p1.arrows = [];
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
-            p2.x = 325; p2.y = 225;
+            p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = 10.0;
-            p2.isCastingSkill = false;
-            p2.skillAnimTimer = 0;
+            p2.skillTimer = 10;
             p2.skeletons = [];
             p2.arrows = [];
 
@@ -2043,79 +2149,60 @@
             updateHpBars();
 
             if (gameInterval) clearInterval(gameInterval);
+            // 1초 단위 실제 시간 타이머
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                // P1 스킬 타이머
+                // P1 스킬 타이머 (1초씩 감소)
                 if (p1.name === '미스터비스트' || p1.name === 'JINO') {
-                    if (!p1.isCastingSkill) {
-                        p1.skillTimer -= 0.1;
-                        if (p1.skillTimer <= 0) {
-                            p1.skillTimer = 10.0;
-                            if (p1.name === '미스터비스트') {
-                                p1.isCastingSkill = true;
-                                p1.skillAnimTimer = 1.0;
-                            } else if (p1.name === 'JINO') {
-                                spawnSkeletons(p1, 'p2');
-                            }
-                        }
-                    } else {
-                        p1.skillAnimTimer -= 0.1;
-                        if (p1.skillAnimTimer <= 0) {
-                            p1.isCastingSkill = false;
-                            spawnChocolate(p1);
+                    p1.skillTimer -= 1;
+                    if (p1.skillTimer <= 0) {
+                        p1.skillTimer = 10;
+                        if (p1.name === '미스터비스트') {
+                            spawnChocolateSlowly(p1);
+                        } else if (p1.name === 'JINO') {
+                            spawnSkeletons(p1, 'p2');
                         }
                     }
-
-                    let pct = ((10.0 - p1.skillTimer) / 10.0) * 100;
+                    let pct = ((10 - p1.skillTimer) / 10) * 100;
                     document.getElementById('p1-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p1-gauge-txt').innerText = p1.isCastingSkill ? '초콜릿 던지는 중...' : (p1.name === 'JINO' ? `스켈레톤 소환 (${p1.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p1.skillTimer.toFixed(1)}초)`);
+                    document.getElementById('p1-gauge-txt').innerText = p1.name === 'JINO' ? `스켈레톤 소환 (${p1}초)` : `기술 충전중 (${p1.skillTimer}초)`;
                 } else {
                     document.getElementById('p1-gauge-fill').style.width = '0%';
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                // P2 스킬 타이머
+                // P2 스킬 타이머 (1초씩 감소)
                 if (p2.name === '미스터비스트' || p2.name === 'JINO') {
-                    if (!p2.isCastingSkill) {
-                        p2.skillTimer -= 0.1;
-                        if (p2.skillTimer <= 0) {
-                            p2.skillTimer = 10.0;
-                            if (p2.name === '미스터비스트') {
-                                p2.isCastingSkill = true;
-                                p2.skillAnimTimer = 1.0;
-                            } else if (p2.name === 'JINO') {
-                                spawnSkeletons(p2, 'p1');
-                            }
-                        }
-                    } else {
-                        p2.skillAnimTimer -= 0.1;
-                        if (p2.skillAnimTimer <= 0) {
-                            p2.isCastingSkill = false;
-                            spawnChocolate(p2);
+                    p2.skillTimer -= 1;
+                    if (p2.skillTimer <= 0) {
+                        p2.skillTimer = 10;
+                        if (p2.name === '미스터비스트') {
+                            spawnChocolateSlowly(p2);
+                        } else if (p2.name === 'JINO') {
+                            spawnSkeletons(p2, 'p1');
                         }
                     }
-
-                    let pct = ((10.0 - p2.skillTimer) / 10.0) * 100;
+                    let pct = ((10 - p2.skillTimer) / 10) * 100;
                     document.getElementById('p2-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p2-gauge-txt').innerText = p2.isCastingSkill ? '초콜릿 던지는 중...' : (p2.name === 'JINO' ? `스켈레톤 소환 (${p2.skillTimer.toFixed(1)}초)` : `기술 충전중 (${p2.skillTimer.toFixed(1)}초)`);
+                    document.getElementById('p2-gauge-txt').innerText = p2.name === 'JINO' ? `스켈레톤 소환 (${p2}초)` : `기술 충전중 (${p2.skillTimer}초)`;
                 } else {
                     document.getElementById('p2-gauge-fill').style.width = '0%';
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
                 }
 
-                if (Math.random() < 0.05) {
+                if (Math.random() < 0.2) {
                     triggerSkeletonsShoot(p1, p2);
                     triggerSkeletonsShoot(p2, p1);
                 }
 
-            }, 100);
+            }, 1000);
         }
 
         function spawnSkeletons(ownerPlayer, targetOwnerStr) {
             for (let i = 0; i < 2; i++) {
-                let rx = Math.random() * 380 + 35;
-                let ry = Math.random() * 380 + 35;
+                let rx = Math.random() * (canvas.width - 60) + 30;
+                let ry = Math.random() * (canvas.height - 60) + 30;
                 ownerPlayer.skeletons.push({ x: rx, y: ry, target: targetOwnerStr });
             }
             showToast(`${ownerPlayer.name}의 스켈레톤 2마리 소환!`);
@@ -2138,14 +2225,23 @@
             }
         }
 
-        function spawnChocolate(ownerPlayer) {
+        function spawnChocolateSlowly(ownerPlayer) {
+            // 슬로우 모션으로 아무 데나 서서히 투척되는 초콜릿 생성 (날아가는 연출 아이템 추가)
             for (let i = 0; i < 2; i++) {
-                let mx = Math.random() * 380 + 35;
-                let my = Math.random() * 380 + 35;
-                moneyItems.push({ x: mx, y: my, radius: 18, owner: ownerPlayer === p1 ? 'p1' : 'p2' });
+                let targetX = Math.random() * (canvas.width - 60) + 30;
+                let targetY = Math.random() * (canvas.height - 60) + 30;
+                moneyItems.push({
+                    x: ownerPlayer.x,
+                    y: ownerPlayer.y,
+                    destX: targetX,
+                    destY: targetY,
+                    radius: 18,
+                    owner: ownerPlayer === p1 ? 'p1' : 'p2',
+                    isLanding: true,
+                    progress: 0
+                });
             }
-            playChocolateLandSound();
-            showToast(`${ownerPlayer.name}가 땅에 초콜릿을 던졌습니다! 🍫`);
+            showToast(`${ownerPlayer.name}가 초콜릿을 서서히 투척했습니다! 🍫`);
         }
 
         function exitMatch() {
@@ -2193,14 +2289,11 @@
 
         function runGameLoop() {
             if (isGaming) {
-                if (!p1.isCastingSkill) {
-                    p1.x += p1.vx; 
-                    p1.y += p1.vy;
-                }
-                if (!p2.isCastingSkill) {
-                    p2.x += p2.vx; 
-                    p2.y += p2.vy;
-                }
+                // 공들은 멈추지 않고 계속 정상적으로 움직임
+                p1.x += p1.vx; 
+                p1.y += p1.vy;
+                p2.x += p2.vx; 
+                p2.y += p2.vy;
 
                 let hitWall = false;
 
@@ -2215,13 +2308,13 @@
                 if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -p2.vy; hitWall = true; }
 
                 let speed1 = Math.hypot(p1.vx, p1.vy);
-                if (Math.abs(speed1 - FIXED_SPEED) > 0.01 && !p1.isCastingSkill) {
+                if (Math.abs(speed1 - FIXED_SPEED) > 0.01) {
                     p1.vx = (p1.vx / (speed1 || 1)) * FIXED_SPEED;
                     p1.vy = (p1.vy / (speed1 || 1)) * FIXED_SPEED;
                 }
 
                 let speed2 = Math.hypot(p2.vx, p2.vy);
-                if (Math.abs(speed2 - FIXED_SPEED) > 0.01 && !p2.isCastingSkill) {
+                if (Math.abs(speed2 - FIXED_SPEED) > 0.01) {
                     p2.vx = (p2.vx / (speed2 || 1)) * FIXED_SPEED;
                     p2.vy = (p2.vy / (speed2 || 1)) * FIXED_SPEED;
                 }
@@ -2260,25 +2353,37 @@
                     }
                 });
 
+                // 초콜릿 슬로우 모션 투척 연출 및 먹기 로직 (피 꽉 차도 먹을 수 있음, 회복량 20)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
-                    if (m.owner === 'p1') {
-                        let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
-                        if (dist1 < p1.radius + m.radius) {
-                            p1.hp = Math.min(p1.maxHp, p1.hp + 25);
-                            playChocolateEatSound();
-                            moneyItems.splice(i, 1);
-                            updateHpBars();
-                            continue;
+                    if (m.isLanding) {
+                        m.progress += 0.02; // 슬로우 모션으로 서서히 이동
+                        m.x += (m.destX - m.x) * 0.05;
+                        m.y += (m.destY - m.y) * 0.05;
+                        if (m.progress >= 1.0) {
+                            m.isLanding = false;
+                            playChocolateLandSound(); // 땅에 닿을 때 '탁!' 소리
                         }
-                    }
-                    if (m.owner === 'p2') {
-                        let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
-                        if (dist2 < p2.radius + m.radius) {
-                            p2.hp = Math.min(p2.maxHp, p2.hp + 25);
-                            playChocolateEatSound();
-                            moneyItems.splice(i, 1);
-                            updateHpBars();
+                    } else {
+                        // 땅에 완전히 안착된 후 먹기 가능
+                        if (m.owner === 'p1') {
+                            let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
+                            if (dist1 < p1.radius + m.radius) {
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 20); // 20 회복 (최대 체력 초과 불가)
+                                playChocolateEatSound(); // "드~ 뜨!" 소리
+                                moneyItems.splice(i, 1);
+                                updateHpBars();
+                                continue;
+                            }
+                        }
+                        if (m.owner === 'p2') {
+                            let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
+                            if (dist2 < p2.radius + m.radius) {
+                                p2.hp = Math.min(p2.maxHp, p2.hp + 20);
+                                playChocolateEatSound();
+                                moneyItems.splice(i, 1);
+                                updateHpBars();
+                            }
                         }
                     }
                 }
@@ -2370,25 +2475,7 @@
                 });
 
                 drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
-                // 오른쪽 공 그리기 오류(undefined 문제) 수정 완료
                 drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
-
-                if (p1.isCastingSkill) {
-                    ctx.save();
-                    ctx.fillStyle = "#e67e22";
-                    ctx.font = "bold 14px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.fillText("🍫 던지는 중...", p1.x, p1.y - p1.radius - 10);
-                    ctx.restore();
-                }
-                if (p2.isCastingSkill) {
-                    ctx.save();
-                    ctx.fillStyle = "#e67e22";
-                    ctx.font = "bold 14px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.fillText("🍫 던지는 중...", p2.x, p2.y - p2.radius - 10);
-                    ctx.restore();
-                }
             }
 
             requestAnimationFrame(runGameLoop);
