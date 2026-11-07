@@ -1970,7 +1970,7 @@
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
+            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg' },
             { name: '본이', hp: 250, color: '#e67e22' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
@@ -1998,10 +1998,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const FIXED_SPEED = 3.2;
+        // 공 속도 살짝 상향 (3.2 -> 3.6) 및 공 크기(radius) 29로 살짝 증가
+        const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0 };
-        let p2 = { x: 325, y: 225, radius: 26, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0 };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [] };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], chocoCount: 0, arrowTimer: 0, textProjectiles: [], textWarnings: [] };
 
         let moneyItems = [];
         let bombProjectiles = [];
@@ -2146,22 +2147,26 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 0);
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 5 : 0));
             p1.skeletons = [];
             p1.arrows = [];
             p1.chocoCount = 0;
             p1.arrowTimer = 0;
+            p1.textProjectiles = [];
+            p1.textWarnings = [];
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 0);
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 5 : 0));
             p2.skeletons = [];
             p2.arrows = [];
             p2.chocoCount = 0;
             p2.arrowTimer = 0;
+            p2.textProjectiles = [];
+            p2.textWarnings = [];
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2171,8 +2176,8 @@
 
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
-                if (player.name === '미스터비스트' || player.name === 'JINO') {
-                    let maxTime = (player.name === 'JINO') ? 12 : 10;
+                if (player.name === '미스터비스트' || player.name === 'JINO' || player.name === '왕클세종') {
+                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 5);
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
                 } else {
@@ -2195,15 +2200,18 @@
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
-                if (p1.name === '미스터비스트' || p1.name === 'JINO') {
+                // P1 스킬 타이머
+                if (['미스터비스트', 'JINO', '왕클세종'].includes(p1.name)) {
                     p1.skillTimer -= 1;
-                    let maxTime = (p1.name === 'JINO') ? 12 : 10;
+                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 5);
                     if (p1.skillTimer <= 0) {
                         p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
                             spawnChocolateSlowly(p1, 2);
                         } else if (p1.name === 'JINO') {
                             spawnSkeletons(p1, 'p2');
+                        } else if (p1.name === '왕클세종') {
+                            triggerWangklSejongSkill(p1, p2);
                         }
                     }
                     let pct = ((maxTime - p1.skillTimer) / maxTime) * 100;
@@ -2214,15 +2222,18 @@
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
                 }
 
-                if (p2.name === '미스터비스트' || p2.name === 'JINO') {
+                // P2 스킬 타이머
+                if (['미스터비스트', 'JINO', '왕클세종'].includes(p2.name)) {
                     p2.skillTimer -= 1;
-                    let maxTime = (p2.name === 'JINO') ? 12 : 10;
+                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 5);
                     if (p2.skillTimer <= 0) {
                         p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
                             spawnChocolateSlowly(p2, 2);
                         } else if (p2.name === 'JINO') {
                             spawnSkeletons(p2, 'p1');
+                        } else if (p2.name === '왕클세종') {
+                            triggerWangklSejongSkill(p2, p1);
                         }
                     }
                     let pct = ((maxTime - p2.skillTimer) / maxTime) * 100;
@@ -2257,6 +2268,62 @@
             }, 1000);
         }
 
+        // 왕클세종 스킬: 1초 미리 예고(경고 상자) 후 텍스트 네모 격자로 발사 (글자당 8 데미지)
+        function triggerWangklSejongSkill(caster, enemy) {
+            showToast(`${caster.name}의 한글 세종 스킬 준비! 🇰🇷`);
+            
+            // 상대방이 있는 방향 계산 (좌측에서 쏘면 오른쪽, 우측에서 쏘면 왼쪽)
+            let isLeft = (caster.x < canvas.width / 2);
+            let targetX = isLeft ? enemy.x : enemy.x;
+            let targetY = enemy.y;
+
+            // 1초 미리 보여줄 경고 영역 데이터 생성
+            let warningObj = {
+                x: targetX - 55,
+                y: targetY - 65,
+                width: 110,
+                height: 130,
+                startTime: Date.now(),
+                caster: caster,
+                enemy: enemy,
+                isLeft: isLeft
+            };
+            caster.textWarnings.push(warningObj);
+
+            // 1초 뒤에 실제로 네모 형태의 텍스트 탄막 발사
+            setTimeout(() => {
+                // 경고 제거
+                caster.textWarnings = caster.textWarnings.filter(w => w !== warningObj);
+                if (!isGaming) return;
+
+                let lines = ['ㄱㄴㄷ', 'ㄹㅁㅂ', 'ㅅㅇㅈ', 'ㅊㅋㅌ', 'ㅌㅍㅎ'];
+                let startX = caster.x;
+                let startY = caster.y;
+                let angle = Math.atan2(enemy.y - startY, enemy.x - startX);
+
+                lines.forEach((lineText, rIdx) => {
+                    for (let cIdx = 0; cIdx < lineText.length; cIdx++) {
+                        let char = lineText[cIdx];
+                        // 네모난 격자 배치 간격
+                        let offsetX = (cIdx - 1) * 22;
+                        let offsetY = (rIdx - 2) * 22;
+
+                        caster.textProjectiles.push({
+                            x: startX + offsetX,
+                            y: startY + offsetY,
+                            vx: Math.cos(angle) * 4.8,
+                            vy: Math.sin(angle) * 4.8,
+                            char: char,
+                            target: enemy,
+                            radius: 14,
+                            damage: 8 // 글자 1개당 8 데미지
+                        });
+                    }
+                });
+                playArrowSound();
+            }, 1000);
+        }
+
         function setupPlayerSkillUI(sidePrefix, player) {
             const subBarWrapper = document.getElementById(sidePrefix + '-sub-bar-wrapper');
             const chocoBox = document.getElementById(sidePrefix + '-choco-segments');
@@ -2264,7 +2331,7 @@
             if (player.name === '미스터비스트') {
                 subBarWrapper.style.display = 'block';
                 chocoBox.style.display = 'flex';
-            } else if (player.name === 'JINO') {
+            } else if (player.name === 'JINO' || player.name === '왕클세종') {
                 subBarWrapper.style.display = 'block';
                 chocoBox.style.display = 'none';
             } else {
@@ -2354,6 +2421,10 @@
             p1.arrows = [];
             p2.skeletons = [];
             p2.arrows = [];
+            p1.textProjectiles = [];
+            p2.textProjectiles = [];
+            p1.textWarnings = [];
+            p2.textWarnings = [];
 
             const leftBtn = document.getElementById('slot-left-btn');
             leftBtn.innerText = '볼 선택하기';
@@ -2435,6 +2506,37 @@
 
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
+                });
+
+                // 왕클세종 텍스트 탄막 업데이트 (글자당 8 데미지)
+                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
+                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
+                        let tp = pair.shooter.textProjectiles[i];
+                        tp.x += tp.vx;
+                        tp.y += tp.vy;
+
+                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            continue;
+                        }
+
+                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
+                        if (dist < pair.enemy.radius + 12) {
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
+                            pair.shooter.textProjectiles.splice(i, 1);
+                            playHitSound();
+                            updateHpBars();
+
+                            if (pair.enemy.hp <= 0) {
+                                isGaming = false;
+                                if (gameInterval) clearInterval(gameInterval);
+                                setTimeout(() => {
+                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
+                                    exitMatch();
+                                }, 100);
+                            }
+                        }
+                    }
                 });
 
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
@@ -2589,6 +2691,20 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+                // 왕클세종 1초 미리 보여주는 경고 이펙트 렌더링
+                [p1, p2].forEach(player => {
+                    player.textWarnings.forEach(w => {
+                        ctx.save();
+                        ctx.strokeStyle = '#e74c3c';
+                        ctx.lineWidth = 3;
+                        ctx.setLineDash([6, 6]);
+                        ctx.strokeRect(w.x, w.y, w.width, w.height);
+                        ctx.fillStyle = 'rgba(231, 76, 60, 0.18)';
+                        ctx.fillRect(w.x, w.y, w.width, w.height);
+                        ctx.restore();
+                    });
+                });
+
                 [p1, p2].forEach(player => {
                     player.skeletons.forEach(skel => {
                         ctx.save();
@@ -2619,6 +2735,20 @@
                             ctx.strokeStyle = '#000';
                             ctx.stroke();
                         }
+                        ctx.restore();
+                    });
+
+                    // 왕클세종 텍스트 탄막 렌더링
+                    player.textProjectiles.forEach(tp => {
+                        ctx.save();
+                        ctx.font = "bold 20px sans-serif";
+                        ctx.fillStyle = "#2c3e50";
+                        ctx.strokeStyle = "#ffffff";
+                        ctx.lineWidth = 3;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.strokeText(tp.char, tp.x, tp.y);
+                        ctx.fillText(tp.char, tp.x, tp.y);
                         ctx.restore();
                     });
                 });
