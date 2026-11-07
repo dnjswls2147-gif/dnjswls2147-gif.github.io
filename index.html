@@ -26,12 +26,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
-            touch-action: none;
         }
 
         /* 상단 대형 실시간 공지/투표 배너 (맨 위에 고정) */
@@ -42,7 +41,7 @@
             width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 12px 15px;
+            padding: 14px 15px;
             z-index: 99999;
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             display: none;
@@ -88,32 +87,33 @@
             text-align: center;
             outline: none;
             border-radius: 6px;
+            pointer-events: auto;
         }
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
+        /* 메인 컨테이너 (이전 꽉 찬 화면 비율 복구) */
         .app-container {
-            width: 92vw;
-            max-width: 500px;
+            width: 96vw;
+            max-width: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-top: 15px;
+            z-index: 10;
         }
 
-        /* 경기장 바로 위 왼쪽에 위치한 프로필 & 전체 채팅 아이콘 바크기 대폭 확대 */
+        /* 경기장 바로 위 왼쪽에 위치한 프로필 & 전체 채팅 아이콘 바 */
         .top-left-menu-bar {
-            width: 92vw;
-            max-width: 500px;
+            width: 96vw;
+            max-width: none;
             display: flex;
-            gap: 30px;
+            gap: 25px;
             align-items: center;
             justify-content: flex-start;
             margin-bottom: 8px;
-            z-index: 1000;
+            z-index: 100;
         }
 
         .profile-entry-box, .chat-entry-box {
@@ -121,10 +121,11 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            padding: 4px;
+            padding: 6px;
+            pointer-events: auto;
         }
         .profile-icon, .chat-icon {
-            font-size: 58px;
+            font-size: 60px;
             line-height: 1;
         }
         .profile-label, .chat-label {
@@ -137,14 +138,15 @@
         /* 릴리 전용 어드민 아이콘 */
         .admin-entry-box {
             position: fixed;
-            bottom: 12px;
-            left: 12px;
+            bottom: 15px;
+            left: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
             z-index: 1000;
-            padding: 8px;
+            padding: 10px;
+            pointer-events: auto;
         }
         .admin-icon {
             font-size: 42px;
@@ -160,7 +162,7 @@
         /* 화면 상단 토스트 알림 메시지 */
         #toast-alert {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.92);
@@ -181,17 +183,16 @@
             opacity: 1;
         }
 
-        /* 스마트폰 화면에 딱 맞는 아담한 경기장 뷰포트 */
+        /* 이전 꽉 찬 대형 경기장 뷰포트 복구 */
         .arena-frame {
-            width: 88vw;
-            height: 88vw;
-            max-width: 480px;
-            max-height: 480px;
-            border: 6px solid #000000;
+            width: 96vw;
+            height: 96vw;
+            max-height: 56vh;
+            border: 7px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         canvas {
             width: 100%;
@@ -202,17 +203,17 @@
         /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 14px;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 20px 0;
+            padding: 22px 0;
             background: #555555;
             color: #ffffff;
-            border: 3px solid #000000;
-            font-size: 22px;
+            border: 4px solid #000000;
+            font-size: 24px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -220,46 +221,48 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            pointer-events: auto;
         }
         .btn-add-slot.selected {
             background: #27ae60;
         }
 
-        /* 시작하기 / 나가기 버튼 크게 확대 */
+        /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 12px;
+            margin-top: 14px;
             width: 100%;
             padding: 24px 0;
             font-size: 32px;
             font-weight: 900;
-            border: 3px solid #000000;
-            border-radius: 12px;
+            border: 4px solid #000000;
+            border-radius: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 5px 0 #000000;
+            gap: 12px;
+            box-shadow: 0 6px 0 #000000;
             outline: none;
+            pointer-events: auto;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
         .btn-exit { background-color: #e74c3c; color: #ffffff; }
         .btn-main-action:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #000000;
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #000000;
         }
 
         /* 인게임 HP 바 영역 */
         .ingame-status-panel {
             width: 100%;
-            margin-top: 12px;
+            margin-top: 14px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .status-row-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
         }
         .player-status-card {
@@ -268,9 +271,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -280,9 +283,9 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 38px;
+            height: 44px;
             background: #e0e0e0;
-            border: 3px solid #000000;
+            border: 4px solid #000000;
             position: relative;
             overflow: hidden;
         }
@@ -301,15 +304,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 18px;
-            text-shadow: 2px 2px 3px #000;
+            font-size: 22px;
+            text-shadow: 2px 2px 4px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 24px;
+            height: 28px;
             background: #cccccc;
-            border: 2px solid #000000;
-            margin-top: 4px;
+            border: 3px solid #000000;
+            margin-top: 6px;
             position: relative;
             overflow: hidden;
         }
@@ -325,7 +328,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 900;
             color: #000;
         }
@@ -341,55 +344,62 @@
             align-items: center;
             z-index: 9999;
             padding: 15px;
+            pointer-events: auto;
         }
         .modal-overlay.hidden { display: none !important; }
 
         .picker-modal-box {
-            width: 92vw;
-            max-width: 500px;
-            height: 75vh;
-            max-height: 600px;
+            width: 95vw;
+            max-width: 580px;
+            height: 80vh;
+            max-height: 650px;
             background: #ffffff;
-            border: 6px solid #000000;
-            padding: 35px 20px 20px 20px;
+            border: 7px solid #000000;
+            padding: 50px 30px 30px 30px;
             position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
+            pointer-events: auto;
         }
+        
+        /* X 버튼들을 대폭 크게 확대 */
         .modal-close-btn {
             position: absolute;
-            top: 12px; right: 12px;
-            width: 48px; height: 48px;
-            border: 3px solid #000000;
+            top: 14px; right: 14px;
+            width: 64px; height: 64px;
+            border: 4px solid #000000;
             background: #ffffff;
-            font-size: 26px;
-            font-weight: bold;
+            font-size: 36px;
+            font-weight: 900;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             outline: none;
+            pointer-events: auto;
+            z-index: 100;
         }
 
         /* 볼 선택 목록 스크롤 최적화 */
         .picker-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 16px;
+            margin-top: 18px;
             flex: 1;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             padding-right: 6px;
             touch-action: pan-y !important;
+            pointer-events: auto;
         }
         .ball-select-btn {
             background: #4a4a4a;
             color: #ffffff;
-            border: 3px solid #000000;
-            padding: 22px 15px;
-            font-size: 24px;
+            border: 4px solid #000000;
+            padding: 28px 15px;
+            font-size: 28px;
             font-weight: 900;
             text-align: center;
             cursor: pointer;
@@ -399,91 +409,110 @@
             text-overflow: ellipsis;
             outline: none;
             flex-shrink: 0;
+            pointer-events: auto;
         }
 
         /* 프로필 팝업 스타일 */
         .profile-modal-box {
-            width: 90vw;
-            max-width: 500px;
+            width: 94vw;
+            max-width: 600px;
             background: #ffffff;
-            border: 6px solid #000000;
-            padding: 40px 30px;
+            border: 8px solid #000000;
+            padding: 55px 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            pointer-events: auto;
         }
 
-        /* 전체 채팅 팝업 스타일 (검정 화면 없음, 플레이 가능, 꼭짓점 리사이즈, 이동 가능) */
+        /* 전체 채팅 팝업 스타일 (검정 화면 없음, 꼭짓점 아주 큼지막하게, 상시 플레이 가능) */
         .chat-floating-window {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 88vw;
-            max-width: 800px;
-            height: 75vh;
-            max-height: 800px;
-            min-width: 300px;
-            min-height: 320px;
+            width: 92vw;
+            max-width: 850px;
+            height: 78vh;
+            max-height: 850px;
+            min-width: 320px;
+            min-height: 350px;
             background: #ffffff;
-            border: 7px solid #000000;
-            padding: 24px;
+            border: 8px solid #000000;
+            padding: 28px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
             resize: both;
             overflow: hidden;
             z-index: 9998;
+            pointer-events: auto;
         }
         .chat-floating-window.hidden { display: none !important; }
+
+        /* 꼭짓점(리사이즈 핸들)을 훨씬 크게 보이도록 시각적 강조 및 터치 영역 확대 */
+        .chat-floating-window::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, transparent 50%, #000 50%);
+            cursor: se-resize;
+            pointer-events: auto;
+            z-index: 1000;
+        }
 
         .chat-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             cursor: move;
             user-select: none;
+            pointer-events: auto;
         }
         .chat-logs-area {
             flex: 1;
-            border: 4px solid #000;
+            border: 5px solid #000;
             background: #f8f9fa;
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 18px;
+            padding: 18px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            pointer-events: auto;
         }
         .chat-msg-card {
             background: #ffffff;
-            border: 3px solid #000;
-            padding: 14px 18px;
-            border-radius: 10px;
+            border: 4px solid #000;
+            padding: 16px 20px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
         .chat-sender-name {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 900;
             color: #2980b9;
             cursor: pointer;
             text-decoration: underline;
         }
         .chat-msg-text {
-            font-size: 26px;
+            font-size: 30px;
             font-weight: bold;
             word-break: break-all;
             color: #000;
         }
         .chat-msg-time {
-            font-size: 14px;
+            font-size: 16px;
             color: #666666;
             text-align: right;
             font-weight: bold;
@@ -491,138 +520,146 @@
 
         /* 플레이어 목록 팝업 스타일 */
         .players-modal-box {
-            width: 90vw;
-            max-width: 500px;
-            height: 75vh;
-            max-height: 700px;
+            width: 94vw;
+            max-width: 600px;
+            height: 80vh;
+            max-height: 750px;
             background: #ffffff;
-            border: 6px solid #000000;
-            padding: 30px;
+            border: 8px solid #000000;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            pointer-events: auto;
         }
         .players-list-area {
             flex: 1;
-            border: 3px solid #000;
+            border: 4px solid #000;
             background: #f8f9fa;
-            margin-top: 12px;
-            padding: 12px;
+            margin-top: 15px;
+            padding: 15px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y !important;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            pointer-events: auto;
         }
         .player-item-card {
             background: #fff;
-            border: 3px solid #000;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 20px;
+            border: 4px solid #000;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 24px;
             font-weight: 900;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            pointer-events: auto;
         }
 
         /* 관리자 패널 */
         .admin-draggable-panel {
             position: absolute;
-            width: 90vw;
-            max-width: 520px;
-            height: 78vh;
-            max-height: 750px;
+            width: 94vw;
+            max-width: 580px;
+            height: 82vh;
+            max-height: 800px;
             background: #ffffff;
-            border: 6px solid #000000;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 7px solid #000000;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             z-index: 10005;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
+            pointer-events: auto;
         }
 
         .admin-drag-header {
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 14px 18px;
-            font-size: 20px;
+            padding: 16px 20px;
+            font-size: 24px;
             font-weight: 900;
             cursor: move;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 4px solid #000;
+            border-bottom: 5px solid #000;
         }
 
         .admin-scroll-body {
-            padding: 18px;
+            padding: 22px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y !important;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
+            pointer-events: auto;
         }
 
         .admin-input {
             width: 100%;
-            padding: 16px;
-            font-size: 22px;
-            border: 3px solid #000;
+            padding: 20px;
+            font-size: 26px;
+            border: 4px solid #000;
             text-align: center;
             outline: none;
+            pointer-events: auto;
         }
         .admin-btn-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
         }
         .admin-btn {
             flex: 1;
-            padding: 18px 0;
-            font-size: 22px;
+            padding: 22px 0;
+            font-size: 26px;
             font-weight: 900;
-            border: 3px solid #000;
+            border: 4px solid #000;
             cursor: pointer;
             outline: none;
+            pointer-events: auto;
         }
         .admin-btn-confirm { background: #2ecc71; color: #fff; }
         .admin-btn-cancel { background: #e74c3c; color: #fff; }
 
         .admin-section-box {
             background: #f8f9fa;
-            border: 3px solid #000;
-            padding: 15px;
+            border: 4px solid #000;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         .admin-section-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 900;
         }
         .row-inline-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .btn-send {
             background-color: #3498db;
             color: #ffffff;
-            border: 3px solid #000;
-            font-size: 22px;
+            border: 4px solid #000;
+            font-size: 26px;
             font-weight: 900;
-            padding: 0 24px;
+            padding: 0 30px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
+            pointer-events: auto;
         }
         .hidden { display: none !important; }
     </style>
@@ -656,7 +693,7 @@
             </div>
         </div>
 
-        <!-- 스마트폰 화면에 딱 맞는 아담한 경기장 뷰포트 -->
+        <!-- 스마트폰 화면에 꽉 찬 초대형 경기장 뷰포트 복구 -->
         <div class="arena-frame">
             <canvas id="gameCanvas" width="500" height="500"></canvas>
         </div>
@@ -703,15 +740,15 @@
 
     </div>
 
-    <!-- 전체 채팅창 (배경 검정색 없음, 플레이하면서 채팅 가능, 꼭짓점 조절 및 이동 가능) -->
+    <!-- 전체 채팅창 (배경 검정색 없음, 플레이하면서 채팅 가능, X버튼과 꼭짓점 큼직하게 확대) -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
-            <div style="font-size:26px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <div style="font-size:16px; font-weight:900; background:#eee; padding:6px 10px; border:2px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal()">
+            <div style="font-size:28px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <div style="font-size:20px; font-weight:900; background:#eee; padding:10px 16px; border:3px solid #000; border-radius:8px; cursor:pointer;" onclick="playClickSound(); openPlayersModal()">
                     플레이어 목록 ➡️
                 </div>
-                <button class="modal-close-btn" style="position:static; width:38px; height:38px; font-size:20px;" onclick="playClickSound(); closeChatModal()">✕</button>
+                <button class="modal-close-btn" style="position:static; width:54px; height:54px; font-size:30px;" onclick="playClickSound(); closeChatModal()">✕</button>
             </div>
         </div>
         <div class="chat-logs-area" id="chat-logs">
@@ -722,8 +759,8 @@
             </div>
         </div>
         <div class="row-inline-group">
-            <input type="text" id="chat-input" class="admin-input" style="font-size:22px; padding:16px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:22px; padding:0 30px;" onclick="playClickSound(); sendChatMessage()">전송</button>
+            <input type="text" id="chat-input" class="admin-input" style="font-size:26px; padding:20px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:26px; padding:0 35px;" onclick="playClickSound(); sendChatMessage()">전송</button>
         </div>
     </div>
 
@@ -731,8 +768,8 @@
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 10000;">
         <div class="players-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closePlayersModal()">✕</button>
-            <div style="font-size:28px; font-weight:900; text-align:center; margin-bottom:6px;">👥 플레이어 목록</div>
-            <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:6px;" id="online-offline-summary-txt">
+            <div style="font-size:32px; font-weight:900; text-align:center; margin-bottom:10px;">👥 플레이어 목록</div>
+            <div style="font-size:20px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:10px;" id="online-offline-summary-txt">
                 온라인 [0명] | 오프라인 [0명]
             </div>
             <div class="players-list-area" id="players-list-container"></div>
@@ -743,13 +780,13 @@
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 10000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal()">✕</button>
-            <div style="font-size:56px; line-height:1; margin-bottom:12px;">👤</div>
-            <div style="font-size:30px; font-weight:900; margin-bottom:20px; border-bottom:4px solid #000; padding-bottom:10px; width:100%; text-align:center;">내 프로필</div>
-            <div style="font-size:22px; font-weight:900; margin-bottom:16px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="font-size:18px; font-weight:bold; color:#555; margin-bottom:28px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
+            <div style="font-size:34px; font-weight:900; margin-bottom:25px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:20px; font-weight:bold; color:#555; margin-bottom:35px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
-                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); editUserNamePrompt()">이름 변경</button>
-                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeProfileModal()">닫기</button>
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:16px 0; font-size:24px;" onclick="playClickSound(); editUserNamePrompt()">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:16px 0; font-size:24px;" onclick="playClickSound(); closeProfileModal()">닫기</button>
             </div>
         </div>
     </div>
@@ -758,11 +795,11 @@
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 10000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal()">✕</button>
-            <div style="font-size:56px; line-height:1; margin-bottom:12px;">👤</div>
-            <div style="font-size:30px; font-weight:900; margin-bottom:20px; border-bottom:4px solid #000; padding-bottom:10px; width:100%; text-align:center;">플레이어 프로필</div>
-            <div style="font-size:22px; font-weight:900; margin-bottom:16px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
-            <div style="font-size:18px; font-weight:bold; color:#555; margin-bottom:28px;" id="other-profile-date-txt">접속한 날짜: -</div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px 0; font-size:20px;" onclick="playClickSound(); closeOtherProfileModal()">닫기</button>
+            <div style="font-size:64px; line-height:1; margin-bottom:15px;">👤</div>
+            <div style="font-size:34px; font-weight:900; margin-bottom:25px; border-bottom:5px solid #000; padding-bottom:12px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+            <div style="font-size:20px; font-weight:bold; color:#555; margin-bottom:35px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px 0; font-size:24px;" onclick="playClickSound(); closeOtherProfileModal()">닫기</button>
         </div>
     </div>
 
@@ -770,28 +807,28 @@
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker()">✕</button>
-            <div style="font-size:26px; font-weight:900; text-align:center; margin-bottom:6px;">⚽ 볼 선택하기</div>
+            <div style="font-size:30px; font-weight:900; text-align:center; margin-bottom:10px;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 20000;">
-        <div style="background:#fff; border:6px solid #000; padding:35px 25px; width:90vw; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
-            <div style="font-size:30px; font-weight:900; margin-bottom:20px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:20px; font-size:24px; padding:18px;">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; font-size:24px; font-weight:900;" onclick="playClickSound(); submitUserName()">등록하고 시작하기</button>
+        <div style="background:#fff; border:8px solid #000; padding:45px 30px; width:92vw; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:36px; font-weight:900; margin-bottom:25px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:25px; font-size:28px; padding:22px;">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:22px; font-size:28px; font-weight:900;" onclick="playClickSound(); submitUserName()">등록하고 시작하기</button>
         </div>
     </div>
 
     <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal">
-        <div style="background:#fff; border:6px solid #000; padding:28px; width:90vw; max-width:380px; text-align:center;">
-            <div style="font-size:24px; font-weight:900; margin-bottom:18px;">🔒 릴리 전용 어드민</div>
-            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:18px;">
+        <div style="background:#fff; border:7px solid #000; padding:35px; width:90vw; max-width:420px; text-align:center;">
+            <div style="font-size:28px; font-weight:900; margin-bottom:22px;">🔒 릴리 전용 어드민</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:22px;">
             <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); verifyAdminPassword()">확인</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeAdminPassword()">취소</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:16px 0; font-size:22px;" onclick="playClickSound(); verifyAdminPassword()">확인</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:16px 0; font-size:22px;" onclick="playClickSound(); closeAdminPassword()">취소</button>
             </div>
         </div>
     </div>
@@ -803,7 +840,7 @@
             <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel()">✕</span>
         </div>
         <div class="admin-scroll-body">
-            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">
+            <div style="font-size:20px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
             </div>
 
@@ -814,7 +851,7 @@
                     <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용 입력">
                     <button class="btn-send" onclick="playClickSound(); sendNotice()">보내기</button>
                 </div>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:10px; font-size:16px; margin-top:4px;" onclick="playClickSound(); deleteNotice()">공지 삭제</button>
+                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:14px; font-size:20px; margin-top:6px;" onclick="playClickSound(); deleteNotice()">공지 삭제</button>
             </div>
 
             <!-- 투표 영역 -->
@@ -824,17 +861,17 @@
                     <input type="text" id="admin-vote-opt1" class="admin-input" style="margin-bottom:0;" placeholder="1번 보기">
                     <input type="text" id="admin-vote-opt2" class="admin-input" style="margin-bottom:0;" placeholder="2번 보기">
                 </div>
-                <button class="btn-send" style="width:100%; margin-top:4px; background-color:#9b59b6; padding:12px 0;" onclick="playClickSound(); sendVote()">투표 시작</button>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:10px; font-size:16px; margin-top:4px;" onclick="playClickSound(); deleteVote()">투표 삭제</button>
+                <button class="btn-send" style="width:100%; margin-top:6px; background-color:#9b59b6; padding:16px 0;" onclick="playClickSound(); sendVote()">투표 시작</button>
+                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:14px; font-size:20px; margin-top:6px;" onclick="playClickSound(); deleteVote()">투표 삭제</button>
             </div>
 
             <!-- 채팅 모두 삭제 영역 -->
             <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
                 <div class="admin-section-title" style="color: #c0392b;">💬 채팅 관리</div>
-                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:12px; font-size:18px;" onclick="playClickSound(); clearAllChats()">채팅 모두 삭제</button>
+                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:16px; font-size:22px;" onclick="playClickSound(); clearAllChats()">채팅 모두 삭제</button>
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px;" onclick="playClickSound(); closeAdminPanel()">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px;" onclick="playClickSound(); closeAdminPanel()">닫기</button>
         </div>
     </div>
 
@@ -981,7 +1018,6 @@
             const myUid = getDeviceUniqueId();
             localStorage.setItem('lily_game_ping_' + myUid, Date.now());
 
-            // 접속 즉시 플레이어 목록에 자동 등록 보장
             let savedName = localStorage.getItem('lily_game_user_name');
             if (savedName) {
                 registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
@@ -1167,7 +1203,7 @@
 
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
-                item.innerHTML = `<span>👤 ${p.name}</span> <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>`;
+                item.innerHTML = `<span>👤 ${p.name}</span> <span style="font-size:20px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>`;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
@@ -1394,7 +1430,7 @@
             banner.innerHTML = `
                 <div class="banner-inner-content">
                     <div class="banner-vote-container">
-                        <div style="font-size:20px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
+                        <div style="font-size:22px; font-weight:900; text-align:center;">📊 [투표 진행 중] 하나를 선택해 주세요!</div>
                         <div class="vote-options-row">
                             <button class="btn-vote-opt btn-vote-red" onclick="playClickSound(); castVote(1)">
                                 1. ${voteOpt1Text} [${voteCount1}명 고름]
@@ -1684,7 +1720,6 @@
             let vx = Math.cos(angle) * FIXED_SPEED;
             let vy = Math.sin(angle) * FIXED_SPEED;
 
-            // 위아래로 반복 튕기는 현상(수직/수평 고정 버그) 방지용 각도 강제 보정
             if (Math.abs(vx) < 0.8) vx = vx > 0 ? 0.8 : -0.8;
             if (Math.abs(vy) < 0.8) vy = vy > 0 ? 0.8 : -0.8;
 
@@ -1848,7 +1883,6 @@
                 p2.x += p2.vx; p2.y += p2.vy;
 
                 let hitWall = false;
-                // 벽 충돌 시 수직/수평으로 갇히지 않도록 미세 난수 바이어스 추가
                 if (p1.x - p1.radius < 0) { p1.x = p1.radius; p1.vx = Math.abs(p1.vx) + (Math.random()*0.4); hitWall = true; }
                 if (p1.x + p1.radius > canvas.width) { p1.x = canvas.width - p1.radius; p1.vx = -(Math.abs(p1.vx) + (Math.random()*0.4)); hitWall = true; }
                 if (p1.y - p1.radius < 0) { p1.y = p1.radius; p1.vy = Math.abs(p1.vy) + (Math.random()*0.4); hitWall = true; }
@@ -1859,7 +1893,6 @@
                 if (p2.y - p2.radius < 0) { p2.y = p2.radius; p2.vy = Math.abs(p2.vy) + (Math.random()*0.4); hitWall = true; }
                 if (p2.y + p2.radius > canvas.height) { p2.y = canvas.height - p2.radius; p2.vy = -(Math.abs(p2.vy) + (Math.random()*0.4)); hitWall = true; }
 
-                // 속도가 너무 수직/수평이 되면 강제로 대각선 방향으로 꺾어줌
                 if (Math.abs(p1.vx) < 0.5) p1.vx = p1.vx >= 0 ? 1.0 : -1.0;
                 if (Math.abs(p1.vy) < 0.5) p1.vy = p1.vy >= 0 ? 1.0 : -1.0;
                 if (Math.abs(p2.vx) < 0.5) p2.vx = p2.vx >= 0 ? 1.0 : -1.0;
