@@ -1223,34 +1223,36 @@
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
+                let now = ctx.currentTime;
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(950, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.12);
-                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.12);
+                osc.start(now);
+                osc.stop(now + 0.18);
             } catch(e) {}
         }
 
-        function playChocolateLandSound() {
+        function playSkillSuperSound() {
             try {
                 let ctx = getAudioContext();
+                let now = ctx.currentTime;
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(400, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.06);
-                gain.gain.setValueAtTime(0.4 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(900, now + 0.25);
+                gain.gain.setValueAtTime(0.6 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.06);
+                osc.start(now);
+                osc.stop(now + 0.3);
             } catch(e) {}
         }
 
@@ -1261,32 +1263,14 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.2);
-                gain.gain.setValueAtTime(0.5 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.25);
+                gain.gain.setValueAtTime(0.6 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.25);
-            } catch(e) {}
-        }
-
-        function playBigExplosionSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
-                gain.gain.setValueAtTime(0.8 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.45);
+                osc.stop(now + 0.3);
             } catch(e) {}
         }
 
@@ -1970,7 +1954,7 @@
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: '14285.jpg' },
+            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, color: '#e67e22' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
@@ -2005,8 +1989,9 @@
 
         let moneyItems = [];
         let bombProjectiles = [];
+        let warningRects = [];
         let gameInterval = null;
-        let redDropInterval = null;
+        let seolDropInterval = null;
 
         function handleSlotClick(side) {
             if (side === 'left') {
@@ -2139,17 +2124,18 @@
             }
 
             if (gameInterval) clearInterval(gameInterval);
-            if (redDropInterval) clearInterval(redDropInterval);
+            if (seolDropInterval) clearInterval(seolDropInterval);
 
             moneyItems = [];
             bombProjectiles = [];
+            warningRects = [];
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 5 : 0));
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '왕클세종' ? 8 : 0));
             p1.skeletons = [];
             p1.arrows = [];
             p1.chocoCount = 0;
@@ -2163,7 +2149,7 @@
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 5 : 0));
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '왕클세종' ? 8 : 0));
             p2.skeletons = [];
             p2.arrows = [];
             p2.chocoCount = 0;
@@ -2181,7 +2167,7 @@
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
                 if (player.name === '미스터비스트' || player.name === 'JINO' || player.name === '왕클세종') {
-                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 5);
+                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 8);
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
                 } else {
@@ -2201,34 +2187,55 @@
             updateChocoDisplay('p1', p1.chocoCount);
             updateChocoDisplay('p2', p2.chocoCount);
 
-            // 왕클세종 2번째 기술 아이템(빨간 동그라미) 2초마다 낙하
-            redDropInterval = setInterval(() => {
+            // 왕클세종 2번째 기술: 4초마다 상대방 공 위치에 빨간색 네모 경고 표시 후 1초 뒤 낙하
+            seolDropInterval = setInterval(() => {
                 if (!isGaming) return;
-                [p1, p2].forEach(player => {
-                    if (player.name === '왕클세종') {
-                        let rx = Math.random() * (canvas.width - 60) + 30;
-                        moneyItems.push({
-                            x: rx,
-                            y: -20,
-                            destX: rx,
-                            destY: Math.random() * (canvas.height - 100) + 50,
-                            radius: 18,
-                            owner: player === p1 ? 'p1' : 'p2',
-                            isLanding: true,
-                            progress: 0,
-                            spawnTime: Date.now(),
-                            isRedCircle: true
+                [ { caster: p1, target: p2, prefix: 'p1' }, { caster: p2, target: p1, prefix: 'p2' } ].forEach(pair => {
+                    if (pair.caster.name === '왕클세종') {
+                        let targetX = pair.target.x;
+                        let targetY = pair.target.y;
+                        let spawnTime = Date.now();
+
+                        playSkillSuperSound();
+                        showToast(`${pair.caster.name}가 상대방 공을 겨냥합니다! 🎯`);
+
+                        // 1초간 빨간색 네모 경고 표시
+                        warningRects.push({
+                            x: targetX,
+                            y: targetY,
+                            spawnTime: spawnTime,
+                            duration: 1000,
+                            owner: pair.prefix,
+                            targetObj: pair.target
                         });
+
+                        // 1초 뒤에 실제 공 낙하
+                        setTimeout(() => {
+                            if (!isGaming) return;
+                            moneyItems.push({
+                                x: targetX,
+                                y: targetY - 100, // 위에서 아래로 낙하 모션 시작점
+                                destX: targetX,
+                                destY: targetY,
+                                radius: 20,
+                                owner: pair.prefix,
+                                isLanding: true,
+                                progress: 0,
+                                spawnTime: Date.now(),
+                                showTargetText: true // "너는 내 표적이다!" 텍스트 표시
+                            });
+                            playArrowSound();
+                        }, 1000);
                     }
                 });
-            }, 2000);
+            }, 4000);
 
             gameInterval = setInterval(() => {
                 if (!isGaming) return;
 
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p1.name)) {
                     p1.skillTimer -= 1;
-                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 5);
+                    let maxTime = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 8);
                     if (p1.skillTimer <= 0) {
                         p1.skillTimer = maxTime;
                         if (p1.name === '미스터비스트') {
@@ -2249,7 +2256,7 @@
 
                 if (['미스터비스트', 'JINO', '왕클세종'].includes(p2.name)) {
                     p2.skillTimer -= 1;
-                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 5);
+                    let maxTime = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 8);
                     if (p2.skillTimer <= 0) {
                         p2.skillTimer = maxTime;
                         if (p2.name === '미스터비스트') {
@@ -2292,9 +2299,10 @@
             }, 1000);
         }
 
-        // 왕클세종 1번째 기술: 4초 지속, 1.5배 빠른 회전, 데미지 4, 동일 글자 0.5초 쿨타임 적용
+        // 왕클세종 1번째 기술: 8초 충전, 4초 지속, 1.5배 빠른 회전, 데미지 3, 동일 글자 0.5초 쿨타임
         function triggerWangklSejongSkill(caster, enemy, prefix) {
-            showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷`);
+            showToast(`${caster.name}의 한글 세종 회전 기술 발동! 🇰🇷 (4초 지속)`);
+            playSkillSuperSound();
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
             let chars = fullStr.split('');
@@ -2306,9 +2314,9 @@
                     char: ch,
                     angle: baseAngle,
                     radius: 85,
-                    speed: 0.012, // 1.5배 더 빠른 회전
-                    damage: 4,     // 데미지 4
-                    lastHitTimes: {} // 글자별 타격 쿨타임 관리용
+                    speed: 0.012,
+                    damage: 3, // 데미지 3
+                    lastHitTimes: {}
                 });
             });
 
@@ -2318,36 +2326,6 @@
                 prefix: prefix,
                 spawnTime: Date.now()
             });
-            playArrowSound();
-        }
-
-        // 왕클세종 2번째 기술 완성 시: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 순서로 글자가 담긴 공 발사 (파란팀=파란색, 빨간팀=빨간색)
-        function triggerWangklSejongTextBalls(ownerPlayer, enemyPlayer, prefix) {
-            showToast(`${ownerPlayer.name}의 한글 문자 공 발사! 🇰🇷✨`);
-            let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
-            let chars = fullStr.split('');
-            let startX = ownerPlayer.x;
-            let startY = ownerPlayer.y;
-            let baseAngle = Math.atan2(enemyPlayer.y - startY, enemyPlayer.x - startX);
-
-            chars.forEach((ch, idx) => {
-                let angleOffset = (idx - 6) * 0.08;
-                let angle = baseAngle + angleOffset;
-                let color = (prefix === 'p1') ? '#1e90ff' : '#e74c3c'; // 파란팀 파란색, 빨간팀 빨간색
-
-                ownerPlayer.textProjectiles.push({
-                    x: startX,
-                    y: startY,
-                    vx: Math.cos(angle) * 4.8,
-                    vy: Math.sin(angle) * 4.8,
-                    char: ch,
-                    target: enemyPlayer,
-                    radius: 16, // 공 형태의 크기
-                    damage: 8,
-                    color: color
-                });
-            });
-            playArrowSound();
         }
 
         function setupPlayerSkillUI(sidePrefix, player) {
@@ -2408,19 +2386,20 @@
                     isLanding: true,
                     progress: 0,
                     spawnTime: Date.now(),
-                    isRedCircle: false
+                    showTargetText: false
                 });
             }
-            showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! (5초 후 소멸) 🍫`);
+            showToast(`${ownerPlayer.name}가 초콜릿 ${count}개 투척! 🍫`);
         }
 
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
-            if (redDropInterval) clearInterval(redDropInterval);
+            if (seolDropInterval) clearInterval(seolDropInterval);
 
             moneyItems = [];
             bombProjectiles = [];
+            warningRects = [];
             
             selectedLeftBall = null;
             selectedRightBall = null;
@@ -2472,7 +2451,7 @@
 
             const popup = document.createElement('div');
             popup.className = 'healing-popup-text';
-            popup.innerText = '➕️➕️';
+            popup.innerText = '➕5';
             cardContainer.appendChild(popup);
 
             setTimeout(() => {
@@ -2519,9 +2498,12 @@
 
                 [p1, p2].forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => (nowTimestamp - skel.spawnTime) < 6000);
-                    // 1번째 기술 궤도 4초 지나면 자동 소멸
+                    // 1번째 기술 4초 지나면 자동 소멸
                     player.activeOrbits = player.activeOrbits.filter(orbit => (nowTimestamp - orbit.spawnTime) < 4000);
                 });
+
+                // 빨간색 네모 경고 필터링 (1초 유지)
+                warningRects = warningRects.filter(w => (nowTimestamp - w.spawnTime) < w.duration);
 
                 // 왕클세종 회전 궤도 글자들과 상대방 공 충돌 및 0.5초 쿨타임 체크
                 [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
@@ -2534,7 +2516,7 @@
                             let dist = Math.hypot(pair.enemy.x - charX, pair.enemy.y - charY);
                             if (dist < pair.enemy.radius + 12) {
                                 let lastHit = item.lastHitTimes[item.char] || 0;
-                                if (nowTimestamp - lastHit > 500) { // 0.5초(500ms) 쿨타임
+                                if (nowTimestamp - lastHit > 500) {
                                     item.lastHitTimes[item.char] = nowTimestamp;
                                     pair.enemy.hp = Math.max(0, pair.enemy.hp - item.damage);
                                     playHitSound();
@@ -2543,7 +2525,7 @@
                                     if (pair.enemy.hp <= 0) {
                                         isGaming = false;
                                         if (gameInterval) clearInterval(gameInterval);
-                                        if (redDropInterval) clearInterval(redDropInterval);
+                                        if (seolDropInterval) clearInterval(seolDropInterval);
                                         setTimeout(() => {
                                             showToast(`🏆 ${pair.caster.name} 승리!`);
                                             exitMatch();
@@ -2553,38 +2535,6 @@
                             }
                         });
                     });
-                });
-
-                // 2번째 기술 문자 공 탄막 업데이트
-                [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
-                    for (let i = pair.shooter.textProjectiles.length - 1; i >= 0; i--) {
-                        let tp = pair.shooter.textProjectiles[i];
-                        tp.x += tp.vx;
-                        tp.y += tp.vy;
-
-                        if (tp.x < 0 || tp.x > canvas.width || tp.y < 0 || tp.y > canvas.height) {
-                            pair.shooter.textProjectiles.splice(i, 1);
-                            continue;
-                        }
-
-                        let dist = Math.hypot(pair.enemy.x - tp.x, pair.enemy.y - tp.y);
-                        if (dist < pair.enemy.radius + tp.radius) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - tp.damage);
-                            pair.shooter.textProjectiles.splice(i, 1);
-                            playHitSound();
-                            updateHpBars();
-
-                            if (pair.enemy.hp <= 0) {
-                                isGaming = false;
-                                if (gameInterval) clearInterval(gameInterval);
-                                if (redDropInterval) clearInterval(redDropInterval);
-                                setTimeout(() => {
-                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
-                                    exitMatch();
-                                }, 100);
-                            }
-                        }
-                    }
                 });
 
                 [ { shooter: p1, enemy: p2 }, { shooter: p2, enemy: p1 } ].forEach(pair => {
@@ -2608,7 +2558,7 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
-                                if (redDropInterval) clearInterval(redDropInterval);
+                                if (seolDropInterval) clearInterval(seolDropInterval);
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2618,13 +2568,14 @@
                     }
                 });
 
-                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 6000);
+                // 떨어진 공(초콜릿 아이템) 8초 뒤 사라지도록 설정
+                moneyItems = moneyItems.filter(m => (nowTimestamp - m.spawnTime) < 8000);
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLanding) {
-                        m.progress += 0.03;
-                        m.y += (m.destY - m.y) * 0.08;
+                        m.progress += 0.05;
+                        m.y += (m.destY - m.y) * 0.15;
                         if (Math.abs(m.destY - m.y) < 2 || m.progress >= 1.0) {
                             m.isLanding = false;
                         }
@@ -2634,24 +2585,9 @@
                             if (dist1 < p1.radius + m.radius) {
                                 playHealSound();
                                 moneyItems.splice(i, 1);
-                                if (p1.name === '미스터비스트') {
-                                    p1.hp = Math.min(p1.maxHp, p1.hp + 20);
-                                    showHealingAnimation('p1');
-                                    updateHpBars();
-                                    p1.chocoCount++;
-                                    if (p1.chocoCount >= 5) {
-                                        p1.chocoCount = 0;
-                                        spawnChocolateSlowly(p1, 3);
-                                    }
-                                    updateChocoDisplay('p1', p1.chocoCount);
-                                } else if (p1.name === '왕클세종') {
-                                    p1.chocoCount++;
-                                    if (p1.chocoCount >= 5) {
-                                        p1.chocoCount = 0;
-                                        triggerWangklSejongTextBalls(p1, p2, 'p1');
-                                    }
-                                    updateChocoDisplay('p1', p1.chocoCount);
-                                }
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 5); // 체력 5 회복
+                                showHealingAnimation('p1');
+                                updateHpBars();
                                 continue;
                             }
                         }
@@ -2660,24 +2596,9 @@
                             if (dist2 < p2.radius + m.radius) {
                                 playHealSound();
                                 moneyItems.splice(i, 1);
-                                if (p2.name === '미스터비스트') {
-                                    p2.hp = Math.min(p2.maxHp, p2.hp + 20);
-                                    showHealingAnimation('p2');
-                                    updateHpBars();
-                                    p2.chocoCount++;
-                                    if (p2.chocoCount >= 5) {
-                                        p2.chocoCount = 0;
-                                        spawnChocolateSlowly(p2, 3);
-                                    }
-                                    updateChocoDisplay('p2', p2.chocoCount);
-                                } else if (p2.name === '왕클세종') {
-                                    p2.chocoCount++;
-                                    if (p2.chocoCount >= 5) {
-                                        p2.chocoCount = 0;
-                                        triggerWangklSejongTextBalls(p2, p1, 'p2');
-                                    }
-                                    updateChocoDisplay('p2', p2.chocoCount);
-                                }
+                                p2.hp = Math.min(p2.maxHp, p2.hp + 5); // 체력 5 회복
+                                showHealingAnimation('p2');
+                                updateHpBars();
                             }
                         }
                     }
@@ -2713,7 +2634,7 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
-                        if (redDropInterval) clearInterval(redDropInterval);
+                        if (seolDropInterval) clearInterval(seolDropInterval);
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -2726,6 +2647,17 @@
                 }
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 빨간색 네모 경고 표시 렌더링
+                warningRects.forEach(w => {
+                    ctx.save();
+                    ctx.strokeStyle = '#e74c3c';
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(w.x - 35, w.y - 35, 70, 70);
+                    ctx.fillStyle = 'rgba(231, 76, 60, 0.25)';
+                    ctx.fillRect(w.x - 35, w.y - 35, 70, 70);
+                    ctx.restore();
+                });
 
                 // 왕클세종 활성 회전 궤도 글자들 렌더링
                 [p1, p2].forEach(player => {
@@ -2780,47 +2712,30 @@
                         }
                         ctx.restore();
                     });
-
-                    // 2번째 기술 문자 공 탄막 렌더링 (공 모양 배경 + 글자)
-                    player.textProjectiles.forEach(tp => {
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(tp.x, tp.y, tp.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = tp.color;
-                        ctx.fill();
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = '#000000';
-                        ctx.stroke();
-
-                        ctx.font = "bold 16px sans-serif";
-                        ctx.fillStyle = "#ffffff";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.fillText(tp.char, tp.x, tp.y);
-                        ctx.restore();
-                    });
                 });
 
                 const rotAngle = (Date.now() / 200) % (Math.PI * 2);
                 moneyItems.forEach(m => {
                     ctx.save();
                     ctx.beginPath();
-                    if (m.isRedCircle) {
-                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = '#e74c3c';
-                        ctx.fill();
+                    ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#2ecc71';
+                    ctx.stroke();
+                    ctx.font = "26px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("🍫", m.x, m.y);
+
+                    // "너는 내 표적이다!" 텍스트 표시 모션
+                    if (m.showTargetText) {
+                        ctx.font = "bold 14px sans-serif";
+                        ctx.fillStyle = "#e74c3c";
+                        ctx.strokeStyle = "#ffffff";
                         ctx.lineWidth = 3;
-                        ctx.strokeStyle = '#000';
-                        ctx.stroke();
-                    } else {
-                        ctx.arc(m.x, m.y, 22, rotAngle, rotAngle + Math.PI);
-                        ctx.lineWidth = 3;
-                        ctx.strokeStyle = '#2ecc71';
-                        ctx.stroke();
-                        ctx.font = "26px sans-serif";
                         ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.fillText("🍫", m.x, m.y);
+                        ctx.strokeText("너는 내 표적이다!", m.x, m.y - 28);
+                        ctx.fillText("너는 내 표적이다!", m.x, m.y - 28);
                     }
                     ctx.restore();
                 });
