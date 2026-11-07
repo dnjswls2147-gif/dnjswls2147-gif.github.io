@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1024, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>릴리 볼 파이트</title>
     <style>
         * {
@@ -18,7 +18,7 @@
             background-color: #ffffff;
             margin: 0;
             padding: 0;
-            width: 100%;
+            width: 100vw;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -33,7 +33,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
             padding: 10px 15px;
@@ -46,7 +46,7 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -86,10 +86,10 @@
         .btn-vote-red { background-color: #e74c3c; }
         .btn-vote-blue { background-color: #3498db; }
 
-        /* 메인 컨테이너 */
+        /* 메인 컨테이너 (중앙 정렬 및 대폭 확장) */
         .app-container {
-            width: 100%;
-            max-width: 520px;
+            width: 100vw;
+            max-width: 620px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -97,19 +97,19 @@
             justify-content: flex-start;
             position: relative;
             z-index: 10;
-            padding: 15px 10px;
+            padding: 20px 10px;
         }
 
         /* 프로필 & 전체 채팅 아이콘 바 */
         .top-menu-bar {
             width: 100%;
-            max-width: 500px;
+            max-width: 620px;
             display: flex;
             gap: 15px;
             align-items: center;
             justify-content: flex-start;
             padding: 4px 0;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             z-index: 1000;
         }
 
@@ -120,11 +120,11 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon {
-            font-size: 42px;
+            font-size: 46px;
             line-height: 1;
         }
         .profile-label, .chat-label {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
@@ -143,7 +143,7 @@
             padding: 6px;
         }
         .admin-icon {
-            font-size: 36px;
+            font-size: 38px;
             line-height: 1;
         }
         .admin-label {
@@ -177,11 +177,11 @@
             opacity: 1;
         }
 
-        /* 경기장 꽉 채우기 */
+        /* 경기장 대폭 확장 및 중앙 정렬 */
         .arena-frame {
-            width: 100%;
-            max-width: 500px;
-            height: 500px;
+            width: 100vw;
+            max-width: 620px;
+            height: 620px;
             border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
@@ -196,27 +196,27 @@
 
         /* 로비 및 컨트롤 영역 */
         .controls-wrapper {
-            width: 100%;
-            max-width: 500px;
+            width: 100vw;
+            max-width: 620px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         /* 볼 선택하기 슬롯 영역 */
         .slot-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .btn-add-slot {
             flex: 1;
-            padding: 16px 0;
+            padding: 18px 0;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -231,10 +231,10 @@
 
         /* 시작하기 / 나가기 버튼 */
         .btn-main-action {
-            margin-top: 8px;
+            margin-top: 10px;
             width: 100%;
-            padding: 18px 0;
-            font-size: 22px;
+            padding: 20px 0;
+            font-size: 24px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 8px;
@@ -258,11 +258,11 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .status-row-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -271,9 +271,9 @@
             flex-direction: column;
         }
         .player-name-label {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 900;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -283,7 +283,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 28px;
+            height: 32px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -304,15 +304,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 13px;
+            font-size: 14px;
             text-shadow: 2px 2px 3px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 18px;
+            height: 20px;
             background: #cccccc;
             border: 2px solid #000000;
-            margin-top: 3px;
+            margin-top: 4px;
             position: relative;
             overflow: hidden;
         }
@@ -328,36 +328,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 900;
             color: #000;
         }
 
-        /* 일반 모달 공통 스타일 (배경 어두움 제거) */
+        /* 일반 모달 공통 스타일 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0); /* 배경 어둡지 않게 투명 처리 */
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            pointer-events: none; /* 뒤로 터치가 통과되도록 하여 다른 버튼 조작 가능 */
+            pointer-events: none;
             padding: 15px;
         }
         .modal-overlay.hidden { display: none !important; }
-        
-        /* 모달 박스 자체는 터치 가능하도록 설정 */
-        .modal-overlay > * {
-            pointer-events: auto;
-        }
+        .modal-overlay > * { pointer-events: auto; }
 
         .picker-modal-box {
-            width: 100%;
-            max-width: 440px;
+            width: 90vw;
+            max-width: 480px;
             height: 75vh;
-            max-height: 540px;
+            max-height: 580px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 20px 20px 20px;
@@ -412,8 +408,8 @@
         }
 
         .profile-modal-box {
-            width: 100%;
-            max-width: 440px;
+            width: 90vw;
+            max-width: 460px;
             background: #ffffff;
             border: 6px solid #000000;
             padding: 40px 25px;
@@ -425,16 +421,16 @@
             z-index: 100000;
         }
 
-        /* 전체 채팅 팝업 스타일 (드래그 가능, 배경 어두움 없음) */
+        /* 전체 채팅 팝업 스타일 */
         .chat-floating-window {
             position: fixed;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 650px;
+            width: 90vw;
+            max-width: 680px;
             height: 75vh;
-            max-height: 650px;
+            max-height: 680px;
             min-width: 300px;
             min-height: 300px;
             background: #ffffff;
@@ -511,8 +507,8 @@
         }
 
         .players-modal-box {
-            width: 100%;
-            max-width: 440px;
+            width: 90vw;
+            max-width: 460px;
             height: 75vh;
             max-height: 580px;
             background: #ffffff;
@@ -551,7 +547,7 @@
 
         .admin-draggable-panel {
             position: absolute;
-            width: 100%;
+            width: 90vw;
             max-width: 460px;
             height: 75vh;
             max-height: 640px;
@@ -680,11 +676,11 @@
 
         <!-- 프로필 & 전체 채팅 메뉴 바 -->
         <div class="top-menu-bar">
-            <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); openProfileModal();">
+            <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
             </div>
-            <div class="chat-entry-box" id="btn-chat-entry" onclick="playClickSound(); openChatModal();">
+            <div class="chat-entry-box" id="btn-chat-entry" onclick="playClickSound(); handleChatClick();">
                 <div class="chat-icon">📘</div>
                 <div class="chat-label">전체 채팅</div>
             </div>
@@ -740,7 +736,7 @@
 
     </div>
 
-    <!-- 전체 채팅창 (자유 이동 가능) -->
+    <!-- 전체 채팅창 (드래그 가능, 열릴 때 다른 창 자동 닫힘) -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
             <div style="font-size:16px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
@@ -803,7 +799,7 @@
         </div>
     </div>
 
-    <!-- 볼 선택 모달 팝업창 (3번째 사진처럼 순서 나열 및 스크롤) -->
+    <!-- 볼 선택 모달 팝업창 -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
@@ -984,7 +980,6 @@
             return uid;
         }
 
-        // 자정(오전 12시)이 지나면 채팅 초기화 기능
         function checkMidnightReset() {
             const todayStr = getFormattedToday();
             let lastChatDate = localStorage.getItem('lily_game_last_chat_date');
@@ -1102,6 +1097,18 @@
             showToast(`환영합니다, ${inputVal}님!`);
             loadChatLogs();
             updateOnlineOfflineCounts();
+        }
+
+        // 아이콘 클릭 관리 (채팅창 열려있으면 다른 아이콘 누를 때 채팅창이 닫히고 해당 창이 뜸)
+        function handleProfileClick() {
+            closeChatModal();
+            openProfileModal();
+        }
+
+        function handleChatClick() {
+            closeProfileModal();
+            closePlayersModal();
+            openChatModal();
         }
 
         function openProfileModal() {
@@ -1274,7 +1281,7 @@
             localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
             loadChatLogs();
             showToast('모든 채팅이 삭제되었습니다!');
-            closeAdminPanel();
+            // 어드민 패널이 닫히지 않고 유지되도록 수정함
         }
 
         let toastTimer = null;
@@ -1327,14 +1334,14 @@
             localStorage.setItem('lily_game_announcement', JSON.stringify(noticeObj));
             applyAnnouncementData(JSON.stringify(noticeObj));
             showToast('공지가 모두에게 전송되었습니다!');
-            closeAdminPanel();
+            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function deleteNotice() {
             localStorage.removeItem('lily_game_announcement');
             document.getElementById('global-announcement-banner').classList.remove('show');
             showToast('공지가 삭제되었습니다!');
-            closeAdminPanel();
+            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         let voteCount1 = 0;
@@ -1362,14 +1369,14 @@
             localStorage.setItem('lily_game_vote_data', JSON.stringify(voteObj));
             applyVoteData(JSON.stringify(voteObj));
             showToast('투표가 모두에게 시작되었습니다!');
-            closeAdminPanel();
+            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function deleteVote() {
             localStorage.removeItem('lily_game_vote_data');
             document.getElementById('global-announcement-banner').classList.remove('show');
             showToast('투표가 삭제되었습니다!');
-            closeAdminPanel();
+            // 어드민 패널이 닫히지 않고 유지됨
         }
 
         function checkSavedAnnouncement() {
