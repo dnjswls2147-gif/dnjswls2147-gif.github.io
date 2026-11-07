@@ -798,7 +798,7 @@
         </div>
     </div>
 
-    <!-- 경기장 설정 모달 팝업 창 (가로/세로 넓히기) -->
+    <!-- 경기장 설정 모달 팝업 창 (가로/세로 넓히기 + 초기화 버튼) -->
     <div class="modal-overlay hidden" id="arena-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeArenaSettingModal();">✕</button>
@@ -817,7 +817,7 @@
             </div>
 
             <!-- 세로 넓히기 (300 ~ 700) -->
-            <div style="margin-bottom:30px; text-align:left;">
+            <div style="margin-bottom:24px; text-align:left;">
                 <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                     <span>↕️ 경기장 세로 넓히기 (300 ~ 700)</span>
                     <div style="display:flex; gap:6px; align-items:center;">
@@ -828,8 +828,11 @@
                 <input type="range" id="arena-height-range" min="300" max="700" value="450" style="width:100%; cursor:pointer; height:8px;" oninput="syncArenaHeightRange(this.value)">
             </div>
 
-            <!-- 설정 저장하기 버튼 -->
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveArenaSettings();">💾 경기장 크기 저장</button>
+            <!-- 저장 및 초기화 버튼 그룹 -->
+            <div style="display:flex; gap:8px;">
+                <button class="admin-btn" style="flex:1; padding:14px; font-size:18px; font-weight:900; background-color:#e74c3c; color:#fff;" onclick="playClickSound(); resetArenaSettings();">🔄 초기화</button>
+                <button class="admin-btn admin-btn-confirm" style="flex:2; padding:14px; font-size:18px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveArenaSettings();">💾 크기 저장</button>
+            </div>
         </div>
     </div>
 
@@ -1055,7 +1058,7 @@
             document.getElementById('zoom-input-box').value = z;
             applyZoomScale(z);
 
-            // 경기장 크기 불러오기
+            // 경기장 크기 불러오기 (기본값 450)
             let savedArenaW = parseInt(localStorage.getItem('lily_game_arena_w') || '450');
             let savedArenaH = parseInt(localStorage.getItem('lily_game_arena_h') || '450');
             applyArenaSize(savedArenaW, savedArenaH);
@@ -1157,7 +1160,7 @@
 
         function applyArenaHeightInput() {
             const box = document.getElementById('arena-height-input');
-            let val = parseInt(val = box.value);
+            let val = parseInt(box.value);
             if (isNaN(val) || val < 300) val = 300;
             if (val > 700) val = 700;
             box.value = val;
@@ -1179,6 +1182,21 @@
 
             applyArenaSize(w, h);
             showToast('경기장 크기가 저장되었습니다! 🏟️');
+            closeArenaSettingModal();
+        }
+
+        // 경기장 설정 초기화 (기본값 450 x 450)
+        function resetArenaSettings() {
+            localStorage.setItem('lily_game_arena_w', '450');
+            localStorage.setItem('lily_game_arena_h', '450');
+
+            document.getElementById('arena-width-input').value = 450;
+            document.getElementById('arena-width-range').value = 450;
+            document.getElementById('arena-height-input').value = 450;
+            document.getElementById('arena-height-range').value = 450;
+
+            applyArenaSize(450, 450);
+            showToast('경기장 크기가 기본값으로 초기화되었습니다! 🔄');
             closeArenaSettingModal();
         }
 
@@ -2166,7 +2184,7 @@
                     }
                     let pct = ((10 - p1.skillTimer) / 10) * 100;
                     document.getElementById('p1-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p1-gauge-txt').innerText = p1.name === 'JINO' ? `스켈레톤 소환 (${p1}초)` : `기술 충전중 (${p1.skillTimer}초)`;
+                    document.getElementById('p1-gauge-txt').innerText = (p1.name === 'JINO' || p1.name === '미스터비스트') ? `기술 충전중 (${p1.skillTimer}초)` : '기술 없음';
                 } else {
                     document.getElementById('p1-gauge-fill').style.width = '0%';
                     document.getElementById('p1-gauge-txt').innerText = '기술 없음';
@@ -2185,7 +2203,7 @@
                     }
                     let pct = ((10 - p2.skillTimer) / 10) * 100;
                     document.getElementById('p2-gauge-fill').style.width = pct + '%';
-                    document.getElementById('p2-gauge-txt').innerText = p2.name === 'JINO' ? `스켈레톤 소환 (${p2}초)` : `기술 충전중 (${p2.skillTimer}초)`;
+                    document.getElementById('p2-gauge-txt').innerText = (p2.name === 'JINO' || p2.name === '미스터비스트') ? `기술 충전중 (${p2.skillTimer}초)` : '기술 없음';
                 } else {
                     document.getElementById('p2-gauge-fill').style.width = '0%';
                     document.getElementById('p2-gauge-txt').innerText = '기술 없음';
@@ -2226,7 +2244,6 @@
         }
 
         function spawnChocolateSlowly(ownerPlayer) {
-            // 슬로우 모션으로 아무 데나 서서히 투척되는 초콜릿 생성 (날아가는 연출 아이템 추가)
             for (let i = 0; i < 2; i++) {
                 let targetX = Math.random() * (canvas.width - 60) + 30;
                 let targetY = Math.random() * (canvas.height - 60) + 30;
@@ -2289,7 +2306,6 @@
 
         function runGameLoop() {
             if (isGaming) {
-                // 공들은 멈추지 않고 계속 정상적으로 움직임
                 p1.x += p1.vx; 
                 p1.y += p1.vy;
                 p2.x += p2.vx; 
@@ -2353,24 +2369,22 @@
                     }
                 });
 
-                // 초콜릿 슬로우 모션 투척 연출 및 먹기 로직 (피 꽉 차도 먹을 수 있음, 회복량 20)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isLanding) {
-                        m.progress += 0.02; // 슬로우 모션으로 서서히 이동
+                        m.progress += 0.02;
                         m.x += (m.destX - m.x) * 0.05;
                         m.y += (m.destY - m.y) * 0.05;
                         if (m.progress >= 1.0) {
                             m.isLanding = false;
-                            playChocolateLandSound(); // 땅에 닿을 때 '탁!' 소리
+                            playChocolateLandSound();
                         }
                     } else {
-                        // 땅에 완전히 안착된 후 먹기 가능
                         if (m.owner === 'p1') {
                             let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                             if (dist1 < p1.radius + m.radius) {
-                                p1.hp = Math.min(p1.maxHp, p1.hp + 20); // 20 회복 (최대 체력 초과 불가)
-                                playChocolateEatSound(); // "드~ 뜨!" 소리
+                                p1.hp = Math.min(p1.maxHp, p1.hp + 20);
+                                playChocolateEatSound();
                                 moneyItems.splice(i, 1);
                                 updateHpBars();
                                 continue;
