@@ -1020,6 +1020,7 @@
     <script>
         let audioCtx = null;
         let soundVolume = 1.0;
+        let hyperChargeAudioElement = null;
 
         function getAudioContext() {
             if (!audioCtx) {
@@ -1035,18 +1036,25 @@
             getAudioContext();
         }, { once: true });
 
-        // '하이퍼차지!!' 음성 출력 함수 (브라우저 내장 TTS 활용)
-        function playHyperChargeVoice() {
+        // 업로드한 실제 하이퍼차지 음성/효과음 파일 재생 함수 (나가면 즉시 중단)
+        function playHyperChargeVoiceFile() {
             try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // 이전 음성 취소
-                    let utterance = new SpeechSynthesisUtterance("하이퍼차지!!");
-                    utterance.lang = 'ko-KR';
-                    utterance.rate = 1.2; // 약간 빠르게 박진감 있게
-                    utterance.pitch = 1.1; // 목소리 톤 살리기
-                    window.speechSynthesis.speak(utterance);
+                if (!hyperChargeAudioElement) {
+                    hyperChargeAudioElement = new Audio('hypercharge_voice.mp3');
                 }
+                hyperChargeAudioElement.currentTime = 0;
+                hyperChargeAudioElement.volume = soundVolume;
+                hyperChargeAudioElement.play().catch(e => {});
             } catch(e) {}
+        }
+
+        function stopHyperChargeVoiceFile() {
+            if (hyperChargeAudioElement) {
+                try {
+                    hyperChargeAudioElement.pause();
+                    hyperChargeAudioElement.currentTime = 0;
+                } catch(e) {}
+            }
         }
 
         function loadSavedSettings() {
@@ -2066,7 +2074,7 @@
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
-            { name: '본이', hp: 250, color: '#9b59b6' },
+            { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
 
@@ -2084,6 +2092,10 @@
 
         const arrowImg = new Image();
         arrowImg.src = '14215.png';
+
+        // 하이퍼차지 불꽃 테두리 이미지 불러오기 (`hypercharge.png`)
+        const hyperChargeBadgeImg = new Image();
+        hyperChargeBadgeImg.src = 'hypercharge.png';
 
         let selectedLeftBall = null;
         let selectedRightBall = null;
@@ -2187,23 +2199,23 @@
         function drawBall(x, y, radius, ballObj, auraColor, isHyperCharged) {
             ctx.save();
             
-            // 본이 하이퍼차지 발동 시 보라색 불꽃 오라 이펙트
+            // 본이 하이퍼차지 발동 시: 공 겉에 화려하고 흐물거리는 보라색 불꽃 오라 이펙트
             if (isHyperCharged) {
-                let time = Date.now() / 120;
+                let time = Date.now() / 90;
                 ctx.beginPath();
-                // 울퉁불퉁 타오르는 보라색 불꽃 표현
-                for (let i = 0; i < 10; i++) {
-                    let angle = (i / 10) * Math.PI * 2 + time;
-                    let rVar = radius + 18 + Math.sin(time * 3 + i) * 7;
+                // 흐물거리는 파동을 준 뾰족한 불꽃 외곽선
+                for (let i = 0; i < 16; i++) {
+                    let angle = (i / 16) * Math.PI * 2 + (i % 2 === 0 ? time : -time * 0.5);
+                    let rVar = radius + 20 + Math.sin(time * 3 + i * 1.5) * 8;
                     let fx = x + Math.cos(angle) * rVar;
                     let fy = y + Math.sin(angle) * rVar;
                     if (i === 0) ctx.moveTo(fx, fy);
                     else ctx.lineTo(fx, fy);
                 }
                 ctx.closePath();
-                ctx.fillStyle = "rgba(155, 89, 182, 0.65)";
+                ctx.fillStyle = "rgba(155, 89, 182, 0.6)";
                 ctx.fill();
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 5;
                 ctx.strokeStyle = "#8e44ad";
                 ctx.stroke();
             } else {
@@ -2213,6 +2225,7 @@
                 ctx.fill();
             }
 
+            // 공 내부 (안에 있던 보라색 동그라미를 제거하고 본이 프로필 이미지만 깔끔하게 표시)
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.save();
@@ -2369,7 +2382,7 @@
             caster.hyperActiveTimer = 4; // 4초 동안 하이퍼차지 불꽃 유지
             showToast(`${caster.name} 하이퍼차지 발동!! 🔥`);
             playSkillSuperSound();
-            playHyperChargeVoice(); // '하이퍼차지!!' 목소리 출력
+            playHyperChargeVoiceFile(); // 업로드한 실제 목소리 파일 재생
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2443,6 +2456,9 @@
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
+
+            // 경기장을 나가면 하이퍼차지 목소리 재생도 즉시 중단
+            stopHyperChargeVoiceFile();
 
             moneyItems = [];
             selectedLeftBall = null;
@@ -2600,6 +2616,7 @@
                                 if (enemy.hp <= 0) {
                                     isGaming = false;
                                     if (gameInterval) clearInterval(gameInterval);
+                                    stopHyperChargeVoiceFile();
                                     setTimeout(() => {
                                         showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
                                         exitMatch();
@@ -2669,6 +2686,7 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
+                                stopHyperChargeVoiceFile();
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2708,6 +2726,7 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
+                        stopHyperChargeVoiceFile();
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
