@@ -491,18 +491,6 @@
         }
         .chat-floating-window.hidden { display: none !important; }
 
-        .chat-floating-window::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, transparent 40%, #000 40%);
-            cursor: se-resize;
-            z-index: 1000;
-        }
-
         .chat-header-row {
             display: flex;
             justify-content: space-between;
@@ -728,7 +716,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 친구 경기 메뉴 바 -->
+        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
@@ -748,14 +736,14 @@
             </div>
             <div class="friend-match-entry-box" id="btn-friend-match-entry" onclick="playClickSound(); openFriendMatchModal();">
                 <div class="friend-match-icon" style="width:34px; height:34px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
-                <div class="friend-match-label">친구 경기</div>
+                <div class="friend-match-label">경기</div>
             </div>
         </div>
 
         <!-- 경기장 및 우측 상단 버튼 래퍼 -->
         <div class="arena-container-wrapper">
-            <div class="record-history-gear-btn" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
-            <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
+            <div class="record-history-gear-btn" id="top-btn-record" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
+            <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
@@ -786,7 +774,7 @@
         </div>
     </div>
 
-    <!-- 패치노트 및 캐릭터 설명 모달 팝업 창 (스크롤 지원) -->
+    <!-- 패치노트 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
@@ -797,10 +785,9 @@
                 <button id="tab-btn-chars" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
             </div>
 
-            <!-- 패치 노트 내용 (스크롤 활성화) -->
+            <!-- 패치 노트 내용 -->
             <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
-                <!-- v0.1.5 -->
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
@@ -810,35 +797,7 @@
                         </div>
                     </div>
                     <div id="patch-content-05" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        공 스킬들 패치 및 버그 수정, 친구 경기 및 음성 통화 추가
-                    </div>
-                </div>
-
-                <!-- v0.1.4 -->
-                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.4</span>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-04" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-04', 'patch-btn-04');">⬇️</button>
-                        </div>
-                    </div>
-                    <div id="patch-content-04" style="font-size:22px; font-weight:900; color:#333; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 스킬 등장, 버그수정
-                    </div>
-                </div>
-
-                <!-- v0.1.3 -->
-                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.3</span>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-03" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-03', 'patch-btn-03');">⬇️</button>
-                        </div>
-                    </div>
-                    <div id="patch-content-03" style="font-size:22px; font-weight:900; color:#333; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        상품컴퍼니 볼 삭제 및 버그 수정
+                        공 투명화 버그 수정, 컵라면/베이컨 데미지 조정(2/4), 동룡쓰 부하 로블록스 베이컨 소환, UI 최적화
                     </div>
                 </div>
 
@@ -851,39 +810,7 @@
                     <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 소환볼(여자 베이컨/남자 베이컨 랜덤)을 자신의 주위에 밀착 소환하여 3초마다 컵라면(5뎀) 또는 베이컨(7뎀)을 3배 큰 크기로 발사합니다.</div>
-                    </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="character.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
-                    <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">미스터비스트</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초 안에 먹으면 20 체력이 회복되는 초콜릿 아이템이나 돈 아이템을 투하합니다.</div>
-                    </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
-                    <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 자음 기술 발동! 아군이 먹으면 체력 회복, 상대가 먹으면 체력 7 감소!</div>
-                    </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="boni.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
-                    <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">본이</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">강력한 폭탄을 투척하여 3초 카운트다운 후 폭발 피해를 입힙니다.</div>
-                    </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
-                    <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">체력 30의 스켈레톤을 소환하여 적 공과 충돌 시 데미지를 주고 화살을 발사합니다.</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨(여자/남자 랜덤)을 소환하여 3초마다 컵라면(2뎀) 또는 베이컨(4뎀)을 발사합니다.</div>
                     </div>
                 </div>
 
@@ -911,31 +838,27 @@
         </div>
     </div>
 
-    <!-- 친구 경기 (방 만들기 및 참여) 모달 팝업 창 -->
+    <!-- 경기 (방 만들기 및 참여) 정사각형 모달 창 -->
     <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:540px; height:75vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
-            <div style="font-size:28px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 친구 경기 (방 목록)</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 경기 (방 목록)</div>
 
-            <div style="display:flex; gap:10px; margin-bottom:14px; flex-shrink:0;" id="room-action-buttons-box">
-                <button class="admin-btn admin-btn-confirm" style="font-size:20px; padding:14px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
-                <button class="admin-btn admin-btn-cancel" style="font-size:20px; padding:14px;" onclick="playClickSound(); cancelFriendRoom();">방 만들기 취소</button>
+            <div style="display:flex; gap:10px; margin-bottom:10px; flex-shrink:0;" id="room-action-buttons-box">
+                <button class="admin-btn admin-btn-confirm" style="font-size:18px; padding:12px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
+                <button class="admin-btn admin-btn-cancel" style="font-size:18px; padding:12px;" onclick="playClickSound(); cancelFriendRoom();">방 만들기 취소</button>
             </div>
 
-            <div class="players-list-area" id="friend-rooms-list-container" style="flex:1;">
-                <!-- 방 목록 또는 "만든 방이 없음" -->
-            </div>
+            <div class="players-list-area" id="friend-rooms-list-container" style="flex:1;"></div>
         </div>
     </div>
 
-    <!-- 친구 목록 및 1:1 통화/채팅 모달 창 -->
+    <!-- 친구 관리 정사각형 모달 창 -->
     <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:580px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendModal();">✕</button>
-            <div style="font-size:28px; font-weight:900; margin-bottom:14px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
-            <div class="players-list-area" id="friend-list-container" style="flex:1;">
-                <!-- 친구 목록 또는 "다른 사람과 친구를 해보세요" -->
-            </div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
+            <div class="players-list-area" id="friend-list-container" style="flex:1;"></div>
         </div>
     </div>
 
@@ -962,11 +885,11 @@
         </div>
     </div>
 
-    <!-- 경기 기록 보기 모달 창 -->
+    <!-- 경기 기록 정사각형 모달 창 -->
     <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:620px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
-            <div style="font-size:28px; font-weight:900; margin-bottom:16px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
             <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
         </div>
     </div>
@@ -1271,19 +1194,33 @@
             } catch(e) {}
         }
 
-        function playThrowSound() {
+        // 음식 투척 시 더욱 화려하고 멋진 효과음 (주파수 스윕 + 하모닉스)
+        function playFoodThrowSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
                 let osc = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
                 let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
-                gain.gain.setValueAtTime(0.25 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.15);
+                
+                osc.type = 'sine';
+                osc2.type = 'triangle';
+                
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.25);
+
+                osc2.frequency.setValueAtTime(300, now);
+                osc2.frequency.exponentialRampToValueAtTime(900, now + 0.25);
+
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+                osc.connect(gain); osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now); osc2.start(now);
+                osc.stop(now + 0.28); osc2.stop(now + 0.28);
             } catch(e) {}
         }
 
@@ -1354,7 +1291,6 @@
             } catch(e) {}
         }
 
-        // 프로필 아이콘 10번 연속 누르면 어드민 비번 창 오픈
         let profileClickCount = 0;
         let profileClickTimer = null;
         function handleProfileClickWithSecret() {
@@ -1542,6 +1478,8 @@
 
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
+        const skeletonImg = new Image(); skeletonImg.src = 'skeleton.png';
+        const arrowImg = new Image(); arrowImg.src = 'arrow.png';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -1848,7 +1786,6 @@
 
         function closeOtherProfileModal() { document.getElementById('other-profile-modal').classList.add('hidden'); }
 
-        // 친구 시스템
         function addFriendFromProfile() {
             if (!currentTargetProfileName || currentTargetProfileName === localStorage.getItem('lily_game_user_name')) return;
             let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
@@ -1956,7 +1893,6 @@
             loadPrivateChatLogs();
         }
 
-        // 음성 통화 (WebRTC / Audio Stream Simulation)
         let localAudioStream = null;
         async function startVoiceCall() {
             try {
@@ -1978,7 +1914,6 @@
             showToast('통화가 종료되었습니다.');
         }
 
-        // 친구 경기 (방 만들기 시스템)
         function openFriendMatchModal() {
             if (!checkNameRegisteredOrBlock()) return;
             renderFriendRooms();
@@ -1998,7 +1933,7 @@
             }
             rooms.push({ host: myName, participant: null, status: '대기중' });
             localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
-            showToast('친구 방이 개설되었습니다! 🏠');
+            showToast('방이 개설되었습니다! 🏠');
             renderFriendRooms();
         }
 
@@ -2051,7 +1986,6 @@
             }
         }
 
-        // 경기 기록 및 리플레이 관전
         let matchHistoryList = JSON.parse(localStorage.getItem('lily_game_match_history') || '[]');
 
         function openRecordHistoryModal() {
@@ -2214,7 +2148,6 @@
 
         function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hidden'); }
 
-        // 게임 로직 관련 변수
         let isGaming = false, isCountingDown = false, matchEnded = false;
         let countdownText = '', winnerText = '';
         let activeCountdownInterval = null, victorySoundInterval = null;
@@ -2224,7 +2157,7 @@
         const FIXED_SPEED = 3.6;
 
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
-        let matchStartTime = 0; // 경기 시작 시간 체크용 (바로 나가면 기록 안 남김)
+        let matchStartTime = 0;
 
         function openBallPicker(team, index) {
             if (!checkNameRegisteredOrBlock()) return;
@@ -2332,6 +2265,10 @@
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
             document.getElementById('lobby-controls').classList.add('hidden');
             document.getElementById('ingame-controls').classList.remove('hidden');
+
+            // 경기 시작 시 ⚙️ 게임 설정 버튼을 제외한 우측 상단 아이콘 숨기기
+            document.getElementById('top-btn-record').classList.add('hidden');
+            document.getElementById('top-btn-patch').classList.add('hidden');
 
             isCountingDown = true; isGaming = false;
             let count = 3; countdownText = `${count}`;
@@ -2441,7 +2378,7 @@
                     }
                 });
 
-                // 동룡쓰 소환수 3초마다 3배 큰 투사체 발사 (여자: 컵라면 5뎀 / 남자: 베이컨 7뎀)
+                // 동룡쓰 부하가 3초마다 투사체 발사 (컵라면 데미지 2, 베이컨 데미지 4 + 화려한 사운드)
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         player.minionAttackTimer = (player.minionAttackTimer || 0) + 1;
@@ -2455,13 +2392,13 @@
                                     moneyItems.push({
                                         x: minion.x, y: minion.y,
                                         vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                        radius: 36, // 크기 3배 확대
-                                        damage: minion.isFemale ? 5 : 7,
+                                        radius: 36,
+                                        damage: minion.isFemale ? 2 : 4, // 컵라면 2, 베이컨 4
                                         isBaconProjectile: true, isFemaleProj: minion.isFemale,
                                         ownerTeam: player.team
                                     });
                                 });
-                                playArrowSound();
+                                playFoodThrowSound(); // 새로운 음식 투척 효과음 재생
                             }
                         }
                     }
@@ -2489,16 +2426,16 @@
             }, 1000);
         }
 
-        // 동룡쓰 기술: 여자/남자 베이컨 볼 랜덤 소환
+        // 동룡쓰 기술: 로블록스 베이컨 캐릭터(여자/남자) 랜덤 소환
         function triggerDongryongSkill(caster) {
             if (caster.skillCount >= 5) return;
             caster.skillCount++;
-            showToast(`${caster.name}이 소환볼 투척! (${caster.skillCount}/5) 👥`);
+            showToast(`${caster.name}이 베이컨 부하 소환! (${caster.skillCount}/5) 👥`);
             playSkillSuperSound();
 
             let angle = Math.random() * Math.PI * 2;
             let dist = 36, sx = caster.x + Math.cos(angle) * dist, sy = caster.y + Math.sin(angle) * dist;
-            let isFemale = Math.random() < 0.5; // 랜덤 소환
+            let isFemale = Math.random() < 0.5;
 
             caster.minions.push({
                 x: sx, y: sy, radius: 20,
@@ -2548,7 +2485,6 @@
             showToast(`${caster.name}이 스켈레톤 소환! 💀`);
         }
 
-        // 왕클세종: 아군만 먹고 상대는 통과/못먹음
         function triggerWangklSejongSkill(caster) {
             showToast(`${caster.name}이 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
@@ -2590,10 +2526,6 @@
         }
 
         function exitMatch() {
-            // 시작하자마자 바로 나가면 기록 안 남김 (5초 미만 체크)
-            if (isGaming && (Date.now() - matchStartTime) > 5000 && !matchEnded) {
-                // 강제 종료 기록
-            }
             resetGameUI();
         }
 
@@ -2608,6 +2540,11 @@
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
             document.getElementById('lobby-controls').classList.remove('hidden');
+
+            // 로비로 돌아올 때 우측 상단 아이콘 다시 복원
+            document.getElementById('top-btn-record').classList.remove('hidden');
+            document.getElementById('top-btn-patch').classList.remove('hidden');
+
             initSlotContainers();
         }
 
@@ -2625,7 +2562,6 @@
                 else if (!t2Alive) winnerText = '파란팀 승!';
                 else winnerText = '빨간팀 승!';
 
-                // 경기 기록 저장 (바로 나가지 않고 끝까지 진행된 경우)
                 matchHistoryList.push({
                     mode: currentMatchMode,
                     winner: winnerText,
@@ -2704,7 +2640,6 @@
                     if (hitWall) playWallSound();
                 });
 
-                // 공끼리 충돌
                 for (let i = 0; i < allPlayers.length; i++) {
                     for (let j = i + 1; j < allPlayers.length; j++) {
                         let p1 = allPlayers[i], p2 = allPlayers[j];
@@ -2724,7 +2659,6 @@
                     }
                 }
 
-                // 스켈레톤과 상대 공 충돌 (아군은 통과, 상대팀만 부딪힘)
                 allPlayers.forEach(player => {
                     let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                     player.skeletons = player.skeletons.filter(skel => {
@@ -2794,8 +2728,6 @@
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true; updateAllHpBars();
-                                } else {
-                                    // 상대방은 먹지 못하고 통과 (아무 효과 없음)
                                 }
                             }
                         });
@@ -2881,7 +2813,6 @@
                     if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, m.x - 12, m.y - 12, 24, 24);
                     else { ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.fillStyle = '#f1c40f'; ctx.fill(); }
                 } else if (m.isBaconProjectile) {
-                    // 크기 3배 확대 적용된 컵라면(🍜)과 베이컨(🥓)
                     ctx.font = "60px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                     ctx.fillText(m.isFemaleProj ? "🍜" : "🥓", m.x, m.y);
                 }
@@ -2892,7 +2823,6 @@
                 if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
-            // 경기 종료 시 어두운 화면 및 가운데 승리 배너 출력
             if (matchEnded) {
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
