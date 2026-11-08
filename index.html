@@ -320,7 +320,7 @@
             height: 100%;
             background: #2ecc71;
             width: 100%;
-            transition: width 0.3s ease-in-out;
+            transition: width 0.4s ease-in-out;
         }
         .hp-text-overlay {
             position: absolute;
@@ -1060,7 +1060,6 @@
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
 
-                // 1. 거대한 저음 폭발 붐
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
@@ -1075,7 +1074,6 @@
                 osc.start(now);
                 osc.stop(now + 0.5);
 
-                // 2. 화약 터지는 노이즈 쾅
                 let bufferSize = ctx.sampleRate * 0.4;
                 let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 let output = buffer.getChannelData(0);
@@ -1271,6 +1269,7 @@
             } catch(e) {}
         }
 
+        // 스켈레톤 화살 쓩 효과음
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1278,14 +1277,14 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(1200, now);
-                osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
-                gain.gain.setValueAtTime(0.5 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                osc.frequency.setValueAtTime(1400, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
+                gain.gain.setValueAtTime(0.45 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.18);
+                osc.stop(now + 0.15);
             } catch(e) {}
         }
 
@@ -2149,8 +2148,8 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, displayHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, displayHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -2310,6 +2309,7 @@
 
             p1.maxHp = selectedLeftBall.hp;
             p1.hp = selectedLeftBall.hp;
+            p1.displayHp = selectedLeftBall.hp;
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
@@ -2322,6 +2322,7 @@
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
+            p2.displayHp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
@@ -2389,49 +2390,53 @@
                     }
                 });
 
+                // JINO 스켈레톤 1초마다 화살 쏘기 (쓩 효과음)
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
                     if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
-                        pair.player.arrowTimer++;
-                        if (pair.player.arrowTimer >= 2) {
-                            pair.player.arrowTimer = 0;
-                            pair.player.skeletons.forEach(skel => {
-                                let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
-                                pair.player.skeletons.forEach(() => {});
+                        pair.player.skeletons.forEach(skel => {
+                            let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
+                            moneyItems.push({
+                                x: skel.x,
+                                y: skel.y,
+                                vx: Math.cos(angle) * 5.0,
+                                vy: Math.sin(angle) * 5.0,
+                                radius: 10,
+                                damage: 10,
+                                isArrow: true,
+                                owner: pair.player === p1 ? 'p1' : 'p2'
                             });
-                            playArrowSound();
-                        }
+                        });
+                        playArrowSound();
                     }
                 });
 
             }, 1000);
         }
 
-        // 본이 기술: 미스터비스트처럼 느린 모션으로 폭탄 발사 (4초 뒤 빨간색 동그라미 범위 안에서 폭발, 데미지 15)
+        // 본이 기술: 아무데나 폭탄 3개 발사
         function triggerBoniSkill(caster, enemy) {
-            showToast(`${caster.name} 폭탄 투척! 💣`);
+            showToast(`${caster.name} 폭탄 3개 투척! 💣`);
             playThrowSound();
 
-            let targetX = enemy.x + (Math.random() * 60 - 30);
-            let targetY = enemy.y + (Math.random() * 60 - 30);
+            for (let k = 0; k < 3; k++) {
+                let targetX = Math.random() * (canvas.width - 100) + 50;
+                let targetY = Math.random() * (canvas.height - 100) + 50;
 
-            // 화면 밖으로 나가지 않게 보정
-            targetX = Math.max(50, Math.min(canvas.width - 50, targetX));
-            targetY = Math.max(50, Math.min(canvas.height - 50, targetY));
-
-            caster.bombs.push({
-                startX: caster.x,
-                startY: caster.y,
-                x: caster.x,
-                y: caster.y,
-                destX: targetX,
-                destY: targetY,
-                progress: 0,
-                radius: 65, // 빨간색 동그라미 폭발 범위
-                timer: 4, // 4초 뒤 폭발
-                exploded: false,
-                caster: caster,
-                enemy: enemy
-            });
+                caster.bombs.push({
+                    startX: caster.x,
+                    startY: caster.y,
+                    x: caster.x,
+                    y: caster.y,
+                    destX: targetX,
+                    destY: targetY,
+                    progress: 0,
+                    radius: 55, // 빨간색 동그라미 범위
+                    timer: 4, // 4초 뒤 만료
+                    exploded: false,
+                    caster: caster,
+                    enemy: enemy
+                });
+            }
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2477,14 +2482,14 @@
                 ownerPlayer.skeletons.push({
                     x: rx,
                     y: ry,
-                    radius: 20,
-                    hp: 30, // 체력 30으로 상향
-                    maxHp: 30,
+                    radius: 22,
+                    hp: 40, // 체력 40
+                    maxHp: 40,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
                 });
             }
-            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 30) 💀`);
+            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 40) 💀`);
         }
 
         function spawnChocolate(ownerPlayer, count) {
@@ -2539,10 +2544,10 @@
             const p2Pct = Math.max(0, (p2.hp / p2.maxHp) * 100);
 
             document.getElementById('p1-hp-fill').style.width = p1Pct + '%';
-            document.getElementById('p1-hp-txt').innerText = `${Math.ceil(p1.hp)} / ${p1.maxHp}`;
+            document.getElementById('p1-hp-txt').innerText = `${Math.ceil(p1.displayHp)} / ${p1.maxHp}`;
 
             document.getElementById('p2-hp-fill').style.width = p2Pct + '%';
-            document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.hp)} / ${p2.maxHp}`;
+            document.getElementById('p2-hp-txt').innerText = `${Math.ceil(p2.displayHp)} / ${p2.maxHp}`;
         }
 
         function showHealingAnimation(sidePrefix, amount) {
@@ -2583,6 +2588,23 @@
             if (isGaming) {
                 const nowTimestamp = Date.now();
 
+                // 체력 서서히 깎이는 부드러운 애니메이션 처리
+                if (p1.displayHp > p1.hp) {
+                    p1.displayHp = Math.max(p1.hp, p1.displayHp - 1.5);
+                    updateHpBars();
+                } else if (p1.displayHp < p1.hp) {
+                    p1.displayHp = Math.min(p1.hp, p1.displayHp + 1.5);
+                    updateHpBars();
+                }
+
+                if (p2.displayHp > p2.hp) {
+                    p2.displayHp = Math.max(p2.hp, p2.displayHp - 1.5);
+                    updateHpBars();
+                } else if (p2.displayHp < p2.hp) {
+                    p2.displayHp = Math.min(p2.hp, p2.displayHp + 1.5);
+                    updateHpBars();
+                }
+
                 p1.x += p1.vx; 
                 p1.y += p1.vy;
                 p2.x += p2.vx; 
@@ -2617,55 +2639,74 @@
                 }
 
                 [p1, p2].forEach(player => {
-                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 12000);
+                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 14000);
                 });
 
-                // JINO 스켈레톤 충돌 판정: 상대 공만 부딪힘! 아군 공은 투명인간처럼 통과
+                // JINO 스켈레톤 충돌 판정 및 체력 40, 공 부딪힐 때 데미지 5, 상대 체력 10 깎이면서 튕김
                 [ { owner: p1, enemy: p2 }, { owner: p2, enemy: p1 } ].forEach(pair => {
                     pair.owner.skeletons.forEach(skel => {
-                        // 상대 공(enemy)과만 충돌 체크
                         let distEnemy = Math.hypot(pair.enemy.x - skel.x, pair.enemy.y - skel.y);
                         if (distEnemy < pair.enemy.radius + skel.radius) {
                             let nx = (pair.enemy.x - skel.x) / (distEnemy || 1);
                             let ny = (pair.enemy.y - skel.y) / (distEnemy || 1);
-                            pair.enemy.x += nx * 3;
-                            pair.enemy.y += ny * 3;
                             
-                            skel.hp -= 10;
+                            // 부딪힐 때 상대 공 튕겨내기
+                            pair.enemy.vx = nx * FIXED_SPEED * 1.3;
+                            pair.enemy.vy = ny * FIXED_SPEED * 1.3;
+
+                            skel.hp -= 5; // 공이랑 부딪힐 때 데미지 5
                             playHitSound();
+
+                            if (skel.hp <= 0) {
+                                // 스켈레톤이 부서지면 터지면서 상대 체력 10 깎임
+                                playExplosionSound();
+                                pair.enemy.hp = Math.max(0, pair.enemy.hp - 10);
+                                updateHpBars();
+                                showToast('스켈레톤 폭발! 상대 체력 -10 💥');
+                            }
                         }
                     });
                 });
 
-                // 본이 폭탄 업데이트 및 4초 뒤 폭발 (상대 공만 피해, 나는 안 맞음)
+                // 본이 폭탄 업데이트: 상대가 1번이라도 범위에 들어가면 즉시 펑 터짐 + 4초 뒤 마지막 폭발 데미지 15
                 [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.caster.bombs.length - 1; i >= 0; i--) {
                         let bomb = pair.caster.bombs[i];
                         if (bomb.progress < 1) {
-                            bomb.progress += 0.025; // 미스터비스트처럼 느린 모션으로 이동
+                            bomb.progress += 0.03;
                             bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
                             bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
                         } else {
-                            if (!bomb.explodedTime) {
-                                bomb.explodedTime = nowTimestamp + 4000; // 4초 뒤 폭발
+                            if (!bomb.startTime) {
+                                bomb.startTime = nowTimestamp;
                             }
-                            if (nowTimestamp >= bomb.explodedTime) {
-                                // 폭발 실행! 빨간색 동그라미 범위 안에 상대 공이 있으면 데미지 15
+
+                            // 상대방이 폭탄의 빨간색 원 범위 안에 1번이라도 닿았는지 체크
+                            let distToEnemy = Math.hypot(pair.enemy.x - bomb.destX, pair.enemy.y - bomb.destY);
+                            if (distToEnemy <= bomb.radius + pair.enemy.radius) {
                                 playExplosionSound();
-                                let distToEnemy = Math.hypot(pair.enemy.x - bomb.destX, pair.enemy.y - bomb.destY);
+                                pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                                updateHpBars();
+                                playHitSound();
+
+                                // 튕겨내기
+                                let nx = (pair.enemy.x - bomb.destX) / (distToEnemy || 1);
+                                let ny = (pair.enemy.y - bomb.destY) / (distToEnemy || 1);
+                                pair.enemy.vx = nx * FIXED_SPEED * 1.4;
+                                pair.enemy.vy = ny * FIXED_SPEED * 1.4;
+
+                                showToast('폭탄 직격 펑! 💥');
+                                pair.caster.bombs.splice(i, 1);
+                                continue;
+                            }
+
+                            // 4초 뒤 사라질 때 마지막 펑! (데미지 15)
+                            if (nowTimestamp - bomb.startTime >= 4000) {
+                                playExplosionSound();
                                 if (distToEnemy <= bomb.radius + pair.enemy.radius) {
                                     pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
                                     updateHpBars();
                                     playHitSound();
-
-                                    if (pair.enemy.hp <= 0) {
-                                        isGaming = false;
-                                        if (gameInterval) clearInterval(gameInterval);
-                                        setTimeout(() => {
-                                            showToast(`🏆 ${pair.caster.name} 승리!`);
-                                            exitMatch();
-                                        }, 100);
-                                    }
                                 }
                                 pair.caster.bombs.splice(i, 1);
                             }
@@ -2694,16 +2735,24 @@
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 playHitSound();
                                 updateHpBars();
-
-                                if (enemy.hp <= 0) {
-                                    isGaming = false;
-                                    if (gameInterval) clearInterval(gameInterval);
-                                    setTimeout(() => {
-                                        showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
-                                        exitMatch();
-                                    }, 100);
-                                }
                             }
+                            moneyItems.splice(i, 1);
+                        }
+                    } else if (m.isArrow) {
+                        m.x += m.vx;
+                        m.y += m.vy;
+
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
+                            moneyItems.splice(i, 1);
+                            continue;
+                        }
+
+                        let enemy = (m.owner === 'p1') ? p2 : p1;
+                        let dist = Math.hypot(enemy.x - m.x, enemy.y - m.y);
+                        if (dist < enemy.radius + m.radius) {
+                            enemy.hp = Math.max(0, enemy.hp - m.damage);
+                            playHitSound();
+                            updateHpBars();
                             moneyItems.splice(i, 1);
                         }
                     } else if (m.isChoco) {
@@ -2756,19 +2805,19 @@
                     p1.hp = Math.max(0, p1.hp - 10);
                     p2.hp = Math.max(0, p2.hp - 10);
                     updateHpBars();
+                }
 
-                    if (p1.hp <= 0 || p2.hp <= 0) {
-                        isGaming = false;
-                        if (gameInterval) clearInterval(gameInterval);
-                        setTimeout(() => {
-                            if (p1.hp <= 0 && p2.hp <= 0) {
-                                showToast('🤝 무승부!');
-                            } else {
-                                showToast(p1.hp > 0 ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
-                            }
-                            exitMatch();
-                        }, 100);
-                    }
+                if (p1.hp <= 0 || p2.hp <= 0) {
+                    isGaming = false;
+                    if (gameInterval) clearInterval(gameInterval);
+                    setTimeout(() => {
+                        if (p1.hp <= 0 && p2.hp <= 0) {
+                            showToast('🤝 무승부!');
+                        } else {
+                            showToast(p1.hp > 0 ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
+                        }
+                        exitMatch();
+                    }, 100);
                 }
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2777,7 +2826,6 @@
                     player.skeletons.forEach(skel => {
                         ctx.save();
                         if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                            // 픽셀 2배 더 키움 (36x48 -> 72x96)
                             ctx.drawImage(skeletonImg, skel.x - 36, skel.y - 48, 72, 96);
                         } else {
                             ctx.fillStyle = '#bdc3c7';
@@ -2793,10 +2841,8 @@
                         ctx.restore();
                     });
 
-                    // 폭탄 및 빨간색 동그라미 범위 표시 렌더링
                     player.bombs.forEach(bomb => {
                         ctx.save();
-                        // 빨간색 동그라미 범위 표시
                         ctx.beginPath();
                         ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
                         ctx.fillStyle = "rgba(231, 76, 60, 0.22)";
@@ -2805,7 +2851,6 @@
                         ctx.strokeStyle = "#e74c3c";
                         ctx.stroke();
 
-                        // 폭탄 아이콘 (💣)
                         ctx.font = "32px sans-serif";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
@@ -2830,6 +2875,15 @@
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
                         ctx.fillText(m.char, m.x, m.y);
+                    } else if (m.isArrow) {
+                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
+                            ctx.drawImage(arrowImg, m.x - 12, m.y - 12, 24, 24);
+                        } else {
+                            ctx.beginPath();
+                            ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = '#f1c40f';
+                            ctx.fill();
+                        }
                     } else if (m.isChoco) {
                         ctx.font = "24px sans-serif";
                         ctx.textAlign = "center";
