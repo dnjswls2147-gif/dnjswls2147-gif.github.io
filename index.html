@@ -37,7 +37,7 @@
             width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 14px 18px;
+            padding: 16px 20px;
             z-index: 99999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             display: none;
@@ -47,14 +47,14 @@
             display: block;
         }
         .banner-inner-content {
-            max-width: 580px;
+            max-width: 620px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .banner-notice-text {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
             text-align: center;
             line-height: 1.3;
@@ -62,7 +62,7 @@
 
         .app-container {
             width: 100vw;
-            max-width: 580px;
+            max-width: 620px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -77,13 +77,13 @@
 
         .top-menu-bar {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             display: flex;
-            gap: 10px;
+            gap: 14px;
             align-items: center;
             justify-content: flex-start;
             padding: 0;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             z-index: 1000;
         }
 
@@ -94,81 +94,56 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon, .match-setting-icon {
-            font-size: 30px;
+            font-size: 34px;
             line-height: 1;
         }
         .profile-label, .chat-label, .match-setting-label {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 900;
             color: #000000;
-            margin-top: 2px;
+            margin-top: 3px;
             white-space: nowrap;
-        }
-
-        .admin-entry-box {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            z-index: 1000;
-            padding: 4px 8px;
-            background: #f1f2f6;
-            border: 2px solid #000;
-            border-radius: 6px;
-            margin-top: 4px;
-            align-self: flex-start;
-            box-shadow: 0 2px 0 #000;
-        }
-        .admin-icon {
-            font-size: 20px;
-            line-height: 1;
-        }
-        .admin-label {
-            font-size: 12px;
-            font-weight: 900;
-            color: #333333;
         }
 
         .arena-container-wrapper {
             position: relative;
-            width: 450px;
-            max-width: 90vw;
+            width: 480px;
+            max-width: 92vw;
         }
         .settings-gear-btn {
             position: absolute;
-            top: -40px;
+            top: -44px;
             right: 0;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             background: #f1f2f6;
-            border: 2px solid #000;
+            border: 3px solid #000;
             border-radius: 6px;
-            font-size: 20px;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 1500;
-            box-shadow: 0 2px 0 #000;
+            box-shadow: 0 3px 0 #000;
         }
         .patch-note-gear-btn {
             position: absolute;
-            top: -40px;
-            right: 44px;
-            height: 36px;
-            padding: 0 8px;
+            top: -44px;
+            right: 48px;
+            height: 40px;
+            padding: 0 10px;
             background: #f1f2f6;
-            border: 2px solid #000;
+            border: 3px solid #000;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             cursor: pointer;
             z-index: 1500;
-            box-shadow: 0 2px 0 #000;
+            box-shadow: 0 3px 0 #000;
         }
         .patch-note-gear-btn:active, .settings-gear-btn:active {
             transform: translateY(2px);
@@ -177,14 +152,14 @@
 
         #toast-alert {
             position: fixed;
-            top: 14px;
+            top: 16px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.92);
+            background-color: rgba(0, 0, 0, 0.94);
             color: #ffffff;
-            padding: 12px 22px;
-            border-radius: 30px;
-            font-size: 22px;
+            padding: 14px 26px;
+            border-radius: 35px;
+            font-size: 24px;
             font-weight: 900;
             z-index: 100000;
             opacity: 0;
@@ -199,8 +174,8 @@
         }
 
         .arena-frame {
-            width: 450px;
-            height: 450px;
+            width: 480px;
+            height: 480px;
             max-width: 100%;
             max-height: 45vh;
             border: 5px solid #000000;
@@ -217,37 +192,37 @@
 
         .controls-wrapper {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         .slot-container {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             width: 100%;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .slot-team-box {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .slot-team-title {
-            font-size: 12px;
+            font-size: 15px;
             font-weight: 900;
             text-align: center;
         }
         .btn-add-slot {
             width: 100%;
-            padding: 9px 2px;
+            padding: 12px 4px;
             background: #555555;
             color: #ffffff;
-            border: 2px solid #000000;
-            font-size: 13px;
+            border: 3px solid #000000;
+            font-size: 16px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -255,17 +230,18 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            border-radius: 4px;
+            border-radius: 6px;
+            box-shadow: 0 3px 0 #000;
         }
         .btn-add-slot.selected {
             background: #27ae60;
         }
 
         .btn-main-action {
-            margin-top: 4px;
+            margin-top: 6px;
             width: 100%;
-            padding: 12px 0;
-            font-size: 18px;
+            padding: 14px 0;
+            font-size: 22px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 6px;
@@ -273,7 +249,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             box-shadow: 0 3px 0 #000000;
             outline: none;
         }
@@ -288,13 +264,13 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            max-height: 140px;
+            gap: 8px;
+            max-height: 160px;
             overflow-y: auto;
         }
         .status-row-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -304,9 +280,9 @@
             position: relative;
         }
         .player-name-label {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 900;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -316,11 +292,12 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 26px;
+            height: 30px;
             background: #e0e0e0;
-            border: 2px solid #000000;
+            border: 3px solid #000000;
             position: relative;
             overflow: hidden;
+            border-radius: 4px;
         }
         .hp-bar-inner {
             height: 100%;
@@ -337,17 +314,18 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 12px;
+            font-size: 14px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 16px;
+            height: 20px;
             background: #cccccc;
-            border: 2px solid #000000;
-            margin-top: 2px;
+            border: 3px solid #000000;
+            margin-top: 3px;
             position: relative;
             overflow: hidden;
+            border-radius: 4px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -361,22 +339,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 900;
             color: #000;
         }
 
         @keyframes floatPlusAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
+            100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
         }
         .healing-popup-text {
             position: absolute;
-            top: 25px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
             color: #2ecc71;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
             text-shadow: 1px 1px 2px #000;
             pointer-events: none;
@@ -401,12 +379,12 @@
 
         .picker-modal-box {
             width: 94vw;
-            max-width: 650px;
-            height: 75vh;
-            max-height: 700px;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 750px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 40px 24px 24px 24px;
+            padding: 45px 26px 26px 26px;
             position: relative;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
             display: flex;
@@ -416,11 +394,11 @@
         
         .modal-close-btn {
             position: absolute;
-            top: 12px; right: 12px;
-            width: 44px; height: 44px;
+            top: 14px; right: 14px;
+            width: 48px; height: 48px;
             border: 3px solid #000000;
             background: #ffffff;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 900;
             cursor: pointer;
             display: flex;
@@ -433,8 +411,8 @@
         .picker-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
+            gap: 14px;
+            margin-top: 18px;
             flex: 1;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
@@ -444,8 +422,8 @@
             background: #4a4a4a;
             color: #ffffff;
             border: 3px solid #000000;
-            padding: 18px 16px;
-            font-size: 20px;
+            padding: 20px 18px;
+            font-size: 22px;
             font-weight: 900;
             text-align: center;
             cursor: pointer;
@@ -455,14 +433,15 @@
             text-overflow: ellipsis;
             outline: none;
             flex-shrink: 0;
+            border-radius: 6px;
         }
 
         .profile-modal-box {
             width: 94vw;
-            max-width: 650px;
+            max-width: 680px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 40px 30px;
+            padding: 45px 32px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -477,14 +456,14 @@
             top: 50%;
             transform: translate(-50%, -50%);
             width: 94vw;
-            max-width: 750px;
-            height: 75vh;
-            max-height: 750px;
-            min-width: 300px;
-            min-height: 300px;
+            max-width: 780px;
+            height: 78vh;
+            max-height: 780px;
+            min-width: 320px;
+            min-height: 320px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             box-shadow: 0 25px 60px rgba(0,0,0,0.5);
@@ -499,8 +478,8 @@
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: linear-gradient(135deg, transparent 40%, #000 40%);
             cursor: se-resize;
             z-index: 1000;
@@ -510,48 +489,48 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             cursor: move;
             user-select: none;
-            padding: 6px 0;
+            padding: 8px 0;
             flex-shrink: 0;
         }
         .chat-logs-area {
             flex: 1;
             border: 4px solid #000;
             background: #f8f9fa;
-            margin: 10px 0;
-            padding: 16px;
+            margin: 12px 0;
+            padding: 18px;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .chat-msg-card {
             background: #ffffff;
             border: 3px solid #000;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .chat-sender-name {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 900;
             color: #2980b9;
             cursor: pointer;
             text-decoration: underline;
         }
         .chat-msg-text {
-            font-size: 21px;
+            font-size: 23px;
             font-weight: bold;
             word-break: break-all;
             color: #000;
         }
         .chat-msg-time {
-            font-size: 12px;
+            font-size: 14px;
             color: #666666;
             text-align: right;
             font-weight: bold;
@@ -559,12 +538,12 @@
 
         .players-modal-box {
             width: 94vw;
-            max-width: 650px;
-            height: 75vh;
-            max-height: 750px;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 780px;
             background: #ffffff;
             border: 6px solid #000000;
-            padding: 34px;
+            padding: 38px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -575,33 +554,33 @@
             flex: 1;
             border: 3px solid #000;
             background: #f8f9fa;
-            margin: 10px 0;
-            padding: 14px;
+            margin: 12px 0;
+            padding: 16px;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .player-item-card {
             background: #fff;
             border: 3px solid #000;
-            padding: 12px;
+            padding: 14px;
             border-radius: 6px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 900;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
         }
 
         .admin-draggable-panel {
             position: absolute;
             width: 94vw;
-            max-width: 650px;
-            height: 78vh;
-            max-height: 750px;
+            max-width: 680px;
+            height: 80vh;
+            max-height: 780px;
             background: #ffffff;
             border: 6px solid #000000;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
@@ -616,8 +595,8 @@
         .admin-drag-header {
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 14px 18px;
-            font-size: 20px;
+            padding: 16px 20px;
+            font-size: 22px;
             font-weight: 900;
             cursor: move;
             display: flex;
@@ -628,36 +607,38 @@
         }
 
         .admin-scroll-body {
-            padding: 18px;
+            padding: 20px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
         }
 
         .admin-input {
             width: 100%;
-            padding: 14px;
-            font-size: 20px;
+            padding: 16px;
+            font-size: 22px;
             border: 3px solid #000;
             text-align: center;
             outline: none;
+            border-radius: 6px;
         }
         .admin-btn-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .admin-btn {
             flex: 1;
-            padding: 15px 0;
-            font-size: 20px;
+            padding: 16px 0;
+            font-size: 22px;
             font-weight: 900;
             border: 3px solid #000;
             cursor: pointer;
             outline: none;
+            border-radius: 6px;
         }
         .admin-btn-confirm { background: #2ecc71; color: #fff; }
         .admin-btn-cancel { background: #e74c3c; color: #fff; }
@@ -665,31 +646,33 @@
         .admin-section-box {
             background: #f8f9fa;
             border: 3px solid #000;
-            padding: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 4px;
+            gap: 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
         }
         .admin-section-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 900;
         }
         .row-inline-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .btn-send {
             background-color: #3498db;
             color: #ffffff;
             border: 3px solid #000;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
-            padding: 0 20px;
+            padding: 0 24px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
+            border-radius: 6px;
         }
         .hidden { display: none !important; }
     </style>
@@ -729,7 +712,7 @@
 
         <!-- 프로필, 전체 채팅, 경기 설정 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
-            <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
+            <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
             </div>
@@ -748,7 +731,7 @@
             <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
-                <canvas id="gameCanvas" width="450" height="450"></canvas>
+                <canvas id="gameCanvas" width="480" height="480"></canvas>
             </div>
         </div>
 
@@ -769,127 +752,120 @@
                 </div>
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
-
-            <!-- 릴리 전용 어드민 아이콘 -->
-            <div class="admin-entry-box" id="lobby-admin-entry" onclick="playClickSound(); openAdminPrompt();">
-                <div class="admin-icon">🚫</div>
-                <div class="admin-label">릴리 전용</div>
-            </div>
         </div>
 
     </div>
 
     <!-- 점검 중 오버레이 화면 -->
     <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div style="width:450px; height:450px; max-width:90vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:20px;">
-            <div style="font-size:50px; margin-bottom:15px;">🛠️</div>
-            <div style="font-size:24px; font-weight:900; color:#e74c3c; margin-bottom:10px;">현재 점검 중입니다</div>
-            <div style="font-size:16px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
+        <div style="width:480px; height:480px; max-width:92vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:24px;">
+            <div style="font-size:60px; margin-bottom:15px;">🛠️</div>
+            <div style="font-size:28px; font-weight:900; color:#e74c3c; margin-bottom:12px;">현재 점검 중입니다</div>
+            <div style="font-size:18px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
         </div>
     </div>
 
-    <!-- 패치노트 및 캐릭터 설명 모달 팝업 창 -->
+    <!-- 패치노트 및 캐릭터 설명 모달 팝업 창 (글자 및 크기 대폭 확대) -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:96%; max-width:700px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:85vh; display:flex; flex-direction:column;">
-            <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
-            <div style="font-size:30px; font-weight:900; margin-bottom:18px; color:#000;">📓 패치 노트 & 캐릭터 설명</div>
+        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
+            <div style="font-size:34px; font-weight:900; margin-bottom:20px; color:#000;">📓 패치 노트 & 캐릭터 설명</div>
             
             <!-- 탭 전환 버튼 -->
-            <div style="display:flex; gap:10px; margin-bottom:14px;">
-                <button id="tab-btn-patch" style="flex:1; padding:12px; font-size:18px; font-weight:900; background:#2980b9; color:#fff; border:3px solid #000; cursor:pointer;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
-                <button id="tab-btn-chars" style="flex:1; padding:12px; font-size:18px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
+            <div style="display:flex; gap:12px; margin-bottom:16px;">
+                <button id="tab-btn-patch" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#2980b9; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
+                <button id="tab-btn-chars" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
             </div>
 
             <!-- 패치 노트 내용 -->
-            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:18px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:16px; text-align:left; overflow-y:auto; flex:1;">
+            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:auto; flex:1;">
                 
-                <!-- v0.1.4 (요청하신 정확한 텍스트 반영) -->
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:12px;">
+                <!-- v0.1.4 -->
+                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:22px; font-weight:900; color:#2c3e50;">v0.1.4 <span style="font-size:14px; background:#e74c3c; color:#fff; padding:2px 8px; border-radius:4px;">최신</span></span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:16px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-04" style="background:#3498db; color:#fff; border:2px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-04', 'patch-btn-04');">⬇️</button>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-04" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-04', 'patch-btn-04');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-04" style="font-size:18px; font-weight:900; color:#e74c3c; border-top:1px dashed #000; margin-top:10px; padding-top:8px; display:none; line-height:1.5;">
+                    <div id="patch-content-04" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
                         동룡쓰 스킬 등장, 버그수정
                     </div>
                 </div>
 
                 <!-- v0.1.3 -->
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:12px;">
+                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:22px; font-weight:900; color:#2c3e50;">v0.1.3</span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:16px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-03" style="background:#3498db; color:#fff; border:2px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-03', 'patch-btn-03');">⬇️</button>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.3</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-03" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-03', 'patch-btn-03');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-03" style="font-size:18px; font-weight:900; color:#333; border-top:1px dashed #000; margin-top:10px; padding-top:8px; display:none; line-height:1.5;">
+                    <div id="patch-content-03" style="font-size:22px; font-weight:900; color:#333; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
                         상품컴퍼니 볼 삭제 및 버그 수정
                     </div>
                 </div>
 
             </div>
 
-            <!-- 캐릭터 설명 내용 -->
-            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:18px; border-radius:6px; margin-bottom:16px; display:none; flex-direction:column; gap:16px; text-align:left; overflow-y:auto; flex:1;">
+            <!-- 캐릭터 설명 내용 (대폭 확대) -->
+            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:auto; flex:1;">
                 
-                <!-- 캐릭터 카드 리스트 (지금까지 만든 공들) -->
-                <div style="display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #000; padding:14px; border-radius:6px;">
-                    <img src="dongryong.png" style="width:64px; height:64px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:20px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:15px; font-weight:bold; color:#555; margin-top:4px;">5초마다 로블록스 베이컨 소환수(최대 5번, 무한 체력)를 자신의 주변에 밀착 소환하여 함께 싸웁니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 소환볼(여자: 컵라면 발사/남자: 베이컨 발사)을 자신의 주위에 밀착 소환하여 함께 싸웁니다.</div>
                     </div>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #000; padding:14px; border-radius:6px;">
-                    <img src="character.jpg" style="width:64px; height:64px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="character.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:20px; font-weight:900; color:#2c3e50;">미스터비스트</div>
-                        <div style="font-size:15px; font-weight:bold; color:#555; margin-top:4px;">5초 안에 먹으면 20 체력이 회복되는 초콜릿 아이템이나 돈 아이템을 투하합니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">미스터비스트</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초 안에 먹으면 20 체력이 회복되는 초콜릿 아이템이나 돈 아이템을 투하합니다.</div>
                     </div>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #000; padding:14px; border-radius:6px;">
-                    <img src="wangkl.png" style="width:64px; height:64px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:20px; font-weight:900; color:#2c3e50;">왕클세종</div>
-                        <div style="font-size:15px; font-weight:bold; color:#555; margin-top:4px;">한글 자음 기술을 발동하며, 같은 팀만 해당 자음을 먹어 체력을 회복할 수 있습니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 자음 기술 발동! 아군이 먹으면 체력 회복, 상대가 먹으면 체력 7 감소!</div>
                     </div>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #000; padding:14px; border-radius:6px;">
-                    <img src="boni.png" style="width:64px; height:64px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="boni.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:20px; font-weight:900; color:#2c3e50;">본이</div>
-                        <div style="font-size:15px; font-weight:bold; color:#555; margin-top:4px;">강력한 폭탄을 투척하여 3초 카운트다운 후 폭발 피해를 입힙니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">본이</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">강력한 폭탄을 투척하여 3초 카운트다운 후 폭발 피해를 입힙니다.</div>
                     </div>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #000; padding:14px; border-radius:6px;">
-                    <img src="jino.jpg" style="width:64px; height:64px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:20px; font-weight:900; color:#2c3e50;">JINO</div>
-                        <div style="font-size:15px; font-weight:bold; color:#555; margin-top:4px;">체력 30의 스켈레톤을 소환하여 적 공과 충돌 시 데미지를 주고 화살을 발사합니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">체력 30의 스켈레톤을 소환하여 적 공과 충돌 시 데미지를 주고 화살을 발사합니다.</div>
                     </div>
                 </div>
 
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:24px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
         </div>
     </div>
 
     <!-- 경기 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:35px 24px; width:94%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
-            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#000;">⚙️ 경기 모드 설정</div>
+        <div style="background:#fff; border:6px solid #000; padding:40px 28px; width:94%; max-width:460px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
+            <div style="font-size:30px; font-weight:900; margin-bottom:22px; color:#000;">⚙️ 경기 모드 설정</div>
             
-            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:22px;">
                 <button class="ball-select-btn match-mode-btn" data-mode="1" onclick="playClickSound(); selectMatchMode(1, '1대1 경기');">1대1 경기</button>
                 <button class="ball-select-btn match-mode-btn" data-mode="2" onclick="playClickSound(); selectMatchMode(2, '2대2 경기');">2대2 경기</button>
                 <button class="ball-select-btn match-mode-btn" data-mode="3" onclick="playClickSound(); selectMatchMode(3, '3대3 경기');">3대3 경기</button>
@@ -897,51 +873,51 @@
                 <button class="ball-select-btn match-mode-btn" data-mode="5" onclick="playClickSound(); selectMatchMode(5, '5대5 경기');">5대5 경기</button>
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
         </div>
     </div>
 
     <!-- 게임 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:45px 36px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
-            <div style="font-size:32px; font-weight:900; margin-bottom:24px; color:#000;">⚙️ 게임 설정</div>
+            <div style="font-size:34px; font-weight:900; margin-bottom:26px; color:#000;">⚙️ 게임 설정</div>
             
-            <div style="margin-bottom:24px; text-align:left;">
-                <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="margin-bottom:26px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔊 효과음 소리 (0 ~ 1000)</span>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="sfx-input-box" value="100" style="width:82px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
-                        <button onclick="playClickSound(); applySfxInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="sfx-input-box" value="100" style="width:90px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applySfxInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:8px;" oninput="syncSfxRange(this.value)">
+                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:10px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <div style="margin-bottom:30px; text-align:left;">
-                <div style="font-size:18px; font-weight:900; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="margin-bottom:34px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔍 화면 확대 (0 ~ 150)</span>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="zoom-input-box" value="35" style="width:72px; padding:6px; font-size:16px; font-weight:900; border:3px solid #000; text-align:center; outline:none;">
-                        <button onclick="playClickSound(); applyZoomInput();" style="padding:6px 12px; font-size:16px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer;">확인</button>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="zoom-input-box" value="35" style="width:80px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applyZoomInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:8px;" oninput="syncZoomRange(this.value)">
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:10px;" oninput="syncZoomRange(this.value)">
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; font-size:24px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
         </div>
     </div>
 
     <!-- 전체 채팅창 -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
-            <div style="font-size:18px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <div style="font-size:16px; font-weight:900; background:#eee; padding:6px 10px; border:2px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
+            <div style="font-size:20px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <div style="font-size:18px; font-weight:900; background:#eee; padding:8px 14px; border:3px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
                     플레이어 목록 ➡️
                 </div>
-                <button class="modal-close-btn" style="position:static; width:40px; height:40px; font-size:20px;" onclick="playClickSound(); closeChatModal();">✕</button>
+                <button class="modal-close-btn" style="position:static; width:44px; height:44px; font-size:22px;" onclick="playClickSound(); closeChatModal();">✕</button>
             </div>
         </div>
         <div class="chat-logs-area" id="chat-logs">
@@ -952,17 +928,17 @@
             </div>
         </div>
         <div class="row-inline-group" style="flex-shrink:0;">
-            <input type="text" id="chat-input" class="admin-input" style="font-size:18px; padding:12px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:18px; padding:0 20px;" onclick="playClickSound(); sendChatMessage();">전송</button>
+            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendChatMessage();">전송</button>
         </div>
     </div>
 
     <!-- 플레이어 목록 팝업 창 -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
         <div class="players-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closePlayersModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; text-align:center; margin-bottom:6px; flex-shrink:0;">👥 플레이어 목록</div>
-            <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:6px; flex-shrink:0;" id="online-offline-summary-txt">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePlayersModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">👥 플레이어 목록</div>
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:8px; flex-shrink:0;" id="online-offline-summary-txt">
                 온라인 [0명] | 오프라인 [0명]
             </div>
             <div class="players-list-area" id="players-list-container"></div>
@@ -972,31 +948,31 @@
     <!-- 내 프로필 정보 팝업 창 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal();">✕</button>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeProfileModal();">✕</button>
             
-            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
-                <div id="my-profile-square-icon" style="width:137px; height:137px; background:#1e90ff; border:5px solid #000; border-radius:6px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:60px;">👤</div>
-                <button style="width:48px; height:48px; background:#f1f2f6; border:3px solid #000; border-radius:6px; font-size:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px;">
+                <div id="my-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+                <button style="width:52px; height:52px; background:#f1f2f6; border:3px solid #000; border-radius:6px; font-size:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
             </div>
 
-            <div style="font-size:24px; font-weight:900; margin-bottom:10px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">내 프로필</div>
-            <div style="font-size:20px; font-weight:900; margin-bottom:8px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px; color:#27ae60;" id="profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
-            <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:22px; font-weight:900; margin-bottom:10px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
-                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
-                <button class="admin-btn admin-btn-confirm" style="padding:12px 0; font-size:18px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
             </div>
         </div>
     </div>
 
-    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 -->
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (대한민국 아이콘 추가) -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
-        <div style="background:#1b4f72; border:6px solid #000; padding:24px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
-            <div style="font-size:24px; font-weight:900; color:#fff; margin-bottom:16px;">아이콘 선택</div>
+        <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
+            <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택</div>
             
-            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; width:100%; max-height:60vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container">
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container">
                 <!-- 동적 생성 -->
             </div>
         </div>
@@ -1005,43 +981,43 @@
     <!-- 다른 사람 프로필 확인용 팝업 창 -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
-            <div id="other-profile-square-icon" style="width:137px; height:137px; background:#1e90ff; border:5px solid #000; border-radius:6px; margin-bottom:10px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:60px;">👤</div>
-            <div style="font-size:24px; font-weight:900; margin-bottom:10px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">플레이어 프로필</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px; width:100%;">
-                <div style="font-size:20px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
-                <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:6px 12px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
+            <div id="other-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; margin-bottom:12px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px; width:100%;">
+                <div style="font-size:22px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+                <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
             </div>
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
-            <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="other-profile-date-txt">접속한 날짜: -</div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px 0; font-size:18px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px 0; font-size:20px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
         </div>
     </div>
 
     <!-- 신고 내역 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="reports-list-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:550px; height:70vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeReportsListModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; text-align:center; color:#c0392b; flex-shrink:0;">🚨 신고 내역 목록</div>
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:580px; height:74vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeReportsListModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px; text-align:center; color:#c0392b; flex-shrink:0;">🚨 신고 내역 목록</div>
             <div class="players-list-area" id="reports-list-container" style="flex:1;"></div>
         </div>
     </div>
 
     <!-- 신고 작성 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:30px 24px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; color:#c0392b;">🚨 플레이어 신고하기</div>
-            <div style="font-size:16px; font-weight:900; margin-bottom:8px; text-align:left;" id="report-target-name-txt">대상: -</div>
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px; color:#c0392b;">🚨 플레이어 신고하기</div>
+            <div style="font-size:18px; font-weight:900; margin-bottom:10px; text-align:left;" id="report-target-name-txt">대상: -</div>
             
-            <div style="font-size:16px; font-weight:900; margin-bottom:6px; text-align:left;">신고 사유</div>
-            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 플레이 등" style="margin-bottom:14px; font-size:18px; padding:10px;">
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">신고 사유</div>
+            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 플레이 등" style="margin-bottom:16px; font-size:20px; padding:12px;">
 
-            <div style="font-size:16px; font-weight:900; margin-bottom:6px; text-align:left;">그사람에게 전할 말</div>
-            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지를 적어주세요" style="margin-bottom:16px; font-size:16px; height:90px; text-align:left; resize:none; padding:10px;"></textarea>
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">그사람에게 전할 말</div>
+            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지를 적어주세요" style="margin-bottom:18px; font-size:18px; height:100px; text-align:left; resize:none; padding:12px;"></textarea>
 
             <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:12px 0; font-size:18px;" onclick="playClickSound(); submitReport();">전하기</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:12px 0; font-size:18px;" onclick="playClickSound(); closeReportModal();">취소</button>
+                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:14px 0; font-size:20px;" onclick="playClickSound(); submitReport();">전하기</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeReportModal();">취소</button>
             </div>
         </div>
     </div>
@@ -1049,29 +1025,29 @@
     <!-- 볼 선택 모달 팝업창 -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
-            <div style="font-size:22px; font-weight:900; text-align:center; margin-bottom:6px; flex-shrink:0;">⚽ 볼 선택하기</div>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBallPicker();">✕</button>
+            <div style="font-size:26px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
     <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
-        <div style="background:#fff; border:8px solid #000; padding:50px 40px; width:92%; max-width:650px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
-            <div style="font-size:36px; font-weight:900; margin-bottom:24px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:24px; font-size:28px; padding:22px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:22px; font-size:28px; font-weight:900; background:#2ecc71; border:4px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
+        <div style="background:#fff; border:8px solid #000; padding:55px 45px; width:92%; max-width:680px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
+            <div style="font-size:38px; font-weight:900; margin-bottom:26px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:26px; font-size:30px; padding:24px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:24px; font-size:30px; font-weight:900; background:#2ecc71; border:4px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
         </div>
     </div>
 
-    <!-- 어드민 비밀번호 입력 모달 -->
-    <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:26px; width:90%; max-width:380px; text-align:center;">
-            <div style="font-size:22px; font-weight:900; margin-bottom:15px;">🔒 릴리 전용 어드민</div>
-            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:15px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+    <!-- 어드민 비밀번호 입력 모달 (비밀번호: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ77) -->
+    <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5); z-index: 300000;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:90%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:18px;">🔒 어드민 비밀번호</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:18px; font-size:22px; padding:14px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
             <div class="admin-btn-group">
-                <button class="admin-btn admin-btn-confirm" style="padding:12px 0; font-size:18px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:12px 0; font-size:18px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
             </div>
         </div>
     </div>
@@ -1083,25 +1059,25 @@
             <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
         </div>
         <div class="admin-scroll-body" id="admin-scroll-body-content">
-            <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50;">
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
             </div>
 
             <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
                 <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 및 채팅 내역 (어드민 전용)</div>
-                <div class="players-list-area" id="admin-players-list-container" style="max-height: 220px; margin-top:4px;"></div>
+                <div class="players-list-area" id="admin-players-list-container" style="max-height: 240px; margin-top:6px;"></div>
             </div>
 
             <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
                 <div class="admin-section-title" style="color: #c0392b;">🚨 신고 내역 관리</div>
-                <button class="admin-btn" style="background-color: #c0392b; color: #fff; width:100%; padding:12px; font-size:18px;" onclick="playClickSound(); openReportsListModal();">신고 내역 확인하기</button>
+                <button class="admin-btn" style="background-color: #c0392b; color: #fff; width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); openReportsListModal();">신고 내역 확인하기</button>
             </div>
 
             <div class="admin-section-box" style="background: #e8f8f5; border-color: #16a085;">
                 <div class="admin-section-title" style="color: #16a085;">🛠️ 서버 점검 관리</div>
                 <div class="admin-btn-group">
-                    <button class="admin-btn" style="background-color: #e74c3c; color: #fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); setMaintenance(true);">점검 켜기</button>
-                    <button class="admin-btn" style="background-color: #27ae60; color: #fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); setMaintenance(false);">점검 끄기</button>
+                    <button class="admin-btn" style="background-color: #e74c3c; color: #fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); setMaintenance(true);">점검 켜기</button>
+                    <button class="admin-btn" style="background-color: #27ae60; color: #fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); setMaintenance(false);">점검 끄기</button>
                 </div>
             </div>
 
@@ -1111,15 +1087,15 @@
                     <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용 입력">
                     <button class="btn-send" onclick="playClickSound(); sendNotice();">보내기</button>
                 </div>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:10px; font-size:16px; margin-top:4px;" onclick="playClickSound(); deleteNotice();">공지 삭제</button>
+                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:12px; font-size:18px; margin-top:6px;" onclick="playClickSound(); deleteNotice();">공지 삭제</button>
             </div>
 
             <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
                 <div class="admin-section-title" style="color: #c0392b;">💬 채팅 관리</div>
-                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:12px; font-size:18px;" onclick="playClickSound(); clearAllChats();">채팅 모두 삭제</button>
+                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); clearAllChats();">채팅 모두 삭제</button>
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
         </div>
     </div>
 
@@ -1339,6 +1315,54 @@
             } catch(e) {}
         }
 
+        // 프로필 아이콘 10번 연속 누르면 어드민 비번 창 오픈
+        let profileClickCount = 0;
+        let profileClickTimer = null;
+        function handleProfileClickWithSecret() {
+            playClickSound();
+            profileClickCount++;
+            if (profileClickTimer) clearTimeout(profileClickTimer);
+            
+            if (profileClickCount >= 10) {
+                profileClickCount = 0;
+                openAdminPasswordPrompt();
+                return;
+            }
+
+            profileClickTimer = setTimeout(() => {
+                profileClickCount = 0;
+            }, 1000);
+
+            handleProfileClick();
+        }
+
+        function openAdminPasswordPrompt() {
+            document.getElementById('admin-pw-input').value = '';
+            document.getElementById('admin-password-modal').classList.remove('hidden');
+        }
+
+        function closeAdminPassword() {
+            document.getElementById('admin-password-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pw = document.getElementById('admin-pw-input').value;
+            if (pw === 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ77') {
+                closeAdminPassword();
+                localStorage.setItem('lily_game_is_admin', 'true');
+                const panel = document.getElementById('admin-panel-modal');
+                panel.style.left = '50%';
+                panel.style.top = '50%';
+                panel.style.transform = 'translate(-50%, -50%)';
+                panel.classList.remove('hidden');
+                renderAdminPlayersList();
+                checkMaintenanceStatus();
+                showToast('어드민 인증 성공! 🔓');
+            } else {
+                showToast('비밀번호가 틀렸습니다!');
+            }
+        }
+
         function togglePatchDetails(contentId, btnId) {
             const content = document.getElementById(contentId);
             const btn = document.getElementById(btnId);
@@ -1495,12 +1519,14 @@
             }
         });
 
-        // 소환수 전용 이미지 (사진 2번: 14474.jpg, 사진 3번: 14475.jpg)
-        const minionImg1 = new Image(); minionImg1.src = '14475.jpg';
-        const minionImg2 = new Image(); minionImg2.src = '14474.jpg';
+        // 동룡쓰 소환수 이미지 (여자 베이컨: 14475.jpg, 남자 베이컨: 14474.jpg)
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
+        const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
 
+        // 브롤스타즈 스타일 아이콘 리스트 (대한민국 🇰🇷 태극기 추가)
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
+            { type: 'text', val: '🇰🇷', bg: '#ffffff' }, // 대한민국 아이콘 추가
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1541,7 +1567,7 @@
                 cell.style.overflow = 'hidden';
 
                 if (item.type === 'text') {
-                    cell.style.fontSize = '36px';
+                    cell.style.fontSize = '38px';
                     cell.innerText = item.val;
                 } else {
                     cell.innerHTML = `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`;
@@ -1578,7 +1604,7 @@
                     sq.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
                 } else {
                     sq.style.backgroundColor = '#1e90ff';
-                    sq.style.fontSize = '60px';
+                    sq.style.fontSize = '64px';
                     sq.innerText = iconStr;
                 }
             });
@@ -1717,7 +1743,6 @@
         window.addEventListener('storage', (e) => {
             if (e.key === 'lily_game_chat_logs') loadChatLogs();
             if (e.key === 'lily_game_announcement') applyAnnouncementData(e.newValue);
-            if (e.key === 'lily_game_vote_data') applyVoteData(e.newValue);
             if (e.key === 'lily_game_players_list') {
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
@@ -1927,16 +1952,16 @@
             const container = document.getElementById('reports-list-container');
             container.innerHTML = '';
             if (reports.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:18px; font-weight:900; color:#555; padding:20px;">신고 사유 없음</div>`;
+                container.innerHTML = `<div style="text-align:center; font-size:20px; font-weight:900; color:#555; padding:24px;">신고 사유 없음</div>`;
             } else {
                 reports.forEach((rep, idx) => {
                     const card = document.createElement('div');
                     card.className = 'player-item-card';
                     card.style.background = '#fff5f5';
                     card.innerHTML = `
-                        <div style="font-size:17px; color:#c0392b;">[신고 #${idx+1}] 대상: ${rep.target} (신고자: ${rep.reporter})</div>
-                        <div style="font-size:16px; color:#333;">사유: ${rep.reason}</div>
-                        <div style="font-size:14px; color:#666;">메시지: ${rep.message || '없음'} (${rep.date})</div>
+                        <div style="font-size:19px; color:#c0392b;">[신고 #${idx+1}] 대상: ${rep.target} (신고자: ${rep.reporter})</div>
+                        <div style="font-size:18px; color:#333;">사유: ${rep.reason}</div>
+                        <div style="font-size:16px; color:#666;">메시지: ${rep.message || '없음'} (${rep.date})</div>
                     `;
                     container.appendChild(card);
                 });
@@ -1998,7 +2023,7 @@
                 item.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span>👤 ${p.name} (${p.date || '가입일 정보 없음'})</span>
-                        <span style="font-size:16px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
+                        <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
                     </div>
                 `;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
@@ -2014,7 +2039,7 @@
             if (!container) return;
             container.innerHTML = '';
             if (players.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:15px; font-weight:bold; color:#555;">가입한 플레이어가 없습니다.</div>`;
+                container.innerHTML = `<div style="text-align:center; font-size:16px; font-weight:bold; color:#555;">가입한 플레이어가 없습니다.</div>`;
                 return;
             }
             players.forEach(p => {
@@ -2028,13 +2053,13 @@
 
                 const card = document.createElement('div');
                 card.className = 'player-item-card';
-                card.style.fontSize = '16px';
+                card.style.fontSize = '18px';
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span>🔹 [${p.name}] ${p.date || '가입일'} 첫 접속</span>
-                        <span style="font-size:14px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
+                        <span style="font-size:16px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
                     </div>
-                    <div style="font-size:14px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>
+                    <div style="font-size:16px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>
                 `;
                 card.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(card);
@@ -2125,32 +2150,6 @@
             toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
             }, 2000);
-        }
-
-        function openAdminPrompt() {
-            document.getElementById('admin-pw-input').value = '';
-            document.getElementById('admin-password-modal').classList.remove('hidden');
-        }
-
-        function closeAdminPassword() {
-            document.getElementById('admin-password-modal').classList.add('hidden');
-        }
-
-        function verifyAdminPassword() {
-            const pw = document.getElementById('admin-pw-input').value;
-            if (pw === '걱스키비디야르7') {
-                closeAdminPassword();
-                localStorage.setItem('lily_game_is_admin', 'true');
-                const panel = document.getElementById('admin-panel-modal');
-                panel.style.left = '50%';
-                panel.style.top = '50%';
-                panel.style.transform = 'translate(-50%, -50%)';
-                panel.classList.remove('hidden');
-                renderAdminPlayersList();
-                checkMaintenanceStatus();
-            } else {
-                showToast('비밀번호가 틀렸습니다!');
-            }
         }
 
         function closeAdminPanel() {
@@ -2348,26 +2347,26 @@
             if (playerName === '미스터비스트') return 8;
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
-            if (playerName === '동룡쓰') return 5; // 동룡쓰 5초마다 기술
+            if (playerName === '동룡쓰') return 5;
             return null;
         }
 
         function calculateMultiPositions(team, index, total) {
             let x, y;
             if (team === 1) {
-                x = 110;
-                if (total === 1) y = 225;
-                else if (total === 2) y = 140 + index * 170;
-                else if (total === 3) y = 90 + index * 135;
-                else if (total === 4) y = 70 + index * 103;
-                else y = 55 + index * 85;
+                x = 120;
+                if (total === 1) y = 240;
+                else if (total === 2) y = 150 + index * 180;
+                else if (total === 3) y = 100 + index * 140;
+                else if (total === 4) y = 75 + index * 110;
+                else y = 60 + index * 90;
             } else {
-                x = 340;
-                if (total === 1) y = 225;
-                else if (total === 2) y = 140 + index * 170;
-                else if (total === 3) y = 90 + index * 135;
-                else if (total === 4) y = 70 + index * 103;
-                else y = 55 + index * 85;
+                x = 360;
+                if (total === 1) y = 240;
+                else if (total === 2) y = 150 + index * 180;
+                else if (total === 3) y = 100 + index * 140;
+                else if (total === 4) y = 75 + index * 110;
+                else y = 60 + index * 90;
             }
             return { x, y };
         }
@@ -2402,7 +2401,7 @@
                     vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: getSkillMaxTime(ball.name),
-                    skillCount: 0, // 동룡쓰 최대 5번 소환 체크용
+                    skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
@@ -2420,7 +2419,7 @@
                     vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: getSkillMaxTime(ball.name),
-                    skillCount: 0, // 동룡쓰 최대 5번 소환 체크용
+                    skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
@@ -2432,7 +2431,6 @@
             buildIngameStatusPanel();
 
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
-            document.getElementById('lobby-admin-entry').classList.add('hidden');
             document.getElementById('lobby-controls').classList.add('hidden');
             document.getElementById('ingame-controls').classList.remove('hidden');
 
@@ -2544,7 +2542,6 @@
                     const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
 
                     if (maxTime !== null) {
-                        // 동룡쓰가 이미 5번 소환을 다 썼다면 게이지를 채우지 않고 "기술을 다씀!" 표시
                         if (player.name === '동룡쓰' && player.skillCount >= 5) {
                             if (fill) fill.style.width = '100%';
                             if (txt) txt.innerText = '기술을 다씀!';
@@ -2580,7 +2577,33 @@
                     }
                 });
 
+                // 동룡쓰 소환볼 투사체 공격 로직 (여자: 컵라면 3초마다 5뎀, 남자: 베이컨 3초마다 7뎀)
                 allPlayers.forEach(player => {
+                    if (player.name === '동룡쓰' && player.minions.length > 0) {
+                        player.minionAttackTimer = (player.minionAttackTimer || 0) + 1;
+                        if (player.minionAttackTimer >= 3) {
+                            player.minionAttackTimer = 0;
+                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                            if (enemyTeamBalls.length > 0) {
+                                player.minions.forEach(minion => {
+                                    let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                                    let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                                    moneyItems.push({
+                                        x: minion.x, y: minion.y,
+                                        vx: Math.cos(angle) * 5.5,
+                                        vy: Math.sin(angle) * 5.5,
+                                        radius: 12,
+                                        damage: minion.isFemale ? 5 : 7, // 여자 5뎀, 남자 7뎀
+                                        isBaconProjectile: true,
+                                        isFemaleProj: minion.isFemale,
+                                        ownerTeam: player.team
+                                    });
+                                });
+                                playArrowSound();
+                            }
+                        }
+                    }
+
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2606,29 +2629,30 @@
             }, 1000);
         }
 
-        // 동룡쓰 기술: 2번(14474.jpg) 또는 3번(14475.jpg) 로블록스 베이컨 캐릭터 중 랜덤 소환, 체력 무한, 주위에 밀착 소환 (최대 5번)
+        // 동룡쓰 기술: 여자 베이컨(14475.jpg) / 남자 베이컨(14474.jpg) 볼로 소환 (무한 체력, 주위에 밀착)
         function triggerDongryongSkill(caster) {
             if (caster.skillCount >= 5) return;
             caster.skillCount++;
 
-            showToast(`${caster.name}이 동료 소환! (${caster.skillCount}/5) 👥`);
+            showToast(`${caster.name}이 소환볼 투척! (${caster.skillCount}/5) 👥`);
             playSkillSuperSound();
 
             let angle = Math.random() * Math.PI * 2;
-            let dist = 32; // 주위에 바짝 붙도록 밀착 거리 설정
+            let dist = 36;
             let sx = caster.x + Math.cos(angle) * dist;
             let sy = caster.y + Math.sin(angle) * dist;
-            let imgChoice = Math.random() < 0.5 ? minionImg1 : minionImg2;
+            let isFemale = Math.random() < 0.5;
+            let imgChoice = isFemale ? femaleBaconImg : maleBaconImg;
 
             caster.minions.push({
-                x: sx, y: sy, radius: 18,
+                x: sx, y: sy, radius: 20,
                 img: imgChoice, owner: caster,
+                isFemale: isFemale,
                 offsetX: Math.cos(angle) * dist,
                 offsetY: Math.sin(angle) * dist
             });
         }
 
-        // 미스터비스트: 50% 확률로 돈(💰) 또는 체력 회복 초콜릿(🍫) 아이템 생성 (5초 안에 먹으면 20 체력 회복)
         function triggerMrBeastSkill(caster) {
             let isChocolate = Math.random() < 0.5;
             let iconStr = isChocolate ? '🍫' : '💰';
@@ -2642,14 +2666,13 @@
                 moneyItems.push({
                     x: rx, y: ry, radius: 18,
                     isChocolateItem: isChocolate,
-                    isMoneyBomb: false, isHangeulLetter: false, isArrow: false,
+                    isMoneyBomb: false, isHangeulLetter: false, isArrow: false, isBaconProjectile: false,
                     ownerTeam: caster.team,
                     spawnTime: Date.now()
                 });
             }
         }
 
-        // 본이: 폭탄 투척 (3초 카운트다운 초 표시)
         function triggerBoniSkill(caster) {
             showToast(`${caster.name}이 폭탄 투척! 💣`);
             playThrowSound();
@@ -2667,7 +2690,6 @@
             }
         }
 
-        // JINO 스켈레톤: 절대 겹치지 않게 소환, 체력 30
         function triggerJinoSkill(caster) {
             for (let i = 0; i < 2; i++) {
                 let rx, ry, safe = false;
@@ -2689,7 +2711,7 @@
             showToast(`${caster.name}이 스켈레톤 소환! 💀`);
         }
 
-        // 왕클세종: 한글 자음 기술 (왕클세종과 같은 팀만 먹을 수 있음)
+        // 왕클세종: 한글 자음 기술 (아군이 먹으면 체력 회복, 상대가 먹으면 체력 7 감소)
         function triggerWangklSejongSkill(caster) {
             showToast(`${caster.name}이 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
@@ -2700,7 +2722,7 @@
                 let ry = Math.random() * (canvas.height - 60) + 30;
                 moneyItems.push({
                     x: rx, y: ry, char: ch,
-                    radius: 20, damage: 5, healAmount: 3,
+                    radius: 20, damage: 7, healAmount: 3,
                     isHangeulLetter: true,
                     ownerTeam: caster.team,
                     color: caster.team === 1 ? '#1e90ff' : '#e74c3c',
@@ -2753,7 +2775,6 @@
             allPlayers = [];
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
-            document.getElementById('lobby-admin-entry').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
             document.getElementById('lobby-controls').classList.remove('hidden');
             initSlotContainers();
@@ -2930,7 +2951,6 @@
                     }
                 }
 
-                // 스켈레톤과 상대 공 충돌 판정 (1초 쿨타임, 8데미지)
                 allPlayers.forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => {
                         if (skel.hp <= 0 || (nowTimestamp - skel.spawnTime) >= 14000) return false;
@@ -3011,14 +3031,22 @@
                             if (eaten || player.hp <= 0) return;
                             let dist = Math.hypot(player.x - m.x, player.y - m.y);
                             if (dist < player.radius + m.radius) {
-                                // 왕클세종 자음 텍스트: 왕클세종과 같은 팀(파란팀이면 파란팀만, 빨간팀이면 빨간팀만)만 먹을 수 있음
                                 if (player.team === m.ownerTeam) {
+                                    // 아군이 먹으면 체력 회복
                                     playHealSound();
                                     player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true;
                                     updateAllHpBars();
+                                } else {
+                                    // 상대방이 먹으면 체력 7 깎임
+                                    playHitSound();
+                                    player.hp = Math.max(0, player.hp - m.damage);
+                                    eaten = true;
+                                    updateAllHpBars();
+                                    checkGameWinner();
+                                    showToast(`${player.name}이(가) 자음을 먹어 체력 7 감소! ⚠️`);
                                 }
                             }
                         });
@@ -3045,7 +3073,7 @@
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isArrow) {
+                    } else if (m.isArrow || m.isBaconProjectile) {
                         m.x += m.vx; m.y += m.vy;
                         if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
                             moneyItems.splice(i, 1);
@@ -3068,22 +3096,13 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 동룡쓰 소환수 렌더링 (주위에 밀착 고정)
+            // 동룡쓰 소환볼 렌더링 (볼 형태로 주위에 밀착)
             allPlayers.forEach(player => {
                 player.minions.forEach(m => {
                     m.x = m.owner.x + m.offsetX;
                     m.y = m.owner.y + m.offsetY;
 
-                    ctx.save();
-                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
-                        ctx.drawImage(m.img, m.x - 18, m.y - 24, 36, 48);
-                    } else {
-                        ctx.fillStyle = '#3498db';
-                        ctx.beginPath();
-                        ctx.arc(m.x, m.y, 16, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    ctx.restore();
+                    drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475.jpg' : '14474.jpg' }, "rgba(46, 204, 113, 0.2)");
                 });
 
                 player.skeletons.forEach(skel => {
@@ -3167,6 +3186,12 @@
                         ctx.fillStyle = '#f1c40f';
                         ctx.fill();
                     }
+                } else if (m.isBaconProjectile) {
+                    // 여자 베이컨은 컵라면(🍜), 남자 베이컨은 베이컨/고기(🥓) 투사체 발사
+                    ctx.font = "20px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(m.isFemaleProj ? "🍜" : "🥓", m.x, m.y);
                 }
                 ctx.restore();
             });
