@@ -741,10 +741,6 @@
                 <div class="match-setting-icon">⚙️</div>
                 <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
             </div>
-            <div style="font-size:12px; font-weight:900; color:#333; display:flex; align-items:center; gap:4px; margin-left:auto;">
-                <span>0.1버전 릴리 볼 파이트</span>
-                <button style="background:#3498db; color:#fff; border:2px solid #000; width:24px; height:24px; font-size:12px; font-weight:900; cursor:pointer;" id="lobby-version-toggle-btn" onclick="playClickSound(); toggleLobbyVersionNote();">⬇️</button>
-            </div>
         </div>
 
         <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘, 📓 패치노트 버튼 래퍼 -->
@@ -792,7 +788,7 @@
         </div>
     </div>
 
-    <!-- 패치노트 모달 팝업 창 (너비 2배 넓힘) -->
+    <!-- 패치노트 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:96%; max-width:700px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:85vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
@@ -810,11 +806,11 @@
                         </div>
                     </div>
                     <div id="patch-content-02" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
-                        어드민 패널 스크롤 추가, JINO 스켈레톤 데미지 8 및 공끼리 충돌 데미지 10 적용, 3 2 1 카운트다운 시 화면 어둡게, 경기 종료 시 이긴 공 승리 효과음 및 폭죽 연출, 이름 접속 시 실시간 플레이어 및 채팅 연동!
+                        버그 수정 및: JINO 스켈레톤 충돌 데미지 8 정상 적용, 공 기술(미스터비스트, 본이 등) 작동 오류 수정, 스켈레톤 화살 데미지 10 조정, 경기 완료 시에만 '가장 많이 쓴 볼' 카운트 반영, 다인전(5대5 등) 동일 캐릭터 선택 시 중복 기록 수정.
                     </div>
                 </div>
 
-                <!-- v0.1.1 (이전 노트 보존) -->
+                <!-- v0.1.1 -->
                 <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.1</span>
@@ -824,7 +820,7 @@
                         </div>
                     </div>
                     <div id="patch-content-01" style="font-size:15px; font-weight:bold; color:#555; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
-                        다인전 캐릭터 줄내림/분산 배치, 타캐릭터 머리 위 스킬명 제거, 로비 공 미리보기 및 브롤스타즈 스타일 5x4 아이콘 선택창 구현!
+                        패치 노트 등장
                     </div>
                 </div>
 
@@ -1179,6 +1175,60 @@
             } catch(e) {}
         }
 
+        function playCoinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(900, now);
+                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+                gain.gain.setValueAtTime(0.2 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } catch(e) {}
+        }
+
+        function playThrowSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+                gain.gain.setValueAtTime(0.25 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } catch(e) {}
+        }
+
+        function playExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch(e) {}
+        }
+
         function playSkillSuperSound() {
             try {
                 let ctx = getAudioContext();
@@ -1234,18 +1284,6 @@
                     osc.stop(time + 0.35);
                 });
             } catch(e) {}
-        }
-
-        function toggleLobbyVersionNote() {
-            playSlideSound();
-            openPatchNoteModal();
-            // 패치 노트 오픈 시 첫 번째 항목(v0.1.2) 기본 펼침
-            const content = document.getElementById('patch-content-02');
-            const btn = document.getElementById('patch-btn-02');
-            if (content && btn) {
-                content.style.display = 'block';
-                btn.innerText = '⏫️';
-            }
         }
 
         function togglePatchDetails(contentId, btnId) {
@@ -1630,7 +1668,7 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            const forcedResetKey = 'lily_game_name_reset_v6';
+            const forcedResetKey = 'lily_game_name_reset_v7';
             if (!localStorage.getItem(forcedResetKey)) {
                 localStorage.removeItem('lily_game_user_name');
                 localStorage.setItem(forcedResetKey, 'true');
@@ -2194,13 +2232,6 @@
         }
 
         function chooseBall(ball) {
-            let ballNameForUsage = ball ? ball.name : null;
-            if (ballNameForUsage) {
-                let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
-                usage[ballNameForUsage] = (usage[ballNameForUsage] || 0) + 1;
-                localStorage.setItem('lily_game_ball_usage', JSON.stringify(usage));
-            }
-
             if (currentPickingTeam === 'team1') {
                 if (selectedTeam1Balls[currentPickingIndex] === ball) {
                     selectedTeam1Balls[currentPickingIndex] = null;
@@ -2486,7 +2517,7 @@
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 5.0,
                                         vy: Math.sin(angle) * 5.0,
-                                        radius: 10, damage: 8,
+                                        radius: 10, damage: 10, // 화살 데미지 10으로 설정
                                         isArrow: true, ownerTeam: player.team
                                     });
                                 });
@@ -2583,6 +2614,18 @@
             });
         });
 
+        function recordBallUsageOnComplete() {
+            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+            let countedBalls = new Set();
+            selectedTeam1Balls.concat(selectedTeam2Balls).forEach(ball => {
+                if (ball && !countedBalls.has(ball.name)) {
+                    usage[ball.name] = (usage[ball.name] || 0) + 1;
+                    countedBalls.add(ball.name);
+                }
+            });
+            localStorage.setItem('lily_game_ball_usage', JSON.stringify(usage));
+        }
+
         function exitMatch() {
             isCountingDown = false;
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
@@ -2611,6 +2654,8 @@
                 matchEnded = true;
                 isGaming = false;
                 if (gameInterval) clearInterval(gameInterval);
+
+                recordBallUsageOnComplete(); // 경기 완료 시에만 정상 카운트 반영
 
                 let winningBalls = [];
                 if (!t1Alive && !t2Alive) {
@@ -2778,7 +2823,8 @@
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp > 0 && Math.hypot(enemy.x - skel.x, enemy.y - skel.y) < enemy.radius + skel.radius) {
-                                enemy.hp = Math.max(0, enemy.hp - 8);
+                                enemy.hp = Math.max(0, enemy.hp - 8); // 스켈레톤 충돌 데미지 8 정상 적용
+                                skel.hp = Math.max(0, skel.hp - 8);   // 스켈레톤 체력도 8 깎이도록 양방향 적용
                                 playHitSound();
                                 updateAllHpBars();
                                 checkGameWinner();
@@ -2807,7 +2853,6 @@
                                         if (distSkel <= bomb.radius + skel.radius) {
                                             skel.hp -= 30;
                                             playExplosionSound();
-                                            showToast('폭탄이 스켈레톤에게 30 데미지! 💥');
                                         }
                                     });
                                 }
@@ -2895,7 +2940,7 @@
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < enemy.radius + m.radius) {
-                                enemy.hp = Math.max(0, enemy.hp - m.damage);
+                                enemy.hp = Math.max(0, enemy.hp - m.damage); // 화살 데미지 10 적용
                                 playHitSound();
                                 updateAllHpBars();
                                 checkGameWinner();
@@ -2977,8 +3022,9 @@
             });
 
             if (matchEnded) {
+                // 게임 종료 시 화면 어둡게 오버레이
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "bold 44px sans-serif";
                 ctx.fillStyle = "#f1c40f";
