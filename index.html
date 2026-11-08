@@ -1020,7 +1020,6 @@
     <script>
         let audioCtx = null;
         let soundVolume = 1.0;
-        let hyperChargeAudioElement = null;
 
         function getAudioContext() {
             if (!audioCtx) {
@@ -1036,33 +1035,19 @@
             getAudioContext();
         }, { once: true });
 
-        // 업로드한 실제 하이퍼차지 음성/효과음 파일 재생 함수 (오디오 재생 문제 해결 포함)
-        function playHyperChargeVoiceFile() {
+        // 파일 없이 웹 브라우저 음성 합성(TTS) 기능으로 "하이퍼차지" 목소리 자동 출력 함수
+        function playAutoHyperChargeVoice() {
             try {
-                if (!hyperChargeAudioElement) {
-                    hyperChargeAudioElement = new Audio('hypercharge_voice.mp3');
-                }
-                hyperChargeAudioElement.currentTime = 0;
-                hyperChargeAudioElement.volume = soundVolume;
-                let playPromise = hyperChargeAudioElement.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        // 모바일 브라우저 자동재생 차단 시도 재부팅
-                        setTimeout(() => {
-                            hyperChargeAudioElement.play().catch(e => {});
-                        }, 100);
-                    });
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // 기존에 말하던 게 있으면 즉시 중단
+                    let utterance = new SpeechSynthesisUtterance("하이퍼차지!");
+                    utterance.lang = 'ko-KR';
+                    utterance.rate = 1.1; // 말하는 속도 살짝 빠르게
+                    utterance.pitch = 1.2; // 목소리톤 약간 높게
+                    utterance.volume = soundVolume;
+                    window.speechSynthesis.speak(utterance);
                 }
             } catch(e) {}
-        }
-
-        function stopHyperChargeVoiceFile() {
-            if (hyperChargeAudioElement) {
-                try {
-                    hyperChargeAudioElement.pause();
-                    hyperChargeAudioElement.currentTime = 0;
-                } catch(e) {}
-            }
         }
 
         function loadSavedSettings() {
@@ -2101,7 +2086,6 @@
         const arrowImg = new Image();
         arrowImg.src = '14215.png';
 
-        // 하이퍼차지 불꽃 고정 이미지 불러오기 (`hypercharge.png`)
         const hyperChargeBadgeImg = new Image();
         hyperChargeBadgeImg.src = 'hypercharge.png';
 
@@ -2207,7 +2191,6 @@
         function drawBall(x, y, radius, ballObj, auraColor, isHyperCharged) {
             ctx.save();
             
-            // 본이 하이퍼차지 발동 시: 공 뒤쪽에 뾰족한 하이퍼차지 이미지(hypercharge.png)를 흐물거리지 않고 깔끔하게 고정 배치
             if (isHyperCharged) {
                 if (hyperChargeBadgeImg.complete && hyperChargeBadgeImg.naturalWidth !== 0) {
                     let badgeSize = radius * 2.5;
@@ -2228,7 +2211,6 @@
                 ctx.fill();
             }
 
-            // 공 내부 (안에 있던 작은 보라색 동그라미를 완전히 제거하고 프로필 이미지만 표시)
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.save();
@@ -2382,10 +2364,10 @@
         }
 
         function triggerBoniSkill(caster) {
-            caster.hyperActiveTimer = 4; // 4초 동안 하이퍼차지 고정 이미지 유지
+            caster.hyperActiveTimer = 4;
             showToast(`${caster.name} 하이퍼차지 발동!! 🔥`);
             playSkillSuperSound();
-            playHyperChargeVoiceFile(); // 오디오 재생 실행
+            playAutoHyperChargeVoice(); // 웹 브라우저 음성 합성으로 목소리 자동 출력!
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2459,9 +2441,6 @@
         function exitMatch() {
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
-
-            // 경기장을 나가면 목소리 재생도 즉시 중단
-            stopHyperChargeVoiceFile();
 
             moneyItems = [];
             selectedLeftBall = null;
@@ -2619,7 +2598,6 @@
                                 if (enemy.hp <= 0) {
                                     isGaming = false;
                                     if (gameInterval) clearInterval(gameInterval);
-                                    stopHyperChargeVoiceFile();
                                     setTimeout(() => {
                                         showToast(m.owner === 'p1' ? `🏆 ${p1.name} 승리!` : `🏆 ${p2.name} 승리!`);
                                         exitMatch();
@@ -2689,7 +2667,6 @@
                             if (pair.enemy.hp <= 0) {
                                 isGaming = false;
                                 if (gameInterval) clearInterval(gameInterval);
-                                stopHyperChargeVoiceFile();
                                 setTimeout(() => {
                                     showToast(`🏆 ${pair.shooter.name} 승리!`);
                                     exitMatch();
@@ -2729,7 +2706,6 @@
                     if (p1.hp <= 0 || p2.hp <= 0) {
                         isGaming = false;
                         if (gameInterval) clearInterval(gameInterval);
-                        stopHyperChargeVoiceFile();
                         setTimeout(() => {
                             if (p1.hp <= 0 && p2.hp <= 0) {
                                 showToast('🤝 무승부!');
@@ -2813,4 +2789,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-                                    </html>
+</html>
