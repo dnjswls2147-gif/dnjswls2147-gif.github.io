@@ -59,33 +59,6 @@
             text-align: center;
             line-height: 1.3;
         }
-        .banner-vote-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-        }
-        .vote-options-row {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            margin-top: 4px;
-        }
-        .btn-vote-opt {
-            flex: 1;
-            padding: 12px 8px;
-            font-size: 20px;
-            font-weight: 900;
-            border: 3px solid #000000;
-            color: #ffffff;
-            cursor: pointer;
-            text-align: center;
-            outline: none;
-            border-radius: 6px;
-        }
-        .btn-vote-red { background-color: #e74c3c; }
-        .btn-vote-blue { background-color: #3498db; }
 
         .app-container {
             width: 100vw;
@@ -745,7 +718,7 @@
         }, { passive: false });
     </script>
 
-    <!-- 상단 대형 실시간 공지/투표 배너 -->
+    <!-- 상단 대형 실시간 공지 배너 -->
     <div id="global-announcement-banner"></div>
 
     <!-- 화면 상단 토스트 알림 메시지 -->
@@ -815,31 +788,24 @@
         </div>
     </div>
 
-    <!-- 패치노트 모달 팝업 창 (6번 사진 리스트 스타일) -->
+    <!-- 패치노트 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:30px 20px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:80vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
             <div style="font-size:24px; font-weight:900; margin-bottom:16px; color:#000;">📓 패티 노트 (패치노트)</div>
             
             <div style="border:3px solid #000; background:#f8f9fa; padding:12px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:8px; text-align:left; overflow-y:auto; flex:1;">
-                <!-- v0.1.0 (최신) -->
                 <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:8px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.0 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.1 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button style="background:#3498db; color:#fff; border:2px solid #000; width:30px; height:30px; font-size:14px; font-weight:900; cursor:pointer;" onclick="playClickSound(); togglePatchDetails('patch-content-01');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-01" class="hidden" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px;">
-                        공 미리보기 수정, 인원수 텍스트 삭제 및 '기술 없음' 표시 기능 추가!
+                        카운트다운 중 나가기 시 즉시 중단, 선택해제 삭제 및 재클릭 시 선택하기 변경, 기술 충전 게이지 [초] 및 위치별 자동 배치 완료!
                     </div>
-                </div>
-
-                <!-- 기존 v0.0.9 -->
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #ddd; padding-bottom:8px;">
-                    <span style="font-size:18px; font-weight:900; color:#555;">v0.0.9</span>
-                    <span style="font-size:14px; font-weight:bold; color:#666;">2026/10/15</span>
                 </div>
             </div>
 
@@ -847,7 +813,7 @@
         </div>
     </div>
 
-    <!-- 경기 설정 모달 팝업 창 (1대1 ~ 5대5) -->
+    <!-- 경기 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:35px 24px; width:94%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
@@ -1613,7 +1579,7 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            const forcedResetKey = 'lily_game_name_reset_v3';
+            const forcedResetKey = 'lily_game_name_reset_v4';
             if (!localStorage.getItem(forcedResetKey)) {
                 localStorage.removeItem('lily_game_user_name');
                 localStorage.setItem(forcedResetKey, 'true');
@@ -2132,6 +2098,7 @@
         let matchEnded = false;
         let countdownText = '';
         let winnerText = '';
+        let activeCountdownInterval = null;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -2150,14 +2117,6 @@
             const grid = document.getElementById('ball-picker-grid');
             grid.innerHTML = '';
 
-            // '선택 해제' 옵션 추가
-            const unselectBtn = document.createElement('div');
-            unselectBtn.className = 'ball-select-btn';
-            unselectBtn.style.backgroundColor = '#c0392b';
-            unselectBtn.innerText = '❌ 선택 해제 (비우기)';
-            unselectBtn.onclick = () => { playClickSound(); chooseBall(null); };
-            grid.appendChild(unselectBtn);
-
             ballList.forEach(ball => {
                 const btn = document.createElement('div');
                 btn.className = 'ball-select-btn';
@@ -2174,20 +2133,28 @@
 
         function chooseBall(ball) {
             if (currentPickingTeam === 'team1') {
-                selectedTeam1Balls[currentPickingIndex] = ball;
+                if (selectedTeam1Balls[currentPickingIndex] === ball) {
+                    selectedTeam1Balls[currentPickingIndex] = null;
+                } else {
+                    selectedTeam1Balls[currentPickingIndex] = ball;
+                }
                 const slotBtn = document.getElementById(`slot-t1-${currentPickingIndex}`);
-                if (ball) {
-                    slotBtn.innerText = ball.name;
+                if (selectedTeam1Balls[currentPickingIndex]) {
+                    slotBtn.innerText = selectedTeam1Balls[currentPickingIndex].name;
                     slotBtn.classList.add('selected');
                 } else {
                     slotBtn.innerText = '볼 선택하기';
                     slotBtn.classList.remove('selected');
                 }
             } else {
-                selectedTeam2Balls[currentPickingIndex] = ball;
+                if (selectedTeam2Balls[currentPickingIndex] === ball) {
+                    selectedTeam2Balls[currentPickingIndex] = null;
+                } else {
+                    selectedTeam2Balls[currentPickingIndex] = ball;
+                }
                 const slotBtn = document.getElementById(`slot-t2-${currentPickingIndex}`);
-                if (ball) {
-                    slotBtn.innerText = ball.name;
+                if (selectedTeam2Balls[currentPickingIndex]) {
+                    slotBtn.innerText = selectedTeam2Balls[currentPickingIndex].name;
                     slotBtn.classList.add('selected');
                 } else {
                     slotBtn.innerText = '볼 선택하기';
@@ -2212,7 +2179,29 @@
             if (playerName === '미스터비스트') return 8;
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
-            return null; // 기술 없는 공
+            return null;
+        }
+
+        function calculateInitialPositions(team, index, total) {
+            let x, y;
+            if (team === 1) {
+                x = 100;
+                if (total === 1) {
+                    y = 225;
+                } else {
+                    let spacing = 320 / (total - 1 || 1);
+                    y = 65 + index * spacing;
+                }
+            } else {
+                x = 350;
+                if (total === 1) {
+                    y = 225;
+                } else {
+                    let spacing = 320 / (total - 1 || 1);
+                    y = 65 + index * spacing;
+                }
+            }
+            return { x, y };
         }
 
         function startMatch() {
@@ -2226,39 +2215,46 @@
             }
 
             if (gameInterval) clearInterval(gameInterval);
+            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             moneyItems = [];
             matchEnded = false;
             winnerText = '';
 
-            team1Players = selectedTeam1Balls.map((ball, idx) => ({
-                id: `t1_${idx}`,
-                team: 1,
-                name: ball.name,
-                ballData: ball,
-                x: 80 + idx * 30,
-                y: 100 + idx * 60,
-                radius: 26,
-                vx: 0, vy: 0,
-                hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                skillTimer: getSkillMaxTime(ball.name),
-                skeletons: [], bombs: [], arrowTimer: 0,
-                lastSkillNoticeTimer: 0, lastSkillName: ''
-            }));
+            team1Players = selectedTeam1Balls.map((ball, idx) => {
+                let pos = calculateInitialPositions(1, idx, currentMatchMode);
+                return {
+                    id: `t1_${idx}`,
+                    team: 1,
+                    name: ball.name,
+                    ballData: ball,
+                    x: pos.x,
+                    y: pos.y,
+                    radius: 26,
+                    vx: 0, vy: 0,
+                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
+                    skillTimer: getSkillMaxTime(ball.name),
+                    skeletons: [], bombs: [], arrowTimer: 0,
+                    lastSkillNoticeTimer: 0, lastSkillName: ''
+                };
+            });
 
-            team2Players = selectedTeam2Balls.map((ball, idx) => ({
-                id: `t2_${idx}`,
-                team: 2,
-                name: ball.name,
-                ballData: ball,
-                x: 370 - idx * 30,
-                y: 100 + idx * 60,
-                radius: 26,
-                vx: 0, vy: 0,
-                hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                skillTimer: getSkillMaxTime(ball.name),
-                skeletons: [], bombs: [], arrowTimer: 0,
-                lastSkillNoticeTimer: 0, lastSkillName: ''
-            }));
+            team2Players = selectedTeam2Balls.map((ball, idx) => {
+                let pos = calculateInitialPositions(2, idx, currentMatchMode);
+                return {
+                    id: `t2_${idx}`,
+                    team: 2,
+                    name: ball.name,
+                    ballData: ball,
+                    x: pos.x,
+                    y: pos.y,
+                    radius: 26,
+                    vx: 0, vy: 0,
+                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
+                    skillTimer: getSkillMaxTime(ball.name),
+                    skeletons: [], bombs: [], arrowTimer: 0,
+                    lastSkillNoticeTimer: 0, lastSkillName: ''
+                };
+            });
 
             team1Players.forEach(p => setFixedSpeedVelocity(p));
             team2Players.forEach(p => setFixedSpeedVelocity(p));
@@ -2277,7 +2273,11 @@
             countdownText = `${count}`;
             showToast(`게임 시작까지 ${count}초...`);
 
-            let cdInterval = setInterval(() => {
+            activeCountdownInterval = setInterval(() => {
+                if (!isCountingDown) {
+                    clearInterval(activeCountdownInterval);
+                    return;
+                }
                 count--;
                 if (count > 0) {
                     countdownText = `${count}`;
@@ -2286,7 +2286,7 @@
                     countdownText = `시작!`;
                     showToast(`경기 시작! 🔥`);
                 } else {
-                    clearInterval(cdInterval);
+                    clearInterval(activeCountdownInterval);
                     isCountingDown = false;
                     isGaming = true;
                     countdownText = '';
@@ -2317,7 +2317,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div>
-                            <div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? '기술 충전중' : '기술 없음'}</div>
+                            <div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div>
                         </div>
                     </div>
                     <div class="player-status-card" id="card-t2-${i}">
@@ -2328,7 +2328,7 @@
                         </div>
                         <div class="sub-gauge-bar">
                             <div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div>
-                            <div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? '기술 충전중' : '기술 없음'}</div>
+                            <div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div>
                         </div>
                     </div>
                 `;
@@ -2364,7 +2364,7 @@
         }
 
         function triggerSkillNotice(player) {
-            player.lastSkillName = `${player.name}이 기술을 씀`;
+            player.lastSkillName = `${player.name}`;
             player.lastSkillNoticeTimer = 90;
         }
 
@@ -2374,6 +2374,10 @@
 
                 allPlayers.forEach(player => {
                     let maxTime = getSkillMaxTime(player.name);
+                    let teamPrefix = player.team === 1 ? 't1' : 't2';
+                    let idx = (player.team === 1 ? team1Players : team2Players).indexOf(player);
+                    const txt = document.getElementById(`gauge-txt-${teamPrefix}-${idx}`);
+
                     if (maxTime !== null) {
                         player.skillTimer -= 1;
                         if (player.skillTimer <= 0) {
@@ -2390,13 +2394,12 @@
                                 triggerBoniSkill(player);
                             }
                         }
-                        let teamPrefix = player.team === 1 ? 't1' : 't2';
-                        let idx = (player.team === 1 ? team1Players : team2Players).indexOf(player);
                         let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
                         const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
-                        const txt = document.getElementById(`gauge-txt-${teamPrefix}-${idx}`);
                         if (fill) fill.style.width = pct + '%';
-                        if (txt) txt.innerText = `${player.skillTimer}초`;
+                        if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
+                    } else {
+                        if (txt) txt.innerText = '기술 없음';
                     }
                 });
 
@@ -2512,6 +2515,8 @@
         });
 
         function exitMatch() {
+            isCountingDown = false;
+            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             isGaming = false;
             matchEnded = false;
             if (gameInterval) clearInterval(gameInterval);
@@ -2576,23 +2581,19 @@
         }
 
         function runGameLoop() {
-            // 카운트다운 중이거나 로비일 때는 경기장 안에 공을 표시하지 않음 (단, 3초 카운트다운 시작 시에는 지정된 위치에 배치)
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 카운트다운 시작 시 파란팀은 왼쪽, 빨간팀은 오른쪽에 대기 공 표시
                 selectedTeam1Balls.forEach((b, idx) => {
                     if (b) {
-                        let posX = 80 + idx * 30;
-                        let posY = 100 + idx * 60;
-                        drawBall(posX, posY, 26, b, "rgba(30, 144, 255, 0.15)");
+                        let pos = calculateInitialPositions(1, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 26, b, "rgba(30, 144, 255, 0.15)");
                     }
                 });
                 selectedTeam2Balls.forEach((b, idx) => {
                     if (b) {
-                        let posX = 370 - idx * 30;
-                        let posY = 100 + idx * 60;
-                        drawBall(posX, posY, 26, b, "rgba(231, 76, 60, 0.15)");
+                        let pos = calculateInitialPositions(2, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 26, b, "rgba(231, 76, 60, 0.15)");
                     }
                 });
 
@@ -2859,13 +2860,13 @@
                     if (player.lastSkillNoticeTimer > 0) {
                         player.lastSkillNoticeTimer--;
                         ctx.save();
-                        ctx.font = "bold 36px sans-serif";
+                        ctx.font = "bold 72px sans-serif";
                         ctx.fillStyle = "#e74c3c";
                         ctx.strokeStyle = "#ffffff";
-                        ctx.lineWidth = 5;
+                        ctx.lineWidth = 8;
                         ctx.textAlign = "center";
-                        ctx.strokeText(player.lastSkillName, player.x, player.y - player.radius - 20);
-                        ctx.fillText(player.lastSkillName, player.x, player.y - player.radius - 20);
+                        ctx.strokeText(player.lastSkillName, player.x, player.y - player.radius - 24);
+                        ctx.fillText(player.lastSkillName, player.x, player.y - player.radius - 24);
                         ctx.restore();
                     }
                 }
