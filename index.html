@@ -703,9 +703,9 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 -->
+        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 (클릭 시 해당 창 바로 열리도록 수정) -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
-            <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
+            <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
             </div>
@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-10" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-10', 'patch-btn-10');">⬇️</button>
+                            <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-10" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 여자 캐릭터를 2번째 사진(14475_4.jpg)으로 변경, 동룡쓰 부하 최대 10명 제한 적용, 왕클세종 글자 먹을 시 체력 +4 회복 및 상대 6 데미지 적용 완료!
+                    <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        JIRO 캐릭터 프로필(14715.jpg) 추가, 프로필 아이콘 선택 추가, 동룡쓰 여자 부하 발사체 색상(8번째 사진 캐릭터) 변경, 상단 메뉴 즉시 이동 및 실시간 전체 채팅(BroadcastChannel) 연동 완료!
                     </div>
                 </div>
 
@@ -794,10 +794,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="14475_4.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="14715.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">여자 베이컨 (2번째 사진)</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">동룡쓰가 소환하는 여자 부하 캐릭터!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JIRO</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">강력한 폭발과 콤보 데미지를 자랑하는 캐릭터!</div>
                     </div>
                 </div>
 
@@ -980,7 +980,7 @@
         </div>
     </div>
 
-    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 -->
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (JIRO 아이콘 추가) -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
         <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
@@ -1333,7 +1333,6 @@
         let profileClickCount = 0;
         let profileClickTimer = null;
         function handleProfileClickWithSecret() {
-            playClickSound();
             profileClickCount++;
             if (profileClickTimer) clearTimeout(profileClickTimer);
             if (profileClickCount >= 10) {
@@ -1504,7 +1503,7 @@
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: 'jino.jpg' }
+            { name: 'JIRO', hp: 250, imageSrc: '14715.jpg' }
         ];
 
         const loadedImages = {};
@@ -1516,16 +1515,15 @@
             }
         });
 
-        // 3번째 사진 캐릭터 (남자 🥓) -> 14474.jpg / 2번째 사진 캐릭터 (여자 🥓) -> 14475_4.jpg
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475_4.jpg';
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14715.jpg'; // 동룡쓰 여자 부하 캐릭터를 14715.jpg로 변경
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
-            { type: 'image', val: 'JIRO', src: 'jino.jpg', bg: '#ffffff' },
+            { type: 'image', val: 'JIRO', src: '14715.jpg', bg: '#ffffff' }, // JIRO 프로필 아이콘 추가
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1770,14 +1768,34 @@
             renderAdminPlayersList();
         }
 
+        // 모든 모달 닫기 함수 추가 (상단 메뉴 클릭 시 다른 창 즉시 전환용)
+        function closeAllModals() {
+            closeProfileModal();
+            closeFriendModal();
+            closeChatModal();
+            closeMatchSettingModal();
+            closeFriendMatchModal();
+            closeRecordHistoryModal();
+            closePatchNoteModal();
+            closeSettingsModal();
+            closePlayersModal();
+            closeOtherProfileModal();
+            closeReportModal();
+            closeBallPicker();
+            closePrivateChatModal();
+            closeSpectateModal();
+        }
+
         function handleProfileClick() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeChatModal(); openProfileModal();
+            closeAllModals();
+            openProfileModal();
         }
 
         function handleChatClick() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeProfileModal(); closePlayersModal(); openChatModal();
+            closeAllModals();
+            openChatModal();
         }
 
         function getMostUsedBallInfo() {
@@ -1843,6 +1861,7 @@
 
         function openFriendModal() {
             if (!checkNameRegisteredOrBlock()) return;
+            closeAllModals(); // 다른 창 열려있으면 닫고 친구 모달 바로 열기
             let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
             const container = document.getElementById('friend-list-container');
             container.innerHTML = '';
@@ -1958,6 +1977,7 @@
 
         function openFriendMatchModal() {
             if (!checkNameRegisteredOrBlock()) return;
+            closeAllModals(); // 다른 창 열려있으면 닫고 경기(방 목록) 모달 바로 열기
             renderFriendRooms();
             document.getElementById('friend-match-modal').classList.remove('hidden');
         }
@@ -2097,6 +2117,7 @@
 
         function openChatModal() {
             if (!checkNameRegisteredOrBlock()) return;
+            closeAllModals(); // 다른 창 열려있으면 닫고 전체 채팅 창 바로 열기
             document.getElementById('chat-floating-box').classList.remove('hidden');
             loadChatLogs(); updateOnlineOfflineCounts();
         }
@@ -2170,6 +2191,14 @@
             logs.scrollTop = logs.scrollHeight;
         }
 
+        // BroadcastChannel을 통한 실시간 전체 채팅 동기화 구현
+        const chatChannel = new BroadcastChannel('lily_game_chat_broadcast_channel');
+        chatChannel.onmessage = (event) => {
+            if (event.data && event.data.type === 'NEW_CHAT_MESSAGE') {
+                loadChatLogs();
+            }
+        };
+
         window.addEventListener('storage', (e) => {
             if (e.key === 'lily_game_chat_logs') {
                 loadChatLogs();
@@ -2195,6 +2224,10 @@
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             chatData.push({ uid: getDeviceUniqueId(), name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+            
+            // BroadcastChannel로 다른 탭/창에 즉시 전송
+            chatChannel.postMessage({ type: 'NEW_CHAT_MESSAGE' });
+
             appendChatBubble(name, msg, timeStr, true);
             input.value = '';
         }
@@ -2525,7 +2558,7 @@
             });
         }
 
-        // 동룡쓰 기술 (최대 10명 제한, 2번째 사진 여자캐릭터 14475_4.jpg 연동)
+        // 동룡쓰 기술 (최대 10명 제한, 여자 부하는 14715.jpg 캐릭터)
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) {
                 showToast('동룡쓰 부하가 이미 최대 10명입니다!');
@@ -2541,7 +2574,7 @@
             let rouletteInterval = setInterval(() => {
                 spinCount++;
                 let tempIsFemale = Math.random() < 0.5;
-                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨! 👩' : '남자 🥓 당첨! 👨';
+                caster.rouletteAnim.text = tempIsFemale ? '여자 부하 당첨! 👩' : '남자 부하 당첨! 👨';
 
                 if (spinCount >= 6) {
                     clearInterval(rouletteInterval);
@@ -2549,7 +2582,7 @@
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩 (2번째 사진)' : '남자 캐릭터 👨'} 소환!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 부하 👩 (14715.jpg)' : '남자 부하 👨'} 소환!`);
                     
                     if (caster.minions.length < 10) {
                         caster.skillCount++;
@@ -2958,12 +2991,11 @@
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
                                     playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount); // 체력 4 회복
+                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true; updateAllHpBars();
                                 } else {
-                                    // 상대 팀이 닿거나 글자 삭제될 때 상대에게 6 데미지
                                     player.hp = Math.max(0, player.hp - m.damage);
                                     showToast(`🇰🇷 왕클세종 글자 폭발! (${m.damage} 데미지)`);
                                     eaten = true; updateAllHpBars(); checkGameWinner();
@@ -3023,7 +3055,7 @@
                                     let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
                                     enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
-                                    showToast('💣 여자 폭탄 명중! (6 데미지, 튕김)');
+                                    showToast('💣 여자 부하 명중! (6 데미지, 튕김)');
                                 } else if (m.isArrow) {
                                     showToast('🏹 커진 화살 명중! (6 데미지)');
                                 }
@@ -3074,7 +3106,7 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 (2번째 사진 여자캐릭터 14475_4.jpg 연동)
+                // 동룡쓰 부하 (여자 부하는 14715.jpg 캐릭터)
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
@@ -3160,8 +3192,20 @@
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
                     if (m.isFemaleProj) {
-                        ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.fillText("💣", m.x, m.y);
+                        // 동룡쓰 여자 부하 발사체: 14715.jpg 미니 이미지로 렌더링
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                        ctx.save();
+                        ctx.clip();
+                        if (femaleBaconImg.complete && femaleBaconImg.naturalWidth !== 0) {
+                            ctx.drawImage(femaleBaconImg, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
+                        } else {
+                            ctx.fillStyle = '#e74c3c'; ctx.fill();
+                        }
+                        ctx.restore();
+                        ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
+                        ctx.restore();
                     } else {
                         ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                         ctx.fillText("🥓", m.x, m.y);
@@ -3190,4 +3234,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-    </html>
+</html>
