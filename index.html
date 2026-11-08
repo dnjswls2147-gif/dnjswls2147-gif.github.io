@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-10" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-10', 'patch-btn-10');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-10" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        스켈레톤 화살 크기 2배 확대, 동룡쓰 기술 5번째 영상 스타일 룰렛 및 효과음 적용, 남자 🥓(3번째 사진 캐릭터, 2.5초마다 베이컨 발사, 4데미지, 2배 느려짐 3초 지속) 및 여자 🥓(5번째 사진 캐릭터, 공 크기 폭탄 발사, 6데미지, 넉백) 시스템 완벽 구현 완료!
+                        동룡쓰 기술 소환 캐릭터를 3번째 사진(남자 🥓) 및 5번째 사진(여자 🥓)으로 완벽 적용, 스켈레톤 화살 이미지(14215.jpg) 정상 연동 및 2배 크기 적용 완료!
                     </div>
                 </div>
 
@@ -1181,7 +1181,6 @@
             } catch(e) {}
         }
 
-        // 5번째 영상 스타일 룰렛 회전 효과음 (탁탁탁 경쾌한 비트)
         function playRouletteSpinSound() {
             try {
                 let ctx = getAudioContext();
@@ -1216,22 +1215,6 @@
                     osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(time); osc.stop(time + 0.18);
                 });
-            } catch(e) {}
-        }
-
-        function playBoniBombSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
-                gain.gain.setValueAtTime(0.6 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.45);
             } catch(e) {}
         }
 
@@ -1533,9 +1516,9 @@
             }
         });
 
-        // 14475_3.jpg (여자 베이컨), 14484.jpg (남자 베이컨), 14108.jpg (스켈레톤), 14215.jpg (화살)
+        // 3번째 사진 캐릭터 (남자 🥓) -> 14474.jpg / 5번째 사진 캐릭터 (여자 🥓) -> 14475_3.jpg
+        const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475_3.jpg';
-        const maleBaconImg = new Image(); maleBaconImg.src = '14484.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
@@ -2480,7 +2463,6 @@
                                 let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                 if (targetEnemy && targetEnemy.hp > 0) {
                                     if (!minion.isFemale) {
-                                        // 남자 🥓: 2.5초마다 베이컨 🥓 발사 (4데미지, 맞으면 2배 느려짐 3초)
                                         if (minion.attackTimer >= 3) {
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
@@ -2493,7 +2475,6 @@
                                             playFoodThrowSound();
                                         }
                                     } else {
-                                        // 여자 🥓: 3초마다 공 크기 폭탄 💣 발사 (6데미지, 넉백)
                                         if (minion.attackTimer >= 4) {
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
@@ -2511,7 +2492,7 @@
                         }
                     }
 
-                    // JINO 스켈레톤 (2초마다 2배 커진 진짜 화살 발사)
+                    // JINO 스켈레톤 (2초마다 화살 14215.jpg 발사)
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2544,7 +2525,6 @@
             });
         }
 
-        // 동룡쓰 룰렛 기술 (남자 🥓 / 여자 🥓 랜덤 룰렛)
         function triggerDongryongSkill(caster) {
             showToast(`${caster.name}이 룰렛 돌리는 중! 🎰`);
             playRouletteSpinSound();
@@ -2563,18 +2543,18 @@
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여성 캐릭터 (여자 🥓) 👩' : '남성 캐릭터 (남자 🥓) 👨'} 소환!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩' : '남자 캐릭터 👨'} 소환!`);
                     
                     caster.skillCount++;
                     let angle = Math.random() * Math.PI * 2;
                     caster.minions.push({
                         x: caster.x + Math.cos(angle) * 35,
                         y: caster.y + Math.sin(angle) * 35,
-                        radius: 20,
+                        radius: 24,
                         img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
                         isFemale: isFemaleFinal,
                         orbitAngle: angle,
-                        orbitDist: 38,
+                        orbitDist: 42,
                         attackTimer: 0
                     });
 
@@ -2792,7 +2772,7 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 0.5; // 속도 2배 느려짐 (0.5배)
+                        currentSpeed = FIXED_SPEED * 0.5;
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -2896,7 +2876,6 @@
                     }
                 });
 
-                // JINO 스켈레톤 (영구 유지, 체력 없음)
                 allPlayers.forEach(player => {
                     let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                     player.skeletons.forEach(skel => {
@@ -3028,11 +3007,9 @@
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (m.isBaconProjectile && !m.isFemaleProj) {
-                                    // 남자 🥓: 4데미지, 2배 느려짐 3초 지속
                                     enemy.slowTimer = nowTimestamp + 3000;
                                     showToast('🥓 남자 베이컨 명중! (4 데미지, 3초간 속도 2배 저하)');
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    // 여자 🥓: 6데미지, 넉백 (공 크기 폭탄)
                                     let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
                                     enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
@@ -3087,15 +3064,28 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 공 주변 밀착 공전
+                // 동룡쓰 부하 (3번째 사진 남자캐릭터 / 5번째 사진 여자캐릭터 이미지 적용)
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
                     m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
-                    drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475_3.jpg' : '14484.jpg' }, "rgba(46, 204, 113, 0.2)");
+
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(46, 204, 113, 0.25)"; ctx.fill();
+
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                    ctx.save(); ctx.clip();
+                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
+                        ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
+                    } else {
+                        ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
+                    }
+                    ctx.restore();
+                    ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+                    ctx.restore();
                 });
 
-                // JINO 스켈레톤 영구 유지
                 player.skeletons.forEach(skel => {
                     ctx.save();
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
@@ -3120,7 +3110,6 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 룰렛 회전 애니메이션 텍스트 표시
                 if (player.rouletteAnim) {
                     ctx.save();
                     ctx.font = "bold 22px sans-serif";
@@ -3150,7 +3139,7 @@
                     ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
                     ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
                 } else if (m.isArrow) {
-                    // 화살 크기 2배 확대 (36, 20 -> 72, 40)
+                    // 스켈레톤 화살 이미지(14215.jpg) 2배 크기 적용
                     ctx.save();
                     ctx.translate(m.x, m.y);
                     ctx.rotate(m.angle);
@@ -3162,11 +3151,9 @@
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
                     if (m.isFemaleProj) {
-                        // 여자 🥓: 공 크기 정도의 폭탄 💣 발사
                         ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                         ctx.fillText("💣", m.x, m.y);
                     } else {
-                        // 남자 🥓: 베이컨 🥓 발사
                         ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                         ctx.fillText("🥓", m.x, m.y);
                     }
