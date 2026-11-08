@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>릴리 볼 파이트</title>
     <style>
         * {
@@ -19,15 +19,14 @@
             margin: 0;
             padding: 0;
             width: 100vw;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden;
-            overflow-y: auto;
-            position: relative;
+            justify-content: center;
+            overflow: hidden;
+            position: fixed;
             overscroll-behavior: none;
         }
 
@@ -38,40 +37,40 @@
             width: 100vw;
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 10px 14px;
+            padding: 16px 20px;
             z-index: 99999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             display: none;
-            border-bottom: 3px solid #000;
+            border-bottom: 4px solid #000;
         }
         #global-announcement-banner.show {
             display: block;
         }
 
         .app-container {
-            width: 100%;
-            max-width: 480px;
+            width: 100vw;
+            max-width: 620px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             z-index: 10;
-            padding: 4px 4px;
-            margin: 0 auto;
+            padding: 10px 6px;
+            transform: scale(1.35);
+            transform-origin: center center;
+            transition: transform 0.2s ease;
         }
 
-        /* 로비 상단 아이콘 1줄 강제 정렬 및 경기장 바로 위 밀착 */
         .top-menu-bar {
             width: 100%;
-            max-width: 380px;
+            max-width: 480px;
             display: flex;
-            flex-direction: row;
-            gap: 2px;
+            gap: 10px;
             align-items: center;
-            justify-content: space-between;
-            padding: 2px 2px;
-            margin-bottom: 2px;
+            justify-content: flex-start;
+            padding: 0;
+            margin-bottom: 6px;
             z-index: 1000;
         }
 
@@ -80,119 +79,111 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            flex: 1;
-            min-width: 0;
         }
         .profile-icon, .chat-icon, .friend-icon, .match-setting-icon, .friend-match-icon {
-            font-size: 15px;
+            font-size: 32px;
             line-height: 1;
         }
         .profile-label, .chat-label, .friend-label, .match-setting-label, .friend-match-label {
-            font-size: 8px;
+            font-size: 14px;
             font-weight: 900;
             color: #000000;
-            margin-top: 1px;
+            margin-top: 3px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            text-align: center;
         }
 
         .arena-container-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 380px;
-            margin-top: 2px;
+            width: 480px;
+            max-width: 92vw;
         }
         .settings-gear-btn {
             position: absolute;
-            top: -30px;
+            top: -44px;
             right: 0;
-            width: 28px;
-            height: 28px;
+            width: 40px;
+            height: 40px;
             background: #f1f2f6;
-            border: 2px solid #000;
-            border-radius: 4px;
-            font-size: 13px;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 1500;
-            box-shadow: 0 2px 0 #000;
+            box-shadow: 0 3px 0 #000;
         }
         .record-history-gear-btn {
             position: absolute;
-            top: -62px;
+            top: -94px;
             right: 0;
-            height: 26px;
-            padding: 0 5px;
+            height: 40px;
+            padding: 0 10px;
             background: #f1f2f6;
-            border: 2px solid #000;
-            border-radius: 4px;
-            font-size: 9px;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 4px;
             cursor: pointer;
             z-index: 1500;
-            box-shadow: 0 2px 0 #000;
-            white-space: nowrap;
+            box-shadow: 0 3px 0 #000;
         }
         .patch-note-gear-btn {
             position: absolute;
-            top: -30px;
-            right: 32px;
-            height: 28px;
-            padding: 0 5px;
+            top: -44px;
+            right: 48px;
+            height: 40px;
+            padding: 0 10px;
             background: #f1f2f6;
-            border: 2px solid #000;
-            border-radius: 4px;
-            font-size: 9px;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 16px;
             font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 6px;
             cursor: pointer;
             z-index: 1500;
-            box-shadow: 0 2px 0 #000;
-            white-space: nowrap;
+            box-shadow: 0 3px 0 #000;
         }
 
         #toast-alert {
             position: fixed;
-            top: 12px;
+            top: 16px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.92);
+            background-color: rgba(0, 0, 0, 0.94);
             color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 14px 26px;
+            border-radius: 35px;
+            font-size: 24px;
             font-weight: 900;
             z-index: 100000;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
             pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
             white-space: nowrap;
-            border: 2px solid #ffffff;
+            border: 3px solid #ffffff;
         }
         #toast-alert.show {
             opacity: 1;
         }
 
         .arena-frame {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border: 4px solid #000000;
+            width: 480px;
+            height: 480px;
+            max-width: 100%;
+            max-height: 45vh;
+            border: 5px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         canvas {
             width: 100%;
@@ -202,7 +193,7 @@
 
         .controls-wrapper {
             width: 100%;
-            max-width: 380px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -211,7 +202,7 @@
 
         .slot-container {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             width: 100%;
             margin-bottom: 6px;
         }
@@ -219,20 +210,20 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .slot-team-title {
-            font-size: 12px;
+            font-size: 15px;
             font-weight: 900;
             text-align: center;
         }
         .btn-add-slot {
             width: 100%;
-            padding: 8px 2px;
+            padding: 12px 4px;
             background: #555555;
             color: #ffffff;
-            border: 2px solid #000000;
-            font-size: 12px;
+            border: 3px solid #000000;
+            font-size: 16px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -240,27 +231,27 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            border-radius: 4px;
-            box-shadow: 0 2px 0 #000;
+            border-radius: 6px;
+            box-shadow: 0 3px 0 #000;
         }
         .btn-add-slot.selected {
             background: #27ae60;
         }
 
         .btn-main-action {
-            margin-top: 2px;
+            margin-top: 6px;
             width: 100%;
-            padding: 10px 0;
-            font-size: 15px;
+            padding: 14px 0;
+            font-size: 22px;
             font-weight: 900;
-            border: 2px solid #000000;
-            border-radius: 4px;
+            border: 3px solid #000000;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            box-shadow: 0 2px 0 #000000;
+            gap: 8px;
+            box-shadow: 0 3px 0 #000000;
             outline: none;
         }
         .btn-start { background-color: #2ecc71; color: #ffffff; }
@@ -270,13 +261,13 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            max-height: 120px;
+            gap: 8px;
+            max-height: 160px;
             overflow-y: auto;
         }
         .status-row-group {
             display: flex;
-            gap: 6px;
+            gap: 10px;
             width: 100%;
         }
         .player-status-card {
@@ -286,9 +277,9 @@
             position: relative;
         }
         .player-name-label {
-            font-size: 11px;
+            font-size: 15px;
             font-weight: 900;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -298,12 +289,12 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 20px;
+            height: 30px;
             background: #e0e0e0;
-            border: 2px solid #000000;
+            border: 3px solid #000000;
             position: relative;
             overflow: hidden;
-            border-radius: 3px;
+            border-radius: 4px;
         }
         .hp-bar-inner {
             height: 100%;
@@ -320,18 +311,18 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 10px;
+            font-size: 14px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 15px;
+            height: 20px;
             background: #cccccc;
-            border: 2px solid #000000;
-            margin-top: 2px;
+            border: 3px solid #000000;
+            margin-top: 3px;
             position: relative;
             overflow: hidden;
-            border-radius: 3px;
+            border-radius: 4px;
         }
         .sub-gauge-fill {
             height: 100%;
@@ -345,22 +336,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9px;
+            font-size: 12px;
             font-weight: 900;
             color: #000;
         }
 
         @keyframes floatPlusAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-22px) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
         }
         .healing-popup-text {
             position: absolute;
-            top: 14px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
             color: #2ecc71;
-            font-size: 14px;
+            font-size: 22px;
             font-weight: 900;
             text-shadow: 1px 1px 2px #000;
             pointer-events: none;
@@ -372,89 +363,88 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            padding: 8px;
+            pointer-events: none;
+            padding: 15px;
         }
         .modal-overlay.hidden { display: none !important; }
+        .modal-overlay > * { pointer-events: auto; }
 
         .picker-modal-box {
-            width: 100%;
-            max-width: 340px;
-            height: 68vh;
+            width: 94vw;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 750px;
             background: #ffffff;
-            border: 4px solid #000000;
-            padding: 28px 12px 12px 12px;
+            border: 6px solid #000000;
+            padding: 45px 26px 26px 26px;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
-            border-radius: 5px;
+            z-index: 100000;
         }
         
         .modal-close-btn {
             position: absolute;
-            top: 6px; right: 6px;
-            width: 30px; height: 30px;
-            border: 2px solid #000000;
+            top: 14px; right: 14px;
+            width: 48px; height: 48px;
+            border: 3px solid #000000;
             background: #ffffff;
-            font-size: 14px;
+            font-size: 24px;
             font-weight: 900;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             outline: none;
-            border-radius: 4px;
             z-index: 100;
         }
 
-        /* 볼 선택창 2줄 정렬 및 2.5배 낮춘(아담해진) 버튼 크기 + 스크롤 */
         .picker-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 18px;
             flex: 1;
-            overflow-y: scroll !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
-            padding-right: 4px;
+            padding-right: 6px;
         }
         .ball-select-btn {
             background: #4a4a4a;
             color: #ffffff;
-            border: 2px solid #000000;
-            padding: 7px 4px;
-            font-size: 11px;
+            border: 3px solid #000000;
+            padding: 20px 18px;
+            font-size: 22px;
             font-weight: 900;
             text-align: center;
             cursor: pointer;
             width: 100%;
-            height: 44px;
-            border-radius: 4px;
-            box-shadow: 0 2px 0 #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            outline: none;
+            flex-shrink: 0;
+            border-radius: 6px;
         }
 
         .profile-modal-box {
-            width: 100%;
-            max-width: 340px;
-            max-height: 82vh;
+            width: 94vw;
+            max-width: 680px;
             background: #ffffff;
-            border: 4px solid #000000;
-            padding: 22px 14px;
+            border: 6px solid #000000;
+            padding: 45px 32px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border-radius: 5px;
-            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            z-index: 100000;
         }
 
         .chat-floating-window {
@@ -462,16 +452,18 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 90vw;
-            max-width: 380px;
-            height: 68vh;
+            width: 94vw;
+            max-width: 780px;
+            height: 78vh;
+            max-height: 780px;
             background: #ffffff;
-            border: 4px solid #000000;
-            padding: 10px;
+            border: 6px solid #000000;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-            border-radius: 5px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            resize: both;
+            overflow: hidden;
             z-index: 9998;
         }
         .chat-floating-window.hidden { display: none !important; }
@@ -480,182 +472,181 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
-            padding-bottom: 4px;
-            border-bottom: 2px solid #000;
+            margin-bottom: 12px;
+            cursor: move;
+            user-select: none;
+            padding: 8px 0;
             flex-shrink: 0;
         }
         .chat-logs-area {
             flex: 1;
-            border: 2px solid #000;
+            border: 4px solid #000;
             background: #f8f9fa;
-            margin: 6px 0;
-            padding: 8px;
-            overflow-y: scroll !important;
+            margin: 12px 0;
+            padding: 18px;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            border-radius: 4px;
+            gap: 14px;
         }
         .chat-msg-card {
             background: #ffffff;
-            border: 2px solid #000;
-            padding: 6px 8px;
-            border-radius: 4px;
+            border: 3px solid #000;
+            padding: 14px 18px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 6px;
         }
         .chat-sender-name {
-            font-size: 12px;
+            font-size: 20px;
             font-weight: 900;
             color: #2980b9;
             cursor: pointer;
             text-decoration: underline;
         }
         .chat-msg-text {
-            font-size: 13px;
+            font-size: 23px;
             font-weight: bold;
             word-break: break-all;
             color: #000;
         }
         .chat-msg-time {
-            font-size: 9px;
+            font-size: 14px;
             color: #666666;
             text-align: right;
             font-weight: bold;
         }
 
         .players-modal-box {
-            width: 100%;
-            max-width: 340px;
-            height: 68vh;
+            width: 94vw;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 780px;
             background: #ffffff;
-            border: 4px solid #000000;
-            padding: 26px 14px 14px 14px;
+            border: 6px solid #000000;
+            padding: 38px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border-radius: 5px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 100000;
         }
         .players-list-area {
             flex: 1;
-            border: 2px solid #000;
+            border: 3px solid #000;
             background: #f8f9fa;
-            margin: 6px 0;
-            padding: 8px;
-            overflow-y: scroll !important;
+            margin: 12px 0;
+            padding: 16px;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            border-radius: 4px;
+            gap: 14px;
         }
         .player-item-card {
             background: #fff;
-            border: 2px solid #000;
-            padding: 6px;
-            border-radius: 4px;
-            font-size: 12px;
+            border: 3px solid #000;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 20px;
             font-weight: 900;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 8px;
             cursor: pointer;
-            box-shadow: 0 2px 0 #000;
         }
 
         .admin-draggable-panel {
-            position: fixed;
-            width: 90vw;
-            max-width: 380px;
-            height: 68vh;
+            position: absolute;
+            width: 94vw;
+            max-width: 680px;
+            height: 80vh;
+            max-height: 780px;
             background: #ffffff;
-            border: 4px solid #000000;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+            border: 6px solid #000000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             z-index: 10005;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            border-radius: 5px;
         }
 
         .admin-drag-header {
             background-color: #2c3e50;
             color: #ffffff;
-            padding: 8px 12px;
-            font-size: 14px;
+            padding: 16px 20px;
+            font-size: 22px;
             font-weight: 900;
+            cursor: move;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #000;
+            border-bottom: 4px solid #000;
             flex-shrink: 0;
         }
 
         .admin-scroll-body {
-            padding: 12px;
+            padding: 20px;
             overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 16px;
         }
 
         .admin-input {
             width: 100%;
-            padding: 8px;
-            font-size: 13px;
-            border: 2px solid #000;
+            padding: 16px;
+            font-size: 22px;
+            border: 3px solid #000;
             text-align: center;
             outline: none;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         .admin-btn {
             flex: 1;
-            padding: 8px 0;
-            font-size: 13px;
+            padding: 16px 0;
+            font-size: 22px;
             font-weight: 900;
-            border: 2px solid #000;
+            border: 3px solid #000;
             cursor: pointer;
             outline: none;
-            border-radius: 4px;
-            box-shadow: 0 2px 0 #000;
+            border-radius: 6px;
         }
         .admin-btn-confirm { background: #2ecc71; color: #fff; }
         .admin-btn-cancel { background: #e74c3c; color: #fff; }
 
         .admin-section-box {
             background: #f8f9fa;
-            border: 2px solid #000;
-            padding: 10px;
+            border: 3px solid #000;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            border-radius: 4px;
+            gap: 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
         }
         .row-inline-group {
             display: flex;
-            gap: 5px;
+            gap: 10px;
             width: 100%;
         }
         .btn-send {
             background-color: #3498db;
             color: #ffffff;
-            border: 2px solid #000;
-            font-size: 13px;
+            border: 3px solid #000;
+            font-size: 22px;
             font-weight: 900;
-            padding: 0 10px;
+            padding: 0 24px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
-            border-radius: 4px;
-            box-shadow: 0 2px 0 #000;
+            border-radius: 6px;
         }
         .hidden { display: none !important; }
     </style>
@@ -689,7 +680,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 로비 상단 아이콘 1줄 강제 정렬 (경기장 바로 위) -->
+        <!-- 상단 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
@@ -708,8 +699,8 @@
                 <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
             </div>
             <div class="friend-match-entry-box" id="btn-friend-match-entry" onclick="playClickSound(); openFriendMatchModal();">
-                <div class="friend-match-icon" style="width:16px; height:16px; background:#e67e22; color:#fff; border:2px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:7px; font-weight:900; margin:0 auto;">1v1</div>
-                <div class="friend-match-label">방 만들기</div>
+                <div class="friend-match-icon" style="width:34px; height:34px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
+                <div class="friend-match-label">경기</div>
             </div>
         </div>
 
@@ -719,7 +710,7 @@
             <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
-                <canvas id="gameCanvas" width="960" height="960"></canvas>
+                <canvas id="gameCanvas" width="480" height="480"></canvas>
             </div>
         </div>
 
@@ -740,188 +731,171 @@
 
     <!-- 점검 중 오버레이 -->
     <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div style="width:90%; max-width:340px; border:4px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:16px; border-radius:5px;">
-            <div style="font-size:38px; margin-bottom:8px;">🛠️</div>
-            <div style="font-size:18px; font-weight:900; color:#e74c3c; margin-bottom:6px;">현재 점검 중입니다</div>
-            <div style="font-size:13px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
+        <div style="width:480px; height:480px; max-width:92vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:24px;">
+            <div style="font-size:60px; margin-bottom:15px;">🛠️</div>
+            <div style="font-size:28px; font-weight:900; color:#e74c3c; margin-bottom:12px;">현재 점검 중입니다</div>
+            <div style="font-size:18px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
         </div>
     </div>
 
-    <!-- 패치노트 & 캐릭터 설명 모달 -->
-    <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:22px 14px; width:92%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; max-height:78vh; display:flex; flex-direction:column; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
-            <div style="font-size:18px; font-weight:900; margin-bottom:12px; color:#000; flex-shrink:0;">📓 패치 노트 & 캐릭터 설명</div>
+    <!-- 패치노트 모달 -->
+    <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
+            <div style="font-size:34px; font-weight:900; margin-bottom:20px; color:#000;">📓 패치 노트 & 캐릭터 설명</div>
             
-            <div style="display:flex; gap:6px; margin-bottom:8px; flex-shrink:0;">
-                <button id="tab-btn-patch" style="flex:1; padding:8px; font-size:13px; font-weight:900; background:#2980b9; color:#fff; border:2px solid #000; cursor:pointer; border-radius:4px;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
-                <button id="tab-btn-chars" style="flex:1; padding:8px; font-size:13px; font-weight:900; background:#7f8c8d; color:#fff; border:2px solid #000; cursor:pointer; border-radius:4px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
+            <div style="display:flex; gap:12px; margin-bottom:16px;">
+                <button id="tab-btn-patch" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#2980b9; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
+                <button id="tab-btn-chars" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
             </div>
 
-            <div id="modal-content-patch" style="border:2px solid #000; background:#f8f9fa; padding:10px; border-radius:4px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:40vh; flex:1;">
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:6px;">
+            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
+                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:14px; font-weight:900; color:#2c3e50;">v0.3.6 <span style="font-size:10px; background:#e74c3c; color:#fff; padding:2px 4px; border-radius:3px;">최신</span></span>
-                        <div style="display:flex; align-items:center; gap:4px;">
-                            <span style="font-size:11px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-12" style="background:#3498db; color:#fff; border:2px solid #000; width:28px; height:28px; font-size:13px; font-weight:900; cursor:pointer; border-radius:3px;" onclick="playSlideSound(); togglePatchDetails('patch-content-12', 'patch-btn-12');">⬇️</button>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-12" style="font-size:12px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:6px; padding-top:6px; display:none; line-height:1.4;">
-                        상단 아이콘바 경기장 위 밀착 정렬, 볼 선택 버튼 2.5배 축소, 충돌 튕김 완화, 공 크기 1.5배 및 속도 1.3배 상향, 동룡쓰 부하 투사체(남자🥓 2초마다 4뎀/슬로우, 여자🍜 5뎀), 미스터비스트 2가지 투척 스킬(🍫/💰 - 나만 먹기, 회복 25/상대 20깎임), 본이 폭탄 2개 투척 및 피격 시 데미지 20 & 튕김 효과 적용!
+                    <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        동룡쓰 여자 부하 이미지를 파일명(14475.jpg)으로 수정하여 정상 출력, 남자 캐릭터 소환 버그 수정 완료, JIRO 공끼리 충돌 시 양쪽 모두 데미지 입도록 개선!
                     </div>
                 </div>
             </div>
 
-            <div id="modal-content-chars" style="border:2px solid #000; background:#f8f9fa; padding:10px; border-radius:4px; margin-bottom:10px; display:none; flex-direction:column; gap:8px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:40vh; flex:1;">
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="dongryong.png" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">동룡쓰</div><div style="font-size:11px; font-weight:bold; color:#555;">부하(남자/여자 베이컨)를 소환하여 전투를 보조합니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="character.jpg" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">미스터비스트</div><div style="font-size:11px; font-weight:bold; color:#555;">초콜릿과 돈 주머니를 투척하여 체력을 회복합니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="wangkl.png" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">왕클세종</div><div style="font-size:11px; font-weight:bold; color:#555;">한글 자음 기술을 발동해 아군 회복 및 적을 공격합니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="boni.png" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">본이</div><div style="font-size:11px; font-weight:bold; color:#555;">강력한 폭탄 2개를 투척하여 적을 타격합니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="jino.jpg" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">JINO</div><div style="font-size:11px; font-weight:bold; color:#555;">스켈레톤을 소환하여 원거리 화살 공격을 퍼붓습니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="14605.jpg" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">JIRO</div><div style="font-size:11px; font-weight:bold; color:#555;">충돌 시 콤보 폭발 및 지뢰를 매설하여 적을 압박합니다.</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="14475.jpg" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">여자 베이컨</div><div style="font-size:11px; font-weight:bold; color:#555;">동룡쓰가 소환하는 여자 부하 캐릭터!</div></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #000; padding:8px; border-radius:4px;">
-                    <img src="14474.jpg" style="width:40px; height:40px; object-fit:cover; border:2px solid #000; border-radius:3px;">
-                    <div><div style="font-size:13px; font-weight:900; color:#2c3e50;">남자 베이컨</div><div style="font-size:11px; font-weight:bold; color:#555;">동룡쓰가 소환하는 남자 부하 캐릭터!</div></div>
+            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="14475.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">여자 베이컨 (5~6번째 사진)</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">동룡쓰가 소환하는 여자 부하 캐릭터!</div>
+                    </div>
                 </div>
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:9px; font-size:14px; flex-shrink:0;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:24px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
         </div>
     </div>
 
     <!-- 경기 모드 설정 모달 -->
-    <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:22px 14px; width:90%; max-width:320px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
-            <div style="font-size:18px; font-weight:900; margin-bottom:12px; color:#000;">⚙️ 경기 모드 설정</div>
-            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
-                <button class="ball-select-btn" style="width:100%; height:auto; padding:10px;" onclick="playClickSound(); selectMatchMode(1, '1대1 경기');">1대1 경기</button>
-                <button class="ball-select-btn" style="width:100%; height:auto; padding:10px;" onclick="playClickSound(); selectMatchMode(2, '2대2 경기');">2대2 경기</button>
-                <button class="ball-select-btn" style="width:100%; height:auto; padding:10px;" onclick="playClickSound(); selectMatchMode(3, '3대3 경기');">3대3 경기</button>
-                <button class="ball-select-btn" style="width:100%; height:auto; padding:10px;" onclick="playClickSound(); selectMatchMode(4, '4대4 경기');">4대4 경기</button>
-                <button class="ball-select-btn" style="width:100%; height:auto; padding:10px;" onclick="playClickSound(); selectMatchMode(5, '5대5 경기');">5대5 경기</button>
+    <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:40px 28px; width:94%; max-width:460px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
+            <div style="font-size:30px; font-weight:900; margin-bottom:22px; color:#000;">⚙️ 경기 모드 설정</div>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:22px;">
+                <button class="ball-select-btn" onclick="playClickSound(); selectMatchMode(1, '1대1 경기');">1대1 경기</button>
+                <button class="ball-select-btn" onclick="playClickSound(); selectMatchMode(2, '2대2 경기');">2대2 경기</button>
+                <button class="ball-select-btn" onclick="playClickSound(); selectMatchMode(3, '3대3 경기');">3대3 경기</button>
+                <button class="ball-select-btn" onclick="playClickSound(); selectMatchMode(4, '4대4 경기');">4대4 경기</button>
+                <button class="ball-select-btn" onclick="playClickSound(); selectMatchMode(5, '5대5 경기');">5대5 경기</button>
             </div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:9px; font-size:14px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
         </div>
     </div>
 
     <!-- 방 만들기 및 참여 모달 -->
-    <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:18px 12px; width:90%; max-width:360px; height:68vh; display:flex; flex-direction:column; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 경기 (방 목록)</div>
-            <div style="display:flex; gap:5px; margin-bottom:6px; flex-shrink:0;">
-                <button class="admin-btn admin-btn-confirm" style="font-size:12px; padding:7px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
-                <button class="admin-btn admin-btn-cancel" style="font-size:12px; padding:7px;" onclick="playClickSound(); cancelFriendRoom();">취소</button>
+    <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 경기 (방 목록)</div>
+            <div style="display:flex; gap:10px; margin-bottom:10px; flex-shrink:0;">
+                <button class="admin-btn admin-btn-confirm" style="font-size:18px; padding:12px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
+                <button class="admin-btn admin-btn-cancel" style="font-size:18px; padding:12px;" onclick="playClickSound(); cancelFriendRoom();">방 만들기 취소</button>
             </div>
             <div class="players-list-area" id="friend-rooms-list-container" style="flex:1;"></div>
         </div>
     </div>
 
     <!-- 친구 관리 모달 -->
-    <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:18px 12px; width:90%; max-width:360px; height:68vh; display:flex; flex-direction:column; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeFriendModal();">✕</button>
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
+    <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
             <div class="players-list-area" id="friend-list-container" style="flex:1;"></div>
         </div>
     </div>
 
     <!-- 1:1 채팅 모달 -->
-    <div class="modal-overlay hidden" id="private-chat-modal" style="z-index: 210000;">
-        <div style="background:#fff; border:4px solid #000; padding:12px; width:90%; max-width:360px; height:68vh; display:flex; flex-direction:column; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closePrivateChatModal();">✕</button>
-            <div style="font-size:15px; font-weight:900; margin-bottom:6px; text-align:center; color:#2c3e50; flex-shrink:0;" id="private-chat-title-txt">💬 1:1 채팅 & 통화</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#f1f2f6; padding:6px; border:2px solid #000; border-radius:4px; margin-bottom:6px; flex-shrink:0;">
-                <span style="font-size:11px; font-weight:900;" id="voice-call-status-txt">🔊 통화 대기 중</span>
-                <div style="display:flex; gap:4px;">
-                    <button class="admin-btn admin-btn-confirm" style="padding:5px 8px; font-size:10px;" onclick="playClickSound(); startVoiceCall();">통화 시작</button>
-                    <button class="admin-btn admin-btn-cancel" style="padding:5px 8px; font-size:10px;" onclick="playClickSound(); endVoiceCall();">종료</button>
+    <div class="modal-overlay hidden" id="private-chat-modal" style="z-index: 210000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:600px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePrivateChatModal();">✕</button>
+            <div style="font-size:24px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;" id="private-chat-title-txt">💬 1:1 채팅 & 통화</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f1f2f6; padding:12px; border:3px solid #000; border-radius:6px; margin-bottom:12px; flex-shrink:0;">
+                <span style="font-size:18px; font-weight:900;" id="voice-call-status-txt">🔊 음성 통화 대기 중</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); startVoiceCall();">통화 시작</button>
+                    <button class="admin-btn admin-btn-cancel" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); endVoiceCall();">통화 종료</button>
                 </div>
             </div>
-            <div class="players-list-area" id="private-chat-logs" style="flex:1; margin-bottom:6px;"></div>
+            <div class="players-list-area" id="private-chat-logs" style="flex:1; margin-bottom:12px;"></div>
             <div class="row-inline-group" style="flex-shrink:0;">
-                <input type="text" id="private-chat-input" class="admin-input" style="font-size:12px; padding:7px; margin-bottom:0;" placeholder="메시지 입력" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
-                <button class="btn-send" style="font-size:12px; padding:0 10px;" onclick="playClickSound(); sendPrivateChatMessage();">전송</button>
+                <input type="text" id="private-chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
+                <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendPrivateChatMessage();">전송</button>
             </div>
         </div>
     </div>
 
     <!-- 경기 기록 모달 -->
-    <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:18px 12px; width:90%; max-width:360px; height:68vh; display:flex; flex-direction:column; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
+    <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
             <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
         </div>
     </div>
 
     <!-- 관전 모달 -->
-    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.85);">
-        <div style="background:#fff; border:4px solid #000; padding:12px; width:90%; max-width:360px; display:flex; flex-direction:column; align-items:center; position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeSpectateModal();">✕</button>
-            <div style="font-size:17px; font-weight:900; margin-bottom:6px;">📺 경기 리플레이 관전</div>
-            <div style="font-size:12px; font-weight:900; color:#27ae60; margin-bottom:6px;" id="spectate-info-txt">승리 팀: -</div>
-            <div style="width:100%; aspect-ratio:1 / 1; border:2px solid #000; background:#fff; position:relative; overflow:hidden; margin-bottom:10px; border-radius:4px;">
-                <canvas id="spectateCanvas" width="960" height="960" style="width:100%; height:100%;"></canvas>
-            </div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:9px; font-size:13px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.8);">
+        <div style="background:#fff; border:6px solid #000; padding:30px; width:94%; max-width:540px; display:flex; flex-direction:column; align-items:center; position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px;">📺 경기 리플레이 관전</div>
+            <div style="font-size:20px; font-weight:900; color:#27ae60; margin-bottom:20px;" id="spectate-info-txt">승리 팀: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
 
     <!-- 설정 모달 -->
-    <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:26px 18px; width:90%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.4); position:relative; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeSettingsModal();">✕</button>
-            <div style="font-size:20px; font-weight:900; margin-bottom:14px; color:#000;">⚙️ 게임 설정</div>
+    <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:45px 36px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
+            <div style="font-size:34px; font-weight:900; margin-bottom:26px; color:#000;">⚙️ 게임 설정</div>
             
-            <div style="margin-bottom:14px; text-align:left;">
-                <div style="font-size:13px; font-weight:900; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="margin-bottom:26px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                     <span>🔊 효과음 소리 (0 ~ 1000)</span>
-                    <div style="display:flex; gap:4px; align-items:center;">
-                        <input type="text" id="sfx-input-box" value="100" style="width:55px; padding:4px; font-size:12px; font-weight:900; border:2px solid #000; text-align:center; outline:none; border-radius:3px;">
-                        <button onclick="playClickSound(); applySfxInput();" style="padding:4px 8px; font-size:12px; font-weight:900; background:#3498db; color:#fff; border:2px solid #000; cursor:pointer; border-radius:3px;">확인</button>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="sfx-input-box" value="100" style="width:90px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applySfxInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
                     </div>
                 </div>
-                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:6px;" oninput="syncSfxRange(this.value)">
+                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:10px;" oninput="syncSfxRange(this.value)">
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:11px; font-size:15px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
+            <div style="margin-bottom:34px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🔍 화면 확대 (0 ~ 150)</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="zoom-input-box" value="35" style="width:80px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applyZoomInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
+                    </div>
+                </div>
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:10px;" oninput="syncZoomRange(this.value)">
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; font-size:24px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
         </div>
     </div>
 
     <!-- 전체 채팅창 -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
-            <div style="font-size:11px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0] | 오프라인 [0])</div>
-            <div style="display:flex; gap:5px; align-items:center;">
-                <div style="font-size:10px; font-weight:900; background:#eee; padding:3px 6px; border:2px solid #000; border-radius:3px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
-                    목록 ➡️
+            <div style="font-size:20px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <div style="font-size:18px; font-weight:900; background:#eee; padding:8px 14px; border:3px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
+                    플레이어 목록 ➡️
                 </div>
-                <button class="modal-close-btn" style="position:static; width:26px; height:26px; font-size:12px;" onclick="playClickSound(); closeChatModal();">✕</button>
+                <button class="modal-close-btn" style="position:static; width:44px; height:44px; font-size:22px;" onclick="playClickSound(); closeChatModal();">✕</button>
             </div>
         </div>
         <div class="chat-logs-area" id="chat-logs">
@@ -932,17 +906,17 @@
             </div>
         </div>
         <div class="row-inline-group" style="flex-shrink:0;">
-            <input type="text" id="chat-input" class="admin-input" style="font-size:12px; padding:7px; margin-bottom:0;" placeholder="메시지 입력" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:12px; padding:0 10px;" onclick="playClickSound(); sendChatMessage();">전송</button>
+            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendChatMessage();">전송</button>
         </div>
     </div>
 
     <!-- 플레이어 목록 모달 -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
         <div class="players-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closePlayersModal();">✕</button>
-            <div style="font-size:17px; font-weight:900; text-align:center; margin-bottom:4px; flex-shrink:0;">👥 플레이어 목록</div>
-            <div style="font-size:11px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:4px; flex-shrink:0;" id="online-offline-summary-txt">온라인 [0명] | 오프라인 [0명]</div>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePlayersModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">👥 플레이어 목록</div>
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:8px; flex-shrink:0;" id="online-offline-summary-txt">온라인 [0명] | 오프라인 [0명]</div>
             <div class="players-list-area" id="players-list-container"></div>
         </div>
     </div>
@@ -950,63 +924,60 @@
     <!-- 내 프로필 모달 -->
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal();">✕</button>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:6px;">
-                <div id="my-profile-square-icon" style="width:70px; height:70px; background:#1e90ff; border:3px solid #000; border-radius:4px; box-shadow:0 2px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:32px;">👤</div>
-                <button style="width:30px; height:30px; background:#f1f2f6; border:2px solid #000; border-radius:4px; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeProfileModal();">✕</button>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px;">
+                <div id="my-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+                <button style="width:52px; height:52px; background:#f1f2f6; border:3px solid #000; border-radius:6px; font-size:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
             </div>
-            <div style="font-size:16px; font-weight:900; margin-bottom:4px; border-bottom:2px solid #000; padding-bottom:3px; width:100%; text-align:center;">내 프로필</div>
-            <div style="font-size:13px; font-weight:900; margin-bottom:4px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="font-size:11px; font-weight:bold; color:#555; margin-bottom:6px;" id="profile-date-txt">접속한 날짜: -</div>
-            
-            <div style="width:100%; border:2px solid #000; background:#f8f9fa; padding:8px; border-radius:4px; margin-bottom:10px; max-height:150px; overflow-y:auto;" id="profile-all-balls-usage-container"></div>
-
-            <div class="admin-btn-group" style="width:100%; display:flex; gap:5px; flex-shrink:0;">
-                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:8px 0; font-size:12px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
-                <button class="admin-btn admin-btn-confirm" style="padding:8px 0; font-size:12px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:22px; font-weight:900; margin-bottom:10px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div class="admin-btn-group" style="width:100%; display:flex; gap:10px;">
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
             </div>
         </div>
     </div>
 
-    <!-- 아이콘 선택 팝업 -->
+    <!-- 아이콘 선택 팝업 (7번째 사진 14605.jpg 포함) -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
-        <div style="background:#1b4f72; border:4px solid #000; padding:14px; width:90%; max-width:340px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.5); position:relative; display:flex; flex-direction:column; align-items:center; border-radius:5px;">
-            <button class="modal-close-btn" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
-            <div style="font-size:18px; font-weight:900; color:#fff; margin-bottom:8px;">아이콘 선택</div>
-            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; width:100%; max-height:48vh; overflow-y:auto; padding:2px;" id="brawl-icon-grid-container"></div>
+        <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
+            <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택 (7번째 사진 추가 가능)</div>
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container"></div>
         </div>
     </div>
 
     <!-- 다른 사람 프로필 모달 -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
-            <div id="other-profile-square-icon" style="width:70px; height:70px; background:#1e90ff; border:3px solid #000; border-radius:4px; margin-bottom:6px; box-shadow:0 2px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:32px;">👤</div>
-            <div style="font-size:16px; font-weight:900; margin-bottom:4px; border-bottom:2px solid #000; padding-bottom:3px; width:100%; text-align:center;">플레이어 프로필</div>
-            <div style="font-size:13px; font-weight:900; margin-bottom:4px; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
-            <div style="font-size:11px; font-weight:bold; color:#555; margin-bottom:8px;" id="other-profile-date-txt">접속한 날짜: -</div>
-            
-            <div style="display:flex; gap:6px; margin-bottom:10px; width:100%; justify-content:center;">
-                <button id="btn-add-friend-action" style="flex:1; background:#2ecc71; color:#fff; border:2px solid #000; padding:7px; font-size:11px; font-weight:900; cursor:pointer; border-radius:4px; box-shadow:0 2px 0 #000;" onclick="playClickSound(); addFriendFromProfile();">🤝 친구추가</button>
-                <button id="btn-report-player" style="flex:1; background:#e74c3c; color:#fff; border:2px solid #000; padding:7px; font-size:11px; font-weight:900; cursor:pointer; border-radius:4px; box-shadow:0 2px 0 #000;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
+            <div id="other-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; margin-bottom:12px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px; width:100%;">
+                <div style="font-size:22px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+                <button id="btn-add-friend-action" style="background:#2ecc71; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); addFriendFromProfile();">🤝 친구추가</button>
+                <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
             </div>
-
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:8px 0; font-size:12px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px 0; font-size:20px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
         </div>
     </div>
 
     <!-- 신고 모달 -->
-    <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000;">
-        <div style="background:#fff; border:4px solid #000; padding:18px 14px; width:90%; max-width:340px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.4); border-radius:5px;">
-            <div style="font-size:18px; font-weight:900; margin-bottom:8px; color:#c0392b;">🚨 플레이어 신고하기</div>
-            <div style="font-size:12px; font-weight:900; margin-bottom:5px; text-align:left;" id="report-target-name-txt">대상: -</div>
-            <div style="font-size:12px; font-weight:900; margin-bottom:3px; text-align:left;">신고 사유</div>
-            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 등" style="margin-bottom:8px; font-size:12px; padding:7px;">
-            <div style="font-size:12px; font-weight:900; margin-bottom:3px; text-align:left;">전할 말</div>
-            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지" style="margin-bottom:10px; font-size:11px; height:60px; text-align:left; resize:none; padding:7px;"></textarea>
-            <div class="admin-btn-group" style="display:flex; gap:5px;">
-                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:9px 0; font-size:13px;" onclick="playClickSound(); submitReport();">전하기</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:9px 0; font-size:13px;" onclick="playClickSound(); closeReportModal();">취소</button>
+    <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px; color:#c0392b;">🚨 플레이어 신고하기</div>
+            <div style="font-size:18px; font-weight:900; margin-bottom:10px; text-align:left;" id="report-target-name-txt">대상: -</div>
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">신고 사유</div>
+            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 등" style="margin-bottom:16px; font-size:20px; padding:12px;">
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">전할 말</div>
+            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지" style="margin-bottom:18px; font-size:18px; height:100px; text-align:left; resize:none; padding:12px;"></textarea>
+            <div class="admin-btn-group" style="display:flex; gap:10px;">
+                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:14px 0; font-size:20px;" onclick="playClickSound(); submitReport();">전하기</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeReportModal();">취소</button>
             </div>
         </div>
     </div>
@@ -1014,29 +985,29 @@
     <!-- 볼 선택 모달 -->
     <div class="modal-overlay hidden" id="ball-picker-modal">
         <div class="picker-modal-box">
-            <button class="modal-close-btn" onclick="playClickSound(); closeBallPicker();">✕</button>
-            <div style="font-size:18px; font-weight:900; text-align:center; margin-bottom:4px; flex-shrink:0;">⚽ 볼 선택하기</div>
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBallPicker();">✕</button>
+            <div style="font-size:26px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">⚽ 볼 선택하기</div>
             <div class="picker-grid" id="ball-picker-grid"></div>
         </div>
     </div>
 
     <!-- 이름 입력 모달 -->
-    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85);">
-        <div style="background:#fff; border:4px solid #000; padding:28px 18px; width:90%; max-width:360px; text-align:center; box-shadow:0 15px 45px rgba(0,0,0,0.5); position:relative; border-radius:5px;">
-            <div style="font-size:22px; font-weight:900; margin-bottom:12px; color:#000;">✍️ 이름 쓰기</div>
-            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:12px; font-size:15px; padding:10px; border:2px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px; font-size:15px; font-weight:900; background:#2ecc71; border:2px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
+    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
+        <div style="background:#fff; border:8px solid #000; padding:55px 45px; width:92%; max-width:680px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
+            <div style="font-size:38px; font-weight:900; margin-bottom:26px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:26px; font-size:30px; padding:24px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:24px; font-size:30px; font-weight:900; background:#2ecc71; border:4px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
         </div>
     </div>
 
     <!-- 어드민 비밀번호 모달 -->
-    <div class="modal-overlay hidden" id="admin-password-modal" style="z-index: 300000;">
-        <div style="background:#fff; border:4px solid #000; padding:18px; width:90%; max-width:300px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.4); border-radius:5px;">
-            <div style="font-size:17px; font-weight:900; margin-bottom:8px;">🔒 어드민 비밀번호</div>
-            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:8px; font-size:13px; padding:7px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
-            <div class="admin-btn-group" style="display:flex; gap:5px;">
-                <button class="admin-btn admin-btn-confirm" style="padding:7px 0; font-size:13px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
-                <button class="admin-btn admin-btn-cancel" style="padding:7px 0; font-size:13px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
+    <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5); z-index: 300000;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:90%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:18px;">🔒 어드민 비밀번호</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:18px; font-size:22px; padding:14px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+            <div class="admin-btn-group" style="display:flex; gap:10px;">
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
             </div>
         </div>
     </div>
@@ -1048,12 +1019,12 @@
             <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
         </div>
         <div class="admin-scroll-body" id="admin-scroll-body-content">
-            <div style="font-size:13px; font-weight:900; text-align:center; color:#2c3e50;">어드민 패널</div>
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">어드민 패널</div>
             <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
-                <div style="font-size:13px; font-weight:900; color:#2980b9;">👥 플레이어 목록 및 채팅 내역</div>
-                <div class="players-list-area" id="admin-players-list-container" style="max-height: 160px; margin-top:4px;"></div>
+                <div style="font-size:20px; font-weight:900; color:#2980b9;">👥 플레이어 목록 및 채팅 내역</div>
+                <div class="players-list-area" id="admin-players-list-container" style="max-height: 240px; margin-top:6px;"></div>
             </div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:9px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
         </div>
     </div>
 
@@ -1346,6 +1317,11 @@
             let v = parseInt(savedVol); soundVolume = v / 100;
             document.getElementById('sfx-volume-range').value = v; document.getElementById('sfx-input-box').value = v;
 
+            let savedZoom = localStorage.getItem('lily_game_zoom_scale') || '35';
+            let z = parseInt(savedZoom);
+            document.getElementById('zoom-scale-range').value = z; document.getElementById('zoom-input-box').value = z;
+            applyZoomScale(z);
+
             let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
             applyProfileIconUI(savedIcon);
 
@@ -1410,7 +1386,7 @@
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' }
+            { name: 'JIRO', hp: 250, imageSrc: 'jino.jpg' }
         ];
 
         const loadedImages = {};
@@ -1422,14 +1398,14 @@
         });
 
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg'; // 5~6번째 사진 파일명
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
-            { type: 'image', val: 'JIRO 프로필', src: '14605.jpg', bg: '#ffffff' },
+            { type: 'image', val: '7번째 사진(JIRO)', src: '14605.jpg', bg: '#ffffff' }, // 7번째 사진 (14605.jpg)
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1452,14 +1428,14 @@
             brawlIconsList.forEach(item => {
                 const cell = document.createElement('div');
                 cell.style.width = '100%'; cell.style.aspectRatio = '1 / 1';
-                cell.style.backgroundColor = item.bg; cell.style.border = '2px solid #000';
-                cell.style.borderRadius = '4px'; cell.style.display = 'flex';
+                cell.style.backgroundColor = item.bg; cell.style.border = '4px solid #000';
+                cell.style.borderRadius = '6px'; cell.style.display = 'flex';
                 cell.style.alignItems = 'center'; cell.style.justifyContent = 'center';
-                cell.style.cursor = 'pointer'; cell.style.boxShadow = '0 2px 0 #000';
+                cell.style.cursor = 'pointer'; cell.style.boxShadow = '0 3px 0 #000';
                 cell.style.overflow = 'hidden';
 
                 if (item.type === 'text') {
-                    cell.style.fontSize = '22px'; cell.innerText = item.val;
+                    cell.style.fontSize = '38px'; cell.innerText = item.val;
                 } else {
                     cell.innerHTML = `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`;
                 }
@@ -1490,13 +1466,14 @@
                     sq.style.backgroundColor = '#ffffff';
                     sq.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
                 } else {
-                    sq.style.backgroundColor = '#1e90ff'; sq.style.fontSize = '32px'; sq.innerText = iconStr;
+                    sq.style.backgroundColor = '#1e90ff'; sq.style.fontSize = '64px'; sq.innerText = iconStr;
                 }
             });
         }
 
         function saveGameSettings() {
             localStorage.setItem('lily_game_sfx_vol', document.getElementById('sfx-input-box').value);
+            localStorage.setItem('lily_game_zoom_scale', document.getElementById('zoom-input-box').value);
             showToast('설정이 성공적으로 저장되었습니다! 💾');
             closeSettingsModal();
         }
@@ -1510,6 +1487,21 @@
         }
 
         function syncSfxRange(val) { document.getElementById('sfx-input-box').value = val; soundVolume = parseInt(val) / 100; }
+
+        function applyZoomInput() {
+            let val = parseInt(document.getElementById('zoom-input-box').value) || 35;
+            if (val < 0) val = 0; if (val > 150) val = 150;
+            document.getElementById('zoom-scale-range').value = val;
+            applyZoomScale(val);
+            showToast(`화면 확대가 ${val}(으)로 설정되었습니다.`);
+        }
+
+        function syncZoomRange(val) { document.getElementById('zoom-input-box').value = val; applyZoomScale(parseInt(val)); }
+
+        function applyZoomScale(numVal) {
+            let scaleFactor = 1.0 + (numVal / 150) * 1.0;
+            document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
+        }
 
         function openSettingsModal() { if (!checkNameRegisteredOrBlock()) return; document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
@@ -1593,23 +1585,10 @@
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let existing = players.find(p => p.uid === uid);
-            if (!existing) {
-                players.push({ uid: uid, name: name, date: date });
-                sendSystemJoinMessage(name);
-            } else {
-                existing.name = name; existing.date = date;
-            }
+            if (!existing) players.push({ uid: uid, name: name, date: date });
+            else { existing.name = name; existing.date = date; }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
             updateOnlineOfflineCounts(); renderAdminPlayersList();
-        }
-
-        function sendSystemJoinMessage(name) {
-            let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
-            let joinMsg = `${name}님이 가입하였습니다.`;
-            if (!chatData.some(c => c.msg === joinMsg)) {
-                chatData.push({ uid: 'system_join', name: '시스템', msg: joinMsg, time: getCurrentTimeString() });
-                localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
-            }
         }
 
         function submitUserName() {
@@ -1636,22 +1615,19 @@
         function handleProfileClick() { if (!checkNameRegisteredOrBlock()) return; closeChatModal(); openProfileModal(); }
         function handleChatClick() { if (!checkNameRegisteredOrBlock()) return; closeProfileModal(); closePlayersModal(); openChatModal(); }
 
+        function getMostUsedBallInfo() {
+            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+            let maxBall = '없음', maxCount = 0;
+            for (let bName in usage) { if (usage[bName] > maxCount) { maxCount = usage[bName]; maxBall = bName; } }
+            return { name: maxBall, count: maxCount };
+        }
+
         function openProfileModal() {
             if (!checkNameRegisteredOrBlock()) return;
             document.getElementById('profile-name-txt').innerText = `이름: ${localStorage.getItem('lily_game_user_name')}`;
             document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${localStorage.getItem('lily_game_login_date') || getFormattedToday()}`;
-            
-            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
-            const usageContainer = document.getElementById('profile-all-balls-usage-container');
-            usageContainer.innerHTML = '';
-            ballList.forEach(ball => {
-                let cnt = usage[ball.name] || 0;
-                let row = document.createElement('div');
-                row.style.fontSize = '12px'; row.style.fontWeight = '900'; row.style.marginBottom = '3px'; row.style.display = 'flex'; row.style.justifyContent = 'space-between';
-                row.innerHTML = `<span>[${ball.name}]</span> <span style="color:#27ae60;">써본 횟수: ${cnt} 번</span>`;
-                usageContainer.appendChild(row);
-            });
-
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
             applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
             document.getElementById('profile-modal').classList.remove('hidden');
         }
@@ -1673,11 +1649,13 @@
 
             document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
             document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('other-profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
             applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
 
             const myName = localStorage.getItem('lily_game_user_name');
-            document.getElementById('btn-report-player').style.display = (name === myName) ? 'none' : 'block';
-            document.getElementById('btn-add-friend-action').style.display = (name === myName) ? 'none' : 'block';
+            document.getElementById('btn-report-player').style.display = (name === myName) ? 'none' : 'inline-block';
+            document.getElementById('btn-add-friend-action').style.display = (name === myName) ? 'none' : 'inline-block';
             document.getElementById('other-profile-modal').classList.remove('hidden');
         }
 
@@ -1700,16 +1678,16 @@
             const container = document.getElementById('friend-list-container');
             container.innerHTML = '';
             if (friends.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:13px; font-weight:900; color:#555; padding:22px;">등록된 친구가 없습니다</div>`;
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:40px;">다른 사람과 친구를 해보세요</div>`;
             } else {
                 friends.forEach(fName => {
                     const card = document.createElement('div');
                     card.className = 'player-item-card'; card.style.flexDirection = 'row'; card.style.justifyContent = 'space-between'; card.style.alignItems = 'center';
                     card.innerHTML = `
-                        <span style="font-size:12px; font-weight:900;">👤 ${fName}</span>
-                        <div style="display:flex; gap:4px;">
-                            <button class="admin-btn admin-btn-confirm" style="padding:3px 6px; font-size:10px;" onclick="openPrivateChat('${fName}')">채팅</button>
-                            <button class="admin-btn admin-btn-cancel" style="padding:3px 6px; font-size:10px;" onclick="removeFriend('${fName}')">삭제</button>
+                        <span style="font-size:20px; font-weight:900;">👤 ${fName}</span>
+                        <div style="display:flex; gap:8px;">
+                            <button class="admin-btn admin-btn-confirm" style="padding:8px 14px; font-size:16px;" onclick="openPrivateChat('${fName}')">채팅</button>
+                            <button class="admin-btn admin-btn-cancel" style="padding:8px 14px; font-size:16px;" onclick="removeFriend('${fName}')">삭제</button>
                         </div>
                     `;
                     container.appendChild(card);
@@ -1742,7 +1720,7 @@
             let key = getPrivateChatKey(myName, activeChatFriendName), msgs = JSON.parse(localStorage.getItem(key) || '[]');
             logsContainer.innerHTML = '';
             if (msgs.length === 0) {
-                logsContainer.innerHTML = `<div style="text-align:center; font-size:12px; font-weight:bold; color:#777; padding:18px;">대화 내용이 없습니다.</div>`;
+                logsContainer.innerHTML = `<div style="text-align:center; font-size:18px; font-weight:bold; color:#777; padding:20px;">대화 내용이 없습니다.</div>`;
                 return;
             }
             msgs.forEach(m => {
@@ -1767,13 +1745,13 @@
         async function startVoiceCall() {
             try {
                 localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 연결됨';
+                document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 연결됨 (통화 중)';
                 showToast('음성 통화가 연결되었습니다! 🎙️');
             } catch(e) { showToast('마이크 권한을 허용해주세요!'); }
         }
         function endVoiceCall() {
             if (localAudioStream) { localAudioStream.getTracks().forEach(track => track.stop()); localAudioStream = null; }
-            document.getElementById('voice-call-status-txt').innerText = '🔊 통화 종료됨';
+            document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 종료됨';
         }
 
         function openFriendMatchModal() { if (!checkNameRegisteredOrBlock()) return; renderFriendRooms(); document.getElementById('friend-match-modal').classList.remove('hidden'); }
@@ -1799,7 +1777,7 @@
             const container = document.getElementById('friend-rooms-list-container');
             container.innerHTML = '';
             if (rooms.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:13px; font-weight:900; color:#555; padding:22px;">개설된 방이 없습니다</div>`;
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:50px;">만든 방이 없음</div>`;
                 return;
             }
             const myName = localStorage.getItem('lily_game_user_name');
@@ -1808,10 +1786,10 @@
                 card.className = 'player-item-card'; card.style.flexDirection = 'row'; card.style.justifyContent = 'space-between'; card.style.alignItems = 'center';
                 card.innerHTML = `
                     <div>
-                        <div style="font-size:12px; font-weight:900;">🏠 ${r.host}님의 방</div>
-                        <div style="font-size:10px; color:#27ae60; font-weight:bold; margin-top:2px;">${r.participant ? `참여자: ${r.participant}` : '대기 중'}</div>
+                        <div style="font-size:20px; font-weight:900;">🏠 ${r.host}님의 방</div>
+                        <div style="font-size:15px; color:#27ae60; font-weight:bold; margin-top:3px;">${r.participant ? `참여자: ${r.participant}` : '대기 중'}</div>
                     </div>
-                    ${r.host === myName ? '<span style="font-size:11px; color:#e74c3c;">내 방</span>' : `<button class="admin-btn admin-btn-confirm" style="padding:3px 6px; font-size:10px;" onclick="joinFriendRoom('${r.host}')">참여</button>`}
+                    ${r.host === myName ? '<span style="font-size:16px; color:#e74c3c;">내 방</span>' : `<button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="joinFriendRoom('${r.host}')">참여</button>`}
                 `;
                 container.appendChild(card);
             });
@@ -1831,17 +1809,17 @@
             if (!checkNameRegisteredOrBlock()) return;
             const container = document.getElementById('record-history-list-container'); container.innerHTML = '';
             if (matchHistoryList.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:13px; font-weight:900; color:#555; padding:22px;">최근 경기 기록이 없습니다.</div>`;
+                container.innerHTML = `<div style="text-align:center; font-size:20px; font-weight:900; color:#555; padding:40px;">최근 경기 기록이 없습니다.</div>`;
             } else {
                 matchHistoryList.forEach((hist, idx) => {
                     const card = document.createElement('div');
                     card.className = 'player-item-card'; card.style.flexDirection = 'row'; card.style.justifyContent = 'space-between'; card.style.alignItems = 'center';
                     card.innerHTML = `
                         <div>
-                            <div style="font-size:12px; color:#2c3e50; font-weight:900;">[경기 #${idx+1}] ${hist.date || '날짜 미상'}</div>
-                            <div style="font-size:11px; color:#555; margin-top:1px;">모드: ${hist.mode}대${hist.mode} | <span style="color:#27ae60; font-weight:900;">${hist.winner}</span></div>
+                            <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
+                            <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
                         </div>
-                        <button class="admin-btn admin-btn-confirm" style="padding:4px 8px; font-size:11px;" onclick="openSpectate(${idx})">보기</button>
+                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">보기</button>
                     `;
                     container.appendChild(card);
                 });
@@ -1849,57 +1827,8 @@
             document.getElementById('record-history-modal').classList.remove('hidden');
         }
         function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
-
-        let spectateAnimId = null;
-        function openSpectate(histIndex) {
-            let hist = matchHistoryList[histIndex];
-            if (!hist) return;
-            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${hist.winner} (모드: ${hist.mode}대${hist.mode})`;
-            document.getElementById('spectate-modal').classList.remove('hidden');
-            runSpectateCanvasReplay(hist);
-        }
-        function closeSpectateModal() {
-            if (spectateAnimId) cancelAnimationFrame(spectateAnimId);
-            document.getElementById('spectate-modal').classList.add('hidden');
-        }
-
-        function runSpectateCanvasReplay(hist) {
-            const sCanvas = document.getElementById('spectateCanvas'), sCtx = sCanvas.getContext('2d');
-            let sMode = hist.mode || 1;
-            let team1BallsData = hist.team1Balls || [];
-            let team2BallsData = hist.team2Balls || [];
-
-            let sTeam1 = [], sTeam2 = [];
-            for(let i=0; i<sMode; i++) {
-                let p1Pos = calculateMultiPositions(1, i, sMode), p2Pos = calculateMultiPositions(2, i, sMode);
-                let b1 = team1BallsData[i] ? ballList.find(b => b.name === team1BallsData[i]) : ballList[0];
-                let b2 = team2BallsData[i] ? ballList.find(b => b.name === team2BallsData[i]) : ballList[1];
-                sTeam1.push({ x: p1Pos.x, y: p1Pos.y, radius: 72, ballData: b1 });
-                sTeam2.push({ x: p2Pos.x, y: p2Pos.y, radius: 72, ballData: b2 });
-            }
-            let frameCount = 0;
-            function renderReplayFrame() {
-                frameCount++;
-                sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-                sCtx.save();
-                sCtx.font = "bold 22px sans-serif"; sCtx.fillStyle = "#2c3e50"; sCtx.textAlign = "center";
-                sCtx.fillText("⚔️ 실제 경기 리플레이 관전 중...", sCanvas.width / 2, 36);
-                sCtx.restore();
-
-                sTeam1.forEach((p, idx) => {
-                    p.x += Math.sin(frameCount * 0.04 + idx) * 2.2;
-                    p.y += Math.cos(frameCount * 0.04 + idx) * 2.2;
-                    drawBall(sCtx, p.x, p.y, p.radius, p.ballData, "rgba(30, 144, 255, 0.2)");
-                });
-                sTeam2.forEach((p, idx) => {
-                    p.x -= Math.sin(frameCount * 0.04 + idx) * 2.2;
-                    p.y -= Math.cos(frameCount * 0.04 + idx) * 2.2;
-                    drawBall(sCtx, p.x, p.y, p.radius, p.ballData, "rgba(231, 76, 60, 0.2)");
-                });
-                spectateAnimId = requestAnimationFrame(renderReplayFrame);
-            }
-            renderReplayFrame();
-        }
+        function openSpectate(winnerTxt) { document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt}`; document.getElementById('spectate-modal').classList.remove('hidden'); }
+        function closeSpectateModal() { document.getElementById('spectate-modal').classList.add('hidden'); }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -1923,7 +1852,7 @@
                 if ((nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 8000 || p.uid === myUid) onlineCount++; else offlineCount++;
             });
             const titleTxt = document.getElementById('chat-title-online-txt');
-            if (titleTxt) titleTxt.innerText = `📘 전체 채팅 (온라인 [${onlineCount}] | 오프라인 [${offlineCount}])`;
+            if (titleTxt) titleTxt.innerText = `📘 전체 채팅 (온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명])`;
             const summaryTxt = document.getElementById('online-offline-summary-txt');
             if (summaryTxt) summaryTxt.innerText = `온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명]`;
         }
@@ -1936,7 +1865,7 @@
             players.forEach(p => {
                 let isOnline = (nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 8000 || p.uid === myUid;
                 const item = document.createElement('div'); item.className = 'player-item-card';
-                item.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span>👤 ${p.name}</span><span style="color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span></div>`;
+                item.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span>👤 ${p.name} (${p.date || '가입일'})</span><span style="color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span></div>`;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
@@ -1952,8 +1881,8 @@
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
                 let userChats = chatData.filter(c => c.name === p.name);
                 let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}"`).join(', ') : '없음';
-                const card = document.createElement('div'); card.className = 'player-item-card'; card.style.fontSize = '12px';
-                card.innerHTML = `<div>🔹 [${p.name}] ${p.date || '가입일'}</div><div style="font-size:11px; color:#c0392b; font-weight:bold; margin-top:2px;">채팅: ${chatSummaryText}</div>`;
+                const card = document.createElement('div'); card.className = 'player-item-card'; card.style.fontSize = '18px';
+                card.innerHTML = `<div>🔹 [${p.name}] ${p.date || '가입일'}</div><div style="font-size:16px; color:#c0392b; font-weight:bold; margin-top:4px;">채팅: ${chatSummaryText}</div>`;
                 card.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(card);
             });
@@ -2011,7 +1940,7 @@
         let activeCountdownInterval = null, victorySoundInterval = null;
 
         const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
-        const FIXED_SPEED = 9.36; // 1.3배 빨라진 속도
+        const FIXED_SPEED = 3.6;
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
 
         function openBallPicker(team, index) {
@@ -2019,7 +1948,7 @@
             currentPickingTeam = team; currentPickingIndex = index;
             const grid = document.getElementById('ball-picker-grid'); grid.innerHTML = '';
             ballList.forEach(ball => {
-                const btn = document.createElement('button'); btn.className = 'ball-select-btn'; btn.innerText = ball.name;
+                const btn = document.createElement('div'); btn.className = 'ball-select-btn'; btn.innerText = ball.name;
                 btn.onclick = () => { playClickSound(); chooseBall(ball); };
                 grid.appendChild(btn);
             });
@@ -2045,8 +1974,8 @@
         function setFixedSpeedVelocity(obj) {
             const angle = Math.random() * Math.PI * 2;
             let vx = Math.cos(angle) * FIXED_SPEED, vy = Math.sin(angle) * FIXED_SPEED;
-            if (Math.abs(vx) < 3.0) vx = vx > 0 ? 3.5 : -3.5;
-            if (Math.abs(vy) < 3.0) vy = vy > 0 ? 3.5 : -3.5;
+            if (Math.abs(vx) < 1.2) vx = vx > 0 ? 1.4 : -1.4;
+            if (Math.abs(vy) < 1.2) vy = vy > 0 ? 1.4 : -1.4;
             obj.vx = vx; obj.vy = vy;
         }
 
@@ -2063,9 +1992,9 @@
         function calculateMultiPositions(team, index, total) {
             let x, y;
             if (team === 1) {
-                x = 240; y = total === 1 ? 480 : (total === 2 ? 300 + index * 360 : (total === 3 ? 200 + index * 280 : 150 + index * 220));
+                x = 120; y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
             } else {
-                x = 720; y = total === 1 ? 480 : (total === 2 ? 300 + index * 360 : (total === 3 ? 200 + index * 280 : 150 + index * 220));
+                x = 360; y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
             }
             return { x, y };
         }
@@ -2081,18 +2010,15 @@
             if (victorySoundInterval) clearInterval(victorySoundInterval);
             moneyItems = []; matchEnded = false; winnerText = '';
 
-            const ballRadius = 72; // 1.5배 커진 크기 (원래 48 -> 72)
-
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode), maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: ballRadius, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, rouletteAnim: null,
-                    boostTimer: 0, baconTimer: 0
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, rouletteAnim: null
                 };
             });
 
@@ -2100,12 +2026,11 @@
                 let pos = calculateMultiPositions(2, idx, currentMatchMode), maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: ballRadius, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, rouletteAnim: null,
-                    boostTimer: 0, baconTimer: 0
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, rouletteAnim: null
                 };
             });
 
@@ -2215,32 +2140,33 @@
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                         if (enemyTeamBalls.length > 0) {
-                            player.baconTimer = (player.baconTimer || 0) + 1;
-                            // 현실 시간 2초마다 발사
-                            if (player.baconTimer >= 2) {
-                                player.baconTimer = 0;
-                                player.minions.forEach(minion => {
-                                    let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                                    if (targetEnemy && targetEnemy.hp > 0) {
-                                        let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
-                                        if (!minion.isFemale) {
-                                            // 남자 베이컨: 🥓, 4 데미지, 속도 2배 느려짐
+                            player.minions.forEach(minion => {
+                                minion.attackTimer = (minion.attackTimer || 0) + 1;
+                                let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                                if (targetEnemy && targetEnemy.hp > 0) {
+                                    if (!minion.isFemale) {
+                                        if (minion.attackTimer >= 3) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
-                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 11, vy: Math.sin(angle) * 11,
-                                                radius: 36, damage: 4, isBaconProjectile: true, isFemaleProj: false, ownerTeam: player.team
+                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false, ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
-                                        } else {
-                                            // 여자 베이컨: 🍜, 5 데미지
+                                        }
+                                    } else {
+                                        if (minion.attackTimer >= 4) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
-                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 9.6, vy: Math.sin(angle) * 9.6,
-                                                radius: 36, damage: 5, isBaconProjectile: true, isFemaleProj: true, ownerTeam: player.team
+                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
+                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true, ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
                                         }
                                     }
-                                });
-                            }
+                                }
+                            });
                         }
                     }
 
@@ -2254,8 +2180,8 @@
                                     let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                     let angle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
                                     moneyItems.push({
-                                        x: skel.x, y: skel.y, vx: Math.cos(angle) * 12, vy: Math.sin(angle) * 12,
-                                        radius: 64, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                        x: skel.x, y: skel.y, vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
+                                        radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
                                     });
                                 });
                                 playArrowSound();
@@ -2269,9 +2195,10 @@
         function triggerJiroSkill(caster) {
             showToast(`${caster.name}이 마지막 위치에 지뢰 매설! 💣`);
             playSkillSuperSound();
-            caster.mines.push({ x: caster.lastX, y: caster.lastY, radius: 92, spawnTime: Date.now(), ownerTeam: caster.team, caster: caster });
+            caster.mines.push({ x: caster.lastX, y: caster.lastY, radius: 46, spawnTime: Date.now(), ownerTeam: caster.team, caster: caster });
         }
 
+        // 동룡쓰 기술 (남자/여자 버그 완전 해결, 최대 10명 제한)
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) {
                 showToast('동룡쓰 부하가 이미 최대 10명입니다!');
@@ -2291,24 +2218,25 @@
 
                 if (spinCount >= 6) {
                     clearInterval(rouletteInterval);
+                    // 정확한 확률 분기 (남자 50%, 여자 50%)
                     let isFemaleFinal = Math.random() < 0.5;
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터(🍜) 👩' : '남자 캐릭터(🥓) 👨'} 소환!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩 (5~6번째 사진)' : '남자 캐릭터 👨'} 소환!`);
                     
                     if (caster.minions.length < 10) {
                         caster.skillCount++;
                         let angle = Math.random() * Math.PI * 2;
-                        // 부하 크기는 볼 크기 절반 (72 / 2 = 36)
                         caster.minions.push({
-                            x: caster.x + Math.cos(angle) * 80,
-                            y: caster.y + Math.sin(angle) * 80,
-                            radius: 36,
+                            x: caster.x + Math.cos(angle) * 35,
+                            y: caster.y + Math.sin(angle) * 35,
+                            radius: 24,
                             img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
                             isFemale: isFemaleFinal,
                             orbitAngle: angle,
-                            orbitDist: 90
+                            orbitDist: 42,
+                            attackTimer: 0
                         });
                     }
 
@@ -2318,11 +2246,11 @@
                         if (enemyTeamBalls.length > 0) {
                             let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                             let tpAngle = Math.random() * Math.PI * 2;
-                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 70;
-                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 70;
+                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
+                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
                             targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
                             playJiroExplosionSound();
-                            showToast(`⚡ 동룡쓰 부하 10명 완성! 순간이동! (15 데미지)`);
+                            showToast(`⚡ 동룡쓰 부하 10명 완성! 상대 공 옆으로 순간이동! (15 데미지)`);
                             updateAllHpBars(); checkGameWinner();
                         }
                     }
@@ -2331,50 +2259,37 @@
         }
 
         function triggerMrBeastSkill(caster) {
-            // 2가지 스킬 중 랜덤 선택 (0: 초콜릿 🍫, 1: 돈 주머니 💰)
-            let chosenSkill = Math.random() < 0.5 ? 0 : 1;
-            // 볼 크기(72)보다 1.5배 작은 크기 (72 / 1.5 = 48)
-            let smallRadius = 48;
-
-            if (chosenSkill === 0) {
-                showToast(`${caster.name}이 슬로모션과 함께 초콜릿 🍫 2개 랜덤 투척!`);
-                playFoodThrowSound();
-                for (let k = 0; k < 2; k++) {
-                    moneyItems.push({
-                        startX: caster.x, startY: caster.y,
-                        x: caster.x, y: caster.y,
-                        destX: Math.random() * (canvas.width - 200) + 100,
-                        destY: Math.random() * (canvas.height - 200) + 100,
-                        progress: 0,
-                        radius: smallRadius, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
-                        ownerTeam: caster.team, spawnTime: Date.now()
-                    });
-                }
-            } else {
-                showToast(`${caster.name}이 슬로모션과 함께 돈 주머니 💰 2개 랜덤 투척!`);
+            caster.mrBeastToggleState = (caster.mrBeastToggleState === 0) ? 1 : 0;
+            if (caster.mrBeastToggleState === 1) {
+                showToast(`${caster.name}이 초콜릿 🍫 2개 투척! 🎁`);
                 playCoinSound();
                 for (let k = 0; k < 2; k++) {
                     moneyItems.push({
-                        startX: caster.x, startY: caster.y,
-                        x: caster.x, y: caster.y,
-                        destX: Math.random() * (canvas.width - 200) + 100,
-                        destY: Math.random() * (canvas.height - 200) + 100,
-                        progress: 0,
-                        radius: smallRadius, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
-                        ownerTeam: caster.team, spawnTime: Date.now()
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
+                    });
+                }
+            } else {
+                showToast(`${caster.name}이 돈 주머니 💰 3개 소환! 💰`);
+                playCoinSound();
+                for (let k = 0; k < 3; k++) {
+                    moneyItems.push({
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
                     });
                 }
             }
         }
 
         function triggerBoniSkill(caster) {
-            showToast(`${caster.name}이 강력한 폭탄 2개 투척! 💣💣`);
-            playFoodThrowSound();
+            showToast(`${caster.name}이 폭탄 투척! 💣`);
             for (let k = 0; k < 2; k++) {
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
-                    destX: Math.random() * (canvas.width - 200) + 100, destY: Math.random() * (canvas.height - 200) + 100,
-                    progress: 0, radius: 110, timer: 3, caster: caster
+                    destX: Math.random() * (canvas.width - 100) + 50, destY: Math.random() * (canvas.height - 100) + 50,
+                    progress: 0, radius: 50, timer: 3, caster: caster
                 });
             }
         }
@@ -2383,15 +2298,15 @@
             for (let i = 0; i < 2; i++) {
                 let rx, ry, safe = false, attempts = 0;
                 while (!safe && attempts < 50) {
-                    rx = Math.random() * (canvas.width - 240) + 120;
-                    ry = Math.random() * (canvas.height - 240) + 120;
+                    rx = Math.random() * (canvas.width - 120) + 60;
+                    ry = Math.random() * (canvas.height - 120) + 60;
                     safe = true;
-                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 100) safe = false; });
+                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 50) safe = false; });
                     attempts++;
                 }
-                caster.skeletons.push({ x: rx, y: ry, radius: 48, spawnTime: Date.now() });
+                caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
             }
-            showToast(`${caster.name}이 스켈레톤 소환! 💀`);
+            showToast(`${caster.name}이 스켈레톤 소환! (영구 유지) 💀`);
         }
 
         function triggerWangklSejongSkill(caster) {
@@ -2399,8 +2314,8 @@
             playSkillSuperSound();
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
-                    x: Math.random() * (canvas.width - 120) + 60, y: Math.random() * (canvas.height - 120) + 60,
-                    char: ch, radius: 40, damage: 6, healAmount: 4, isHangeulLetter: true,
+                    x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
+                    char: ch, radius: 20, damage: 6, healAmount: 4, isHangeulLetter: true,
                     ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
                 });
             });
@@ -2413,7 +2328,7 @@
             const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
             allPlayers.forEach(player => {
                 player.skeletons = player.skeletons.filter(skel => {
-                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 30) {
+                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
                         playHitSound(); showToast('스켈레톤 격파! 💀'); return false;
                     }
                     return true;
@@ -2457,16 +2372,7 @@
                 else if (!t2Alive) winnerText = '파란팀 승!';
                 else winnerText = '빨간팀 승!';
 
-                let team1Names = selectedTeam1Balls.map(b => b ? b.name : '동룡쓰');
-                let team2Names = selectedTeam2Balls.map(b => b ? b.name : '미스터비스트');
-
-                matchHistoryList.push({
-                    mode: currentMatchMode,
-                    winner: winnerText,
-                    date: getFormattedToday() + ' ' + getCurrentTimeString(),
-                    team1Balls: team1Names,
-                    team2Balls: team2Names
-                });
+                matchHistoryList.push({ mode: currentMatchMode, winner: winnerText, time: getCurrentTimeString() });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
                 playVictorySoundLoop();
@@ -2477,7 +2383,7 @@
 
         function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
-            ctx.beginPath(); ctx.arc(x, y, radius + 22, 0, Math.PI * 2); ctx.fillStyle = auraColor; ctx.fill();
+            ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2); ctx.fillStyle = auraColor; ctx.fill();
             ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.save(); ctx.clip();
             if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
                 ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
@@ -2485,27 +2391,27 @@
                 ctx.fillStyle = '#7f8c8d'; ctx.fill();
             }
             ctx.restore();
-            ctx.lineWidth = 5; ctx.strokeStyle = "#000000"; ctx.stroke();
+            ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
             ctx.restore();
         }
 
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 72, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 72, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 72, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 72, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
 
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 90px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 8;
+                ctx.font = "bold 50px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
                 ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
@@ -2520,32 +2426,18 @@
                 allPlayers.forEach(p => {
                     if (p.hp <= 0) return;
                     p.lastX = p.x; p.lastY = p.y;
-
-                    let currentSpeed = FIXED_SPEED;
-                    if (p.boostTimer && nowTimestamp < p.boostTimer) {
-                        currentSpeed = FIXED_SPEED * 1.8; // 부스트 완화
-                    } else {
-                        p.boostTimer = 0;
-                    }
-
-                    if (p.slowTimer && p.slowTimer > nowTimestamp) currentSpeed *= 0.5; // 속도 2배 느려짐
-
-                    p.x += p.vx * (currentSpeed / FIXED_SPEED);
-                    p.y += p.vy * (currentSpeed / FIXED_SPEED);
+                    let currentSpeed = (p.slowTimer && p.slowTimer > nowTimestamp) ? FIXED_SPEED * 0.5 : FIXED_SPEED;
+                    p.x += p.vx * (currentSpeed / FIXED_SPEED); p.y += p.vy * (currentSpeed / FIXED_SPEED);
 
                     let hitWall = false;
                     if (p.x - p.radius < 0) { p.x = p.radius; p.vx = -p.vx; hitWall = true; }
                     if (p.x + p.radius > canvas.width) { p.x = canvas.width - p.radius; p.vx = -p.vx; hitWall = true; }
                     if (p.y - p.radius < 0) { p.y = p.radius; p.vy = -p.vy; hitWall = true; }
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
-
-                    if (hitWall) {
-                        playWallSound();
-                        p.boostTimer = 0;
-                    }
+                    if (hitWall) playWallSound();
                 });
 
-                // 공들끼리 부딪힐 때 엄청 튕기던 현상을 부드럽게 완화
+                // JIRO끼리 또는 일반 공 충돌 처리 (JIRO 충돌 시 양쪽 모두 데미지 정상 적용)
                 for (let i = 0; i < allPlayers.length; i++) {
                     for (let j = i + 1; j < allPlayers.length; j++) {
                         let p1 = allPlayers[i], p2 = allPlayers[j];
@@ -2561,6 +2453,7 @@
                             let isJiro2 = (p2.name === 'JIRO');
 
                             if (isJiro1 || isJiro2) {
+                                // JIRO가 연관된 충돌: 양쪽 공 모두 콤보와 데미지 적용
                                 [p1, p2].forEach(targetObj => {
                                     if (nowTimestamp - (targetObj.lastJiroHitTime || 0) > 5000) targetObj.jiroCombo = 0;
                                     targetObj.jiroCombo++;
@@ -2568,25 +2461,20 @@
                                     let explosionDmg = 15 + (targetObj.jiroCombo - 1) * 2;
                                     targetObj.hp = Math.max(0, targetObj.hp - explosionDmg);
 
-                                    targetObj.comboPopups.push({ text: `콤보 ${targetObj.jiroCombo}!`, x: targetObj.x, y: targetObj.y - 65, alpha: 1.0, startTime: Date.now() });
-                                    targetObj.explosionVisuals.push({ x: targetObj.x, y: targetObj.y, radius: 20, maxRadius: 240, alpha: 1.0, text: `펑!!! (${explosionDmg})` });
+                                    targetObj.comboPopups.push({ text: `콤보 ${targetObj.jiroCombo}!`, x: targetObj.x, y: targetObj.y - 35, alpha: 1.0, startTime: Date.now() });
+                                    targetObj.explosionVisuals.push({ x: targetObj.x, y: targetObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (${explosionDmg})` });
                                 });
 
                                 playJiroExplosionSound();
-                                showToast(`💥 JIRO 충돌 펑!!! 데미지 적용!`);
+                                showToast(`💥 JIRO 양쪽 충돌 펑!!! 양공 모두 데미지 적용!`);
 
-                                p1.boostTimer = nowTimestamp + 500;
-                                p2.boostTimer = nowTimestamp + 500;
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED * 0.8; p1.vy = -Math.sin(angle) * FIXED_SPEED * 0.8;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED * 0.8; p2.vy = Math.sin(angle) * FIXED_SPEED * 0.8;
+                                p1.vx = -Math.cos(angle) * (FIXED_SPEED * 3.5); p1.vy = -Math.sin(angle) * (FIXED_SPEED * 3.5);
+                                p2.vx = Math.cos(angle) * (FIXED_SPEED * 3.5); p2.vy = Math.sin(angle) * (FIXED_SPEED * 3.5);
 
                                 updateAllHpBars(); checkGameWinner();
                             } else {
-                                // 일반 공 충돌 시 튕김 대폭 완화
-                                p1.boostTimer = nowTimestamp + 500;
-                                p2.boostTimer = nowTimestamp + 500;
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED * 0.7; p1.vy = -Math.sin(angle) * FIXED_SPEED * 0.7;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED * 0.7; p2.vy = Math.sin(angle) * FIXED_SPEED * 0.7;
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
                                 playHitSound();
                                 p1.hp = Math.max(0, p1.hp - 10); p2.hp = Math.max(0, p2.hp - 10);
                                 updateAllHpBars(); checkGameWinner();
@@ -2607,9 +2495,8 @@
                                     enemy.hp = Math.max(0, enemy.hp - 30);
                                     playJiroExplosionSound(); showToast('💣 지뢰 팡!!!!!! (30 데미지)');
                                     let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
-                                    enemy.boostTimer = nowTimestamp + 600;
-                                    enemy.vx = Math.cos(kbAngle) * FIXED_SPEED * 0.8; enemy.vy = Math.sin(kbAngle) * FIXED_SPEED * 0.8;
-                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 30, maxRadius: 280, alpha: 1.0, text: '팡!!!!!!' });
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5); enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
+                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
                                     updateAllHpBars(); checkGameWinner();
                                 }
                             });
@@ -2619,35 +2506,28 @@
                 });
 
                 allPlayers.forEach(player => {
-                    player.explosionVisuals.forEach(ev => { ev.radius += 8; ev.alpha -= 0.025; });
+                    player.explosionVisuals.forEach(ev => { ev.radius += 5; ev.alpha -= 0.025; });
                     player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
-                    player.comboPopups.forEach(cp => { cp.y -= 1.2; cp.alpha = Math.max(0, 1.0 - ((Date.now() - cp.startTime) / 2500)); });
+                    player.comboPopups.forEach(cp => { cp.y -= 0.6; cp.alpha = Math.max(0, 1.0 - ((Date.now() - cp.startTime) / 2500)); });
                     player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
                 });
 
-                // 본이 폭탄 업데이트 및 2개 투척 모션 적용
                 allPlayers.forEach(caster => {
                     let enemyBalls = caster.team === 1 ? team2Players : team1Players;
                     for (let i = caster.bombs.length - 1; i >= 0; i--) {
                         let bomb = caster.bombs[i];
                         if (bomb.progress < 1) {
-                            bomb.progress += 0.025; // 슬로모션 투척 모션
+                            bomb.progress += 0.03;
                             bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
                             bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
                         } else {
-                            if (!bomb.startTime) {
-                                bomb.startTime = nowTimestamp;
-                                playJiroExplosionSound(); // 폭발 효과음
-                            }
+                            if (!bomb.startTime) bomb.startTime = nowTimestamp;
                             enemyBalls.forEach(enemy => {
                                 if (enemy.hp <= 0) return;
                                 if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
-                                    enemy.hp = Math.max(0, enemy.hp - 20); // 체력 20 깎임
-                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
-                                    enemy.boostTimer = nowTimestamp + 500;
-                                    enemy.vx = Math.cos(kbAngle) * FIXED_SPEED * 0.7; enemy.vy = Math.sin(kbAngle) * FIXED_SPEED * 0.7; // 조금 튕기기
-                                    showToast('💣 본이 폭탄 명중! (20 데미지)');
-                                    updateAllHpBars(); checkGameWinner();
+                                    enemy.hp = Math.max(0, enemy.hp - 15);
+                                    updateAllHpBars(); playHitSound(); checkGameWinner();
+                                    caster.bombs.splice(i, 1);
                                 }
                             });
                             if (nowTimestamp - bomb.startTime >= 3000) caster.bombs.splice(i, 1);
@@ -2655,68 +2535,59 @@
                     }
                 });
 
-                // 미스터비스트 투척 아이템 (초콜릿 🍫 / 돈 주머니 💰) 슬로모션 투척
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
-                    if (m.isChocolateItem || m.isMoneyBag) {
-                        if (m.progress < 1) {
-                            m.progress += 0.022; // 슬로모션 투척 모션
-                            m.x = m.startX + (m.destX - m.startX) * m.progress;
-                            m.y = m.startY + (m.destY - m.startY) * m.progress;
-                        } else {
-                            if (!m.landedTime) m.landedTime = nowTimestamp;
-                            if (nowTimestamp - m.landedTime > 5000) { moneyItems.splice(i, 1); continue; }
-                            
-                            let eaten = false;
-                            allPlayers.forEach(player => {
-                                if (eaten || player.hp <= 0) return;
-                                if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    if (player.team === m.ownerTeam) {
-                                        // 나만 먹을 수 있음 (내 팀)
-                                        playHealSound();
-                                        if (m.isChocolateItem) {
-                                            player.hp = Math.min(player.maxHp, player.hp + 20);
-                                            showHealingAnimationCard(player.team, teamIdx.indexOf(player), 20);
-                                            showToast('🍫 초콜릿 획득! 체력 회복');
-                                        } else {
-                                            player.hp = Math.min(player.maxHp, player.hp + 25); // 체력 25 회복
-                                            showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
-                                            showToast('💰 돈 주머니 획득! 체력 25 회복');
-                                        }
-                                        eaten = true; updateAllHpBars();
-                                    } else {
-                                        // 상대방이 닿았을 때 돈 주머니인 경우 상대 체력 20 깎임
-                                        if (m.isMoneyBag) {
-                                            player.hp = Math.max(0, player.hp - 20); // 체력 20 깎임
-                                            showToast('💰 상대 돈 주머니 폭발! 체력 20 감소');
-                                            eaten = true; updateAllHpBars(); checkGameWinner();
-                                        }
-                                    }
-                                }
-                            });
-                            if (eaten) moneyItems.splice(i, 1);
-                        }
-                    } else if (m.isHangeulLetter) {
+                    if (m.isHangeulLetter) {
                         if (nowTimestamp - m.spawnTime > 12000) { moneyItems.splice(i, 1); continue; }
                         let eaten = false;
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.name === '왕클세종') {
+                                if (player.team === m.ownerTeam) {
                                     playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + 4);
-                                    showHealingAnimationCard(player.team, (player.team === 1 ? team1Players : team2Players).indexOf(player), 4);
-                                    let enemyBallsList = player.team === 1 ? team2Players : team1Players;
-                                    let targetEnemy = enemyBallsList[Math.floor(Math.random() * enemyBallsList.length)];
-                                    if (targetEnemy && targetEnemy.hp > 0) {
-                                        targetEnemy.hp = Math.max(0, targetEnemy.hp - 6);
-                                    }
-                                    showToast('🇰🇷 왕클세종 자음 획득! (체력 4 회복 & 적 6 데미지)');
-                                    eaten = true; updateAllHpBars(); checkGameWinner();
+                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
+                                    showHealingAnimationCard(player.team, (player.team === 1 ? team1Players : team2Players).indexOf(player), m.healAmount);
+                                    eaten = true; updateAllHpBars();
                                 } else {
-                                    eaten = true;
+                                    player.hp = Math.max(0, player.hp - m.damage);
+                                    showToast(`🇰🇷 왕클세종 글자 폭발! (${m.damage} 데미지)`);
+                                    eaten = true; updateAllHpBars(); checkGameWinner();
                                 }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isChocolateItem) {
+                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                if (player.team === m.ownerTeam) {
+                                    playHealSound(); player.hp = Math.min(player.maxHp, player.hp + 20);
+                                    showHealingAnimationCard(player.team, (player.team === 1 ? team1Players : team2Players).indexOf(player), 20);
+                                    eaten = true; updateAllHpBars();
+                                }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isMoneyBag) {
+                        if (nowTimestamp - m.spawnTime > 4000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                let isMyTeam = (player.team === m.ownerTeam);
+                                playHealSound();
+                                let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                if (isMyTeam) {
+                                    player.hp = Math.min(player.maxHp, player.hp + 25);
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
+                                    showToast('💰 돈 주머니 획득! (체력 25 회복)');
+                                } else {
+                                    player.hp = Math.max(0, player.hp - 30);
+                                    showToast('💰 상대 돈 주머니 폭발! (30 데미지)');
+                                }
+                                eaten = true; updateAllHpBars(); checkGameWinner();
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
@@ -2729,14 +2600,14 @@
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (m.isBaconProjectile && !m.isFemaleProj) {
-                                    // 남자 베이컨: 🥓, 맞으면 속도 2배 느려짐 (slowTimer)
                                     enemy.slowTimer = nowTimestamp + 3000;
-                                    showToast('🥓 남자 베이컨 명중! (속도 2배 저하)');
+                                    showToast('🥓 남자 베이컨 명중! (4 데미지, 3초간 속도 저하)');
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    // 여자 베이컨: 🍜, 5 데미지
-                                    showToast('🍜 여자 베이컨 명중! (5 데미지)');
+                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2); enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
+                                    showToast('💣 여자 폭탄 명중! (6 데미지)');
                                 } else if (m.isArrow) {
-                                    showToast('🏹 화살 명중! (6 데미지)');
+                                    showToast('🏹 커진 화살 명중! (6 데미지)');
                                 }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
@@ -2754,8 +2625,8 @@
                     let elapsed = Date.now() - mine.spawnTime, alpha = elapsed > 2000 ? 0.3 : 0.92;
                     ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
-                    ctx.lineWidth = 6; ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`; ctx.stroke();
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`; ctx.stroke();
+                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("지뢰", mine.x, mine.y);
                     ctx.restore();
                 });
@@ -2764,16 +2635,16 @@
                     ctx.save();
                     ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
-                    ctx.lineWidth = 6; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
-                    ctx.font = "bold 34px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 6;
-                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 45); ctx.fillText(ev.text, ev.x, ev.y - 45);
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
                     ctx.restore();
                 });
 
                 player.comboPopups.forEach(cp => {
                     ctx.save();
-                    ctx.font = "bold 28px sans-serif"; ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
-                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`; ctx.lineWidth = 6; ctx.textAlign = "center";
+                    ctx.font = "bold 20px sans-serif"; ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`; ctx.lineWidth = 4; ctx.textAlign = "center";
                     ctx.strokeText(cp.text, cp.x, cp.y); ctx.fillText(cp.text, cp.x, cp.y);
                     ctx.restore();
                 });
@@ -2784,7 +2655,7 @@
                     m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
 
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 8, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
                     ctx.fillStyle = "rgba(46, 204, 113, 0.25)"; ctx.fill();
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.save(); ctx.clip();
                     if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
@@ -2792,16 +2663,16 @@
                     } else {
                         ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
                     }
-                    ctx.restore(); ctx.lineWidth = 4; ctx.strokeStyle = "#000000"; ctx.stroke();
+                    ctx.restore(); ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
                     ctx.restore();
                 });
 
                 player.skeletons.forEach(skel => {
                     ctx.save();
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                        ctx.drawImage(skeletonImg, skel.x - 48, skel.y - 64, 96, 128);
+                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
                     } else {
-                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 36, skel.y - 56, 72, 112);
+                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
                     }
                     ctx.restore();
                 });
@@ -2809,22 +2680,22 @@
                 player.bombs.forEach(bomb => {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
-                    ctx.font = "50px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
+                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
+                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
                     if (bomb.startTime) {
                         let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
-                        ctx.font = "bold 22px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 4;
-                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 14);
-                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 14);
+                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
                     }
                     ctx.restore();
                 });
 
                 if (player.rouletteAnim) {
                     ctx.save();
-                    ctx.font = "bold 32px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
-                    ctx.textAlign = "center"; ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 60);
-                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 60);
+                    ctx.font = "bold 22px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 38);
+                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 38);
                     ctx.restore();
                 }
             });
@@ -2832,21 +2703,27 @@
             moneyItems.forEach(m => {
                 ctx.save();
                 if (m.isHangeulLetter) {
-                    ctx.font = "bold 36px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.strokeText(m.char, m.x, m.y); ctx.fillText(m.char, m.x, m.y);
                 } else if (m.isChocolateItem) {
-                    ctx.font = "34px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                    let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
+                    ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                    ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
                 } else if (m.isMoneyBag) {
-                    ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                    let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
+                    ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                    ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
                 } else if (m.isArrow) {
                     ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.angle);
-                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, -72, -40, 144, 80);
-                    else { ctx.fillStyle = '#8b4513'; ctx.fillRect(-56, -12, 112, 24); }
+                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, -36, -20, 72, 40);
+                    else { ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12); }
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
-                    ctx.font = m.isFemaleProj ? "42px sans-serif" : "38px sans-serif";
+                    ctx.font = m.isFemaleProj ? "36px sans-serif" : "32px sans-serif";
                     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText(m.isFemaleProj ? "🍜" : "🥓", m.x, m.y);
+                    ctx.fillText(m.isFemaleProj ? "💣" : "🥓", m.x, m.y);
                 }
                 ctx.restore();
             });
@@ -2857,8 +2734,8 @@
 
             if (matchEnded) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 65px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 8;
+                ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "bold 44px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
                 ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
@@ -2871,4 +2748,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-</html>
+    </html>
