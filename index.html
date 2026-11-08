@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-10" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-10', 'patch-btn-10');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-10" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        JINO 스켈레톤 화살표 파일 정상 연동, 동룡쓰 기술 사용 시 룰렛 회전 연출 및 효과음 추가, 남/여 캐릭터 공 주변 밀착 추적 공격 시스템 적용 완료!
+                        스켈레톤 화살 크기 2배 확대, 동룡쓰 기술 5번째 영상 스타일 룰렛 및 효과음 적용, 남자 🥓(3번째 사진 캐릭터, 2.5초마다 베이컨 발사, 4데미지, 2배 느려짐 3초 지속) 및 여자 🥓(5번째 사진 캐릭터, 공 크기 폭탄 발사, 6데미지, 넉백) 시스템 완벽 구현 완료!
                     </div>
                 </div>
 
@@ -796,8 +796,8 @@
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
                     <img src="14215.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">화살 투사체</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤이 발사하는 진짜 화살 파일!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">화살 투사체 (2배 크기)</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤이 발사하는 커다란 화살!</div>
                     </div>
                 </div>
 
@@ -1181,20 +1181,21 @@
             } catch(e) {}
         }
 
+        // 5번째 영상 스타일 룰렛 회전 효과음 (탁탁탁 경쾌한 비트)
         function playRouletteSpinSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                for (let i = 0; i < 8; i++) {
-                    let time = now + i * 0.12;
+                for (let i = 0; i < 10; i++) {
+                    let time = now + i * 0.09;
                     let osc = ctx.createOscillator();
                     let gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400 + i * 80, time);
-                    gain.gain.setValueAtTime(0.25 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600 + i * 50, time);
+                    gain.gain.setValueAtTime(0.2 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
                     osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.1);
+                    osc.start(time); osc.stop(time + 0.06);
                 }
             } catch(e) {}
         }
@@ -1203,17 +1204,17 @@
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                const notes = [523.25, 659.25, 783.99, 1046.50];
+                const notes = [440, 554.37, 659.25, 880];
                 notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.1;
+                    let time = now + idx * 0.08;
                     let osc = ctx.createOscillator();
                     let gain = ctx.createGain();
-                    osc.type = 'sine';
+                    osc.type = 'triangle';
                     osc.frequency.setValueAtTime(freq, time);
                     gain.gain.setValueAtTime(0.4 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
                     osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.2);
+                    osc.start(time); osc.stop(time + 0.18);
                 });
             } catch(e) {}
         }
@@ -1241,12 +1242,12 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(1200, now);
-                osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+                osc.frequency.setValueAtTime(1000, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
                 gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
                 osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.12);
+                osc.start(now); osc.stop(now + 0.14);
             } catch(e) {}
         }
 
@@ -1532,9 +1533,9 @@
             }
         });
 
-        // 14475.jpg (여자 베이컨), 14474.jpg (남자 베이컨), 14108.jpg (스켈레톤), 14215.jpg (화살)
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
-        const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
+        // 14475_3.jpg (여자 베이컨), 14484.jpg (남자 베이컨), 14108.jpg (스켈레톤), 14215.jpg (화살)
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475_3.jpg';
+        const maleBaconImg = new Image(); maleBaconImg.src = '14484.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
@@ -2469,7 +2470,7 @@
                     }
                 });
 
-                // 동룡쓰 부하 밀착 공격 루프
+                // 동룡쓰 부하 (남자/여자 베이컨) 공격 루프
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2478,19 +2479,39 @@
                                 minion.attackTimer = (minion.attackTimer || 0) + 1;
                                 let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                 if (targetEnemy && targetEnemy.hp > 0) {
-                                    let distToEnemy = Math.hypot(targetEnemy.x - minion.x, targetEnemy.y - minion.y);
-                                    if (distToEnemy < 35 && minion.attackTimer >= 2) {
-                                        minion.attackTimer = 0;
-                                        targetEnemy.hp = Math.max(0, targetEnemy.hp - (minion.isFemale ? 5 : 4));
-                                        playHitSound();
-                                        updateAllHpBars(); checkGameWinner();
+                                    if (!minion.isFemale) {
+                                        // 남자 🥓: 2.5초마다 베이컨 🥓 발사 (4데미지, 맞으면 2배 느려짐 3초)
+                                        if (minion.attackTimer >= 3) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                                            moneyItems.push({
+                                                x: minion.x, y: minion.y,
+                                                vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
+                                                ownerTeam: player.team
+                                            });
+                                            playFoodThrowSound();
+                                        }
+                                    } else {
+                                        // 여자 🥓: 3초마다 공 크기 폭탄 💣 발사 (6데미지, 넉백)
+                                        if (minion.attackTimer >= 4) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                                            moneyItems.push({
+                                                x: minion.x, y: minion.y,
+                                                vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
+                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
+                                                ownerTeam: player.team
+                                            });
+                                            playFoodThrowSound();
+                                        }
                                     }
                                 }
                             });
                         }
                     }
 
-                    // JINO 스켈레톤 (2초마다 진짜 화살 발사)
+                    // JINO 스켈레톤 (2초마다 2배 커진 진짜 화살 발사)
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2503,7 +2524,7 @@
                                     moneyItems.push({
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
-                                        radius: 16, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                        radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
                                     });
                                 });
                                 playArrowSound();
@@ -2523,7 +2544,7 @@
             });
         }
 
-        // 동룡쓰 룰렛 기술 (남자/여자 캐릭터 랜덤 룰렛)
+        // 동룡쓰 룰렛 기술 (남자 🥓 / 여자 🥓 랜덤 룰렛)
         function triggerDongryongSkill(caster) {
             showToast(`${caster.name}이 룰렛 돌리는 중! 🎰`);
             playRouletteSpinSound();
@@ -2534,7 +2555,7 @@
             let rouletteInterval = setInterval(() => {
                 spinCount++;
                 let tempIsFemale = Math.random() < 0.5;
-                caster.rouletteAnim.text = tempIsFemale ? '여자 캐릭터 👩' : '남자 캐릭터 👨';
+                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨! 👩' : '남자 🥓 당첨! 👨';
 
                 if (spinCount >= 6) {
                     clearInterval(rouletteInterval);
@@ -2542,7 +2563,7 @@
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩' : '남자 캐릭터 👨'} 당첨!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여성 캐릭터 (여자 🥓) 👩' : '남성 캐릭터 (남자 🥓) 👨'} 소환!`);
                     
                     caster.skillCount++;
                     let angle = Math.random() * Math.PI * 2;
@@ -2572,7 +2593,7 @@
                         }
                     }
                 }
-            }, 250);
+            }, 200);
         }
 
         function triggerMrBeastSkill(caster) {
@@ -2771,7 +2792,7 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 0.5;
+                        currentSpeed = FIXED_SPEED * 0.5; // 속도 2배 느려짐 (0.5배)
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -2784,7 +2805,7 @@
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
                     
                     let speed = Math.hypot(p.vx, p.vy);
-                    if (Math.abs(speed - FIXED_SPEED) > 0.01) {
+                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
                         p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
                         p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
                     }
@@ -3004,15 +3025,20 @@
                         let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
-                            if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < enemy.radius + enemy.radius) {
+                            if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (m.isBaconProjectile && !m.isFemaleProj) {
+                                    // 남자 🥓: 4데미지, 2배 느려짐 3초 지속
                                     enemy.slowTimer = nowTimestamp + 3000;
-                                    showToast('🥓 베이컨 공격! (데미지 4, 속도 저하)');
+                                    showToast('🥓 남자 베이컨 명중! (4 데미지, 3초간 속도 2배 저하)');
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    showToast('🍜 라면 공격! (데미지 5)');
+                                    // 여자 🥓: 6데미지, 넉백 (공 크기 폭탄)
+                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
+                                    showToast('💣 여자 폭탄 명중! (6 데미지, 튕김)');
                                 } else if (m.isArrow) {
-                                    showToast('🏹 진짜 화살 명중! (데미지 6)');
+                                    showToast('🏹 커진 화살 명중! (6 데미지)');
                                 }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
@@ -3061,12 +3087,12 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 공 주변 밀착 공전 및 공격
+                // 동룡쓰 부하 공 주변 밀착 공전
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
                     m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
-                    drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475.jpg' : '14474.jpg' }, "rgba(46, 204, 113, 0.2)");
+                    drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475_3.jpg' : '14484.jpg' }, "rgba(46, 204, 113, 0.2)");
                 });
 
                 // JINO 스켈레톤 영구 유지
@@ -3124,18 +3150,26 @@
                     ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
                     ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
                 } else if (m.isArrow) {
+                    // 화살 크기 2배 확대 (36, 20 -> 72, 40)
                     ctx.save();
                     ctx.translate(m.x, m.y);
                     ctx.rotate(m.angle);
                     if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                        ctx.drawImage(arrowImg, -18, -10, 36, 20);
+                        ctx.drawImage(arrowImg, -36, -20, 72, 40);
                     } else {
-                        ctx.fillStyle = '#8b4513'; ctx.fillRect(-14, -3, 28, 6);
+                        ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
                     }
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
-                    ctx.font = "60px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText(m.isFemaleProj ? "🍜" : "🥓", m.x, m.y);
+                    if (m.isFemaleProj) {
+                        // 여자 🥓: 공 크기 정도의 폭탄 💣 발사
+                        ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.fillText("💣", m.x, m.y);
+                    } else {
+                        // 남자 🥓: 베이컨 🥓 발사
+                        ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.fillText("🥓", m.x, m.y);
+                    }
                 }
                 ctx.restore();
             });
