@@ -46,19 +46,6 @@
         #global-announcement-banner.show {
             display: block;
         }
-        .banner-inner-content {
-            max-width: 620px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .banner-notice-text {
-            font-size: 26px;
-            font-weight: 900;
-            text-align: center;
-            line-height: 1.3;
-        }
 
         .app-container {
             width: 100vw;
@@ -790,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-06" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-06', 'patch-btn-06');">⬇️</button>
+                            <button id="patch-btn-07" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-07', 'patch-btn-07');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-06" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        모든 공의 기술 발동 오류 전면 수정, JINO 스켈레톤 및 화살 공격 메커니즘 원복 및 최적화, 전역 채팅 및 플레이어 목록 실시간 동기화 완벽 적용!
+                    <div id="patch-content-07" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        신규 캐릭터 'JIRO' 추가! 패시브 충돌 폭발(콤보 누적형 데미지 증가 및 경기장 밖으로 엄청난 넉백, 전용 '펑!!!' 효과음), 8초마다 마지막 자리에 무한 투명 지뢰 매설(지뢰 밟을 시 30 데미지 및 거대한 폭발 효과)!
                     </div>
                 </div>
 
@@ -807,17 +794,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
-                    <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 부하를 소환하여 3초마다 컵라면(2뎀) 및 베이컨(4뎀)을 발사합니다.</div>
-                    </div>
-                </div>
-                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
                     <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤을 소환하여 강력한 활 공격 기술을 사용합니다.</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JIRO [신규]</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">패시브: 상대와 충돌 시 펑!!! 폭발 발생 (기본 15뎀 + 콤보당 +2뎀, 경기장 끝까지 튕김). 기술: 8초마다 마지막 자리에 투명 지뢰 매설 (밟으면 30뎀 폭발, 무한 소환 가능)!</div>
                     </div>
                 </div>
 
@@ -1169,6 +1149,34 @@
             } catch(e) {}
         }
 
+        function playJiroExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
+                let gain = ctx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc2.type = 'square';
+                
+                osc.frequency.setValueAtTime(120, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+
+                osc2.frequency.setValueAtTime(240, now);
+                osc2.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+                osc.connect(gain); osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now); osc2.start(now);
+                osc.stop(now + 0.4); osc2.stop(now + 0.4);
+            } catch(e) {}
+        }
+
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1466,6 +1474,7 @@
         }
 
         const ballList = [
+            { name: 'JIRO', hp: 250, imageSrc: 'jino.jpg' },
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
@@ -1490,6 +1499,7 @@
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
+            { type: 'image', val: 'JIRO', src: 'jino.jpg', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -2234,6 +2244,7 @@
         }
 
         function getSkillMaxTime(playerName) {
+            if (playerName === 'JIRO') return 8;
             if (playerName === '왕클세종') return 10;
             if (playerName === '미스터비스트') return 8;
             if (playerName === 'JINO') return 12;
@@ -2277,7 +2288,8 @@
                     x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    skeletons: [], minions: [], bombs: [], arrowTimer: 0
+                    jiroCombo: 0, lastX: pos.x, lastY: pos.y,
+                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: []
                 };
             });
 
@@ -2289,7 +2301,8 @@
                     x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    skeletons: [], minions: [], bombs: [], arrowTimer: 0
+                    jiroCombo: 0, lastX: pos.x, lastY: pos.y,
+                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: []
                 };
             });
 
@@ -2336,12 +2349,12 @@
                 row.className = 'status-row-group';
                 row.innerHTML = `
                     <div class="player-status-card" id="card-t1-${i}">
-                        <div class="player-name-label player-name-p1">${p1.name}</div>
+                        <div class="player-name-label player-name-p1">${p1.name} ${p1.name === 'JIRO' ? `[콤보:${p1.jiroCombo}]` : ''}</div>
                         <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t1-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t1-${i}">${p1.hp} / ${p1.maxHp}</div></div>
                         <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div></div>
                     </div>
                     <div class="player-status-card" id="card-t2-${i}">
-                        <div class="player-name-label player-name-p2">${p2.name}</div>
+                        <div class="player-name-label player-name-p2">${p2.name} ${p2.name === 'JIRO' ? `[콤보:${p2.jiroCombo}]` : ''}</div>
                         <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t2-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t2-${i}">${p2.hp} / ${p2.maxHp}</div></div>
                         <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div></div>
                     </div>
@@ -2355,11 +2368,15 @@
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
                 if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                const lbl = document.querySelector(`#card-t1-${i} .player-name-label`);
+                if (lbl && p.name === 'JIRO') lbl.innerText = `JIRO [콤보:${p.jiroCombo}]`;
             });
             team2Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
                 if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                const lbl = document.querySelector(`#card-t2-${i} .player-name-label`);
+                if (lbl && p.name === 'JIRO') lbl.innerText = `JIRO [콤보:${p.jiroCombo}]`;
             });
         }
 
@@ -2384,30 +2401,20 @@
                     const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
 
                     if (maxTime !== null) {
-                        if (player.name === '동룡쓰' && player.skillCount >= 5) {
-                            if (fill) fill.style.width = '100%';
-                            if (txt) txt.innerText = '기술을 다씀!';
-                            return;
-                        }
-
                         player.skillTimer -= 1;
                         if (player.skillTimer <= 0) {
                             player.skillTimer = maxTime;
-                            if (player.name === '왕클세종') triggerWangklSejongSkill(player);
+                            if (player.name === 'JIRO') triggerJiroSkill(player);
+                            else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
                             else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
                             else if (player.name === 'JINO') triggerJinoSkill(player);
                             else if (player.name === '본이') triggerBoniSkill(player);
                             else if (player.name === '동룡쓰') triggerDongryongSkill(player);
                         }
 
-                        if (player.name === '동룡쓰' && player.skillCount >= 5) {
-                            if (fill) fill.style.width = '100%';
-                            if (txt) txt.innerText = '기술을 다씀!';
-                        } else {
-                            let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
-                            if (fill) fill.style.width = pct + '%';
-                            if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
-                        }
+                        let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
+                        if (fill) fill.style.width = pct + '%';
+                        if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
                     } else {
                         if (txt) txt.innerText = '기술 없음';
                     }
@@ -2468,6 +2475,15 @@
                     }
                 });
             }, 1000);
+        }
+
+        function triggerJiroSkill(caster) {
+            showToast(`${caster.name}이 마지막 위치에 지뢰 매설! 💣`);
+            playSkillSuperSound();
+            caster.mines.push({
+                x: caster.lastX, y: caster.lastY, radius: 42,
+                spawnTime: Date.now(), ownerTeam: caster.team, caster: caster
+            });
         }
 
         function triggerDongryongSkill(caster) {
@@ -2668,6 +2684,7 @@
 
                 allPlayers.forEach(p => {
                     if (p.hp <= 0) return;
+                    p.lastX = p.x; p.lastY = p.y;
                     p.x += p.vx; p.y += p.vy;
                     let hitWall = false;
                     if (p.x - p.radius < 0) { p.x = p.radius; p.vx = -p.vx; hitWall = true; }
@@ -2692,14 +2709,63 @@
                             p1.x -= nx * (overlap / 2); p1.y -= ny * (overlap / 2);
                             p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
                             let angle = Math.atan2(ny, nx);
-                            p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                            p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-                            playHitSound();
-                            p1.hp = Math.max(0, p1.hp - 10); p2.hp = Math.max(0, p2.hp - 10);
-                            updateAllHpBars(); checkGameWinner();
+
+                            let isJiro1 = (p1.name === 'JIRO');
+                            let isJiro2 = (p2.name === 'JIRO');
+
+                            if (isJiro1 || isJiro2) {
+                                let jiroObj = isJiro1 ? p1 : p2;
+                                let otherObj = isJiro1 ? p2 : p1;
+                                
+                                jiroObj.jiroCombo++;
+                                let explosionDmg = 15 + (jiroObj.jiroCombo - 1) * 2;
+                                otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
+
+                                playJiroExplosionSound();
+                                showToast(`💥 JIRO 펑!!! 콤보 ${jiroObj.jiroCombo} (${explosionDmg} 데미지)!`);
+
+                                jiroObj.explosionVisuals.push({ x: otherObj.x, y: otherObj.y, radius: 10, maxRadius: 100, alpha: 1.0, text: `펑!!! (콤보${jiroObj.jiroCombo})` });
+
+                                // 경기장 끝까지 엄청나게 튕겨나감
+                                let knockAngle = Math.atan2(otherObj.y - jiroObj.y, otherObj.x - jiroObj.x);
+                                otherObj.vx = Math.cos(knockAngle) * (FIXED_SPEED * 2.8);
+                                otherObj.vy = Math.sin(knockAngle) * (FIXED_SPEED * 2.8);
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+
+                                updateAllHpBars(); checkGameWinner();
+                            } else {
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+                                playHitSound();
+                                p1.hp = Math.max(0, p1.hp - 10); p2.hp = Math.max(0, p2.hp - 10);
+                                updateAllHpBars(); checkGameWinner();
+                            }
                         }
                     }
                 }
+
+                // JIRO 지뢰 충돌 체크
+                allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                    if (player.name === 'JIRO' && player.mines.length > 0) {
+                        player.mines = player.mines.filter(mine => {
+                            let triggered = false;
+                            enemyTeamBalls.forEach(enemy => {
+                                if (enemy.hp <= 0) return;
+                                if (Math.hypot(enemy.x - mine.x, enemy.y - mine.y) < enemy.radius + mine.radius) {
+                                    triggered = true;
+                                    enemy.hp = Math.max(0, enemy.hp - 30);
+                                    playJiroExplosionSound();
+                                    showToast('💣 지뢰 펑!!! 30 데미지!');
+                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 120, alpha: 1.0, text: '지뢰 펑!!!' });
+                                    updateAllHpBars(); checkGameWinner();
+                                }
+                            });
+                            return !triggered;
+                        });
+                    }
+                });
 
                 allPlayers.forEach(player => {
                     let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2726,6 +2792,14 @@
                         });
                         return true;
                     });
+                });
+
+                allPlayers.forEach(player => {
+                    player.explosionVisuals.forEach(ev => {
+                        ev.radius += 4;
+                        ev.alpha -= 0.03;
+                    });
+                    player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
                 });
 
                 allPlayers.forEach(caster => {
@@ -2809,6 +2883,30 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             allPlayers.forEach(player => {
+                // 지뢰 렌더링 (소환 후 투명하게 변함)
+                player.mines.forEach(mine => {
+                    ctx.save();
+                    let elapsed = Date.now() - mine.spawnTime;
+                    let alpha = elapsed > 2000 ? 0.25 : 0.9; // 2초 후 투명해짐
+                    ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`; ctx.fill();
+                    ctx.lineWidth = 3; ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`; ctx.stroke();
+                    ctx.font = "bold 14px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                    ctx.fillText("💥 지뢰", mine.x, mine.y);
+                    ctx.restore();
+                });
+
+                // 폭발 이펙트 모션 렌더링
+                player.explosionVisuals.forEach(ev => {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 22px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 25); ctx.fillText(ev.text, ev.x, ev.y - 25);
+                    ctx.restore();
+                });
+
                 player.minions.forEach(m => {
                     m.x = m.owner.x + m.offsetX; m.y = m.owner.y + m.offsetY;
                     drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475.jpg' : '14474.jpg' }, "rgba(46, 204, 113, 0.2)");
