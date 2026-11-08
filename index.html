@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-10" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-10', 'patch-btn-10');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-10" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 여자 캐릭터를 2번째 사진(14475_4.jpg)으로 정상 렌더링 수정, 동룡쓰 부하 최대 10명 제한 적용, 왕클세종 글자 먹을 시 체력 +4 회복 및 상대 6 데미지 적용 완료!
+                        동룡쓰 여자 캐릭터 소환 시 14475_4.jpg 이미지가 정상적으로 렌더링되도록 버그 수정 완료!
                     </div>
                 </div>
 
@@ -1516,7 +1516,6 @@
             }
         });
 
-        // 3번째 사진 캐릭터 (남자 🥓) -> 14474.jpg / 2번째 사진 캐릭터 (여자 🥓) -> 14475_4.jpg
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475_4.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
@@ -2453,7 +2452,6 @@
                     }
                 });
 
-                // 동룡쓰 부하 공격 루프
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2492,7 +2490,6 @@
                         }
                     }
 
-                    // JINO 스켈레톤 (2초마다 화살 발사)
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2525,7 +2522,6 @@
             });
         }
 
-        // 동룡쓰 기술 (최대 10명 제한, 2번째 사진 여자캐릭터 14475_4.jpg 연동)
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) {
                 showToast('동룡쓰 부하가 이미 최대 10명입니다!');
@@ -2958,12 +2954,11 @@
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
                                     playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount); // 체력 4 회복
+                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true; updateAllHpBars();
                                 } else {
-                                    // 상대 팀이 닿거나 글자 삭제될 때 상대에게 6 데미지
                                     player.hp = Math.max(0, player.hp - m.damage);
                                     showToast(`🇰🇷 왕클세종 글자 폭발! (${m.damage} 데미지)`);
                                     eaten = true; updateAllHpBars(); checkGameWinner();
@@ -3074,7 +3069,6 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 (2번째 사진 여자캐릭터 14475_4.jpg 연동 및 원형 클리핑 수정)
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
