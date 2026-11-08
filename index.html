@@ -1035,18 +1035,53 @@
             getAudioContext();
         }, { once: true });
 
-        // 파일 없이 웹 브라우저 음성 합성(TTS) 기능으로 "하이퍼차지" 목소리 자동 출력 함수
-        function playAutoHyperChargeVoice() {
+        // 진짜 멋진 총소리 효과음 (총알 발사 타격감)
+        function playGunshotSound() {
             try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // 기존에 말하던 게 있으면 즉시 중단
-                    let utterance = new SpeechSynthesisUtterance("하이퍼차지!");
-                    utterance.lang = 'ko-KR';
-                    utterance.rate = 1.1; // 말하는 속도 살짝 빠르게
-                    utterance.pitch = 1.2; // 목소리톤 약간 높게
-                    utterance.volume = soundVolume;
-                    window.speechSynthesis.speak(utterance);
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                
+                // 1. 묵직한 베이스 쿵 (총성 노이스)
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+
+                gain.gain.setValueAtTime(0.8 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+
+                // 2. 촤아악 퍼지는 총기 화약 폭발음
+                let bufferSize = ctx.sampleRate * 0.12;
+                let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                let output = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
                 }
+
+                let whiteNoise = ctx.createBufferSource();
+                whiteNoise.buffer = buffer;
+
+                let filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1000, now);
+                filter.Q.setValueAtTime(1.5, now);
+
+                let noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.6 * soundVolume, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+                whiteNoise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
+
+                whiteNoise.start(now);
+                whiteNoise.stop(now + 0.12);
             } catch(e) {}
         }
 
@@ -1675,6 +1710,7 @@
             });
 
             updateOnlineOfflineCounts();
+            document.getElementById('players-modal').classList.add('hidden'); // Fix toggle
             document.getElementById('players-modal').classList.remove('hidden');
         }
 
@@ -2329,7 +2365,7 @@
                             } else if (pair.player.name === '왕클세종') {
                                 triggerWangklSejongSkill(pair.player, pair.enemy);
                             } else if (pair.player.name === '본이') {
-                                triggerBoniSkill(pair.player);
+                                triggerBoniSkill(pair.player, pair.enemy);
                             }
                         }
                         let prefix = (pair.player === p1) ? 'p1' : 'p2';
@@ -2363,11 +2399,33 @@
             }, 1000);
         }
 
-        function triggerBoniSkill(caster) {
-            caster.hyperActiveTimer = 4;
-            showToast(`${caster.name} 하이퍼차지 발동!! 🔥`);
+        // 본이 기술: 3초 동안 유지되며 브롤스타즈 쉘리처럼 상대 공을 향해 총알 4발 발사 (각 7 데미지, 멋진 총소리)
+        function triggerBoniSkill(caster, enemy) {
+            caster.hyperActiveTimer = 3; // 3초 동안 하이퍼차지(총알 발사 모드) 유지
+            showToast(`${caster.name} 샷건 발사! 🔥`);
             playSkillSuperSound();
-            playAutoHyperChargeVoice(); // 웹 브라우저 음성 합성으로 목소리 자동 출력!
+
+            // 쉘리처럼 상대 공 방향으로 흩어지는 4발의 총알 발사
+            let baseAngle = Math.atan2(enemy.y - caster.y, enemy.x - caster.x);
+            let spreadAngles = [-0.35, -0.12, 0.12, 0.35];
+
+            spreadAngles.forEach(offset => {
+                let angle = baseAngle + offset;
+                let speed = 6.5;
+
+                caster.arrows.push({
+                    x: caster.x,
+                    y: caster.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    angle: angle,
+                    target: enemy,
+                    isBoniBullet: true,
+                    damage: 7
+                });
+            });
+
+            playGunshotSound();
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2659,7 +2717,8 @@
 
                         let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
                         if (dist < pair.enemy.radius + 15) {
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                            let dmg = arrow.isBoniBullet ? arrow.damage : 15;
+                            pair.enemy.hp = Math.max(0, pair.enemy.hp - dmg);
                             pair.shooter.arrows.splice(i, 1);
                             playHitSound();
                             updateHpBars();
