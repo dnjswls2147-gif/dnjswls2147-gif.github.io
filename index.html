@@ -1036,7 +1036,7 @@
             getAudioContext();
         }, { once: true });
 
-        // 업로드한 실제 하이퍼차지 음성/효과음 파일 재생 함수 (나가면 즉시 중단)
+        // 업로드한 실제 하이퍼차지 음성/효과음 파일 재생 함수 (오디오 재생 문제 해결 포함)
         function playHyperChargeVoiceFile() {
             try {
                 if (!hyperChargeAudioElement) {
@@ -1044,7 +1044,15 @@
                 }
                 hyperChargeAudioElement.currentTime = 0;
                 hyperChargeAudioElement.volume = soundVolume;
-                hyperChargeAudioElement.play().catch(e => {});
+                let playPromise = hyperChargeAudioElement.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // 모바일 브라우저 자동재생 차단 시도 재부팅
+                        setTimeout(() => {
+                            hyperChargeAudioElement.play().catch(e => {});
+                        }, 100);
+                    });
+                }
             } catch(e) {}
         }
 
@@ -2093,7 +2101,7 @@
         const arrowImg = new Image();
         arrowImg.src = '14215.png';
 
-        // 하이퍼차지 불꽃 테두리 이미지 불러오기 (`hypercharge.png`)
+        // 하이퍼차지 불꽃 고정 이미지 불러오기 (`hypercharge.png`)
         const hyperChargeBadgeImg = new Image();
         hyperChargeBadgeImg.src = 'hypercharge.png';
 
@@ -2199,25 +2207,20 @@
         function drawBall(x, y, radius, ballObj, auraColor, isHyperCharged) {
             ctx.save();
             
-            // 본이 하이퍼차지 발동 시: 공 겉에 화려하고 흐물거리는 보라색 불꽃 오라 이펙트
+            // 본이 하이퍼차지 발동 시: 공 뒤쪽에 뾰족한 하이퍼차지 이미지(hypercharge.png)를 흐물거리지 않고 깔끔하게 고정 배치
             if (isHyperCharged) {
-                let time = Date.now() / 90;
-                ctx.beginPath();
-                // 흐물거리는 파동을 준 뾰족한 불꽃 외곽선
-                for (let i = 0; i < 16; i++) {
-                    let angle = (i / 16) * Math.PI * 2 + (i % 2 === 0 ? time : -time * 0.5);
-                    let rVar = radius + 20 + Math.sin(time * 3 + i * 1.5) * 8;
-                    let fx = x + Math.cos(angle) * rVar;
-                    let fy = y + Math.sin(angle) * rVar;
-                    if (i === 0) ctx.moveTo(fx, fy);
-                    else ctx.lineTo(fx, fy);
+                if (hyperChargeBadgeImg.complete && hyperChargeBadgeImg.naturalWidth !== 0) {
+                    let badgeSize = radius * 2.5;
+                    ctx.drawImage(hyperChargeBadgeImg, x - badgeSize / 2, y - badgeSize / 2, badgeSize, badgeSize);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(142, 68, 173, 0.7)";
+                    ctx.fill();
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = "#8e44ad";
+                    ctx.stroke();
                 }
-                ctx.closePath();
-                ctx.fillStyle = "rgba(155, 89, 182, 0.6)";
-                ctx.fill();
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "#8e44ad";
-                ctx.stroke();
             } else {
                 ctx.beginPath();
                 ctx.arc(x, y, radius + 14, 0, Math.PI * 2);
@@ -2225,7 +2228,7 @@
                 ctx.fill();
             }
 
-            // 공 내부 (안에 있던 보라색 동그라미를 제거하고 본이 프로필 이미지만 깔끔하게 표시)
+            // 공 내부 (안에 있던 작은 보라색 동그라미를 완전히 제거하고 프로필 이미지만 표시)
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.save();
@@ -2379,10 +2382,10 @@
         }
 
         function triggerBoniSkill(caster) {
-            caster.hyperActiveTimer = 4; // 4초 동안 하이퍼차지 불꽃 유지
+            caster.hyperActiveTimer = 4; // 4초 동안 하이퍼차지 고정 이미지 유지
             showToast(`${caster.name} 하이퍼차지 발동!! 🔥`);
             playSkillSuperSound();
-            playHyperChargeVoiceFile(); // 업로드한 실제 목소리 파일 재생
+            playHyperChargeVoiceFile(); // 오디오 재생 실행
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2457,7 +2460,7 @@
             isGaming = false;
             if (gameInterval) clearInterval(gameInterval);
 
-            // 경기장을 나가면 하이퍼차지 목소리 재생도 즉시 중단
+            // 경기장을 나가면 목소리 재생도 즉시 중단
             stopHyperChargeVoiceFile();
 
             moneyItems = [];
@@ -2810,4 +2813,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-</html>
+                                    </html>
