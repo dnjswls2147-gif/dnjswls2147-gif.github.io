@@ -30,23 +30,6 @@
             overscroll-behavior: none;
         }
 
-        #global-announcement-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            background-color: #2c3e50;
-            color: #ffffff;
-            padding: 16px 20px;
-            z-index: 99999;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            display: none;
-            border-bottom: 4px solid #000;
-        }
-        #global-announcement-banner.show {
-            display: block;
-        }
-
         .app-container {
             width: 100vw;
             max-width: 620px;
@@ -694,16 +677,13 @@
         }, { passive: false });
     </script>
 
-    <!-- 상단 대형 실시간 공지 배너 -->
-    <div id="global-announcement-banner"></div>
-
     <!-- 화면 상단 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 (클릭 시 해당 창 바로 열리도록 수정) -->
+        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
@@ -752,16 +732,7 @@
 
     </div>
 
-    <!-- 점검 중 오버레이 화면 -->
-    <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div style="width:480px; height:480px; max-width:92vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:24px;">
-            <div style="font-size:60px; margin-bottom:15px;">🛠️</div>
-            <div style="font-size:28px; font-weight:900; color:#e74c3c; margin-bottom:12px;">현재 점검 중입니다</div>
-            <div style="font-size:18px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
-        </div>
-    </div>
-
-    <!-- 패치노트 모달 팝업 창 -->
+    <!-- 패치노트 모달 팝업 창 (위아래 스크롤 가능하도록 개선) -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
@@ -777,14 +748,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.9 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        JIRO 캐릭터 프로필(14715.jpg) 추가, 프로필 아이콘 선택 추가, 동룡쓰 여자 부하 발사체 색상(8번째 사진 캐릭터) 변경, 상단 메뉴 즉시 이동 및 실시간 전체 채팅(BroadcastChannel) 연동 완료!
+                        JIRO 프로필 사진(14605_2.jpg) 완벽 반영 완료! 패치노트 스크롤바 수정 및 실시간 방 목록 동기화 완료!
                     </div>
                 </div>
 
@@ -794,7 +765,7 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="14715.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="14605_2.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">JIRO</div>
                         <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">강력한 폭발과 콤보 데미지를 자랑하는 캐릭터!</div>
@@ -980,7 +951,7 @@
         </div>
     </div>
 
-    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (JIRO 아이콘 추가) -->
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (JIRO 아이콘 사진 반영) -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
         <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
@@ -1503,7 +1474,7 @@
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: '14715.jpg' }
+            { name: 'JIRO', hp: 250, imageSrc: '14605_2.jpg' }
         ];
 
         const loadedImages = {};
@@ -1516,14 +1487,14 @@
         });
 
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14715.jpg'; // 동룡쓰 여자 부하 캐릭터를 14715.jpg로 변경
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14605_2.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
-            { type: 'image', val: 'JIRO', src: '14715.jpg', bg: '#ffffff' }, // JIRO 프로필 아이콘 추가
+            { type: 'image', val: 'JIRO', src: '14605_2.jpg', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1688,6 +1659,7 @@
             if (savedName) registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
             checkMaintenanceStatus();
             updateOnlineOfflineCounts();
+            renderFriendRooms(); // 실시간 방 목록 동기화 갱신
         }
 
         setInterval(updateHeartbeat, 2000);
@@ -1768,7 +1740,6 @@
             renderAdminPlayersList();
         }
 
-        // 모든 모달 닫기 함수 추가 (상단 메뉴 클릭 시 다른 창 즉시 전환용)
         function closeAllModals() {
             closeProfileModal();
             closeFriendModal();
@@ -1861,7 +1832,7 @@
 
         function openFriendModal() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeAllModals(); // 다른 창 열려있으면 닫고 친구 모달 바로 열기
+            closeAllModals();
             let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
             const container = document.getElementById('friend-list-container');
             container.innerHTML = '';
@@ -1977,7 +1948,7 @@
 
         function openFriendMatchModal() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeAllModals(); // 다른 창 열려있으면 닫고 경기(방 목록) 모달 바로 열기
+            closeAllModals();
             renderFriendRooms();
             document.getElementById('friend-match-modal').classList.remove('hidden');
         }
@@ -1985,6 +1956,13 @@
         function closeFriendMatchModal() {
             document.getElementById('friend-match-modal').classList.add('hidden');
         }
+
+        const roomChannel = new BroadcastChannel('lily_game_room_broadcast_channel');
+        roomChannel.onmessage = (event) => {
+            if (event.data && event.data.type === 'ROOM_UPDATE') {
+                renderFriendRooms();
+            }
+        };
 
         function createFriendRoom() {
             const myName = localStorage.getItem('lily_game_user_name');
@@ -1995,6 +1973,7 @@
             }
             rooms.push({ host: myName, participant: null, status: '대기중' });
             localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+            roomChannel.postMessage({ type: 'ROOM_UPDATE' });
             showToast('방이 개설되었습니다! 🏠');
             renderFriendRooms();
         }
@@ -2004,6 +1983,7 @@
             let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
             let newRooms = rooms.filter(r => r.host !== myName);
             localStorage.setItem('lily_game_friend_rooms', JSON.stringify(newRooms));
+            roomChannel.postMessage({ type: 'ROOM_UPDATE' });
             showToast('방 만들기가 취소되었습니다.');
             renderFriendRooms();
         }
@@ -2011,6 +1991,7 @@
         function renderFriendRooms() {
             let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
             const container = document.getElementById('friend-rooms-list-container');
+            if (!container) return;
             container.innerHTML = '';
 
             if (rooms.length === 0) {
@@ -2056,6 +2037,7 @@
                 room.participant = myName;
                 room.status = '참여중입니다';
                 localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+                roomChannel.postMessage({ type: 'ROOM_UPDATE' });
                 showToast(`"${hostName}"님의 방에 참여중입니다! 🚀`);
                 renderFriendRooms();
             }
@@ -2117,7 +2099,7 @@
 
         function openChatModal() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeAllModals(); // 다른 창 열려있으면 닫고 전체 채팅 창 바로 열기
+            closeAllModals();
             document.getElementById('chat-floating-box').classList.remove('hidden');
             loadChatLogs(); updateOnlineOfflineCounts();
         }
@@ -2191,7 +2173,6 @@
             logs.scrollTop = logs.scrollHeight;
         }
 
-        // BroadcastChannel을 통한 실시간 전체 채팅 동기화 구현
         const chatChannel = new BroadcastChannel('lily_game_chat_broadcast_channel');
         chatChannel.onmessage = (event) => {
             if (event.data && event.data.type === 'NEW_CHAT_MESSAGE') {
@@ -2207,11 +2188,15 @@
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
             }
+            if (e.key === 'lily_game_friend_rooms') {
+                renderFriendRooms();
+            }
         });
 
         setInterval(() => {
             loadChatLogs();
             updateOnlineOfflineCounts();
+            renderFriendRooms();
         }, 1500);
 
         function sendChatMessage() {
@@ -2225,7 +2210,6 @@
             chatData.push({ uid: getDeviceUniqueId(), name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
             
-            // BroadcastChannel로 다른 탭/창에 즉시 전송
             chatChannel.postMessage({ type: 'NEW_CHAT_MESSAGE' });
 
             appendChatBubble(name, msg, timeStr, true);
@@ -2486,7 +2470,6 @@
                     }
                 });
 
-                // 동룡쓰 부하 공격 루프
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2525,7 +2508,6 @@
                         }
                     }
 
-                    // JINO 스켈레톤 (2초마다 화살 발사)
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2558,7 +2540,6 @@
             });
         }
 
-        // 동룡쓰 기술 (최대 10명 제한, 여자 부하는 14715.jpg 캐릭터)
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) {
                 showToast('동룡쓰 부하가 이미 최대 10명입니다!');
@@ -2582,7 +2563,7 @@
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 부하 👩 (14715.jpg)' : '남자 부하 👨'} 소환!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 부하 👩 (14605_2.jpg)' : '남자 부하 👨'} 소환!`);
                     
                     if (caster.minions.length < 10) {
                         caster.skillCount++;
@@ -3106,7 +3087,6 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 (여자 부하는 14715.jpg 캐릭터)
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
@@ -3192,7 +3172,6 @@
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
                     if (m.isFemaleProj) {
-                        // 동룡쓰 여자 부하 발사체: 14715.jpg 미니 이미지로 렌더링
                         ctx.save();
                         ctx.beginPath();
                         ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
