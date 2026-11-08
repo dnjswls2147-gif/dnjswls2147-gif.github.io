@@ -969,10 +969,10 @@
                 어드민 패널을 사용하세요
             </div>
 
-            <!-- 기본 칸 (플레이어 목록) -->
+            <!-- 기본 칸 (플레이어 목록 - 어드민 전용 오늘 채팅 내역 포함) -->
             <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
-                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 (기본 칸)</div>
-                <div class="players-list-area" id="admin-players-list-container" style="max-height: 200px; margin-top:4px;"></div>
+                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 및 채팅 내역 (어드민 전용)</div>
+                <div class="players-list-area" id="admin-players-list-container" style="max-height: 220px; margin-top:4px;"></div>
             </div>
 
             <!-- 신고 내역 칸 -->
@@ -1035,29 +1035,48 @@
             getAudioContext();
         }, { once: true });
 
-        // 진짜 멋진 총소리 효과음 (총알 발사 타격감)
-        function playGunshotSound() {
+        // 투척 모션 효과음 (피슈우웅 날아가는 소리)
+        function playThrowSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                
-                // 1. 묵직한 베이스 쿵 (총성 노이스)
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(900, now + 0.3);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.32);
+            } catch(e) {}
+        }
+
+        // 지리는 폭발 효과음 (펑! 쾅!)
+        function playExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+
+                // 1. 거대한 저음 폭발 붐
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(25, now + 0.5);
 
-                gain.gain.setValueAtTime(0.8 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                gain.gain.setValueAtTime(1.0 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
 
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.15);
+                osc.stop(now + 0.5);
 
-                // 2. 촤아악 퍼지는 총기 화약 폭발음
-                let bufferSize = ctx.sampleRate * 0.12;
+                // 2. 화약 터지는 노이즈 쾅
+                let bufferSize = ctx.sampleRate * 0.4;
                 let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 let output = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
@@ -1068,20 +1087,20 @@
                 whiteNoise.buffer = buffer;
 
                 let filter = ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(1000, now);
-                filter.Q.setValueAtTime(1.5, now);
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(600, now);
+                filter.frequency.exponentialRampToValueAtTime(80, now + 0.4);
 
                 let noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.6 * soundVolume, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                noiseGain.gain.setValueAtTime(0.9 * soundVolume, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
 
                 whiteNoise.connect(filter);
                 filter.connect(noiseGain);
                 noiseGain.connect(ctx.destination);
 
                 whiteNoise.start(now);
-                whiteNoise.stop(now + 0.12);
+                whiteNoise.stop(now + 0.4);
             } catch(e) {}
         }
 
@@ -1692,10 +1711,6 @@
                 let isOnline = (nowTime - lastPing) < 6000;
                 if (p.uid === myUid) isOnline = true;
 
-                let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
-                let userChats = chatData.filter(c => c.name === p.name);
-                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
-
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
                 item.innerHTML = `
@@ -1703,14 +1718,13 @@
                         <span>👤 ${p.name} (${p.date || '가입일 정보 없음'})</span>
                         <span style="font-size:16px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
                     </div>
-                    <div style="font-size:14px; font-weight:bold; color:#555;">오늘 채팅 내역: ${chatSummaryText}</div>
                 `;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
 
             updateOnlineOfflineCounts();
-            document.getElementById('players-modal').classList.add('hidden'); // Fix toggle
+            document.getElementById('players-modal').classList.add('hidden');
             document.getElementById('players-modal').classList.remove('hidden');
         }
 
@@ -1728,14 +1742,14 @@
             players.forEach(p => {
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
                 let userChats = chatData.filter(c => c.name === p.name);
-                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}"`).join(', ') : '없음';
+                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
 
                 const card = document.createElement('div');
                 card.className = 'player-item-card';
                 card.style.fontSize = '16px';
                 card.innerHTML = `
-                    <div>🔹 [${p.name}] ${p.date || '가입일'} 처음 접속</div>
-                    <div style="font-size:13px; color:#444; font-weight:normal;">채팅 내역: ${chatSummaryText}</div>
+                    <div>🔹 [${p.name}] ${p.date || '가입일'} 첫 접속</div>
+                    <div style="font-size:14px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>
                 `;
                 container.appendChild(card);
             });
@@ -2135,8 +2149,8 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], bombs: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -2301,7 +2315,7 @@
             p1.ballData = selectedLeftBall;
             p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '본이' ? 6 : 8));
             p1.skeletons = [];
-            p1.arrows = [];
+            p1.bombs = [];
             p1.arrowTimer = 0;
             p1.lastHitMap = {};
             p1.hyperActiveTimer = 0;
@@ -2313,7 +2327,7 @@
             p2.ballData = selectedRightBall;
             p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '본이' ? 6 : 8));
             p2.skeletons = [];
-            p2.arrows = [];
+            p2.bombs = [];
             p2.arrowTimer = 0;
             p2.lastHitMap = {};
             p2.hyperActiveTimer = 0;
@@ -2382,14 +2396,7 @@
                             pair.player.arrowTimer = 0;
                             pair.player.skeletons.forEach(skel => {
                                 let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
-                                pair.player.arrows.push({
-                                    x: skel.x,
-                                    y: skel.y,
-                                    vx: Math.cos(angle) * 5.5,
-                                    vy: Math.sin(angle) * 5.5,
-                                    angle: angle,
-                                    target: pair.enemy
-                                });
+                                pair.player.skeletons.forEach(() => {});
                             });
                             playArrowSound();
                         }
@@ -2399,33 +2406,32 @@
             }, 1000);
         }
 
-        // 본이 기술: 3초 동안 유지되며 브롤스타즈 쉘리처럼 상대 공을 향해 총알 4발 발사 (각 7 데미지, 멋진 총소리)
+        // 본이 기술: 미스터비스트처럼 느린 모션으로 폭탄 발사 (4초 뒤 빨간색 동그라미 범위 안에서 폭발, 데미지 15)
         function triggerBoniSkill(caster, enemy) {
-            caster.hyperActiveTimer = 3; // 3초 동안 하이퍼차지(총알 발사 모드) 유지
-            showToast(`${caster.name} 샷건 발사! 🔥`);
-            playSkillSuperSound();
+            showToast(`${caster.name} 폭탄 투척! 💣`);
+            playThrowSound();
 
-            // 쉘리처럼 상대 공 방향으로 흩어지는 4발의 총알 발사
-            let baseAngle = Math.atan2(enemy.y - caster.y, enemy.x - caster.x);
-            let spreadAngles = [-0.35, -0.12, 0.12, 0.35];
+            let targetX = enemy.x + (Math.random() * 60 - 30);
+            let targetY = enemy.y + (Math.random() * 60 - 30);
 
-            spreadAngles.forEach(offset => {
-                let angle = baseAngle + offset;
-                let speed = 6.5;
+            // 화면 밖으로 나가지 않게 보정
+            targetX = Math.max(50, Math.min(canvas.width - 50, targetX));
+            targetY = Math.max(50, Math.min(canvas.height - 50, targetY));
 
-                caster.arrows.push({
-                    x: caster.x,
-                    y: caster.y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    angle: angle,
-                    target: enemy,
-                    isBoniBullet: true,
-                    damage: 7
-                });
+            caster.bombs.push({
+                startX: caster.x,
+                startY: caster.y,
+                x: caster.x,
+                y: caster.y,
+                destX: targetX,
+                destY: targetY,
+                progress: 0,
+                radius: 65, // 빨간색 동그라미 폭발 범위
+                timer: 4, // 4초 뒤 폭발
+                exploded: false,
+                caster: caster,
+                enemy: enemy
             });
-
-            playGunshotSound();
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2472,13 +2478,13 @@
                     x: rx,
                     y: ry,
                     radius: 20,
-                    hp: 20,
-                    maxHp: 20,
+                    hp: 30, // 체력 30으로 상향
+                    maxHp: 30,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
                 });
             }
-            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 20) 💀`);
+            showToast(`${ownerPlayer.name}의 스켈레톤 소환! (체력 30) 💀`);
         }
 
         function spawnChocolate(ownerPlayer, count) {
@@ -2508,9 +2514,9 @@
             p1.ballData = null;
             p2.ballData = null;
             p1.skeletons = [];
-            p1.arrows = [];
+            p1.bombs = [];
             p2.skeletons = [];
-            p2.arrows = [];
+            p2.bombs = [];
 
             const leftBtn = document.getElementById('slot-left-btn');
             leftBtn.innerText = '볼 선택하기';
@@ -2611,24 +2617,60 @@
                 }
 
                 [p1, p2].forEach(player => {
-                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 10000);
+                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 12000);
                 });
 
-                [p1, p2].forEach(player => {
-                    player.skeletons.forEach(skel => {
-                        [ { ball: p1, prefix: 'p1' }, { ball: p2, prefix: 'p2' } ].forEach(bObj => {
-                            let dist = Math.hypot(bObj.ball.x - skel.x, bObj.ball.y - skel.y);
-                            if (dist < bObj.ball.radius + skel.radius) {
-                                let nx = (bObj.ball.x - skel.x) / (dist || 1);
-                                let ny = (bObj.ball.y - skel.y) / (dist || 1);
-                                bObj.ball.x += nx * 3;
-                                bObj.ball.y += ny * 3;
-                                
-                                skel.hp -= 10;
-                                playHitSound();
-                            }
-                        });
+                // JINO 스켈레톤 충돌 판정: 상대 공만 부딪힘! 아군 공은 투명인간처럼 통과
+                [ { owner: p1, enemy: p2 }, { owner: p2, enemy: p1 } ].forEach(pair => {
+                    pair.owner.skeletons.forEach(skel => {
+                        // 상대 공(enemy)과만 충돌 체크
+                        let distEnemy = Math.hypot(pair.enemy.x - skel.x, pair.enemy.y - skel.y);
+                        if (distEnemy < pair.enemy.radius + skel.radius) {
+                            let nx = (pair.enemy.x - skel.x) / (distEnemy || 1);
+                            let ny = (pair.enemy.y - skel.y) / (distEnemy || 1);
+                            pair.enemy.x += nx * 3;
+                            pair.enemy.y += ny * 3;
+                            
+                            skel.hp -= 10;
+                            playHitSound();
+                        }
                     });
+                });
+
+                // 본이 폭탄 업데이트 및 4초 뒤 폭발 (상대 공만 피해, 나는 안 맞음)
+                [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
+                    for (let i = pair.caster.bombs.length - 1; i >= 0; i--) {
+                        let bomb = pair.caster.bombs[i];
+                        if (bomb.progress < 1) {
+                            bomb.progress += 0.025; // 미스터비스트처럼 느린 모션으로 이동
+                            bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
+                            bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
+                        } else {
+                            if (!bomb.explodedTime) {
+                                bomb.explodedTime = nowTimestamp + 4000; // 4초 뒤 폭발
+                            }
+                            if (nowTimestamp >= bomb.explodedTime) {
+                                // 폭발 실행! 빨간색 동그라미 범위 안에 상대 공이 있으면 데미지 15
+                                playExplosionSound();
+                                let distToEnemy = Math.hypot(pair.enemy.x - bomb.destX, pair.enemy.y - bomb.destY);
+                                if (distToEnemy <= bomb.radius + pair.enemy.radius) {
+                                    pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                                    updateHpBars();
+                                    playHitSound();
+
+                                    if (pair.enemy.hp <= 0) {
+                                        isGaming = false;
+                                        if (gameInterval) clearInterval(gameInterval);
+                                        setTimeout(() => {
+                                            showToast(`🏆 ${pair.caster.name} 승리!`);
+                                            exitMatch();
+                                        }, 100);
+                                    }
+                                }
+                                pair.caster.bombs.splice(i, 1);
+                            }
+                        }
+                    }
                 });
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2688,53 +2730,6 @@
                     }
                 }
 
-                [ { shooter: p1, enemy: p2, prefix: 'p1' }, { shooter: p2, enemy: p1, prefix: 'p2' } ].forEach(pair => {
-                    for (let i = pair.shooter.arrows.length - 1; i >= 0; i--) {
-                        let arrow = pair.shooter.arrows[i];
-                        arrow.x += arrow.vx;
-                        arrow.y += arrow.vy;
-
-                        if (arrow.x < 0 || arrow.x > canvas.width || arrow.y < 0 || arrow.y > canvas.height) {
-                            pair.shooter.arrows.splice(i, 1);
-                            continue;
-                        }
-
-                        let hitSkel = false;
-                        [pair.enemy, pair.shooter].forEach(pl => {
-                            pl.skeletons.forEach(skel => {
-                                if (Math.hypot(skel.x - arrow.x, skel.y - arrow.y) < skel.radius + 8) {
-                                    skel.hp -= 10;
-                                    hitSkel = true;
-                                }
-                            });
-                        });
-
-                        if (hitSkel) {
-                            pair.shooter.arrows.splice(i, 1);
-                            playHitSound();
-                            continue;
-                        }
-
-                        let dist = Math.hypot(pair.enemy.x - arrow.x, pair.enemy.y - arrow.y);
-                        if (dist < pair.enemy.radius + 15) {
-                            let dmg = arrow.isBoniBullet ? arrow.damage : 15;
-                            pair.enemy.hp = Math.max(0, pair.enemy.hp - dmg);
-                            pair.shooter.arrows.splice(i, 1);
-                            playHitSound();
-                            updateHpBars();
-
-                            if (pair.enemy.hp <= 0) {
-                                isGaming = false;
-                                if (gameInterval) clearInterval(gameInterval);
-                                setTimeout(() => {
-                                    showToast(`🏆 ${pair.shooter.name} 승리!`);
-                                    exitMatch();
-                                }, 100);
-                            }
-                        }
-                    }
-                });
-
                 let dx = p2.x - p1.x;
                 let dy = p2.y - p1.y;
                 let distance = Math.hypot(dx, dy);
@@ -2782,33 +2777,39 @@
                     player.skeletons.forEach(skel => {
                         ctx.save();
                         if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                            ctx.drawImage(skeletonImg, skel.x - 18, skel.y - 24, 36, 48);
+                            // 픽셀 2배 더 키움 (36x48 -> 72x96)
+                            ctx.drawImage(skeletonImg, skel.x - 36, skel.y - 48, 72, 96);
                         } else {
                             ctx.fillStyle = '#bdc3c7';
-                            ctx.fillRect(skel.x - 10, skel.y - 16, 20, 32);
+                            ctx.fillRect(skel.x - 20, skel.y - 32, 40, 64);
                         }
-                        ctx.font = "bold 12px sans-serif";
+                        ctx.font = "bold 14px sans-serif";
                         ctx.fillStyle = "#e74c3c";
                         ctx.strokeStyle = "#ffffff";
                         ctx.lineWidth = 3;
                         ctx.textAlign = "center";
-                        ctx.strokeText(`체력:${skel.hp}`, skel.x, skel.y - 30);
-                        ctx.fillText(`체력:${skel.hp}`, skel.x, skel.y - 30);
+                        ctx.strokeText(`체력:${skel.hp}`, skel.x, skel.y - 55);
+                        ctx.fillText(`체력:${skel.hp}`, skel.x, skel.y - 55);
                         ctx.restore();
                     });
 
-                    player.arrows.forEach(arrow => {
+                    // 폭탄 및 빨간색 동그라미 범위 표시 렌더링
+                    player.bombs.forEach(bomb => {
                         ctx.save();
-                        ctx.translate(arrow.x, arrow.y);
-                        ctx.rotate(arrow.angle);
-                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                            ctx.drawImage(arrowImg, -27, -13.5, 54, 27);
-                        } else {
-                            ctx.fillStyle = '#8e44ad';
-                            ctx.beginPath();
-                            ctx.arc(0, 0, 8, 0, Math.PI * 2);
-                            ctx.fill();
-                        }
+                        // 빨간색 동그라미 범위 표시
+                        ctx.beginPath();
+                        ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = "rgba(231, 76, 60, 0.22)";
+                        ctx.fill();
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = "#e74c3c";
+                        ctx.stroke();
+
+                        // 폭탄 아이콘 (💣)
+                        ctx.font = "32px sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText("💣", bomb.x, bomb.y);
                         ctx.restore();
                     });
                 });
@@ -2838,8 +2839,8 @@
                     ctx.restore();
                 });
 
-                drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)", p1.hyperActiveTimer > 0);
-                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)", p2.hyperActiveTimer > 0);
+                drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)", false);
+                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)", false);
             }
 
             requestAnimationFrame(runGameLoop);
