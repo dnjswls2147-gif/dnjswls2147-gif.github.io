@@ -790,14 +790,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-05" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-05', 'patch-btn-05');">⬇️</button>
+                            <button id="patch-btn-06" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-06', 'patch-btn-06');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-05" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        게임 루프 중복 실행 오류 수정, 동룡쓰 부하 투사체 주기 분리(컵라면 2초/2뎀, 베이컨 3초/4뎀), JINO 스켈레톤 정상화, 정사각형 패치노트/캐릭터설명 스크롤 넓게 확장, 방 생성/취소 및 자기방 입장 제한 완벽 적용!
+                    <div id="patch-content-06" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        모든 공의 기술 발동 오류 전면 수정, JINO 스켈레톤 및 화살 공격 메커니즘 원복 및 최적화, 전역 채팅 및 플레이어 목록 실시간 동기화 완벽 적용!
                     </div>
                 </div>
 
@@ -810,7 +810,7 @@
                     <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨(여자/남자 랜덤) 부하를 소환하여 3초마다 컵라면(2뎀) 및 베이컨(4뎀)을 발사합니다.</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 부하를 소환하여 3초마다 컵라면(2뎀) 및 베이컨(4뎀)을 발사합니다.</div>
                     </div>
                 </div>
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
@@ -2071,7 +2071,7 @@
             let onlineCount = 0, offlineCount = 0, nowTime = Date.now(), myUid = getDeviceUniqueId();
             players.forEach(p => {
                 let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
-                let isOnline = (nowTime - lastPing) < 6000 || p.uid === myUid;
+                let isOnline = (nowTime - lastPing) < 8000 || p.uid === myUid;
                 if (isOnline) onlineCount++; else offlineCount++;
             });
             const titleTxt = document.getElementById('chat-title-online-txt');
@@ -2087,7 +2087,7 @@
             container.innerHTML = '';
             let nowTime = Date.now(), myUid = getDeviceUniqueId();
             players.forEach(p => {
-                let isOnline = (nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 6000 || p.uid === myUid;
+                let isOnline = (nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 8000 || p.uid === myUid;
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
                 item.innerHTML = `
@@ -2133,6 +2133,21 @@
             chatData.forEach(item => appendChatBubble(item.name, item.msg, item.time, false));
             logs.scrollTop = logs.scrollHeight;
         }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'lily_game_chat_logs') {
+                loadChatLogs();
+            }
+            if (e.key === 'lily_game_players_list') {
+                updateOnlineOfflineCounts();
+                renderAdminPlayersList();
+            }
+        });
+
+        setInterval(() => {
+            loadChatLogs();
+            updateOnlineOfflineCounts();
+        }, 1500);
 
         function sendChatMessage() {
             if (!checkNameRegisteredOrBlock()) return;
@@ -2256,22 +2271,24 @@
 
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode);
+                let maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
                     x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: getSkillMaxTime(ball.name), skillCount: 0,
+                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
 
             team2Players = selectedTeam2Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(2, idx, currentMatchMode);
+                let maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
                     x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: getSkillMaxTime(ball.name), skillCount: 0,
+                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
@@ -2396,7 +2413,6 @@
                     }
                 });
 
-                // 동룡쓰 부하 투사체 발사 주기 분리 (컵라면 2초마다 2뎀, 베이컨 3초마다 4뎀)
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2443,7 +2459,7 @@
                                     moneyItems.push({
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 5.0, vy: Math.sin(angle) * 5.0,
-                                        radius: 10, damage: 10, isArrow: true, ownerTeam: player.team
+                                        radius: 12, damage: 10, isArrow: true, ownerTeam: player.team
                                     });
                                 });
                                 playArrowSound();
@@ -2859,11 +2875,10 @@
                 ctx.restore();
             }
 
-            // 게임 루프가 정확히 한 번만 재귀 호출되도록 정상화됨
             requestAnimationFrame(runGameLoop);
         }
 
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-    </html>
+</html>
