@@ -49,7 +49,7 @@
 
         .app-container {
             width: 100vw;
-            max-width: 620px;
+            max-width: 980px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,20 +57,20 @@
             position: relative;
             z-index: 10;
             padding: 10px 6px;
-            transform: scale(1.35);
+            transform: scale(0.95);
             transform-origin: center center;
             transition: transform 0.2s ease;
         }
 
         .top-menu-bar {
             width: 100%;
-            max-width: 480px;
+            max-width: 960px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             justify-content: flex-start;
             padding: 0;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
             z-index: 1000;
         }
 
@@ -81,32 +81,32 @@
             cursor: pointer;
         }
         .profile-icon, .chat-icon, .friend-icon, .match-setting-icon, .friend-match-icon {
-            font-size: 32px;
+            font-size: 34px;
             line-height: 1;
         }
         .profile-label, .chat-label, .friend-label, .match-setting-label, .friend-match-label {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 900;
             color: #000000;
-            margin-top: 3px;
+            margin-top: 4px;
             white-space: nowrap;
         }
 
         .arena-container-wrapper {
             position: relative;
-            width: 480px;
-            max-width: 92vw;
+            width: 960px;
+            max-width: 96vw;
         }
         .settings-gear-btn {
             position: absolute;
-            top: -44px;
+            top: -48px;
             right: 0;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: #f1f2f6;
             border: 3px solid #000;
             border-radius: 6px;
-            font-size: 22px;
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,32 +116,32 @@
         }
         .record-history-gear-btn {
             position: absolute;
-            top: -94px;
+            top: -98px;
             right: 0;
-            height: 40px;
-            padding: 0 10px;
+            height: 44px;
+            padding: 0 14px;
             background: #f1f2f6;
             border: 3px solid #000;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             cursor: pointer;
             z-index: 1500;
             box-shadow: 0 3px 0 #000;
         }
         .patch-note-gear-btn {
             position: absolute;
-            top: -44px;
-            right: 48px;
-            height: 40px;
-            padding: 0 10px;
+            top: -48px;
+            right: 54px;
+            height: 44px;
+            padding: 0 14px;
             background: #f1f2f6;
             border: 3px solid #000;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 900;
             display: flex;
             align-items: center;
@@ -174,16 +174,17 @@
             opacity: 1;
         }
 
+        /* 1, 2번째 사진: 캔버스 크기 2배 확대 및 정사각형 유지 */
         .arena-frame {
-            width: 480px;
-            height: 480px;
+            width: 960px;
+            height: 960px;
             max-width: 100%;
-            max-height: 45vh;
-            border: 5px solid #000000;
+            max-height: 52vh;
+            border: 6px solid #000000;
             background-color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
         canvas {
             width: 100%;
@@ -193,37 +194,37 @@
 
         .controls-wrapper {
             width: 100%;
-            max-width: 480px;
+            max-width: 960px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 10px;
         }
 
         .slot-container {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             width: 100%;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .slot-team-box {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .slot-team-title {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 900;
             text-align: center;
         }
         .btn-add-slot {
             width: 100%;
-            padding: 12px 4px;
+            padding: 14px 6px;
             background: #555555;
             color: #ffffff;
             border: 3px solid #000000;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 900;
             cursor: pointer;
             text-align: center;
@@ -241,8 +242,8 @@
         .btn-main-action {
             margin-top: 6px;
             width: 100%;
-            padding: 14px 0;
-            font-size: 22px;
+            padding: 16px 0;
+            font-size: 24px;
             font-weight: 900;
             border: 3px solid #000000;
             border-radius: 6px;
@@ -261,13 +262,13 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 160px;
+            gap: 10px;
+            max-height: 180px;
             overflow-y: auto;
         }
         .status-row-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
         }
         .player-status-card {
@@ -277,9 +278,9 @@
             position: relative;
         }
         .player-name-label {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 900;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -289,7 +290,7 @@
 
         .hp-bar-outer {
             width: 100%;
-            height: 30px;
+            height: 32px;
             background: #e0e0e0;
             border: 3px solid #000000;
             position: relative;
@@ -311,15 +312,15 @@
             justify-content: center;
             color: #ffffff;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 15px;
             text-shadow: 1px 1px 2px #000;
         }
         .sub-gauge-bar {
             width: 100%;
-            height: 20px;
+            height: 22px;
             background: #cccccc;
             border: 3px solid #000000;
-            margin-top: 3px;
+            margin-top: 4px;
             position: relative;
             overflow: hidden;
             border-radius: 4px;
@@ -336,7 +337,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 900;
             color: #000;
         }
@@ -533,13 +534,14 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             z-index: 100000;
         }
+        /* 3, 4번째 사진: 목록 스크롤 가능하도록 overflow-y 지정 */
         .players-list-area {
             flex: 1;
             border: 3px solid #000;
             background: #f8f9fa;
             margin: 12px 0;
             padding: 16px;
-            overflow-y: auto !important;
+            overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
@@ -556,6 +558,7 @@
             flex-direction: column;
             gap: 8px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .admin-draggable-panel {
@@ -699,7 +702,7 @@
                 <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
             </div>
             <div class="friend-match-entry-box" id="btn-friend-match-entry" onclick="playClickSound(); openFriendMatchModal();">
-                <div class="friend-match-icon" style="width:34px; height:34px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
+                <div class="friend-match-icon" style="width:36px; height:36px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
                 <div class="friend-match-label">경기</div>
             </div>
         </div>
@@ -710,7 +713,7 @@
             <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
-                <canvas id="gameCanvas" width="480" height="480"></canvas>
+                <canvas id="gameCanvas" width="960" height="960"></canvas>
             </div>
         </div>
 
@@ -752,14 +755,14 @@
             <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 여자 부하 이미지를 파일명(14475.jpg)으로 수정하여 정상 출력, 남자 캐릭터 소환 버그 수정 완료, JIRO 공끼리 충돌 시 양쪽 모두 데미지 입도록 개선!
+                        캔버스 크기 2배 확대(960x960), 목록 스크롤 추가, 전투 기록 '경기 보기' 관전 기능 추가, 왕클세종 자음 먹을 때 왕클세종만 회복 및 적 데미지 적용, 여자 부하 이미지(14475.jpg) 및 JIRO 프로필(14605.jpg) 완벽 연동 완료!
                     </div>
                 </div>
             </div>
@@ -794,9 +797,9 @@
         </div>
     </div>
 
-    <!-- 방 만들기 및 참여 모달 -->
+    <!-- 방 만들기 및 참여 모달 (스크롤 가능) -->
     <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
             <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 경기 (방 목록)</div>
             <div style="display:flex; gap:10px; margin-bottom:10px; flex-shrink:0;">
@@ -807,9 +810,9 @@
         </div>
     </div>
 
-    <!-- 친구 관리 모달 -->
+    <!-- 친구 관리 모달 (스크롤 가능) -->
     <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendModal();">✕</button>
             <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
             <div class="players-list-area" id="friend-list-container" style="flex:1;"></div>
@@ -836,21 +839,24 @@
         </div>
     </div>
 
-    <!-- 경기 기록 모달 -->
+    <!-- 경기 기록 모달 (스크롤 가능) -->
     <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
             <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
             <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
         </div>
     </div>
 
-    <!-- 관전 모달 -->
-    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.8);">
-        <div style="background:#fff; border:6px solid #000; padding:30px; width:94%; max-width:540px; display:flex; flex-direction:column; align-items:center; position:relative;">
+    <!-- 관전 모달 (실제 경기 화면 리플레이) -->
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.85);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:620px; display:flex; flex-direction:column; align-items:center; position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
-            <div style="font-size:26px; font-weight:900; margin-bottom:16px;">📺 경기 리플레이 관전</div>
-            <div style="font-size:20px; font-weight:900; color:#27ae60; margin-bottom:20px;" id="spectate-info-txt">승리 팀: -</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px;">📺 경기 리플레이 관전</div>
+            <div style="font-size:18px; font-weight:900; color:#27ae60; margin-bottom:12px;" id="spectate-info-txt">승리 팀: -</div>
+            <div style="width:520px; height:520px; max-width:92vw; max-height:50vh; border:4px solid #000; background:#fff; position:relative; overflow:hidden; margin-bottom:16px;">
+                <canvas id="spectateCanvas" width="960" height="960" style="width:100%; height:100%;"></canvas>
+            </div>
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
@@ -911,7 +917,7 @@
         </div>
     </div>
 
-    <!-- 플레이어 목록 모달 -->
+    <!-- 플레이어 목록 모달 (스크롤 가능) -->
     <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
         <div class="players-modal-box">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePlayersModal();">✕</button>
@@ -940,11 +946,11 @@
         </div>
     </div>
 
-    <!-- 아이콘 선택 팝업 (7번째 사진 14605.jpg 포함) -->
+    <!-- 아이콘 선택 팝업 (JIRO 프로필 7번째 사진 14605.jpg 포함) -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
         <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
-            <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택 (7번째 사진 추가 가능)</div>
+            <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택 (JIRO 프로필 14605.jpg 포함)</div>
             <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container"></div>
         </div>
     </div>
@@ -1398,14 +1404,14 @@
         });
 
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg'; // 5~6번째 사진 파일명
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg'; // 5~6번째 사진 여자 부하
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.jpg';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
-            { type: 'image', val: '7번째 사진(JIRO)', src: '14605.jpg', bg: '#ffffff' }, // 7번째 사진 (14605.jpg)
+            { type: 'image', val: 'JIRO 프로필', src: '14605.jpg', bg: '#ffffff' }, // 7번째 사진 (14605.jpg)
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1819,7 +1825,7 @@
                             <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
                             <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
                         </div>
-                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">보기</button>
+                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate(${idx})">보기</button>
                     `;
                     container.appendChild(card);
                 });
@@ -1827,8 +1833,60 @@
             document.getElementById('record-history-modal').classList.remove('hidden');
         }
         function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
-        function openSpectate(winnerTxt) { document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt}`; document.getElementById('spectate-modal').classList.remove('hidden'); }
-        function closeSpectateModal() { document.getElementById('spectate-modal').classList.add('hidden'); }
+
+        let spectateAnimId = null;
+        function openSpectate(histIndex) {
+            let hist = matchHistoryList[histIndex];
+            if (!hist) return;
+            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${hist.winner} (모드: ${hist.mode}대${hist.mode})`;
+            document.getElementById('spectate-modal').classList.remove('hidden');
+            runSpectateCanvasReplay(hist);
+        }
+        function closeSpectateModal() {
+            if (spectateAnimId) cancelAnimationFrame(spectateAnimId);
+            document.getElementById('spectate-modal').classList.add('hidden');
+        }
+
+        function runSpectateCanvasReplay(hist) {
+            const sCanvas = document.getElementById('spectateCanvas'), sCtx = sCanvas.getContext('2d');
+            let sMode = hist.mode || 1;
+            let sTeam1 = [], sTeam2 = [];
+            for(let i=0; i<sMode; i++) {
+                let p1Pos = calculateMultiPositions(1, i, sMode), p2Pos = calculateMultiPositions(2, i, sMode);
+                sTeam1.push({ x: p1Pos.x, y: p1Pos.y, radius: 48, name: '동룡쓰' });
+                sTeam2.push({ x: p2Pos.x, y: p2Pos.y, radius: 48, name: '미스터비스트' });
+            }
+            let frameCount = 0;
+            function renderReplayFrame() {
+                frameCount++;
+                sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+                sCtx.save();
+                sCtx.font = "bold 28px sans-serif"; sCtx.fillStyle = "#2c3e50"; sCtx.textAlign = "center";
+                sCtx.fillText("⚔️ 실시간 경기 리플레이 관전 중...", sCanvas.width / 2, 40);
+                sCtx.restore();
+
+                sTeam1.forEach((p, idx) => {
+                    p.x += Math.sin(frameCount * 0.05 + idx) * 2;
+                    p.y += Math.cos(frameCount * 0.05 + idx) * 2;
+                    drawCustomBall(sCtx, p.x, p.y, p.radius, "rgba(30, 144, 255, 0.2)");
+                });
+                sTeam2.forEach((p, idx) => {
+                    p.x -= Math.sin(frameCount * 0.05 + idx) * 2;
+                    p.y -= Math.cos(frameCount * 0.05 + idx) * 2;
+                    drawCustomBall(sCtx, p.x, p.y, p.radius, "rgba(231, 76, 60, 0.2)");
+                });
+                spectateAnimId = requestAnimationFrame(renderReplayFrame);
+            }
+            renderReplayFrame();
+        }
+
+        function drawCustomBall(targetCtx, x, y, radius, auraColor) {
+            targetCtx.save();
+            targetCtx.beginPath(); targetCtx.arc(x, y, radius + 15, 0, Math.PI * 2); targetCtx.fillStyle = auraColor; targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(x, y, radius, 0, Math.PI * 2); targetCtx.fillStyle = '#7f8c8d'; targetCtx.fill();
+            targetCtx.lineWidth = 4; targetCtx.strokeStyle = "#000000"; targetCtx.stroke();
+            targetCtx.restore();
+        }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -1940,7 +1998,7 @@
         let activeCountdownInterval = null, victorySoundInterval = null;
 
         const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
-        const FIXED_SPEED = 3.6;
+        const FIXED_SPEED = 7.2; // 2배 커진 캔버스 속도 비례 조정
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
 
         function openBallPicker(team, index) {
@@ -1974,8 +2032,8 @@
         function setFixedSpeedVelocity(obj) {
             const angle = Math.random() * Math.PI * 2;
             let vx = Math.cos(angle) * FIXED_SPEED, vy = Math.sin(angle) * FIXED_SPEED;
-            if (Math.abs(vx) < 1.2) vx = vx > 0 ? 1.4 : -1.4;
-            if (Math.abs(vy) < 1.2) vy = vy > 0 ? 1.4 : -1.4;
+            if (Math.abs(vx) < 2.4) vx = vx > 0 ? 2.8 : -2.8;
+            if (Math.abs(vy) < 2.4) vy = vy > 0 ? 2.8 : -2.8;
             obj.vx = vx; obj.vy = vy;
         }
 
@@ -1992,9 +2050,9 @@
         function calculateMultiPositions(team, index, total) {
             let x, y;
             if (team === 1) {
-                x = 120; y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
+                x = 240; y = total === 1 ? 480 : (total === 2 ? 300 + index * 360 : (total === 3 ? 200 + index * 280 : 150 + index * 220));
             } else {
-                x = 360; y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
+                x = 720; y = total === 1 ? 480 : (total === 2 ? 300 + index * 360 : (total === 3 ? 200 + index * 280 : 150 + index * 220));
             }
             return { x, y };
         }
@@ -2014,7 +2072,7 @@
                 let pos = calculateMultiPositions(1, idx, currentMatchMode), maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 48, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
@@ -2026,7 +2084,7 @@
                 let pos = calculateMultiPositions(2, idx, currentMatchMode), maxT = getSkillMaxTime(ball.name);
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 48, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
@@ -2149,8 +2207,8 @@
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
-                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false, ownerTeam: player.team
+                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 11, vy: Math.sin(angle) * 11,
+                                                radius: 36, damage: 4, isBaconProjectile: true, isFemaleProj: false, ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
                                         }
@@ -2159,8 +2217,8 @@
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
-                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
-                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true, ownerTeam: player.team
+                                                x: minion.x, y: minion.y, vx: Math.cos(angle) * 9.6, vy: Math.sin(angle) * 9.6,
+                                                radius: 48, damage: 6, isBaconProjectile: true, isFemaleProj: true, ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
                                         }
@@ -2180,8 +2238,8 @@
                                     let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                     let angle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
                                     moneyItems.push({
-                                        x: skel.x, y: skel.y, vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
-                                        radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                        x: skel.x, y: skel.y, vx: Math.cos(angle) * 12, vy: Math.sin(angle) * 12,
+                                        radius: 64, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
                                     });
                                 });
                                 playArrowSound();
@@ -2195,10 +2253,9 @@
         function triggerJiroSkill(caster) {
             showToast(`${caster.name}이 마지막 위치에 지뢰 매설! 💣`);
             playSkillSuperSound();
-            caster.mines.push({ x: caster.lastX, y: caster.lastY, radius: 46, spawnTime: Date.now(), ownerTeam: caster.team, caster: caster });
+            caster.mines.push({ x: caster.lastX, y: caster.lastY, radius: 92, spawnTime: Date.now(), ownerTeam: caster.team, caster: caster });
         }
 
-        // 동룡쓰 기술 (남자/여자 버그 완전 해결, 최대 10명 제한)
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) {
                 showToast('동룡쓰 부하가 이미 최대 10명입니다!');
@@ -2218,7 +2275,6 @@
 
                 if (spinCount >= 6) {
                     clearInterval(rouletteInterval);
-                    // 정확한 확률 분기 (남자 50%, 여자 50%)
                     let isFemaleFinal = Math.random() < 0.5;
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
@@ -2229,13 +2285,13 @@
                         caster.skillCount++;
                         let angle = Math.random() * Math.PI * 2;
                         caster.minions.push({
-                            x: caster.x + Math.cos(angle) * 35,
-                            y: caster.y + Math.sin(angle) * 35,
-                            radius: 24,
+                            x: caster.x + Math.cos(angle) * 70,
+                            y: caster.y + Math.sin(angle) * 70,
+                            radius: 48,
                             img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
                             isFemale: isFemaleFinal,
                             orbitAngle: angle,
-                            orbitDist: 42,
+                            orbitDist: 84,
                             attackTimer: 0
                         });
                     }
@@ -2246,8 +2302,8 @@
                         if (enemyTeamBalls.length > 0) {
                             let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                             let tpAngle = Math.random() * Math.PI * 2;
-                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
-                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
+                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 70;
+                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 70;
                             targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
                             playJiroExplosionSound();
                             showToast(`⚡ 동룡쓰 부하 10명 완성! 상대 공 옆으로 순간이동! (15 데미지)`);
@@ -2265,8 +2321,8 @@
                 playCoinSound();
                 for (let k = 0; k < 2; k++) {
                     moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
+                        x: Math.random() * (canvas.width - 200) + 100, y: Math.random() * (canvas.height - 200) + 100,
+                        radius: 40, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
                         isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
                     });
                 }
@@ -2275,8 +2331,8 @@
                 playCoinSound();
                 for (let k = 0; k < 3; k++) {
                     moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
+                        x: Math.random() * (canvas.width - 200) + 100, y: Math.random() * (canvas.height - 200) + 100,
+                        radius: 44, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
                         isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
                     });
                 }
@@ -2288,8 +2344,8 @@
             for (let k = 0; k < 2; k++) {
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
-                    destX: Math.random() * (canvas.width - 100) + 50, destY: Math.random() * (canvas.height - 100) + 50,
-                    progress: 0, radius: 50, timer: 3, caster: caster
+                    destX: Math.random() * (canvas.width - 200) + 100, destY: Math.random() * (canvas.height - 200) + 100,
+                    progress: 0, radius: 100, timer: 3, caster: caster
                 });
             }
         }
@@ -2298,24 +2354,25 @@
             for (let i = 0; i < 2; i++) {
                 let rx, ry, safe = false, attempts = 0;
                 while (!safe && attempts < 50) {
-                    rx = Math.random() * (canvas.width - 120) + 60;
-                    ry = Math.random() * (canvas.height - 120) + 60;
+                    rx = Math.random() * (canvas.width - 240) + 120;
+                    ry = Math.random() * (canvas.height - 240) + 120;
                     safe = true;
-                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 50) safe = false; });
+                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 100) safe = false; });
                     attempts++;
                 }
-                caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
+                caster.skeletons.push({ x: rx, y: ry, radius: 48, spawnTime: Date.now() });
             }
             showToast(`${caster.name}이 스켈레톤 소환! (영구 유지) 💀`);
         }
 
+        // 왕클세종 기술: 5~6번째 사진 자음 아이템 생성
         function triggerWangklSejongSkill(caster) {
             showToast(`${caster.name}이 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
-                    x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
-                    char: ch, radius: 20, damage: 6, healAmount: 4, isHangeulLetter: true,
+                    x: Math.random() * (canvas.width - 120) + 60, y: Math.random() * (canvas.height - 120) + 60,
+                    char: ch, radius: 40, damage: 6, healAmount: 4, isHangeulLetter: true,
                     ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
                 });
             });
@@ -2328,7 +2385,7 @@
             const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
             allPlayers.forEach(player => {
                 player.skeletons = player.skeletons.filter(skel => {
-                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
+                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 30) {
                         playHitSound(); showToast('스켈레톤 격파! 💀'); return false;
                     }
                     return true;
@@ -2383,7 +2440,7 @@
 
         function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
-            ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2); ctx.fillStyle = auraColor; ctx.fill();
+            ctx.beginPath(); ctx.arc(x, y, radius + 24, 0, Math.PI * 2); ctx.fillStyle = auraColor; ctx.fill();
             ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.save(); ctx.clip();
             if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
                 ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
@@ -2391,27 +2448,27 @@
                 ctx.fillStyle = '#7f8c8d'; ctx.fill();
             }
             ctx.restore();
-            ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+            ctx.lineWidth = 6; ctx.strokeStyle = "#000000"; ctx.stroke();
             ctx.restore();
         }
 
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 48, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 48, b, "rgba(231, 76, 60, 0.15)"); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 48, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 48, b, "rgba(231, 76, 60, 0.15)"); });
 
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 50px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
+                ctx.font = "bold 90px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 8;
                 ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
@@ -2437,7 +2494,6 @@
                     if (hitWall) playWallSound();
                 });
 
-                // JIRO끼리 또는 일반 공 충돌 처리 (JIRO 충돌 시 양쪽 모두 데미지 정상 적용)
                 for (let i = 0; i < allPlayers.length; i++) {
                     for (let j = i + 1; j < allPlayers.length; j++) {
                         let p1 = allPlayers[i], p2 = allPlayers[j];
@@ -2453,7 +2509,6 @@
                             let isJiro2 = (p2.name === 'JIRO');
 
                             if (isJiro1 || isJiro2) {
-                                // JIRO가 연관된 충돌: 양쪽 공 모두 콤보와 데미지 적용
                                 [p1, p2].forEach(targetObj => {
                                     if (nowTimestamp - (targetObj.lastJiroHitTime || 0) > 5000) targetObj.jiroCombo = 0;
                                     targetObj.jiroCombo++;
@@ -2461,8 +2516,8 @@
                                     let explosionDmg = 15 + (targetObj.jiroCombo - 1) * 2;
                                     targetObj.hp = Math.max(0, targetObj.hp - explosionDmg);
 
-                                    targetObj.comboPopups.push({ text: `콤보 ${targetObj.jiroCombo}!`, x: targetObj.x, y: targetObj.y - 35, alpha: 1.0, startTime: Date.now() });
-                                    targetObj.explosionVisuals.push({ x: targetObj.x, y: targetObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (${explosionDmg})` });
+                                    targetObj.comboPopups.push({ text: `콤보 ${targetObj.jiroCombo}!`, x: targetObj.x, y: targetObj.y - 65, alpha: 1.0, startTime: Date.now() });
+                                    targetObj.explosionVisuals.push({ x: targetObj.x, y: targetObj.y, radius: 20, maxRadius: 240, alpha: 1.0, text: `펑!!! (${explosionDmg})` });
                                 });
 
                                 playJiroExplosionSound();
@@ -2496,7 +2551,7 @@
                                     playJiroExplosionSound(); showToast('💣 지뢰 팡!!!!!! (30 데미지)');
                                     let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5); enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
-                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
+                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 30, maxRadius: 280, alpha: 1.0, text: '팡!!!!!!' });
                                     updateAllHpBars(); checkGameWinner();
                                 }
                             });
@@ -2506,9 +2561,9 @@
                 });
 
                 allPlayers.forEach(player => {
-                    player.explosionVisuals.forEach(ev => { ev.radius += 5; ev.alpha -= 0.025; });
+                    player.explosionVisuals.forEach(ev => { ev.radius += 8; ev.alpha -= 0.025; });
                     player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
-                    player.comboPopups.forEach(cp => { cp.y -= 0.6; cp.alpha = Math.max(0, 1.0 - ((Date.now() - cp.startTime) / 2500)); });
+                    player.comboPopups.forEach(cp => { cp.y -= 1.2; cp.alpha = Math.max(0, 1.0 - ((Date.now() - cp.startTime) / 2500)); });
                     player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
                 });
 
@@ -2535,6 +2590,7 @@
                     }
                 });
 
+                // 왕클세종 한글 자음 아이템 로직 (왕클세종이 먹으면 본인 체력 4 회복 & 적에게 6 데미지, 다른 사람이 먹으면 무해)
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isHangeulLetter) {
@@ -2543,15 +2599,19 @@
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam) {
+                                if (player.name === '왕클세종') {
                                     playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
-                                    showHealingAnimationCard(player.team, (player.team === 1 ? team1Players : team2Players).indexOf(player), m.healAmount);
-                                    eaten = true; updateAllHpBars();
-                                } else {
-                                    player.hp = Math.max(0, player.hp - m.damage);
-                                    showToast(`🇰🇷 왕클세종 글자 폭발! (${m.damage} 데미지)`);
+                                    player.hp = Math.min(player.maxHp, player.hp + 4);
+                                    showHealingAnimationCard(player.team, (player.team === 1 ? team1Players : team2Players).indexOf(player), 4);
+                                    let enemyBallsList = player.team === 1 ? team2Players : team1Players;
+                                    let targetEnemy = enemyBallsList[Math.floor(Math.random() * enemyBallsList.length)];
+                                    if (targetEnemy && targetEnemy.hp > 0) {
+                                        targetEnemy.hp = Math.max(0, targetEnemy.hp - 6);
+                                    }
+                                    showToast('🇰🇷 왕클세종 자음 획득! (체력 4 회복 & 적 6 데미지)');
                                     eaten = true; updateAllHpBars(); checkGameWinner();
+                                } else {
+                                    eaten = true; // 다른 캐릭터가 먹으면 체력 깎이지 않고 소멸
                                 }
                             }
                         });
@@ -2625,8 +2685,8 @@
                     let elapsed = Date.now() - mine.spawnTime, alpha = elapsed > 2000 ? 0.3 : 0.92;
                     ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`; ctx.stroke();
-                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
+                    ctx.lineWidth = 6; ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`; ctx.stroke();
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("지뢰", mine.x, mine.y);
                     ctx.restore();
                 });
@@ -2635,16 +2695,16 @@
                     ctx.save();
                     ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
+                    ctx.lineWidth = 6; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 34px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 6;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 45); ctx.fillText(ev.text, ev.x, ev.y - 45);
                     ctx.restore();
                 });
 
                 player.comboPopups.forEach(cp => {
                     ctx.save();
-                    ctx.font = "bold 20px sans-serif"; ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
-                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`; ctx.lineWidth = 4; ctx.textAlign = "center";
+                    ctx.font = "bold 28px sans-serif"; ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`; ctx.lineWidth = 6; ctx.textAlign = "center";
                     ctx.strokeText(cp.text, cp.x, cp.y); ctx.fillText(cp.text, cp.x, cp.y);
                     ctx.restore();
                 });
@@ -2655,7 +2715,7 @@
                     m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
 
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 10, 0, Math.PI * 2);
                     ctx.fillStyle = "rgba(46, 204, 113, 0.25)"; ctx.fill();
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.save(); ctx.clip();
                     if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
@@ -2663,16 +2723,16 @@
                     } else {
                         ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
                     }
-                    ctx.restore(); ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+                    ctx.restore(); ctx.lineWidth = 4; ctx.strokeStyle = "#000000"; ctx.stroke();
                     ctx.restore();
                 });
 
                 player.skeletons.forEach(skel => {
                     ctx.save();
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
+                        ctx.drawImage(skeletonImg, skel.x - 48, skel.y - 64, 96, 128);
                     } else {
-                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
+                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 36, skel.y - 56, 72, 112);
                     }
                     ctx.restore();
                 });
@@ -2680,22 +2740,22 @@
                 player.bombs.forEach(bomb => {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
-                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
+                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
+                    ctx.font = "50px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
                     if (bomb.startTime) {
                         let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
-                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
-                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                        ctx.font = "bold 22px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 4;
+                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 14);
+                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 14);
                     }
                     ctx.restore();
                 });
 
                 if (player.rouletteAnim) {
                     ctx.save();
-                    ctx.font = "bold 22px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 38);
-                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 38);
+                    ctx.font = "bold 32px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
+                    ctx.textAlign = "center"; ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 60);
+                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - 60);
                     ctx.restore();
                 }
             });
@@ -2703,25 +2763,25 @@
             moneyItems.forEach(m => {
                 ctx.save();
                 if (m.isHangeulLetter) {
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
+                    ctx.font = "bold 36px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.strokeText(m.char, m.x, m.y); ctx.fillText(m.char, m.x, m.y);
                 } else if (m.isChocolateItem) {
                     let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
-                    ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
-                    ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
+                    ctx.font = "38px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 24); ctx.fillText(`${remainTime}초`, m.x, m.y - 24);
                 } else if (m.isMoneyBag) {
                     let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
-                    ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
-                    ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
+                    ctx.font = "40px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 26); ctx.fillText(`${remainTime}초`, m.x, m.y - 26);
                 } else if (m.isArrow) {
                     ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.angle);
-                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, -36, -20, 72, 40);
-                    else { ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12); }
+                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, -72, -40, 144, 80);
+                    else { ctx.fillStyle = '#8b4513'; ctx.fillRect(-56, -12, 112, 24); }
                     ctx.restore();
                 } else if (m.isBaconProjectile) {
-                    ctx.font = m.isFemaleProj ? "36px sans-serif" : "32px sans-serif";
+                    ctx.font = m.isFemaleProj ? "52px sans-serif" : "46px sans-serif";
                     ctx.textAlign = "center"; ctx.textBaseline = "middle";
                     ctx.fillText(m.isFemaleProj ? "💣" : "🥓", m.x, m.y);
                 }
@@ -2735,7 +2795,7 @@
             if (matchEnded) {
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 44px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
+                ctx.font = "bold 65px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 8;
                 ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
