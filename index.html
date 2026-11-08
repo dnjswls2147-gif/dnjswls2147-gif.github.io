@@ -629,7 +629,7 @@
 
         .admin-scroll-body {
             padding: 18px;
-            overflow-y: auto !important;
+            overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch;
             flex: 1;
             display: flex;
@@ -741,11 +741,15 @@
                 <div class="match-setting-icon">⚙️</div>
                 <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
             </div>
+            <div style="font-size:12px; font-weight:900; color:#333; display:flex; align-items:center; gap:4px; margin-left:auto;">
+                <span>0.1버전 릴리 볼 파이트</span>
+                <button style="background:#3498db; color:#fff; border:2px solid #000; width:24px; height:24px; font-size:12px; font-weight:900; cursor:pointer;" id="lobby-version-toggle-btn" onclick="playClickSound(); toggleLobbyVersionNote();">⬇️</button>
+            </div>
         </div>
 
         <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘, 📓 패치노트 버튼 래퍼 -->
         <div class="arena-container-wrapper">
-            <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패티 노트</div>
+            <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
                 <canvas id="gameCanvas" width="450" height="450"></canvas>
@@ -788,28 +792,45 @@
         </div>
     </div>
 
-    <!-- 패치노트 모달 팝업 창 -->
+    <!-- 패치노트 모달 팝업 창 (너비 2배 넓힘) -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:30px 20px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:80vh; display:flex; flex-direction:column;">
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:96%; max-width:700px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:85vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; margin-bottom:16px; color:#000;">📓 패티 노트 (패치노트)</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:18px; color:#000;">📓 패치 노트</div>
             
-            <div style="border:3px solid #000; background:#f8f9fa; padding:12px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:8px; text-align:left; overflow-y:auto; flex:1;">
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:8px;">
+            <div style="border:3px solid #000; background:#f8f9fa; padding:16px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:12px; text-align:left; overflow-y:auto; flex:1;" id="patch-note-list-scroll-area">
+                
+                <!-- v0.1.2 -->
+                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.2 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button style="background:#3498db; color:#fff; border:2px solid #000; width:30px; height:30px; font-size:14px; font-weight:900; cursor:pointer;" onclick="playClickSound(); togglePatchDetails('patch-content-01');">⬇️</button>
+                            <button id="patch-btn-02" style="background:#3498db; color:#fff; border:2px solid #000; width:32px; height:32px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-02', 'patch-btn-02');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-01" class="hidden" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px;">
+                    <div id="patch-content-02" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
+                        어드민 패널 스크롤 추가, JINO 스켈레톤 데미지 8 및 공끼리 충돌 데미지 10 적용, 3 2 1 카운트다운 시 화면 어둡게, 경기 종료 시 이긴 공 승리 효과음 및 폭죽 연출, 이름 접속 시 실시간 플레이어 및 채팅 연동!
+                    </div>
+                </div>
+
+                <!-- v0.1.1 (이전 노트 보존) -->
+                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.1</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-01" style="background:#3498db; color:#fff; border:2px solid #000; width:32px; height:32px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-01', 'patch-btn-01');">⬇️</button>
+                        </div>
+                    </div>
+                    <div id="patch-content-01" style="font-size:15px; font-weight:bold; color:#555; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
                         다인전 캐릭터 줄내림/분산 배치, 타캐릭터 머리 위 스킬명 제거, 로비 공 미리보기 및 브롤스타즈 스타일 5x4 아이콘 선택창 구현!
                     </div>
                 </div>
+
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px; font-size:18px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:18px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
         </div>
     </div>
 
@@ -920,7 +941,7 @@
         </div>
     </div>
 
-    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (6번 사진 참고) -->
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
         <div style="background:#1b4f72; border:6px solid #000; padding:24px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
             <button class="modal-close-btn" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
@@ -1012,7 +1033,7 @@
             <span>⚙️ 관리자 패널</span>
             <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
         </div>
-        <div class="admin-scroll-body">
+        <div class="admin-scroll-body" id="admin-scroll-body-content">
             <div style="font-size:16px; font-weight:900; text-align:center; color:#2c3e50;">
                 어드민 패널을 사용하세요
             </div>
@@ -1071,25 +1092,24 @@
             getAudioContext();
         }, { once: true });
 
-        function playCoinSound() {
+        function playClickSound() {
             try {
                 let ctx = getAudioContext();
-                let now = ctx.currentTime;
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(987.77, now);
-                osc.frequency.setValueAtTime(1318.51, now + 0.08);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.frequency.setValueAtTime(500, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.2 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.2);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.05);
             } catch(e) {}
         }
 
-        function playThrowSound() {
+        function playSlideSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
@@ -1097,111 +1117,148 @@
                 let gain = ctx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(700, now + 0.2);
-                gain.gain.setValueAtTime(0.25 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                gain.gain.setValueAtTime(0.15 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.22);
+                osc.stop(now + 0.15);
             } catch(e) {}
         }
 
-        function playSmallExplosionSound() {
+        function playHitSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.09);
+            } catch(e) {}
+        }
+
+        function playWallSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
+                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.07);
+            } catch(e) {}
+        }
+
+        function playArrowSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(180, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } catch(e) {}
+        }
 
-                gain.gain.setValueAtTime(0.7 * soundVolume, now);
+        function playSkillSuperSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(now);
                 osc.stop(now + 0.3);
-
-                let bufferSize = ctx.sampleRate * 0.25;
-                let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                let output = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = (Math.random() * 2 - 1) * 1.0;
-                }
-
-                let whiteNoise = ctx.createBufferSource();
-                whiteNoise.buffer = buffer;
-
-                let filter = ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(500, now);
-                filter.frequency.exponentialRampToValueAtTime(40, now + 0.25);
-
-                let noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.6 * soundVolume, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-
-                whiteNoise.connect(filter);
-                filter.connect(noiseGain);
-                noiseGain.connect(ctx.destination);
-
-                whiteNoise.start(now);
-                whiteNoise.stop(now + 0.25);
             } catch(e) {}
         }
 
-        function playExplosionSound() {
-            playSmallExplosionSound();
-        }
-
-        function playVictorySound() {
+        function playHealSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch(e) {}
+        }
 
-                const notes = [523.25, 659.25, 783.99, 1046.50];
+        function playVictorySoundLoop() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
                 notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.12;
+                    let time = now + idx * 0.15;
                     let osc = ctx.createOscillator();
                     let gain = ctx.createGain();
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(freq, time);
-                    gain.gain.setValueAtTime(0.5 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+                    gain.gain.setValueAtTime(0.6 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.35);
                     osc.connect(gain);
                     gain.connect(ctx.destination);
                     osc.start(time);
-                    osc.stop(time + 0.3);
+                    osc.stop(time + 0.35);
                 });
-
-                for (let k = 0; k < 3; k++) {
-                    let time = now + 0.4 + k * 0.2;
-                    let bufferSize = ctx.sampleRate * 0.3;
-                    let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                    let output = buffer.getChannelData(0);
-                    for (let i = 0; i < bufferSize; i++) {
-                        output[i] = (Math.random() * 2 - 1);
-                    }
-                    let noise = ctx.createBufferSource();
-                    noise.buffer = buffer;
-                    let filter = ctx.createBiquadFilter();
-                    filter.type = 'bandpass';
-                    filter.frequency.setValueAtTime(800, time);
-                    let gain = ctx.createGain();
-                    gain.gain.setValueAtTime(0.7 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
-
-                    noise.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(ctx.destination);
-                    noise.start(time);
-                    noise.stop(time + 0.3);
-                }
             } catch(e) {}
+        }
+
+        function toggleLobbyVersionNote() {
+            playSlideSound();
+            openPatchNoteModal();
+            // 패치 노트 오픈 시 첫 번째 항목(v0.1.2) 기본 펼침
+            const content = document.getElementById('patch-content-02');
+            const btn = document.getElementById('patch-btn-02');
+            if (content && btn) {
+                content.style.display = 'block';
+                btn.innerText = '⏫️';
+            }
+        }
+
+        function togglePatchDetails(contentId, btnId) {
+            const content = document.getElementById(contentId);
+            const btn = document.getElementById(btnId);
+            if (!content || !btn) return;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                btn.innerText = '⏫️';
+            } else {
+                content.style.display = 'none';
+                btn.innerText = '⬇️';
+            }
         }
 
         let currentMatchMode = 1;
@@ -1302,17 +1359,11 @@
 
         function openPatchNoteModal() {
             if (!checkNameRegisteredOrBlock()) return;
-            document.getElementById('patch-content-01').classList.add('hidden');
             document.getElementById('patch-note-modal').classList.remove('hidden');
         }
 
         function closePatchNoteModal() {
             document.getElementById('patch-note-modal').classList.add('hidden');
-        }
-
-        function togglePatchDetails(id) {
-            const content = document.getElementById(id);
-            content.classList.toggle('hidden');
         }
 
         const ballList = [
@@ -1476,111 +1527,6 @@
             document.getElementById('settings-modal').classList.add('hidden');
         }
 
-        function playClickSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.2 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.05);
-            } catch(e) {}
-        }
-
-        function playHitSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(320, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
-                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.09);
-            } catch(e) {}
-        }
-
-        function playWallSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(180, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
-                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.07);
-            } catch(e) {}
-        }
-
-        function playArrowSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(1200, now);
-                osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.12);
-            } catch(e) {}
-        }
-
-        function playSkillSuperSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } catch(e) {}
-        }
-
-        function playHealSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, now);
-                osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.25);
-            } catch(e) {}
-        }
-
         function getFormattedToday() {
             const now = new Date();
             const yyyy = now.getFullYear();
@@ -1684,7 +1630,7 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            const forcedResetKey = 'lily_game_name_reset_v5';
+            const forcedResetKey = 'lily_game_name_reset_v6';
             if (!localStorage.getItem(forcedResetKey)) {
                 localStorage.removeItem('lily_game_user_name');
                 localStorage.setItem(forcedResetKey, 'true');
@@ -1969,13 +1915,21 @@
                 let userChats = chatData.filter(c => c.name === p.name);
                 let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
 
+                let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
+                let isOnline = (Date.now() - lastPing) < 6000;
+                if (p.uid === getDeviceUniqueId()) isOnline = true;
+
                 const card = document.createElement('div');
                 card.className = 'player-item-card';
                 card.style.fontSize = '16px';
                 card.innerHTML = `
-                    <div>🔹 [${p.name}] ${p.date || '가입일'} 첫 접속</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>🔹 [${p.name}] ${p.date || '가입일'} 첫 접속</span>
+                        <span style="font-size:14px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
+                    </div>
                     <div style="font-size:14px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>
                 `;
+                card.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(card);
             });
         }
@@ -2017,6 +1971,7 @@
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             chatData.push({ uid: myUid, name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+            
             appendChatBubble(myUid, name, msg, timeStr, true);
             input.value = '';
             renderAdminPlayersList();
@@ -2205,6 +2160,7 @@
         let countdownText = '';
         let winnerText = '';
         let activeCountdownInterval = null;
+        let victorySoundInterval = null;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -2297,7 +2253,6 @@
 
         function calculateMultiPositions(team, index, total) {
             let x, y;
-            let width = 450, height = 450;
             if (team === 1) {
                 x = 110;
                 if (total === 1) y = 225;
@@ -2328,6 +2283,7 @@
 
             if (gameInterval) clearInterval(gameInterval);
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
+            if (victorySoundInterval) clearInterval(victorySoundInterval);
             moneyItems = [];
             matchEnded = false;
             winnerText = '';
@@ -2530,7 +2486,7 @@
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 5.0,
                                         vy: Math.sin(angle) * 5.0,
-                                        radius: 10, damage: 10,
+                                        radius: 10, damage: 8,
                                         isArrow: true, ownerTeam: player.team
                                     });
                                 });
@@ -2630,6 +2586,7 @@
         function exitMatch() {
             isCountingDown = false;
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
+            if (victorySoundInterval) clearInterval(victorySoundInterval);
             isGaming = false;
             matchEnded = false;
             if (gameInterval) clearInterval(gameInterval);
@@ -2655,14 +2612,25 @@
                 isGaming = false;
                 if (gameInterval) clearInterval(gameInterval);
 
+                let winningBalls = [];
                 if (!t1Alive && !t2Alive) {
                     winnerText = '무승부!';
                 } else if (!t2Alive) {
-                    winnerText = `파란팀 승리!`;
+                    winningBalls = team1Players.map(p => p.name);
+                    let repName = winningBalls.length > 1 ? `${winningBalls[0]} 외 ${winningBalls.length-1}명` : winningBalls[0];
+                    winnerText = `${repName} 승리!`;
                 } else {
-                    winnerText = `빨간팀 승리!`;
+                    winningBalls = team2Players.map(p => p.name);
+                    let repName = winningBalls.length > 1 ? `${winningBalls[0]} 외 ${winningBalls.length-1}명` : winningBalls[0];
+                    winnerText = `${repName} 승리!`;
                 }
-                playVictorySound();
+
+                playVictorySoundLoop();
+                victorySoundInterval = setInterval(() => {
+                    if (matchEnded) playVictorySoundLoop();
+                    else clearInterval(victorySoundInterval);
+                }, 1200);
+
                 showToast(`🏆 ${winnerText}`);
             }
         }
@@ -2728,11 +2696,17 @@
                     }
                 });
 
+                // 카운트다운 시 화면 조금 어둡게 오버레이
                 ctx.save();
+                ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "bold 50px sans-serif";
                 ctx.fillStyle = "#e74c3c";
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 5;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
+                ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.restore();
 
@@ -2790,8 +2764,8 @@
                             p2.vy = Math.sin(angle) * FIXED_SPEED;
 
                             playHitSound();
-                            p1.hp = Math.max(0, p1.hp - 8);
-                            p2.hp = Math.max(0, p2.hp - 8);
+                            p1.hp = Math.max(0, p1.hp - 10);
+                            p2.hp = Math.max(0, p2.hp - 10);
                             updateAllHpBars();
                             checkGameWinner();
                         }
@@ -2799,7 +2773,19 @@
                 }
 
                 allPlayers.forEach(player => {
-                    player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 14000);
+                    player.skeletons = player.skeletons.filter(skel => {
+                        if (skel.hp <= 0 || (nowTimestamp - skel.spawnTime) >= 14000) return false;
+                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                        enemyTeamBalls.forEach(enemy => {
+                            if (enemy.hp > 0 && Math.hypot(enemy.x - skel.x, enemy.y - skel.y) < enemy.radius + skel.radius) {
+                                enemy.hp = Math.max(0, enemy.hp - 8);
+                                playHitSound();
+                                updateAllHpBars();
+                                checkGameWinner();
+                            }
+                        });
+                        return true;
+                    });
                 });
 
                 allPlayers.forEach(caster => {
@@ -2987,19 +2973,6 @@
                 if (player.hp > 0) {
                     let aura = player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)";
                     drawBall(player.x, player.y, player.radius, player.ballData, aura);
-
-                    if (player.name === '왕클세종' && player.lastSkillNoticeTimer > 0) {
-                        player.lastSkillNoticeTimer--;
-                        ctx.save();
-                        ctx.font = "bold 72px sans-serif";
-                        ctx.fillStyle = "#e74c3c";
-                        ctx.strokeStyle = "#ffffff";
-                        ctx.lineWidth = 8;
-                        ctx.textAlign = "center";
-                        ctx.strokeText(player.lastSkillName, player.x, player.y - player.radius - 24);
-                        ctx.fillText(player.lastSkillName, player.x, player.y - player.radius - 24);
-                        ctx.restore();
-                    }
                 }
             });
 
