@@ -790,14 +790,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-05" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-05', 'patch-btn-05');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-05" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        공 투명화 버그 수정, 컵라면/베이컨 데미지 조정(2/4), 동룡쓰 부하 로블록스 베이컨 소환, UI 최적화
+                        게임 루프 중복 실행 오류 수정, 동룡쓰 부하 투사체 주기 분리(컵라면 2초/2뎀, 베이컨 3초/4뎀), JINO 스켈레톤 정상화, 정사각형 패치노트/캐릭터설명 스크롤 넓게 확장, 방 생성/취소 및 자기방 입장 제한 완벽 적용!
                     </div>
                 </div>
 
@@ -810,7 +810,14 @@
                     <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨(여자/남자 랜덤)을 소환하여 3초마다 컵라면(2뎀) 또는 베이컨(4뎀)을 발사합니다.</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨(여자/남자 랜덤) 부하를 소환하여 3초마다 컵라면(2뎀) 및 베이컨(4뎀)을 발사합니다.</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤을 소환하여 강력한 활 공격 기술을 사용합니다.</div>
                     </div>
                 </div>
 
@@ -1194,7 +1201,6 @@
             } catch(e) {}
         }
 
-        // 음식 투척 시 더욱 화려하고 멋진 효과음 (주파수 스윕 + 하모닉스)
         function playFoodThrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1956,18 +1962,27 @@
                 return;
             }
 
+            const myName = localStorage.getItem('lily_game_user_name');
             rooms.forEach(r => {
                 const card = document.createElement('div');
                 card.className = 'player-item-card';
                 card.style.flexDirection = 'row';
                 card.style.justifyContent = 'space-between';
                 card.style.alignItems = 'center';
+                
+                let joinBtnHtml = '';
+                if (r.host === myName) {
+                    joinBtnHtml = `<span style="font-size:16px; color:#e74c3c; font-weight:900;">내 방은 입장 불가</span>`;
+                } else {
+                    joinBtnHtml = `<button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="joinFriendRoom('${r.host}')">참여하기</button>`;
+                }
+
                 card.innerHTML = `
                     <div>
                         <div style="font-size:20px; font-weight:900;">🏠 ${r.host}님의 방</div>
                         <div style="font-size:15px; color:#27ae60; font-weight:bold; margin-top:3px;">${r.participant ? `참여자: ${r.participant} (참여중입니다)` : '참여 대기 중'}</div>
                     </div>
-                    <button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="joinFriendRoom('${r.host}')">참여하기</button>
+                    ${joinBtnHtml}
                 `;
                 container.appendChild(card);
             });
@@ -1975,6 +1990,10 @@
 
         function joinFriendRoom(hostName) {
             const myName = localStorage.getItem('lily_game_user_name');
+            if (hostName === myName) {
+                showToast('자신이 만든 방에는 들어갈 수 없습니다!');
+                return;
+            }
             let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
             let room = rooms.find(r => r.host === hostName);
             if (room) {
@@ -2266,7 +2285,6 @@
             document.getElementById('lobby-controls').classList.add('hidden');
             document.getElementById('ingame-controls').classList.remove('hidden');
 
-            // 경기 시작 시 ⚙️ 게임 설정 버튼을 제외한 우측 상단 아이콘 숨기기
             document.getElementById('top-btn-record').classList.add('hidden');
             document.getElementById('top-btn-patch').classList.add('hidden');
 
@@ -2378,28 +2396,38 @@
                     }
                 });
 
-                // 동룡쓰 부하가 3초마다 투사체 발사 (컵라면 데미지 2, 베이컨 데미지 4 + 화려한 사운드)
+                // 동룡쓰 부하 투사체 발사 주기 분리 (컵라면 2초마다 2뎀, 베이컨 3초마다 4뎀)
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
-                        player.minionAttackTimer = (player.minionAttackTimer || 0) + 1;
-                        if (player.minionAttackTimer >= 3) {
-                            player.minionAttackTimer = 0;
-                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                            if (enemyTeamBalls.length > 0) {
-                                player.minions.forEach(minion => {
-                                    let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                                    let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                        if (enemyTeamBalls.length > 0) {
+                            player.minions.forEach(minion => {
+                                minion.ramenTimer = (minion.ramenTimer || 0) + 1;
+                                minion.baconTimer = (minion.baconTimer || 0) + 1;
+
+                                let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                                let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+
+                                if (minion.ramenTimer >= 2) {
+                                    minion.ramenTimer = 0;
                                     moneyItems.push({
                                         x: minion.x, y: minion.y,
                                         vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                        radius: 36,
-                                        damage: minion.isFemale ? 2 : 4, // 컵라면 2, 베이컨 4
-                                        isBaconProjectile: true, isFemaleProj: minion.isFemale,
-                                        ownerTeam: player.team
+                                        radius: 36, damage: 2, isBaconProjectile: true, isFemaleProj: true, ownerTeam: player.team
                                     });
-                                });
-                                playFoodThrowSound(); // 새로운 음식 투척 효과음 재생
-                            }
+                                    playFoodThrowSound();
+                                }
+
+                                if (minion.baconTimer >= 3) {
+                                    minion.baconTimer = 0;
+                                    moneyItems.push({
+                                        x: minion.x, y: minion.y,
+                                        vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                        radius: 36, damage: 4, isBaconProjectile: true, isFemaleProj: false, ownerTeam: player.team
+                                    });
+                                    playFoodThrowSound();
+                                }
+                            });
                         }
                     }
 
@@ -2426,7 +2454,6 @@
             }, 1000);
         }
 
-        // 동룡쓰 기술: 로블록스 베이컨 캐릭터(여자/남자) 랜덤 소환
         function triggerDongryongSkill(caster) {
             if (caster.skillCount >= 5) return;
             caster.skillCount++;
@@ -2441,14 +2468,15 @@
                 x: sx, y: sy, radius: 20,
                 img: isFemale ? femaleBaconImg : maleBaconImg,
                 owner: caster, isFemale: isFemale,
-                offsetX: Math.cos(angle) * dist, offsetY: Math.sin(angle) * dist
+                offsetX: Math.cos(angle) * dist, offsetY: Math.sin(angle) * dist,
+                ramenTimer: 0, baconTimer: 0
             });
         }
 
         function triggerMrBeastSkill(caster) {
             let isChocolate = Math.random() < 0.5;
             showToast(`${caster.name}이 ${isChocolate ? '🍫' : '💰'} 아이템 투하! 🎁`);
-            playCoinSound(); playThrowSound();
+            playCoinSound();
             for (let k = 0; k < 2; k++) {
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 80) + 40, y: Math.random() * (canvas.height - 80) + 40,
@@ -2460,7 +2488,6 @@
 
         function triggerBoniSkill(caster) {
             showToast(`${caster.name}이 폭탄 투척! 💣`);
-            playThrowSound();
             for (let k = 0; k < 2; k++) {
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
@@ -2541,7 +2568,6 @@
             document.getElementById('ingame-controls').classList.add('hidden');
             document.getElementById('lobby-controls').classList.remove('hidden');
 
-            // 로비로 돌아올 때 우측 상단 아이콘 다시 복원
             document.getElementById('top-btn-record').classList.remove('hidden');
             document.getElementById('top-btn-patch').classList.remove('hidden');
 
@@ -2833,10 +2859,11 @@
                 ctx.restore();
             }
 
+            // 게임 루프가 정확히 한 번만 재귀 호출되도록 정상화됨
             requestAnimationFrame(runGameLoop);
         }
 
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-</html>
+    </html>
