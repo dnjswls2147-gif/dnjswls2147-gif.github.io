@@ -1035,7 +1035,6 @@
             getAudioContext();
         }, { once: true });
 
-        // 투척 모션 효과음 (피슈우웅 날아가는 소리)
         function playThrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1054,7 +1053,6 @@
             } catch(e) {}
         }
 
-        // 지리는 폭발 효과음 (펑! 쾅!)
         function playExplosionSound() {
             try {
                 let ctx = getAudioContext();
@@ -1269,7 +1267,6 @@
             } catch(e) {}
         }
 
-        // 스켈레톤 화살 쓩 효과음
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -2296,6 +2293,14 @@
             obj.vy = vy;
         }
 
+        function getSkillMaxTime(playerName) {
+            if (playerName === '왕클세종') return 10;
+            if (playerName === '미스터비스트') return 8;
+            if (playerName === 'JINO') return 12;
+            if (playerName === '본이') return 6;
+            return 8;
+        }
+
         function startMatch() {
             if (!checkNameRegisteredOrBlock()) return;
             if (!selectedLeftBall || !selectedRightBall) {
@@ -2313,7 +2318,7 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '본이' ? 6 : 8));
+            p1.skillTimer = getSkillMaxTime(p1.name);
             p1.skeletons = [];
             p1.bombs = [];
             p1.arrowTimer = 0;
@@ -2326,7 +2331,7 @@
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '본이' ? 6 : 8));
+            p2.skillTimer = getSkillMaxTime(p2.name);
             p2.skeletons = [];
             p2.bombs = [];
             p2.arrowTimer = 0;
@@ -2342,7 +2347,7 @@
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
                 if (['미스터비스트', 'JINO', '왕클세종', '본이'].includes(player.name)) {
-                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : (player.name === '본이' ? 6 : 8));
+                    let maxTime = getSkillMaxTime(player.name);
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
                 } else {
@@ -2369,12 +2374,18 @@
                     }
 
                     if (['미스터비스트', 'JINO', '왕클세종', '본이'].includes(pair.player.name)) {
-                        let maxTime = (pair.player.name === 'JINO') ? 12 : (pair.player.name === '미스터비스트' ? 10 : (pair.player.name === '본이' ? 6 : 8));
+                        let maxTime = getSkillMaxTime(pair.player.name);
                         pair.player.skillTimer -= 1;
                         if (pair.player.skillTimer <= 0) {
                             pair.player.skillTimer = maxTime;
                             if (pair.player.name === '미스터비스트') {
-                                spawnChocolate(pair.player, 2);
+                                // 8초마다 랜덤으로 초콜릿 또는 돈 선택
+                                let isMoney = Math.random() < 0.5;
+                                if (isMoney) {
+                                    triggerMrBeastMoneySkill(pair.player, pair.enemy);
+                                } else {
+                                    spawnChocolate(pair.player, 2);
+                                }
                             } else if (pair.player.name === 'JINO') {
                                 spawnSkeletons(pair.player, pair.enemy === p2 ? 'p2' : 'p1');
                             } else if (pair.player.name === '왕클세종') {
@@ -2390,7 +2401,6 @@
                     }
                 });
 
-                // JINO 스켈레톤 1초마다 화살 쏘기 (쓩 효과음)
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
                     if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
                         pair.player.skeletons.forEach(skel => {
@@ -2413,7 +2423,34 @@
             }, 1000);
         }
 
-        // 본이 기술: 아무데나 폭탄 3개 발사
+        // 미스터비스트 돈(💰) 기술: 아무 데나 3개 던지면 바로 폭발 (빨간색 동그라미 범위, 데미지 20, 엄청 많이 튕김)
+        function triggerMrBeastMoneySkill(caster, enemy) {
+            showToast(`${caster.name} 돈(💰) 폭탄 3개 투척! 💸`);
+            playThrowSound();
+
+            for (let k = 0; k < 3; k++) {
+                let targetX = Math.random() * (canvas.width - 100) + 50;
+                let targetY = Math.random() * (canvas.height - 100) + 50;
+
+                caster.bombs.push({
+                    startX: caster.x,
+                    startY: caster.y,
+                    x: caster.x,
+                    y: caster.y,
+                    destX: targetX,
+                    destY: targetY,
+                    progress: 0,
+                    radius: 65, // 빨간색 동그라미 폭발 범위
+                    timer: 4,
+                    isMoneyBomb: true,
+                    exploded: false,
+                    caster: caster,
+                    enemy: enemy
+                });
+            }
+        }
+
+        // 본이 기술: 폭탄 3개 발사
         function triggerBoniSkill(caster, enemy) {
             showToast(`${caster.name} 폭탄 3개 투척! 💣`);
             playThrowSound();
@@ -2430,8 +2467,8 @@
                     destX: targetX,
                     destY: targetY,
                     progress: 0,
-                    radius: 55, // 빨간색 동그라미 범위
-                    timer: 4, // 4초 뒤 만료
+                    radius: 55,
+                    timer: 4,
                     exploded: false,
                     caster: caster,
                     enemy: enemy
@@ -2439,29 +2476,26 @@
             }
         }
 
+        // 왕클세종 기술: 10초마다 경기장 랜덤한 위치에 ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 텍스트 깔림 (먹으면 체력 +5 회복, 상대방 맞으면 데미지 10)
         function triggerWangklSejongSkill(caster, enemy) {
-            showToast(`${caster.name}의 한글 세종 공격 발동! (3배 넓은 범위) 🇰🇷`);
+            showToast(`${caster.name} 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
             
             let fullStr = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ';
             let chars = fullStr.split('');
-            let startX = caster.x;
-            let startY = caster.y;
 
-            chars.forEach((ch, idx) => {
-                let angle = (idx / chars.length) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
-                let speed = 2.0 + Math.random() * 0.8;
+            chars.forEach((ch) => {
+                let rx = Math.random() * (canvas.width - 60) + 30;
+                let ry = Math.random() * (canvas.height - 60) + 30;
 
                 moneyItems.push({
-                    x: startX,
-                    y: startY,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
+                    x: rx,
+                    y: ry,
                     char: ch,
-                    target: enemy,
-                    radius: 17,
-                    damage: 4,
-                    isLetter: true,
+                    radius: 20,
+                    damage: 10,
+                    healAmount: 5,
+                    isHangeulLetter: true,
                     owner: caster === p1 ? 'p1' : 'p2',
                     color: (caster === p1) ? '#1e90ff' : '#e74c3c',
                     spawnTime: Date.now()
@@ -2483,7 +2517,7 @@
                     x: rx,
                     y: ry,
                     radius: 22,
-                    hp: 40, // 체력 40
+                    hp: 40,
                     maxHp: 40,
                     target: targetOwnerStr,
                     spawnTime: Date.now()
@@ -2505,6 +2539,7 @@
                     spawnTime: Date.now()
                 });
             }
+            showToast(`${ownerPlayer.name} 초콜릿 소환! 🍫`);
         }
 
         function exitMatch() {
@@ -2588,7 +2623,7 @@
             if (isGaming) {
                 const nowTimestamp = Date.now();
 
-                // 체력 서서히 깎이는 부드러운 애니메이션 처리
+                // 체력 깎일 때 서서히 사라지는(줄어드는) 부드러운 애니메이션 처리
                 if (p1.displayHp > p1.hp) {
                     p1.displayHp = Math.max(p1.hp, p1.displayHp - 1.5);
                     updateHpBars();
@@ -2642,7 +2677,6 @@
                     player.skeletons = player.skeletons.filter(skel => skel.hp > 0 && (nowTimestamp - skel.spawnTime) < 14000);
                 });
 
-                // JINO 스켈레톤 충돌 판정 및 체력 40, 공 부딪힐 때 데미지 5, 상대 체력 10 깎이면서 튕김
                 [ { owner: p1, enemy: p2 }, { owner: p2, enemy: p1 } ].forEach(pair => {
                     pair.owner.skeletons.forEach(skel => {
                         let distEnemy = Math.hypot(pair.enemy.x - skel.x, pair.enemy.y - skel.y);
@@ -2650,15 +2684,13 @@
                             let nx = (pair.enemy.x - skel.x) / (distEnemy || 1);
                             let ny = (pair.enemy.y - skel.y) / (distEnemy || 1);
                             
-                            // 부딪힐 때 상대 공 튕겨내기
                             pair.enemy.vx = nx * FIXED_SPEED * 1.3;
                             pair.enemy.vy = ny * FIXED_SPEED * 1.3;
 
-                            skel.hp -= 5; // 공이랑 부딪힐 때 데미지 5
+                            skel.hp -= 5;
                             playHitSound();
 
                             if (skel.hp <= 0) {
-                                // 스켈레톤이 부서지면 터지면서 상대 체력 10 깎임
                                 playExplosionSound();
                                 pair.enemy.hp = Math.max(0, pair.enemy.hp - 10);
                                 updateHpBars();
@@ -2668,7 +2700,7 @@
                     });
                 });
 
-                // 본이 폭탄 업데이트: 상대가 1번이라도 범위에 들어가면 즉시 펑 터짐 + 4초 뒤 마지막 폭발 데미지 15
+                // 본이 및 미스터비스트 돈 폭탄 업데이트
                 [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
                     for (let i = pair.caster.bombs.length - 1; i >= 0; i--) {
                         let bomb = pair.caster.bombs[i];
@@ -2681,30 +2713,30 @@
                                 bomb.startTime = nowTimestamp;
                             }
 
-                            // 상대방이 폭탄의 빨간색 원 범위 안에 1번이라도 닿았는지 체크
                             let distToEnemy = Math.hypot(pair.enemy.x - bomb.destX, pair.enemy.y - bomb.destY);
+                            let bombDamage = bomb.isMoneyBomb ? 20 : 15;
+                            let bounceMultiplier = bomb.isMoneyBomb ? 2.2 : 1.4;
+
                             if (distToEnemy <= bomb.radius + pair.enemy.radius) {
                                 playExplosionSound();
-                                pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                                pair.enemy.hp = Math.max(0, pair.enemy.hp - bombDamage);
                                 updateHpBars();
                                 playHitSound();
 
-                                // 튕겨내기
                                 let nx = (pair.enemy.x - bomb.destX) / (distToEnemy || 1);
                                 let ny = (pair.enemy.y - bomb.destY) / (distToEnemy || 1);
-                                pair.enemy.vx = nx * FIXED_SPEED * 1.4;
-                                pair.enemy.vy = ny * FIXED_SPEED * 1.4;
+                                pair.enemy.vx = nx * FIXED_SPEED * bounceMultiplier;
+                                pair.enemy.vy = ny * FIXED_SPEED * bounceMultiplier;
 
-                                showToast('폭탄 직격 펑! 💥');
+                                showToast(bomb.isMoneyBomb ? '돈 폭탄 직격! 💸' : '폭탄 직격 펑! 💥');
                                 pair.caster.bombs.splice(i, 1);
                                 continue;
                             }
 
-                            // 4초 뒤 사라질 때 마지막 펑! (데미지 15)
                             if (nowTimestamp - bomb.startTime >= 4000) {
                                 playExplosionSound();
                                 if (distToEnemy <= bomb.radius + pair.enemy.radius) {
-                                    pair.enemy.hp = Math.max(0, pair.enemy.hp - 15);
+                                    pair.enemy.hp = Math.max(0, pair.enemy.hp - bombDamage);
                                     updateHpBars();
                                     playHitSound();
                                 }
@@ -2716,27 +2748,41 @@
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
-                    if (m.isLetter) {
-                        m.x += m.vx;
-                        m.y += m.vy;
-
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
+                    if (m.isHangeulLetter) {
+                        if (nowTimestamp - m.spawnTime > 12000) {
                             moneyItems.splice(i, 1);
                             continue;
                         }
+                        let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
+                        let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
 
-                        let enemy = (m.owner === 'p1') ? p2 : p1;
-                        let dist = Math.hypot(enemy.x - m.x, enemy.y - m.y);
-                        if (dist < enemy.radius + m.radius) {
-                            let hitKey = m.char;
-                            let lastHitTime = enemy.lastHitMap[hitKey] || 0;
-                            if (nowTimestamp - lastHitTime >= 500) {
-                                enemy.lastHitMap[hitKey] = nowTimestamp;
-                                enemy.hp = Math.max(0, enemy.hp - m.damage);
-                                playHitSound();
+                        // 자기 팀이 먹으면 체력 5 회복, 상대 팀이 닿으면 데미지 10
+                        if (m.owner === 'p1') {
+                            if (dist1 < p1.radius + m.radius) {
+                                playHealSound();
+                                p1.hp = Math.min(p1.maxHp, p1.hp + m.healAmount);
+                                showHealingAnimation('p1', m.healAmount);
                                 updateHpBars();
+                                moneyItems.splice(i, 1);
+                            } else if (dist2 < p2.radius + m.radius) {
+                                playHitSound();
+                                p2.hp = Math.max(0, p2.hp - m.damage);
+                                updateHpBars();
+                                moneyItems.splice(i, 1);
                             }
-                            moneyItems.splice(i, 1);
+                        } else {
+                            if (dist2 < p2.radius + m.radius) {
+                                playHealSound();
+                                p2.hp = Math.min(p2.maxHp, p2.hp + m.healAmount);
+                                showHealingAnimation('p2', m.healAmount);
+                                updateHpBars();
+                                moneyItems.splice(i, 1);
+                            } else if (dist1 < p1.radius + m.radius) {
+                                playHitSound();
+                                p1.hp = Math.max(0, p1.hp - m.damage);
+                                updateHpBars();
+                                moneyItems.splice(i, 1);
+                            }
                         }
                     } else if (m.isArrow) {
                         m.x += m.vx;
@@ -2854,14 +2900,14 @@
                         ctx.font = "32px sans-serif";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
-                        ctx.fillText("💣", bomb.x, bomb.y);
+                        ctx.fillText(bomb.isMoneyBomb ? "💰" : "💣", bomb.x, bomb.y);
                         ctx.restore();
                     });
                 });
 
                 moneyItems.forEach(m => {
                     ctx.save();
-                    if (m.isLetter) {
+                    if (m.isHangeulLetter) {
                         ctx.beginPath();
                         ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
                         ctx.fillStyle = m.color;
