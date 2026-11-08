@@ -106,7 +106,7 @@
             width: 100%;
             max-width: 450px;
             display: flex;
-            gap: 14px;
+            gap: 10px;
             align-items: center;
             justify-content: flex-start;
             padding: 0;
@@ -114,21 +114,22 @@
             z-index: 1000;
         }
 
-        .profile-entry-box, .chat-entry-box {
+        .profile-entry-box, .chat-entry-box, .match-setting-entry-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
         }
-        .profile-icon, .chat-icon {
-            font-size: 32px;
+        .profile-icon, .chat-icon, .match-setting-icon {
+            font-size: 30px;
             line-height: 1;
         }
-        .profile-label, .chat-label {
-            font-size: 14px;
+        .profile-label, .chat-label, .match-setting-label {
+            font-size: 13px;
             font-weight: 900;
             color: #000000;
             margin-top: 2px;
+            white-space: nowrap;
         }
 
         .admin-entry-box {
@@ -178,7 +179,26 @@
             z-index: 1500;
             box-shadow: 0 2px 0 #000;
         }
-        .settings-gear-btn:active {
+        /* 패치노트 버튼 (오른쪽 위 ⚙️ 왼쪽 옆) */
+        .patch-note-gear-btn {
+            position: absolute;
+            top: -40px;
+            right: 44px;
+            height: 36px;
+            padding: 0 8px;
+            background: #f1f2f6;
+            border: 2px solid #000;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 2px 0 #000;
+        }
+        .patch-note-gear-btn:active, .settings-gear-btn:active {
             transform: translateY(2px);
             box-shadow: none;
         }
@@ -718,7 +738,7 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 전체 채팅 메뉴 바 -->
+        <!-- 프로필, 전체 채팅, 경기 설정 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="playClickSound(); handleProfileClick();">
                 <div class="profile-icon">👤</div>
@@ -728,10 +748,15 @@
                 <div class="chat-icon">📘</div>
                 <div class="chat-label">전체 채팅</div>
             </div>
+            <div class="match-setting-entry-box" id="btn-match-setting" onclick="playClickSound(); openMatchSettingModal();">
+                <div class="match-setting-icon">⚙️</div>
+                <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
+            </div>
         </div>
 
-        <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘 래퍼 -->
+        <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘, 📓 패치노트 버튼 래퍼 -->
         <div class="arena-container-wrapper">
+            <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패티 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
                 <canvas id="gameCanvas" width="450" height="450"></canvas>
@@ -795,6 +820,44 @@
             <div style="font-size:50px; margin-bottom:15px;">🛠️</div>
             <div style="font-size:24px; font-weight:900; color:#e74c3c; margin-bottom:10px;">현재 점검 중입니다</div>
             <div style="font-size:16px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
+        </div>
+    </div>
+
+    <!-- 패치노트 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:35px 24px; width:94%; max-width:480px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#000;">📓 패티 노트 (패치노트)</div>
+            
+            <div style="border:3px solid #000; background:#f8f9fa; padding:16px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:12px; text-align:left;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:20px; font-weight:900; color:#2c3e50;">0.1버전</span>
+                    <button style="background:#3498db; color:#fff; border:3px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playClickSound(); togglePatchDetails();">⬇️</button>
+                </div>
+                <div id="patch-hidden-content" class="hidden" style="font-size:18px; font-weight:bold; color:#e74c3c; border-top:2px dashed #000; padding-top:10px;">
+                    패치노트 처음 등장
+                </div>
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+        </div>
+    </div>
+
+    <!-- 경기 설정 모달 팝업 창 (1대1 ~ 5대5) -->
+    <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:35px 24px; width:94%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:20px; color:#000;">⚙️ 경기 모드 설정</div>
+            
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+                <button class="ball-select-btn match-mode-btn" data-mode="1" onclick="playClickSound(); selectMatchMode(1, '1대1 경기');">1대1 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="2" onclick="playClickSound(); selectMatchMode(2, '2대2 경기');">2대2 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="3" onclick="playClickSound(); selectMatchMode(3, '3대3 경기');">3대3 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="4" onclick="playClickSound(); selectMatchMode(4, '4대4 경기');">4대4 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="5" onclick="playClickSound(); selectMatchMode(5, '5대5 경기');">5대5 경기</button>
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
         </div>
     </div>
 
@@ -1035,6 +1098,25 @@
             getAudioContext();
         }, { once: true });
 
+        // 동전(코인) 소리 (돈 던질 때)
+        function playCoinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, now); // B5
+                osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch(e) {}
+        }
+
         function playThrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1053,51 +1135,61 @@
             } catch(e) {}
         }
 
-        function playExplosionSound() {
+        // 팡팡팡 엄청 큰 폭발음
+        function playBigExplosionSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
 
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(180, now);
-                osc.frequency.exponentialRampToValueAtTime(25, now + 0.5);
+                for (let k = 0; k < 3; k++) {
+                    let delay = k * 0.08;
+                    let time = now + delay;
 
-                gain.gain.setValueAtTime(1.0 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220 - k * 30, time);
+                    osc.frequency.exponentialRampToValueAtTime(20, time + 0.4);
 
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.5);
+                    gain.gain.setValueAtTime(1.2 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.45);
 
-                let bufferSize = ctx.sampleRate * 0.4;
-                let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                let output = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + 0.45);
+
+                    let bufferSize = ctx.sampleRate * 0.4;
+                    let buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    let output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = (Math.random() * 2 - 1) * 1.5;
+                    }
+
+                    let whiteNoise = ctx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+
+                    let filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, time);
+                    filter.frequency.exponentialRampToValueAtTime(60, time + 0.4);
+
+                    let noiseGain = ctx.createGain();
+                    noiseGain.gain.setValueAtTime(1.0 * soundVolume, time);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
+
+                    whiteNoise.connect(filter);
+                    filter.connect(noiseGain);
+                    noiseGain.connect(ctx.destination);
+
+                    whiteNoise.start(time);
+                    whiteNoise.stop(time + 0.4);
                 }
-
-                let whiteNoise = ctx.createBufferSource();
-                whiteNoise.buffer = buffer;
-
-                let filter = ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(600, now);
-                filter.frequency.exponentialRampToValueAtTime(80, now + 0.4);
-
-                let noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.9 * soundVolume, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-                whiteNoise.connect(filter);
-                filter.connect(noiseGain);
-                noiseGain.connect(ctx.destination);
-
-                whiteNoise.start(now);
-                whiteNoise.stop(now + 0.4);
             } catch(e) {}
+        }
+
+        function playExplosionSound() {
+            playBigExplosionSound();
         }
 
         function loadSavedSettings() {
@@ -1130,6 +1222,47 @@
             let savedColor = localStorage.getItem('lily_game_profile_color') || '#2c3e50';
             document.getElementById('profile-color-picker').value = savedColor;
             applyProfileColorUI(savedColor);
+
+            let savedMode = localStorage.getItem('lily_game_match_mode') || '1';
+            updateMatchModeLabel(savedMode);
+        }
+
+        function updateMatchModeLabel(modeNum) {
+            const lbl = document.getElementById('match-setting-label-txt');
+            if (lbl) {
+                lbl.innerText = `${modeNum}대${modeNum} 경기`;
+            }
+        }
+
+        function openMatchSettingModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('match-setting-modal').classList.remove('hidden');
+        }
+
+        function closeMatchSettingModal() {
+            document.getElementById('match-setting-modal').classList.add('hidden');
+        }
+
+        function selectMatchMode(modeNum, modeName) {
+            localStorage.setItem('lily_game_match_mode', modeNum);
+            updateMatchModeLabel(modeNum);
+            showToast(`${modeName} 모드가 설정되었습니다!`);
+            closeMatchSettingModal();
+        }
+
+        function openPatchNoteModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('patch-hidden-content').classList.add('hidden');
+            document.getElementById('patch-note-modal').classList.remove('hidden');
+        }
+
+        function closePatchNoteModal() {
+            document.getElementById('patch-note-modal').classList.add('hidden');
+        }
+
+        function togglePatchDetails() {
+            const content = document.getElementById('patch-hidden-content');
+            content.classList.toggle('hidden');
         }
 
         function changeProfileColor(colorHex) {
@@ -2379,7 +2512,6 @@
                         if (pair.player.skillTimer <= 0) {
                             pair.player.skillTimer = maxTime;
                             if (pair.player.name === '미스터비스트') {
-                                // 8초마다 랜덤으로 초콜릿 또는 돈 선택
                                 let isMoney = Math.random() < 0.5;
                                 if (isMoney) {
                                     triggerMrBeastMoneySkill(pair.player, pair.enemy);
@@ -2401,31 +2533,37 @@
                     }
                 });
 
+                // JINO 스켈레톤 화살 발사 주기를 1.5초로 변경 및 데미지 10
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
                     if (pair.player.name === 'JINO' && pair.player.skeletons.length > 0) {
-                        pair.player.skeletons.forEach(skel => {
-                            let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
-                            moneyItems.push({
-                                x: skel.x,
-                                y: skel.y,
-                                vx: Math.cos(angle) * 5.0,
-                                vy: Math.sin(angle) * 5.0,
-                                radius: 10,
-                                damage: 10,
-                                isArrow: true,
-                                owner: pair.player === p1 ? 'p1' : 'p2'
+                        pair.player.arrowTimer = (pair.player.arrowTimer || 0) + 1;
+                        if (pair.player.arrowTimer >= 2) { // 1초 간격 인터벌 내에서 1.5초 주기 구현
+                            pair.player.arrowTimer = 0;
+                            pair.player.skeletons.forEach(skel => {
+                                let angle = Math.atan2(pair.enemy.y - skel.y, pair.enemy.x - skel.x);
+                                moneyItems.push({
+                                    x: skel.x,
+                                    y: skel.y,
+                                    vx: Math.cos(angle) * 5.0,
+                                    vy: Math.sin(angle) * 5.0,
+                                    radius: 10,
+                                    damage: 10,
+                                    isArrow: true,
+                                    owner: pair.player === p1 ? 'p1' : 'p2'
+                                });
                             });
-                        });
-                        playArrowSound();
+                            playArrowSound();
+                        }
                     }
                 });
 
             }, 1000);
         }
 
-        // 미스터비스트 돈(💰) 기술: 아무 데나 3개 던지면 바로 폭발 (빨간색 동그라미 범위, 데미지 20, 엄청 많이 튕김)
+        // 미스터비스트 돈(💰) 폭탄: 코인 소리와 함께 던져짐
         function triggerMrBeastMoneySkill(caster, enemy) {
             showToast(`${caster.name} 돈(💰) 폭탄 3개 투척! 💸`);
+            playCoinSound();
             playThrowSound();
 
             for (let k = 0; k < 3; k++) {
@@ -2440,7 +2578,7 @@
                     destX: targetX,
                     destY: targetY,
                     progress: 0,
-                    radius: 65, // 빨간색 동그라미 폭발 범위
+                    radius: 65,
                     timer: 4,
                     isMoneyBomb: true,
                     exploded: false,
@@ -2476,7 +2614,7 @@
             }
         }
 
-        // 왕클세종 기술: 10초마다 경기장 랜덤한 위치에 ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ 텍스트 깔림 (먹으면 체력 +5 회복, 상대방 맞으면 데미지 10)
+        // 왕클세종 기술: 텍스트만 깔림 (체력회복 3, 데미지 7, 아군만 먹을 수 있음)
         function triggerWangklSejongSkill(caster, enemy) {
             showToast(`${caster.name} 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
@@ -2493,8 +2631,8 @@
                     y: ry,
                     char: ch,
                     radius: 20,
-                    damage: 10,
-                    healAmount: 5,
+                    damage: 7,
+                    healAmount: 3,
                     isHangeulLetter: true,
                     owner: caster === p1 ? 'p1' : 'p2',
                     color: (caster === p1) ? '#1e90ff' : '#e74c3c',
@@ -2623,7 +2761,7 @@
             if (isGaming) {
                 const nowTimestamp = Date.now();
 
-                // 체력 깎일 때 서서히 사라지는(줄어드는) 부드러운 애니메이션 처리
+                // 체력 깎일 때 서서히 사라지는 부드러운 애니메이션 처리
                 if (p1.displayHp > p1.hp) {
                     p1.displayHp = Math.max(p1.hp, p1.displayHp - 1.5);
                     updateHpBars();
@@ -2700,8 +2838,8 @@
                     });
                 });
 
-                // 본이 및 미스터비스트 돈 폭탄 업데이트
-                [ { caster: p1, enemy: p2 }, { caster: p2, enemy: p1 } ].forEach(pair => {
+                // 본이 및 미스터비스트 폭탄 업데이트 (스켈레톤도 폭탄으로 처치 가능)
+                [ { caster: p1, enemy: p2, ownerStr: 'p1' }, { caster: p2, enemy: p1, ownerStr: 'p2' } ].forEach(pair => {
                     for (let i = pair.caster.bombs.length - 1; i >= 0; i--) {
                         let bomb = pair.caster.bombs[i];
                         if (bomb.progress < 1) {
@@ -2712,6 +2850,18 @@
                             if (!bomb.startTime) {
                                 bomb.startTime = nowTimestamp;
                             }
+
+                            // 폭탄 범위 내 스켈레톤 파괴 체크
+                            let targetSkeletonOwner = (pair.ownerStr === 'p1') ? p2 : p1;
+                            targetSkeletonOwner.skeletons = targetSkeletonOwner.skeletons.filter(skel => {
+                                let distSkel = Math.hypot(skel.x - bomb.destX, skel.y - bomb.destY);
+                                if (distSkel <= bomb.radius + skel.radius) {
+                                    playExplosionSound();
+                                    showToast('폭탄으로 스켈레톤 격파! 💥');
+                                    return false;
+                                }
+                                return true;
+                            });
 
                             let distToEnemy = Math.hypot(pair.enemy.x - bomb.destX, pair.enemy.y - bomb.destY);
                             let bombDamage = bomb.isMoneyBomb ? 20 : 15;
@@ -2756,7 +2906,7 @@
                         let dist1 = Math.hypot(p1.x - m.x, p1.y - m.y);
                         let dist2 = Math.hypot(p2.x - m.x, p2.y - m.y);
 
-                        // 자기 팀이 먹으면 체력 5 회복, 상대 팀이 닿으면 데미지 10
+                        // 왕클세종 텍스트: 자기 팀만 먹을 수 있고 상대공은 통과 (피해 없음)
                         if (m.owner === 'p1') {
                             if (dist1 < p1.radius + m.radius) {
                                 playHealSound();
@@ -2765,6 +2915,7 @@
                                 updateHpBars();
                                 moneyItems.splice(i, 1);
                             } else if (dist2 < p2.radius + m.radius) {
+                                // 상대방(p2)이 닿으면 데미지 7
                                 playHitSound();
                                 p2.hp = Math.max(0, p2.hp - m.damage);
                                 updateHpBars();
@@ -2778,6 +2929,7 @@
                                 updateHpBars();
                                 moneyItems.splice(i, 1);
                             } else if (dist1 < p1.radius + m.radius) {
+                                // 상대방(p1)이 닿으면 데미지 7
                                 playHitSound();
                                 p1.hp = Math.max(0, p1.hp - m.damage);
                                 updateHpBars();
@@ -2908,18 +3060,14 @@
                 moneyItems.forEach(m => {
                     ctx.save();
                     if (m.isHangeulLetter) {
-                        ctx.beginPath();
-                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                        // 텍스트로만 깔리도록 렌더링 (볼 모양 테두리 없음)
+                        ctx.font = "bold 24px sans-serif";
                         ctx.fillStyle = m.color;
-                        ctx.fill();
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = '#000000';
-                        ctx.stroke();
-
-                        ctx.font = "bold 16px sans-serif";
-                        ctx.fillStyle = "#ffffff";
+                        ctx.strokeStyle = "#ffffff";
+                        ctx.lineWidth = 4;
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
+                        ctx.strokeText(m.char, m.x, m.y);
                         ctx.fillText(m.char, m.x, m.y);
                     } else if (m.isArrow) {
                         if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
