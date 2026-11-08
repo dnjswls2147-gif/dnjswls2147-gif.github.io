@@ -784,7 +784,7 @@
                         </div>
                     </div>
                     <div id="patch-content-10" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 여자 캐릭터를 2번째 사진(14475_4.jpg)으로 변경, 동룡쓰 부하 최대 10명 제한 적용, 왕클세종 글자 먹을 시 체력 +4 회복 및 상대 6 데미지 적용 완료!
+                        동룡쓰 여자 캐릭터를 2번째 사진(14475_4.jpg)으로 정상 렌더링 수정, 동룡쓰 부하 최대 10명 제한 적용, 왕클세종 글자 먹을 시 체력 +4 회복 및 상대 6 데미지 적용 완료!
                     </div>
                 </div>
 
@@ -3074,7 +3074,7 @@
                     ctx.restore();
                 });
 
-                // 동룡쓰 부하 (2번째 사진 여자캐릭터 14475_4.jpg 연동)
+                // 동룡쓰 부하 (2번째 사진 여자캐릭터 14475_4.jpg 연동 및 원형 클리핑 수정)
                 player.minions.forEach(m => {
                     m.orbitAngle += 0.05;
                     m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
@@ -3085,7 +3085,8 @@
                     ctx.fillStyle = "rgba(46, 204, 113, 0.25)"; ctx.fill();
 
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                    ctx.save(); ctx.clip();
+                    ctx.save(); 
+                    ctx.clip();
                     if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
                         ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
                     } else {
@@ -3190,4 +3191,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-    </html>
+</html>
