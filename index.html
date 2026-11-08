@@ -40,6 +40,7 @@
             position: relative;
             z-index: 10;
             padding: 10px 6px;
+            transform-origin: center center;
         }
 
         .top-menu-bar {
@@ -147,7 +148,7 @@
             border-radius: 35px;
             font-size: 20px;
             font-weight: 900;
-            z-index: 100000;
+            z-index: 999999;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
             pointer-events: none;
@@ -746,14 +747,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.1 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        터치 클릭 오류 및 뷰포트 확대 축소 좌표 어긋남 현상 완벽 해결!
+                        설정 저장 및 새로고침 유지 기능 완벽 적용, 모바일 터치 좌표 오차 수정!
                     </div>
                 </div>
 
