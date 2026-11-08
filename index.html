@@ -1035,6 +1035,20 @@
             getAudioContext();
         }, { once: true });
 
+        // '하이퍼차지!!' 음성 출력 함수 (브라우저 내장 TTS 활용)
+        function playHyperChargeVoice() {
+            try {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // 이전 음성 취소
+                    let utterance = new SpeechSynthesisUtterance("하이퍼차지!!");
+                    utterance.lang = 'ko-KR';
+                    utterance.rate = 1.2; // 약간 빠르게 박진감 있게
+                    utterance.pitch = 1.1; // 목소리 톤 살리기
+                    window.speechSynthesis.speak(utterance);
+                }
+            } catch(e) {}
+        }
+
         function loadSavedSettings() {
             let savedVol = localStorage.getItem('lily_game_sfx_vol');
             if (savedVol === null || isNaN(savedVol)) {
@@ -1051,7 +1065,7 @@
 
             let savedZoom = localStorage.getItem('lily_game_zoom_scale');
             if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 150) {
-                savedZoom = '35'; // 데스크톱 사이트 기본 맞춤 스케일
+                savedZoom = '35';
                 localStorage.setItem('lily_game_zoom_scale', '35');
             }
             let z = parseInt(savedZoom);
@@ -2052,7 +2066,7 @@
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
             { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
-            { name: '본이', hp: 250, color: '#e67e22' },
+            { name: '본이', hp: 250, color: '#9b59b6' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
         ];
 
@@ -2081,8 +2095,8 @@
 
         const FIXED_SPEED = 3.6;
 
-        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {} };
-        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {} };
+        let p1 = { x: 125, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
+        let p2 = { x: 325, y: 225, radius: 29, vx: 0, vy: 0, hp: 250, maxHp: 250, name: '', ballData: null, skillTimer: 0, skeletons: [], arrows: [], arrowTimer: 0, lastHitMap: {}, hyperActiveTimer: 0 };
 
         let moneyItems = [];
         let gameInterval = null;
@@ -2162,20 +2176,42 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (selectedLeftBall) {
-                drawBall(canvas.width * 0.3, canvas.height * 0.5, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)");
+                drawBall(canvas.width * 0.3, canvas.height * 0.5, p1.radius, selectedLeftBall, "rgba(30, 144, 255, 0.15)", false);
             }
 
             if (selectedRightBall) {
-                drawBall(canvas.width * 0.7, canvas.height * 0.5, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)");
+                drawBall(canvas.width * 0.7, canvas.height * 0.5, p2.radius, selectedRightBall, "rgba(231, 76, 60, 0.15)", false);
             }
         }
 
-        function drawBall(x, y, radius, ballObj, auraColor) {
+        function drawBall(x, y, radius, ballObj, auraColor, isHyperCharged) {
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(x, y, radius + 14, 0, Math.PI * 2);
-            ctx.fillStyle = auraColor;
-            ctx.fill();
+            
+            // 본이 하이퍼차지 발동 시 보라색 불꽃 오라 이펙트
+            if (isHyperCharged) {
+                let time = Date.now() / 120;
+                ctx.beginPath();
+                // 울퉁불퉁 타오르는 보라색 불꽃 표현
+                for (let i = 0; i < 10; i++) {
+                    let angle = (i / 10) * Math.PI * 2 + time;
+                    let rVar = radius + 18 + Math.sin(time * 3 + i) * 7;
+                    let fx = x + Math.cos(angle) * rVar;
+                    let fy = y + Math.sin(angle) * rVar;
+                    if (i === 0) ctx.moveTo(fx, fy);
+                    else ctx.lineTo(fx, fy);
+                }
+                ctx.closePath();
+                ctx.fillStyle = "rgba(155, 89, 182, 0.65)";
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "#8e44ad";
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.arc(x, y, radius + 14, 0, Math.PI * 2);
+                ctx.fillStyle = auraColor;
+                ctx.fill();
+            }
 
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -2229,22 +2265,24 @@
             p1.x = canvas.width * 0.3; p1.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p1);
             p1.ballData = selectedLeftBall;
-            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : 8);
+            p1.skillTimer = (p1.name === 'JINO') ? 12 : (p1.name === '미스터비스트' ? 10 : (p1.name === '본이' ? 6 : 8));
             p1.skeletons = [];
             p1.arrows = [];
             p1.arrowTimer = 0;
             p1.lastHitMap = {};
+            p1.hyperActiveTimer = 0;
 
             p2.maxHp = selectedRightBall.hp;
             p2.hp = selectedRightBall.hp;
             p2.x = canvas.width * 0.7; p2.y = canvas.height * 0.5;
             setFixedSpeedVelocity(p2);
             p2.ballData = selectedRightBall;
-            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : 8);
+            p2.skillTimer = (p2.name === 'JINO') ? 12 : (p2.name === '미스터비스트' ? 10 : (p2.name === '본이' ? 6 : 8));
             p2.skeletons = [];
             p2.arrows = [];
             p2.arrowTimer = 0;
             p2.lastHitMap = {};
+            p2.hyperActiveTimer = 0;
 
             document.getElementById('p1-name-txt').innerText = p1.name;
             document.getElementById('p2-name-txt').innerText = p2.name;
@@ -2254,8 +2292,8 @@
 
             ['p1', 'p2'].forEach(prefix => {
                 const player = (prefix === 'p1') ? p1 : p2;
-                if (['미스터비스트', 'JINO', '왕클세종'].includes(player.name)) {
-                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : 8);
+                if (['미스터비스트', 'JINO', '왕클세종', '본이'].includes(player.name)) {
+                    let maxTime = (player.name === 'JINO') ? 12 : (player.name === '미스터비스트' ? 10 : (player.name === '본이' ? 6 : 8));
                     document.getElementById(prefix + '-gauge-fill').style.width = '0%';
                     document.getElementById(prefix + '-gauge-txt').innerText = `기술 충전중 (${maxTime}초)`;
                 } else {
@@ -2277,8 +2315,12 @@
                 if (!isGaming) return;
 
                 [ { player: p1, enemy: p2 }, { player: p2, enemy: p1 } ].forEach(pair => {
-                    if (['미스터비스트', 'JINO', '왕클세종'].includes(pair.player.name)) {
-                        let maxTime = (pair.player.name === 'JINO') ? 12 : (pair.player.name === '미스터비스트' ? 10 : 8);
+                    if (pair.player.hyperActiveTimer > 0) {
+                        pair.player.hyperActiveTimer--;
+                    }
+
+                    if (['미스터비스트', 'JINO', '왕클세종', '본이'].includes(pair.player.name)) {
+                        let maxTime = (pair.player.name === 'JINO') ? 12 : (pair.player.name === '미스터비스트' ? 10 : (pair.player.name === '본이' ? 6 : 8));
                         pair.player.skillTimer -= 1;
                         if (pair.player.skillTimer <= 0) {
                             pair.player.skillTimer = maxTime;
@@ -2288,6 +2330,8 @@
                                 spawnSkeletons(pair.player, pair.enemy === p2 ? 'p2' : 'p1');
                             } else if (pair.player.name === '왕클세종') {
                                 triggerWangklSejongSkill(pair.player, pair.enemy);
+                            } else if (pair.player.name === '본이') {
+                                triggerBoniSkill(pair.player);
                             }
                         }
                         let prefix = (pair.player === p1) ? 'p1' : 'p2';
@@ -2319,6 +2363,13 @@
                 });
 
             }, 1000);
+        }
+
+        function triggerBoniSkill(caster) {
+            caster.hyperActiveTimer = 4; // 4초 동안 하이퍼차지 불꽃 유지
+            showToast(`${caster.name} 하이퍼차지 발동!! 🔥`);
+            playSkillSuperSound();
+            playHyperChargeVoice(); // '하이퍼차지!!' 목소리 출력
         }
 
         function triggerWangklSejongSkill(caster, enemy) {
@@ -2730,8 +2781,8 @@
                     ctx.restore();
                 });
 
-                drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)");
-                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)");
+                drawBall(p1.x, p1.y, p1.radius, p1.ballData, "rgba(30, 144, 255, 0.15)", p1.hyperActiveTimer > 0);
+                drawBall(p2.x, p2.y, p2.radius, p2.ballData, "rgba(231, 76, 60, 0.15)", p2.hyperActiveTimer > 0);
             }
 
             requestAnimationFrame(runGameLoop);
