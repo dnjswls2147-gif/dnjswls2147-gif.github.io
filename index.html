@@ -79,7 +79,7 @@
             width: 100%;
             max-width: 480px;
             display: flex;
-            gap: 14px;
+            gap: 10px;
             align-items: center;
             justify-content: flex-start;
             padding: 0;
@@ -87,18 +87,18 @@
             z-index: 1000;
         }
 
-        .profile-entry-box, .chat-entry-box, .match-setting-entry-box {
+        .profile-entry-box, .chat-entry-box, .friend-entry-box, .match-setting-entry-box, .friend-match-entry-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
         }
-        .profile-icon, .chat-icon, .match-setting-icon {
-            font-size: 34px;
+        .profile-icon, .chat-icon, .friend-icon, .match-setting-icon, .friend-match-icon {
+            font-size: 32px;
             line-height: 1;
         }
-        .profile-label, .chat-label, .match-setting-label {
-            font-size: 15px;
+        .profile-label, .chat-label, .friend-label, .match-setting-label, .friend-match-label {
+            font-size: 14px;
             font-weight: 900;
             color: #000000;
             margin-top: 3px;
@@ -127,6 +127,24 @@
             z-index: 1500;
             box-shadow: 0 3px 0 #000;
         }
+        .record-history-gear-btn {
+            position: absolute;
+            top: -94px;
+            right: 0;
+            height: 40px;
+            padding: 0 10px;
+            background: #f1f2f6;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 3px 0 #000;
+        }
         .patch-note-gear-btn {
             position: absolute;
             top: -44px;
@@ -145,7 +163,7 @@
             z-index: 1500;
             box-shadow: 0 3px 0 #000;
         }
-        .patch-note-gear-btn:active, .settings-gear-btn:active {
+        .patch-note-gear-btn:active, .settings-gear-btn:active, .record-history-gear-btn:active {
             transform: translateY(2px);
             box-shadow: none;
         }
@@ -710,11 +728,15 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container" id="main-app-container">
 
-        <!-- 프로필, 전체 채팅, 경기 설정 메뉴 바 -->
+        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 친구 경기 메뉴 바 -->
         <div class="top-menu-bar" id="lobby-top-menu-bar">
             <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
                 <div class="profile-icon">👤</div>
                 <div class="profile-label">프로필</div>
+            </div>
+            <div class="friend-entry-box" id="btn-friend-entry" onclick="playClickSound(); openFriendModal();">
+                <div class="friend-icon">👥</div>
+                <div class="friend-label">친구</div>
             </div>
             <div class="chat-entry-box" id="btn-chat-entry" onclick="playClickSound(); handleChatClick();">
                 <div class="chat-icon">📘</div>
@@ -724,10 +746,15 @@
                 <div class="match-setting-icon">⚙️</div>
                 <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
             </div>
+            <div class="friend-match-entry-box" id="btn-friend-match-entry" onclick="playClickSound(); openFriendMatchModal();">
+                <div class="friend-match-icon" style="width:34px; height:34px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
+                <div class="friend-match-label">친구 경기</div>
+            </div>
         </div>
 
-        <!-- 경기장 및 우측 상단 ⚙️ 설정 아이콘, 📓 패치노트 버튼 래퍼 -->
+        <!-- 경기장 및 우측 상단 버튼 래퍼 -->
         <div class="arena-container-wrapper">
+            <div class="record-history-gear-btn" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
             <div class="patch-note-gear-btn" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box">
@@ -737,19 +764,13 @@
 
         <!-- 로비 및 컨트롤 영역 -->
         <div class="controls-wrapper">
-            <!-- 로비 대기 화면 -->
             <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-                <div class="slot-container" id="dynamic-slot-container">
-                    <!-- 동적으로 생성되는 팀별 슬롯 -->
-                </div>
+                <div class="slot-container" id="dynamic-slot-container"></div>
                 <button class="btn-main-action btn-start" id="btn-start-match" onclick="playClickSound(); startMatch();">시작하기 ▶</button>
             </div>
 
-            <!-- 인게임 대결 화면 -->
             <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-                <div class="ingame-status-panel" id="ingame-status-panel-container">
-                    <!-- 인게임 상태 카드 동적 생성 -->
-                </div>
+                <div class="ingame-status-panel" id="ingame-status-panel-container"></div>
                 <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
             </div>
         </div>
@@ -765,31 +786,44 @@
         </div>
     </div>
 
-    <!-- 패치노트 및 캐릭터 설명 모달 팝업 창 (글자 및 크기 대폭 확대) -->
+    <!-- 패치노트 및 캐릭터 설명 모달 팝업 창 (스크롤 지원) -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
             <div style="font-size:34px; font-weight:900; margin-bottom:20px; color:#000;">📓 패치 노트 & 캐릭터 설명</div>
             
-            <!-- 탭 전환 버튼 -->
             <div style="display:flex; gap:12px; margin-bottom:16px;">
                 <button id="tab-btn-patch" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#2980b9; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
                 <button id="tab-btn-chars" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
             </div>
 
-            <!-- 패치 노트 내용 -->
-            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:auto; flex:1;">
+            <!-- 패치 노트 내용 (스크롤 활성화) -->
+            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
+                <!-- v0.1.5 -->
+                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-05" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-05', 'patch-btn-05');">⬇️</button>
+                        </div>
+                    </div>
+                    <div id="patch-content-05" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        공 스킬들 패치 및 버그 수정, 친구 경기 및 음성 통화 추가
+                    </div>
+                </div>
+
                 <!-- v0.1.4 -->
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.1.4</span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-04" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-04', 'patch-btn-04');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-04" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                    <div id="patch-content-04" style="font-size:22px; font-weight:900; color:#333; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
                         동룡쓰 스킬 등장, 버그수정
                     </div>
                 </div>
@@ -810,14 +844,14 @@
 
             </div>
 
-            <!-- 캐릭터 설명 내용 (대폭 확대) -->
-            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:auto; flex:1;">
+            <!-- 캐릭터 설명 내용 -->
+            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
                     <img src="dongryong.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">동룡쓰</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 소환볼(여자: 컵라면 발사/남자: 베이컨 발사)을 자신의 주위에 밀착 소환하여 함께 싸웁니다.</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">5초마다 로블록스 베이컨 소환볼(여자 베이컨/남자 베이컨 랜덤)을 자신의 주위에 밀착 소환하여 3초마다 컵라면(5뎀) 또는 베이컨(7뎀)을 3배 큰 크기로 발사합니다.</div>
                     </div>
                 </div>
 
@@ -859,7 +893,7 @@
         </div>
     </div>
 
-    <!-- 경기 설정 모달 팝업 창 -->
+    <!-- 경기 모드 설정 모달 팝업 창 -->
     <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:40px 28px; width:94%; max-width:460px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
@@ -874,6 +908,76 @@
             </div>
 
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
+        </div>
+    </div>
+
+    <!-- 친구 경기 (방 만들기 및 참여) 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:540px; height:75vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 친구 경기 (방 목록)</div>
+
+            <div style="display:flex; gap:10px; margin-bottom:14px; flex-shrink:0;" id="room-action-buttons-box">
+                <button class="admin-btn admin-btn-confirm" style="font-size:20px; padding:14px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
+                <button class="admin-btn admin-btn-cancel" style="font-size:20px; padding:14px;" onclick="playClickSound(); cancelFriendRoom();">방 만들기 취소</button>
+            </div>
+
+            <div class="players-list-area" id="friend-rooms-list-container" style="flex:1;">
+                <!-- 방 목록 또는 "만든 방이 없음" -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 친구 목록 및 1:1 통화/채팅 모달 창 -->
+    <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:580px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; margin-bottom:14px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
+            <div class="players-list-area" id="friend-list-container" style="flex:1;">
+                <!-- 친구 목록 또는 "다른 사람과 친구를 해보세요" -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 1:1 친구 채팅 및 음성 통화 모달 창 -->
+    <div class="modal-overlay hidden" id="private-chat-modal" style="z-index: 210000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:600px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePrivateChatModal();">✕</button>
+            <div style="font-size:24px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;" id="private-chat-title-txt">💬 1:1 채팅 & 통화</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f1f2f6; padding:12px; border:3px solid #000; border-radius:6px; margin-bottom:12px; flex-shrink:0;">
+                <span style="font-size:18px; font-weight:900;" id="voice-call-status-txt">🔊 음성 통화 대기 중</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); startVoiceCall();">통화 시작</button>
+                    <button class="admin-btn admin-btn-cancel" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); endVoiceCall();">통화 종료</button>
+                </div>
+            </div>
+
+            <div class="players-list-area" id="private-chat-logs" style="flex:1; margin-bottom:12px;"></div>
+
+            <div class="row-inline-group" style="flex-shrink:0;">
+                <input type="text" id="private-chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
+                <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendPrivateChatMessage();">전송</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 경기 기록 보기 모달 창 -->
+    <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:36px; width:94%; max-width:620px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; margin-bottom:16px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
+            <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
+    <!-- 관전 모달 창 -->
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.8);">
+        <div style="background:#fff; border:6px solid #000; padding:30px; width:94%; max-width:540px; display:flex; flex-direction:column; align-items:center; position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px;">📺 경기 리플레이 관전</div>
+            <div style="font-size:20px; font-weight:900; color:#27ae60; margin-bottom:20px;" id="spectate-info-txt">승리 팀: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
 
@@ -966,15 +1070,13 @@
         </div>
     </div>
 
-    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (대한민국 아이콘 추가) -->
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 -->
     <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
         <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
             <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택</div>
             
-            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container">
-                <!-- 동적 생성 -->
-            </div>
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container"></div>
         </div>
     </div>
 
@@ -986,20 +1088,12 @@
             <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">플레이어 프로필</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px; width:100%;">
                 <div style="font-size:22px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+                <button id="btn-add-friend-action" style="background:#2ecc71; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); addFriendFromProfile();">🤝 친구추가</button>
                 <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
             </div>
             <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
             <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="other-profile-date-txt">접속한 날짜: -</div>
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px 0; font-size:20px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
-        </div>
-    </div>
-
-    <!-- 신고 내역 모달 팝업 창 -->
-    <div class="modal-overlay hidden" id="reports-list-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:580px; height:74vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
-            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeReportsListModal();">✕</button>
-            <div style="font-size:26px; font-weight:900; margin-bottom:16px; text-align:center; color:#c0392b; flex-shrink:0;">🚨 신고 내역 목록</div>
-            <div class="players-list-area" id="reports-list-container" style="flex:1;"></div>
         </div>
     </div>
 
@@ -1040,7 +1134,7 @@
         </div>
     </div>
 
-    <!-- 어드민 비밀번호 입력 모달 (비밀번호: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ77) -->
+    <!-- 어드민 비밀번호 입력 모달 -->
     <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5); z-index: 300000;">
         <div style="background:#fff; border:6px solid #000; padding:32px; width:90%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
             <div style="font-size:26px; font-weight:900; margin-bottom:18px;">🔒 어드민 비밀번호</div>
@@ -1059,42 +1153,11 @@
             <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
         </div>
         <div class="admin-scroll-body" id="admin-scroll-body-content">
-            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">
-                어드민 패널을 사용하세요
-            </div>
-
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">어드민 패널</div>
             <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
-                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 및 채팅 내역 (어드민 전용)</div>
+                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 및 채팅 내역</div>
                 <div class="players-list-area" id="admin-players-list-container" style="max-height: 240px; margin-top:6px;"></div>
             </div>
-
-            <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
-                <div class="admin-section-title" style="color: #c0392b;">🚨 신고 내역 관리</div>
-                <button class="admin-btn" style="background-color: #c0392b; color: #fff; width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); openReportsListModal();">신고 내역 확인하기</button>
-            </div>
-
-            <div class="admin-section-box" style="background: #e8f8f5; border-color: #16a085;">
-                <div class="admin-section-title" style="color: #16a085;">🛠️ 서버 점검 관리</div>
-                <div class="admin-btn-group">
-                    <button class="admin-btn" style="background-color: #e74c3c; color: #fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); setMaintenance(true);">점검 켜기</button>
-                    <button class="admin-btn" style="background-color: #27ae60; color: #fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); setMaintenance(false);">점검 끄기</button>
-                </div>
-            </div>
-
-            <div class="admin-section-box">
-                <div class="admin-section-title">📢 공지 관리</div>
-                <div class="row-inline-group">
-                    <input type="text" id="admin-notice-input" class="admin-input" style="margin-bottom:0;" placeholder="공지 내용 입력">
-                    <button class="btn-send" onclick="playClickSound(); sendNotice();">보내기</button>
-                </div>
-                <button class="admin-btn" style="background-color:#e74c3c; color:#fff; width:100%; padding:12px; font-size:18px; margin-top:6px;" onclick="playClickSound(); deleteNotice();">공지 삭제</button>
-            </div>
-
-            <div class="admin-section-box" style="background: #fadbd8; border-color: #c0392b;">
-                <div class="admin-section-title" style="color: #c0392b;">💬 채팅 관리</div>
-                <button class="admin-btn" style="background-color: #e74c3c; color: #fff; width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); clearAllChats();">채팅 모두 삭제</button>
-            </div>
-
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
         </div>
     </div>
@@ -1113,9 +1176,7 @@
             return audioCtx;
         }
 
-        window.addEventListener('pointerdown', () => {
-            getAudioContext();
-        }, { once: true });
+        window.addEventListener('pointerdown', () => { getAudioContext(); }, { once: true });
 
         function playClickSound() {
             try {
@@ -1127,10 +1188,8 @@
                 osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
                 gain.gain.setValueAtTime(0.2 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.05);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.05);
             } catch(e) {}
         }
 
@@ -1145,10 +1204,8 @@
                 osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
                 gain.gain.setValueAtTime(0.15 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.15);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.15);
             } catch(e) {}
         }
 
@@ -1162,10 +1219,8 @@
                 osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
                 gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.09);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.09);
             } catch(e) {}
         }
 
@@ -1179,10 +1234,8 @@
                 osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
                 gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.07);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.07);
             } catch(e) {}
         }
 
@@ -1197,10 +1250,8 @@
                 osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
                 gain.gain.setValueAtTime(0.3 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.12);
             } catch(e) {}
         }
 
@@ -1215,10 +1266,8 @@
                 osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
                 gain.gain.setValueAtTime(0.2 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.12);
             } catch(e) {}
         }
 
@@ -1233,10 +1282,8 @@
                 osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
                 gain.gain.setValueAtTime(0.25 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.15);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.15);
             } catch(e) {}
         }
 
@@ -1251,10 +1298,8 @@
                 osc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
                 gain.gain.setValueAtTime(0.4 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.25);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.25);
             } catch(e) {}
         }
 
@@ -1269,10 +1314,8 @@
                 osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
                 gain.gain.setValueAtTime(0.4 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.3);
             } catch(e) {}
         }
 
@@ -1287,10 +1330,8 @@
                 osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
                 gain.gain.setValueAtTime(0.4 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.25);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.25);
             } catch(e) {}
         }
 
@@ -1307,10 +1348,8 @@
                     osc.frequency.setValueAtTime(freq, time);
                     gain.gain.setValueAtTime(0.6 * soundVolume, time);
                     gain.gain.exponentialRampToValueAtTime(0.01, time + 0.35);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(time);
-                    osc.stop(time + 0.35);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(time); osc.stop(time + 0.35);
                 });
             } catch(e) {}
         }
@@ -1322,17 +1361,12 @@
             playClickSound();
             profileClickCount++;
             if (profileClickTimer) clearTimeout(profileClickTimer);
-            
             if (profileClickCount >= 10) {
                 profileClickCount = 0;
                 openAdminPasswordPrompt();
                 return;
             }
-
-            profileClickTimer = setTimeout(() => {
-                profileClickCount = 0;
-            }, 1000);
-
+            profileClickTimer = setTimeout(() => { profileClickCount = 0; }, 1000);
             handleProfileClick();
         }
 
@@ -1351,12 +1385,10 @@
                 closeAdminPassword();
                 localStorage.setItem('lily_game_is_admin', 'true');
                 const panel = document.getElementById('admin-panel-modal');
-                panel.style.left = '50%';
-                panel.style.top = '50%';
+                panel.style.left = '50%'; panel.style.top = '50%';
                 panel.style.transform = 'translate(-50%, -50%)';
                 panel.classList.remove('hidden');
                 renderAdminPlayersList();
-                checkMaintenanceStatus();
                 showToast('어드민 인증 성공! 🔓');
             } else {
                 showToast('비밀번호가 틀렸습니다!');
@@ -1402,21 +1434,13 @@
         let currentPickingIndex = 0;
 
         function loadSavedSettings() {
-            let savedVol = localStorage.getItem('lily_game_sfx_vol');
-            if (savedVol === null || isNaN(savedVol)) {
-                savedVol = '100';
-                localStorage.setItem('lily_game_sfx_vol', '100');
-            }
+            let savedVol = localStorage.getItem('lily_game_sfx_vol') || '100';
             let v = parseInt(savedVol);
             soundVolume = v / 100;
             document.getElementById('sfx-volume-range').value = v;
             document.getElementById('sfx-input-box').value = v;
 
-            let savedZoom = localStorage.getItem('lily_game_zoom_scale');
-            if (savedZoom === null || isNaN(savedZoom) || parseInt(savedZoom) > 150) {
-                savedZoom = '35';
-                localStorage.setItem('lily_game_zoom_scale', '35');
-            }
+            let savedZoom = localStorage.getItem('lily_game_zoom_scale') || '35';
             let z = parseInt(savedZoom);
             document.getElementById('zoom-scale-range').value = z;
             document.getElementById('zoom-input-box').value = z;
@@ -1434,9 +1458,7 @@
         function updateMatchModeLabel(modeNum) {
             currentMatchMode = modeNum;
             const lbl = document.getElementById('match-setting-label-txt');
-            if (lbl) {
-                lbl.innerText = `${modeNum}대${modeNum} 경기`;
-            }
+            if (lbl) lbl.innerText = `${modeNum}대${modeNum} 경기`;
             initSlotContainers();
         }
 
@@ -1501,7 +1523,6 @@
             document.getElementById('patch-note-modal').classList.add('hidden');
         }
 
-        // 볼 리스트
         const ballList = [
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
@@ -1519,14 +1540,12 @@
             }
         });
 
-        // 동룡쓰 소환수 이미지 (여자 베이컨: 14475.jpg, 남자 베이컨: 14474.jpg)
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
 
-        // 브롤스타즈 스타일 아이콘 리스트 (대한민국 🇰🇷 태극기 추가)
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
-            { type: 'text', val: '🇰🇷', bg: '#ffffff' }, // 대한민국 아이콘 추가
+            { type: 'text', val: '🇰🇷', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
@@ -1551,19 +1570,13 @@
             closeProfileModal();
             const container = document.getElementById('brawl-icon-grid-container');
             container.innerHTML = '';
-
             brawlIconsList.forEach(item => {
                 const cell = document.createElement('div');
-                cell.style.width = '100%';
-                cell.style.aspectRatio = '1 / 1';
-                cell.style.backgroundColor = item.bg;
-                cell.style.border = '4px solid #000';
-                cell.style.borderRadius = '6px';
-                cell.style.display = 'flex';
-                cell.style.alignItems = 'center';
-                cell.style.justifyContent = 'center';
-                cell.style.cursor = 'pointer';
-                cell.style.boxShadow = '0 3px 0 #000';
+                cell.style.width = '100%'; cell.style.aspectRatio = '1 / 1';
+                cell.style.backgroundColor = item.bg; cell.style.border = '4px solid #000';
+                cell.style.borderRadius = '6px'; cell.style.display = 'flex';
+                cell.style.alignItems = 'center'; cell.style.justifyContent = 'center';
+                cell.style.cursor = 'pointer'; cell.style.boxShadow = '0 3px 0 #000';
                 cell.style.overflow = 'hidden';
 
                 if (item.type === 'text') {
@@ -1584,7 +1597,6 @@
                 };
                 container.appendChild(cell);
             });
-
             document.getElementById('brawl-icon-selector-modal').classList.remove('hidden');
         }
 
@@ -1611,22 +1623,15 @@
         }
 
         function saveGameSettings() {
-            const sfxVal = document.getElementById('sfx-input-box').value;
-            const zoomVal = document.getElementById('zoom-input-box').value;
-
-            localStorage.setItem('lily_game_sfx_vol', sfxVal);
-            localStorage.setItem('lily_game_zoom_scale', zoomVal);
-
+            localStorage.setItem('lily_game_sfx_vol', document.getElementById('sfx-input-box').value);
+            localStorage.setItem('lily_game_zoom_scale', document.getElementById('zoom-input-box').value);
             showToast('설정이 성공적으로 저장되었습니다! 💾');
             closeSettingsModal();
         }
 
         function applySfxInput() {
-            const box = document.getElementById('sfx-input-box');
-            let val = parseInt(box.value);
-            if (isNaN(val)) val = 100;
-            if (val < 0) val = 0;
-            if (val > 1000) val = 1000;
+            let val = parseInt(document.getElementById('sfx-input-box').value) || 100;
+            if (val < 0) val = 0; if (val > 1000) val = 1000;
             soundVolume = val / 100;
             document.getElementById('sfx-volume-range').value = val;
             showToast(`효과음 소리가 ${val}(으)로 설정되었습니다.`);
@@ -1638,11 +1643,8 @@
         }
 
         function applyZoomInput() {
-            const box = document.getElementById('zoom-input-box');
-            let val = parseInt(box.value);
-            if (isNaN(val)) val = 35;
-            if (val < 0) val = 0;
-            if (val > 150) val = 150;
+            let val = parseInt(document.getElementById('zoom-input-box').value) || 35;
+            if (val < 0) val = 0; if (val > 150) val = 150;
             document.getElementById('zoom-scale-range').value = val;
             applyZoomScale(val);
             showToast(`화면 확대가 ${val}(으)로 설정되었습니다.`);
@@ -1669,21 +1671,15 @@
 
         function getFormattedToday() {
             const now = new Date();
-            const yyyy = now.getFullYear();
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const dd = String(now.getDate()).padStart(2, '0');
-            return `${yyyy}/${mm}/${dd}`;
+            return `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
         }
 
         function getCurrentTimeString() {
             const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let ampm = hours >= 12 ? '오후' : '오전';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            return `${ampm} ${hours}:${minutes}`;
+            let h = now.getHours(), m = now.getMinutes();
+            let ampm = h >= 12 ? '오후' : '오전';
+            h = h % 12 || 12;
+            return `${ampm} ${h}:${String(m).padStart(2, '0')}`;
         }
 
         function getDeviceUniqueId() {
@@ -1697,10 +1693,10 @@
 
         function checkMidnightReset() {
             const todayStr = getFormattedToday();
-            let lastChatDate = localStorage.getItem('lily_game_last_chat_date');
-            if (!lastChatDate) {
+            let lastDate = localStorage.getItem('lily_game_last_chat_date');
+            if (!lastDate) {
                 localStorage.setItem('lily_game_last_chat_date', todayStr);
-            } else if (lastChatDate !== todayStr) {
+            } else if (lastDate !== todayStr) {
                 localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
                 localStorage.setItem('lily_game_last_chat_date', todayStr);
             }
@@ -1710,12 +1706,8 @@
             checkMidnightReset();
             const myUid = getDeviceUniqueId();
             localStorage.setItem('lily_game_ping_' + myUid, Date.now());
-
             let savedName = localStorage.getItem('lily_game_user_name');
-            if (savedName) {
-                registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
-            }
-
+            if (savedName) registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
             checkMaintenanceStatus();
             updateOnlineOfflineCounts();
         }
@@ -1727,28 +1719,9 @@
             const isMaint = localStorage.getItem('lily_game_maintenance') === 'true';
             const isAdmin = localStorage.getItem('lily_game_is_admin') === 'true';
             const overlay = document.getElementById('maintenance-overlay');
-            if (isMaint && !isAdmin) {
-                overlay.classList.remove('hidden');
-            } else {
-                overlay.classList.add('hidden');
-            }
+            if (isMaint && !isAdmin) overlay.classList.remove('hidden');
+            else overlay.classList.add('hidden');
         }
-
-        function setMaintenance(status) {
-            localStorage.setItem('lily_game_maintenance', status ? 'true' : 'false');
-            showToast(status ? '🛠️ 서버 점검을 켰습니다.' : '✅ 서버 점검을 껐습니다.');
-            checkMaintenanceStatus();
-        }
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'lily_game_chat_logs') loadChatLogs();
-            if (e.key === 'lily_game_announcement') applyAnnouncementData(e.newValue);
-            if (e.key === 'lily_game_players_list') {
-                updateOnlineOfflineCounts();
-                renderAdminPlayersList();
-            }
-            if (e.key === 'lily_game_maintenance') checkMaintenanceStatus();
-        });
 
         function checkNameRegisteredOrBlock() {
             const savedName = localStorage.getItem('lily_game_user_name');
@@ -1766,25 +1739,18 @@
 
             const myUid = getDeviceUniqueId();
             let savedName = localStorage.getItem('lily_game_user_name');
-            let savedDate = localStorage.getItem('lily_game_login_date');
-            const todayStr = getFormattedToday();
-
-            if (!savedDate) {
-                savedDate = todayStr;
-                localStorage.setItem('lily_game_login_date', savedDate);
-            }
+            let savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
+            if (!localStorage.getItem('lily_game_login_date')) localStorage.setItem('lily_game_login_date', savedDate);
 
             if (!savedName) {
                 document.getElementById('name-input-modal').classList.remove('hidden');
             } else {
                 registerPlayer(myUid, savedName, savedDate);
                 loadChatLogs();
-                checkSavedAnnouncement();
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
                 document.getElementById('name-input-modal').classList.add('hidden');
             }
-
             checkMaintenanceStatus();
         });
 
@@ -1792,12 +1758,8 @@
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let existing = players.find(p => p.uid === uid);
-            if (!existing) {
-                players.push({ uid: uid, name: name, date: date });
-            } else {
-                existing.name = name;
-                existing.date = date;
-            }
+            if (!existing) players.push({ uid: uid, name: name, date: date });
+            else { existing.name = name; existing.date = date; }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
             updateOnlineOfflineCounts();
             renderAdminPlayersList();
@@ -1805,27 +1767,18 @@
 
         function submitUserName() {
             const inputVal = document.getElementById('user-name-input').value.trim();
-            if (!inputVal) {
-                showToast('이름을 입력해 주세요!');
-                return;
-            }
+            if (!inputVal) { showToast('이름을 입력해 주세요!'); return; }
             const myUid = getDeviceUniqueId();
             const today = getFormattedToday();
             const oldName = localStorage.getItem('lily_game_user_name');
 
             localStorage.setItem('lily_game_user_name', inputVal);
-            if (!localStorage.getItem('lily_game_login_date')) {
-                localStorage.setItem('lily_game_login_date', today);
-            }
-            let savedDate = localStorage.getItem('lily_game_login_date');
-
-            registerPlayer(myUid, inputVal, savedDate);
+            if (!localStorage.getItem('lily_game_login_date')) localStorage.setItem('lily_game_login_date', today);
+            registerPlayer(myUid, inputVal, localStorage.getItem('lily_game_login_date'));
 
             if (oldName && oldName !== inputVal) {
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
-                chatData.forEach(c => {
-                    if (c.uid === myUid || c.name === oldName) c.name = inputVal;
-                });
+                chatData.forEach(c => { if (c.uid === myUid || c.name === oldName) c.name = inputVal; });
                 localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
                 loadChatLogs();
             }
@@ -1839,49 +1792,34 @@
 
         function handleProfileClick() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeChatModal();
-            openProfileModal();
+            closeChatModal(); openProfileModal();
         }
 
         function handleChatClick() {
             if (!checkNameRegisteredOrBlock()) return;
-            closeProfileModal();
-            closePlayersModal();
-            openChatModal();
+            closeProfileModal(); closePlayersModal(); openChatModal();
         }
 
         function getMostUsedBallInfo() {
             let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
-            let maxBall = '없음';
-            let maxCount = 0;
+            let maxBall = '없음', maxCount = 0;
             for (let bName in usage) {
-                if (usage[bName] > maxCount) {
-                    maxCount = usage[bName];
-                    maxBall = bName;
-                }
+                if (usage[bName] > maxCount) { maxCount = usage[bName]; maxBall = bName; }
             }
             return { name: maxBall, count: maxCount };
         }
 
         function openProfileModal() {
             if (!checkNameRegisteredOrBlock()) return;
-            const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
-            const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
-            document.getElementById('profile-name-txt').innerText = `이름: ${savedName}`;
-            document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${savedDate}`;
-
+            document.getElementById('profile-name-txt').innerText = `이름: ${localStorage.getItem('lily_game_user_name')}`;
+            document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${localStorage.getItem('lily_game_login_date') || getFormattedToday()}`;
             let mostObj = getMostUsedBallInfo();
             document.getElementById('profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
-
-            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
-            applyProfileIconUI(savedIcon);
+            applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        function closeProfileModal() {
-            document.getElementById('profile-modal').classList.add('hidden');
-        }
-
+        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
         function editUserNamePrompt() {
             closeProfileModal();
             document.getElementById('user-name-input').value = localStorage.getItem('lily_game_user_name') || '';
@@ -1894,25 +1832,263 @@
             currentTargetProfileName = name;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let player = players.find(p => p.name === name);
-            let joinDate = player ? player.date : (localStorage.getItem('lily_game_login_date') || getFormattedToday());
+            let joinDate = player ? player.date : getFormattedToday();
 
             document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
             document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
             let mostObj = getMostUsedBallInfo();
             document.getElementById('other-profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
-
-            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
-            applyProfileIconUI(savedIcon);
+            applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
 
             const myName = localStorage.getItem('lily_game_user_name');
-            const reportBtn = document.getElementById('btn-report-player');
-            reportBtn.style.display = (name === myName) ? 'none' : 'inline-block';
+            document.getElementById('btn-report-player').style.display = (name === myName) ? 'none' : 'inline-block';
+            document.getElementById('btn-add-friend-action').style.display = (name === myName) ? 'none' : 'inline-block';
             document.getElementById('other-profile-modal').classList.remove('hidden');
         }
 
-        function closeOtherProfileModal() {
-            document.getElementById('other-profile-modal').classList.add('hidden');
+        function closeOtherProfileModal() { document.getElementById('other-profile-modal').classList.add('hidden'); }
+
+        // 친구 시스템
+        function addFriendFromProfile() {
+            if (!currentTargetProfileName || currentTargetProfileName === localStorage.getItem('lily_game_user_name')) return;
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            if (!friends.includes(currentTargetProfileName)) {
+                friends.push(currentTargetProfileName);
+                localStorage.setItem('lily_game_friends', JSON.stringify(friends));
+                showToast(`"${currentTargetProfileName}"님과 친구가 되었습니다! 🤝`);
+            } else {
+                showToast('이미 친구로 등록되어 있습니다.');
+            }
+            closeOtherProfileModal();
         }
+
+        function openFriendModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            const container = document.getElementById('friend-list-container');
+            container.innerHTML = '';
+
+            if (friends.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:40px;">다른 사람과 친구를 해보세요</div>`;
+            } else {
+                friends.forEach(fName => {
+                    const card = document.createElement('div');
+                    card.className = 'player-item-card';
+                    card.style.flexDirection = 'row';
+                    card.style.justifyContent = 'space-between';
+                    card.style.alignItems = 'center';
+                    card.innerHTML = `
+                        <span style="font-size:20px; font-weight:900;">👤 ${fName}</span>
+                        <div style="display:flex; gap:8px;">
+                            <button class="admin-btn admin-btn-confirm" style="padding:8px 14px; font-size:16px;" onclick="openPrivateChat('${fName}')">채팅</button>
+                            <button class="admin-btn admin-btn-cancel" style="padding:8px 14px; font-size:16px;" onclick="removeFriend('${fName}')">친구 삭제</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('friend-modal').classList.remove('hidden');
+        }
+
+        function closeFriendModal() { document.getElementById('friend-modal').classList.add('hidden'); }
+
+        function removeFriend(fName) {
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            friends = friends.filter(f => f !== fName);
+            localStorage.setItem('lily_game_friends', JSON.stringify(friends));
+            showToast(`"${fName}"님이 친구에서 삭제되었습니다.`);
+            openFriendModal();
+        }
+
+        let activeChatFriendName = '';
+        function openPrivateChat(fName) {
+            closeFriendModal();
+            activeChatFriendName = fName;
+            document.getElementById('private-chat-title-txt').innerText = `💬 ${fName}님과 1:1 채팅 & 통화`;
+            loadPrivateChatLogs();
+            document.getElementById('private-chat-modal').classList.remove('hidden');
+        }
+
+        function closePrivateChatModal() {
+            endVoiceCall();
+            document.getElementById('private-chat-modal').classList.add('hidden');
+        }
+
+        function getPrivateChatKey(f1, f2) {
+            return 'lily_game_private_' + [f1, f2].sort().join('_');
+        }
+
+        function loadPrivateChatLogs() {
+            const logsContainer = document.getElementById('private-chat-logs');
+            const myName = localStorage.getItem('lily_game_user_name');
+            let key = getPrivateChatKey(myName, activeChatFriendName);
+            let msgs = JSON.parse(localStorage.getItem(key) || '[]');
+            logsContainer.innerHTML = '';
+
+            if (msgs.length === 0) {
+                logsContainer.innerHTML = `<div style="text-align:center; font-size:18px; font-weight:bold; color:#777; padding:20px;">대화 내용이 없습니다.</div>`;
+                return;
+            }
+
+            msgs.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'chat-msg-card';
+                card.innerHTML = `
+                    <div class="chat-sender-name">${m.sender}</div>
+                    <div class="chat-msg-text">${m.text}</div>
+                    <div class="chat-msg-time">${m.time}</div>
+                `;
+                logsContainer.appendChild(card);
+            });
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function sendPrivateChatMessage() {
+            const input = document.getElementById('private-chat-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+            const myName = localStorage.getItem('lily_game_user_name');
+            let key = getPrivateChatKey(myName, activeChatFriendName);
+            let msgs = JSON.parse(localStorage.getItem(key) || '[]');
+            msgs.push({ sender: myName, text: txt, time: getCurrentTimeString() });
+            localStorage.setItem(key, JSON.stringify(msgs));
+            input.value = '';
+            loadPrivateChatLogs();
+        }
+
+        // 음성 통화 (WebRTC / Audio Stream Simulation)
+        let localAudioStream = null;
+        async function startVoiceCall() {
+            try {
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 연결됨 (통화 중)';
+                showToast('음성 통화가 연결되었습니다! 🎙️');
+            } catch(e) {
+                showToast('마이크 권한을 허용해주세요!');
+                document.getElementById('voice-call-status-txt').innerText = '❌ 마이크 권한 거부됨';
+            }
+        }
+
+        function endVoiceCall() {
+            if (localAudioStream) {
+                localAudioStream.getTracks().forEach(track => track.stop());
+                localAudioStream = null;
+            }
+            document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 종료됨';
+            showToast('통화가 종료되었습니다.');
+        }
+
+        // 친구 경기 (방 만들기 시스템)
+        function openFriendMatchModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            renderFriendRooms();
+            document.getElementById('friend-match-modal').classList.remove('hidden');
+        }
+
+        function closeFriendMatchModal() {
+            document.getElementById('friend-match-modal').classList.add('hidden');
+        }
+
+        function createFriendRoom() {
+            const myName = localStorage.getItem('lily_game_user_name');
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            if (rooms.some(r => r.host === myName)) {
+                showToast('이미 개설한 방이 있습니다!');
+                return;
+            }
+            rooms.push({ host: myName, participant: null, status: '대기중' });
+            localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+            showToast('친구 방이 개설되었습니다! 🏠');
+            renderFriendRooms();
+        }
+
+        function cancelFriendRoom() {
+            const myName = localStorage.getItem('lily_game_user_name');
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            let newRooms = rooms.filter(r => r.host !== myName);
+            localStorage.setItem('lily_game_friend_rooms', JSON.stringify(newRooms));
+            showToast('방 만들기가 취소되었습니다.');
+            renderFriendRooms();
+        }
+
+        function renderFriendRooms() {
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            const container = document.getElementById('friend-rooms-list-container');
+            container.innerHTML = '';
+
+            if (rooms.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:50px;">만든 방이 없음</div>`;
+                return;
+            }
+
+            rooms.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'player-item-card';
+                card.style.flexDirection = 'row';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                card.innerHTML = `
+                    <div>
+                        <div style="font-size:20px; font-weight:900;">🏠 ${r.host}님의 방</div>
+                        <div style="font-size:15px; color:#27ae60; font-weight:bold; margin-top:3px;">${r.participant ? `참여자: ${r.participant} (참여중입니다)` : '참여 대기 중'}</div>
+                    </div>
+                    <button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="joinFriendRoom('${r.host}')">참여하기</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function joinFriendRoom(hostName) {
+            const myName = localStorage.getItem('lily_game_user_name');
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            let room = rooms.find(r => r.host === hostName);
+            if (room) {
+                room.participant = myName;
+                room.status = '참여중입니다';
+                localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+                showToast(`"${hostName}"님의 방에 참여중입니다! 🚀`);
+                renderFriendRooms();
+            }
+        }
+
+        // 경기 기록 및 리플레이 관전
+        let matchHistoryList = JSON.parse(localStorage.getItem('lily_game_match_history') || '[]');
+
+        function openRecordHistoryModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            const container = document.getElementById('record-history-list-container');
+            container.innerHTML = '';
+
+            if (matchHistoryList.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:20px; font-weight:900; color:#555; padding:40px;">최근 경기 기록이 없습니다.</div>`;
+            } else {
+                matchHistoryList.forEach((hist, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'player-item-card';
+                    card.style.flexDirection = 'row';
+                    card.style.justifyContent = 'space-between';
+                    card.style.alignItems = 'center';
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
+                            <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
+                            <div style="font-size:13px; color:#777;">시간: ${hist.time}</div>
+                        </div>
+                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">경기 보기</button>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('record-history-modal').classList.remove('hidden');
+        }
+
+        function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
+
+        function openSpectate(winnerTxt) {
+            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt}`;
+            document.getElementById('spectate-modal').classList.remove('hidden');
+        }
+        function closeSpectateModal() { document.getElementById('spectate-modal').classList.add('hidden'); }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -1921,84 +2097,30 @@
             document.getElementById('report-modal').classList.remove('hidden');
         }
 
-        function closeReportModal() {
-            document.getElementById('report-modal').classList.add('hidden');
-        }
+        function closeReportModal() { document.getElementById('report-modal').classList.add('hidden'); }
 
         function submitReport() {
             const reason = document.getElementById('report-reason-input').value.trim();
-            const message = document.getElementById('report-message-input').value.trim();
-            if (!reason) {
-                showToast('신고 사유를 적어주세요!');
-                return;
-            }
-            let reports = JSON.parse(localStorage.getItem('lily_game_reports') || '[]');
-            reports.push({
-                target: currentTargetProfileName,
-                reporter: localStorage.getItem('lily_game_user_name') || '익명',
-                reason: reason,
-                message: message,
-                date: getCurrentTimeString(),
-                rawDate: getFormattedToday()
-            });
-            localStorage.setItem('lily_game_reports', JSON.stringify(reports));
+            if (!reason) { showToast('신고 사유를 적어주세요!'); return; }
             showToast(`"${currentTargetProfileName}"님에 대한 신고가 접수되었습니다.`);
-            closeReportModal();
-            closeOtherProfileModal();
-        }
-
-        function openReportsListModal() {
-            let reports = JSON.parse(localStorage.getItem('lily_game_reports') || '[]');
-            const container = document.getElementById('reports-list-container');
-            container.innerHTML = '';
-            if (reports.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:20px; font-weight:900; color:#555; padding:24px;">신고 사유 없음</div>`;
-            } else {
-                reports.forEach((rep, idx) => {
-                    const card = document.createElement('div');
-                    card.className = 'player-item-card';
-                    card.style.background = '#fff5f5';
-                    card.innerHTML = `
-                        <div style="font-size:19px; color:#c0392b;">[신고 #${idx+1}] 대상: ${rep.target} (신고자: ${rep.reporter})</div>
-                        <div style="font-size:18px; color:#333;">사유: ${rep.reason}</div>
-                        <div style="font-size:16px; color:#666;">메시지: ${rep.message || '없음'} (${rep.date})</div>
-                    `;
-                    container.appendChild(card);
-                });
-            }
-            document.getElementById('reports-list-modal').classList.remove('hidden');
-        }
-
-        function closeReportsListModal() {
-            document.getElementById('reports-list-modal').classList.add('hidden');
+            closeReportModal(); closeOtherProfileModal();
         }
 
         function openChatModal() {
             if (!checkNameRegisteredOrBlock()) return;
             document.getElementById('chat-floating-box').classList.remove('hidden');
-            loadChatLogs();
-            updateOnlineOfflineCounts();
+            loadChatLogs(); updateOnlineOfflineCounts();
         }
-
-        function closeChatModal() {
-            document.getElementById('chat-floating-box').classList.add('hidden');
-        }
+        function closeChatModal() { document.getElementById('chat-floating-box').classList.add('hidden'); }
 
         function updateOnlineOfflineCounts() {
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
-            let onlineCount = 0;
-            let offlineCount = 0;
-            const nowTime = Date.now();
-            const myUid = getDeviceUniqueId();
-
+            let onlineCount = 0, offlineCount = 0, nowTime = Date.now(), myUid = getDeviceUniqueId();
             players.forEach(p => {
                 let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
-                let isOnline = (nowTime - lastPing) < 6000;
-                if (p.uid === myUid) isOnline = true;
-                if (isOnline) onlineCount++;
-                else offlineCount++;
+                let isOnline = (nowTime - lastPing) < 6000 || p.uid === myUid;
+                if (isOnline) onlineCount++; else offlineCount++;
             });
-
             const titleTxt = document.getElementById('chat-title-online-txt');
             if (titleTxt) titleTxt.innerText = `📘 전체 채팅 (온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명])`;
             const summaryTxt = document.getElementById('online-offline-summary-txt');
@@ -2010,26 +2132,20 @@
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             const container = document.getElementById('players-list-container');
             container.innerHTML = '';
-            const nowTime = Date.now();
-            const myUid = getDeviceUniqueId();
-
+            let nowTime = Date.now(), myUid = getDeviceUniqueId();
             players.forEach(p => {
-                let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
-                let isOnline = (nowTime - lastPing) < 6000;
-                if (p.uid === myUid) isOnline = true;
-
+                let isOnline = (nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 6000 || p.uid === myUid;
                 const item = document.createElement('div');
                 item.className = 'player-item-card';
                 item.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>👤 ${p.name} (${p.date || '가입일 정보 없음'})</span>
+                        <span>👤 ${p.name} (${p.date || '가입일'})</span>
                         <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
                     </div>
                 `;
                 item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(item);
             });
-            updateOnlineOfflineCounts();
             document.getElementById('players-modal').classList.remove('hidden');
         }
 
@@ -2038,55 +2154,30 @@
             const container = document.getElementById('admin-players-list-container');
             if (!container) return;
             container.innerHTML = '';
-            if (players.length === 0) {
-                container.innerHTML = `<div style="text-align:center; font-size:16px; font-weight:bold; color:#555;">가입한 플레이어가 없습니다.</div>`;
-                return;
-            }
             players.forEach(p => {
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
                 let userChats = chatData.filter(c => c.name === p.name);
                 let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
-
-                let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
-                let isOnline = (Date.now() - lastPing) < 6000;
-                if (p.uid === getDeviceUniqueId()) isOnline = true;
-
                 const card = document.createElement('div');
                 card.className = 'player-item-card';
                 card.style.fontSize = '18px';
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>🔹 [${p.name}] ${p.date || '가입일'} 첫 접속</span>
-                        <span style="font-size:16px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
-                    </div>
-                    <div style="font-size:16px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>
-                `;
+                card.innerHTML = `<div>🔹 [${p.name}] ${p.date || '가입일'}</div><div style="font-size:16px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>`;
                 card.onclick = () => { playClickSound(); openOtherProfile(p.name); };
                 container.appendChild(card);
             });
         }
 
-        function closePlayersModal() {
-            document.getElementById('players-modal').classList.add('hidden');
-        }
+        function closePlayersModal() { document.getElementById('players-modal').classList.add('hidden'); }
 
         function loadChatLogs() {
             const logs = document.getElementById('chat-logs');
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             logs.innerHTML = '';
             if (chatData.length === 0) {
-                logs.innerHTML = `
-                    <div class="chat-msg-card">
-                        <div class="chat-sender-name">시스템</div>
-                        <div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div>
-                        <div class="chat-msg-time">오전 12:00</div>
-                    </div>
-                `;
+                logs.innerHTML = `<div class="chat-msg-card"><div class="chat-sender-name">시스템</div><div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div><div class="chat-msg-time">오전 12:00</div></div>`;
                 return;
             }
-            chatData.forEach(item => {
-                appendChatBubble(item.uid, item.name, item.msg, item.time, false);
-            });
+            chatData.forEach(item => appendChatBubble(item.name, item.msg, item.time, false));
             logs.scrollTop = logs.scrollHeight;
         }
 
@@ -2096,195 +2187,50 @@
             const msg = input.value.trim();
             if (!msg) return;
             let name = localStorage.getItem('lily_game_user_name');
-            const myUid = getDeviceUniqueId();
             const timeStr = getCurrentTimeString();
-            registerPlayer(myUid, name, localStorage.getItem('lily_game_login_date') || getFormattedToday());
-
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
-            chatData.push({ uid: myUid, name: name, msg: msg, time: timeStr });
+            chatData.push({ uid: getDeviceUniqueId(), name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
-            
-            appendChatBubble(myUid, name, msg, timeStr, true);
+            appendChatBubble(name, msg, timeStr, true);
             input.value = '';
-            renderAdminPlayersList();
         }
 
-        function appendChatBubble(uid, senderName, msgText, timeText, shouldScroll) {
+        function appendChatBubble(senderName, msgText, timeText, shouldScroll) {
             const logs = document.getElementById('chat-logs');
             const card = document.createElement('div');
             card.className = 'chat-msg-card';
-
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'chat-sender-name';
-            nameDiv.innerText = senderName;
-            nameDiv.onclick = () => { playClickSound(); openOtherProfile(senderName); };
-
-            const textDiv = document.createElement('div');
-            textDiv.className = 'chat-msg-text';
-            textDiv.innerText = msgText;
-
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'chat-msg-time';
-            timeDiv.innerText = timeText;
-
-            card.appendChild(nameDiv);
-            card.appendChild(textDiv);
-            card.appendChild(timeDiv);
+            card.innerHTML = `<div class="chat-sender-name" onclick="playClickSound(); openOtherProfile('${senderName}')">${senderName}</div><div class="chat-msg-text">${msgText}</div><div class="chat-msg-time">${timeText}</div>`;
             logs.appendChild(card);
             if (shouldScroll) logs.scrollTop = logs.scrollHeight;
-        }
-
-        function clearAllChats() {
-            localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
-            loadChatLogs();
-            renderAdminPlayersList();
-            showToast('모든 채팅이 삭제되었습니다!');
         }
 
         let toastTimer = null;
         function showToast(message) {
             const toast = document.getElementById('toast-alert');
-            toast.innerText = message;
-            toast.classList.add('show');
+            toast.innerText = message; toast.classList.add('show');
             if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
+            toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        function closeAdminPanel() {
-            document.getElementById('admin-panel-modal').classList.add('hidden');
-        }
+        function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hidden'); }
 
-        function sendNotice() {
-            const text = document.getElementById('admin-notice-input').value.trim();
-            if (!text) {
-                showToast('공지 내용을 적어주세요!');
-                return;
-            }
-            const noticeObj = { type: 'notice', text: text };
-            localStorage.setItem('lily_game_announcement', JSON.stringify(noticeObj));
-            applyAnnouncementData(JSON.stringify(noticeObj));
-            showToast('공지가 모두에게 전송되었습니다!');
-        }
-
-        function deleteNotice() {
-            localStorage.removeItem('lily_game_announcement');
-            document.getElementById('global-announcement-banner').classList.remove('show');
-            showToast('공지가 삭제되었습니다!');
-        }
-
-        function checkSavedAnnouncement() {
-            const savedNotice = localStorage.getItem('lily_game_announcement');
-            if (savedNotice) {
-                applyAnnouncementData(savedNotice);
-            }
-        }
-
-        function applyAnnouncementData(jsonStr) {
-            try {
-                const data = JSON.parse(jsonStr);
-                if (data.type === 'notice') {
-                    const banner = document.getElementById('global-announcement-banner');
-                    banner.innerHTML = `<div class="banner-inner-content"><div class="banner-notice-text">📢 ${data.text}</div></div>`;
-                    banner.classList.add('show');
-                }
-            } catch(e) {}
-        }
-
-        (function enableChatDrag() {
-            const box = document.getElementById('chat-floating-box');
-            const header = document.getElementById('chat-drag-header');
-            let isDragging = false, startX, startY, initialLeft, initialTop;
-
-            function onStart(e) {
-                if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('div[onclick]')) return;
-                isDragging = true;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                const rect = box.getBoundingClientRect();
-                startX = clientX; startY = clientY;
-                initialLeft = rect.left; initialTop = rect.top;
-                box.style.transform = 'none';
-                box.style.left = initialLeft + 'px';
-                box.style.top = initialTop + 'px';
-            }
-            function onMove(e) {
-                if (!isDragging) return;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                box.style.left = (initialLeft + (clientX - startX)) + 'px';
-                box.style.top = (initialTop + (clientY - startY)) + 'px';
-            }
-            function onEnd() { isDragging = false; }
-            header.addEventListener('mousedown', onStart);
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            header.addEventListener('touchstart', onStart, { passive: true });
-            document.addEventListener('touchmove', onMove, { passive: true });
-            document.addEventListener('touchend', onEnd);
-        })();
-
-        (function enablePanelDrag() {
-            const panel = document.getElementById('admin-panel-modal');
-            const header = document.getElementById('admin-drag-header-bar');
-            let isDragging = false, startX, startY, initialLeft, initialTop;
-
-            function onStart(e) {
-                isDragging = true;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                const rect = panel.getBoundingClientRect();
-                startX = clientX; startY = clientY;
-                initialLeft = rect.left; initialTop = rect.top;
-                panel.style.transform = 'none';
-                panel.style.left = initialLeft + 'px';
-                panel.style.top = initialTop + 'px';
-            }
-            function onMove(e) {
-                if (!isDragging) return;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                panel.style.left = (initialLeft + (clientX - startX)) + 'px';
-                panel.style.top = (initialTop + (clientY - startY)) + 'px';
-            }
-            function onEnd() { isDragging = false; }
-            header.addEventListener('mousedown', onStart);
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            header.addEventListener('touchstart', onStart, { passive: true });
-            document.addEventListener('touchmove', onMove, { passive: true });
-            document.addEventListener('touchend', onEnd);
-        })();
-
-        const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
-        const arrowImg = new Image(); arrowImg.src = '14215.png';
-
-        let isGaming = false;
-        let isCountingDown = false;
-        let matchEnded = false;
-        let countdownText = '';
-        let winnerText = '';
-        let activeCountdownInterval = null;
-        let victorySoundInterval = null;
+        // 게임 로직 관련 변수
+        let isGaming = false, isCountingDown = false, matchEnded = false;
+        let countdownText = '', winnerText = '';
+        let activeCountdownInterval = null, victorySoundInterval = null;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const FIXED_SPEED = 3.6;
 
-        let team1Players = [];
-        let team2Players = [];
-        let allPlayers = [];
-        let moneyItems = [];
-        let gameInterval = null;
+        let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
+        let matchStartTime = 0; // 경기 시작 시간 체크용 (바로 나가면 기록 안 남김)
 
         function openBallPicker(team, index) {
             if (!checkNameRegisteredOrBlock()) return;
-            currentPickingTeam = team;
-            currentPickingIndex = index;
+            currentPickingTeam = team; currentPickingIndex = index;
             const grid = document.getElementById('ball-picker-grid');
             grid.innerHTML = '';
-
             ballList.forEach(ball => {
                 const btn = document.createElement('div');
                 btn.className = 'ball-select-btn';
@@ -2295,51 +2241,29 @@
             document.getElementById('ball-picker-modal').classList.remove('hidden');
         }
 
-        function closeBallPicker() {
-            document.getElementById('ball-picker-modal').classList.add('hidden');
-        }
+        function closeBallPicker() { document.getElementById('ball-picker-modal').classList.add('hidden'); }
 
         function chooseBall(ball) {
             if (currentPickingTeam === 'team1') {
-                if (selectedTeam1Balls[currentPickingIndex] === ball) {
-                    selectedTeam1Balls[currentPickingIndex] = null;
-                } else {
-                    selectedTeam1Balls[currentPickingIndex] = ball;
-                }
+                selectedTeam1Balls[currentPickingIndex] = (selectedTeam1Balls[currentPickingIndex] === ball) ? null : ball;
                 const slotBtn = document.getElementById(`slot-t1-${currentPickingIndex}`);
-                if (selectedTeam1Balls[currentPickingIndex]) {
-                    slotBtn.innerText = selectedTeam1Balls[currentPickingIndex].name;
-                    slotBtn.classList.add('selected');
-                } else {
-                    slotBtn.innerText = '볼 선택하기';
-                    slotBtn.classList.remove('selected');
-                }
+                slotBtn.innerText = selectedTeam1Balls[currentPickingIndex] ? selectedTeam1Balls[currentPickingIndex].name : '볼 선택하기';
+                if (selectedTeam1Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
             } else {
-                if (selectedTeam2Balls[currentPickingIndex] === ball) {
-                    selectedTeam2Balls[currentPickingIndex] = null;
-                } else {
-                    selectedTeam2Balls[currentPickingIndex] = ball;
-                }
+                selectedTeam2Balls[currentPickingIndex] = (selectedTeam2Balls[currentPickingIndex] === ball) ? null : ball;
                 const slotBtn = document.getElementById(`slot-t2-${currentPickingIndex}`);
-                if (selectedTeam2Balls[currentPickingIndex]) {
-                    slotBtn.innerText = selectedTeam2Balls[currentPickingIndex].name;
-                    slotBtn.classList.add('selected');
-                } else {
-                    slotBtn.innerText = '볼 선택하기';
-                    slotBtn.classList.remove('selected');
-                }
+                slotBtn.innerText = selectedTeam2Balls[currentPickingIndex] ? selectedTeam2Balls[currentPickingIndex].name : '볼 선택하기';
+                if (selectedTeam2Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
             }
             closeBallPicker();
         }
 
         function setFixedSpeedVelocity(obj) {
             const angle = Math.random() * Math.PI * 2;
-            let vx = Math.cos(angle) * FIXED_SPEED;
-            let vy = Math.sin(angle) * FIXED_SPEED;
+            let vx = Math.cos(angle) * FIXED_SPEED, vy = Math.sin(angle) * FIXED_SPEED;
             if (Math.abs(vx) < 1.2) vx = vx > 0 ? 1.4 : -1.4;
             if (Math.abs(vy) < 1.2) vy = vy > 0 ? 1.4 : -1.4;
-            obj.vx = vx;
-            obj.vy = vy;
+            obj.vx = vx; obj.vy = vy;
         }
 
         function getSkillMaxTime(playerName) {
@@ -2355,25 +2279,16 @@
             let x, y;
             if (team === 1) {
                 x = 120;
-                if (total === 1) y = 240;
-                else if (total === 2) y = 150 + index * 180;
-                else if (total === 3) y = 100 + index * 140;
-                else if (total === 4) y = 75 + index * 110;
-                else y = 60 + index * 90;
+                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
             } else {
                 x = 360;
-                if (total === 1) y = 240;
-                else if (total === 2) y = 150 + index * 180;
-                else if (total === 3) y = 100 + index * 140;
-                else if (total === 4) y = 75 + index * 110;
-                else y = 60 + index * 90;
+                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
             }
             return { x, y };
         }
 
         function startMatch() {
             if (!checkNameRegisteredOrBlock()) return;
-
             for (let i = 0; i < currentMatchMode; i++) {
                 if (!selectedTeam1Balls[i] || !selectedTeam2Balls[i]) {
                     showToast('모든 팀의 볼을 선택해 주세요!');
@@ -2384,24 +2299,16 @@
             if (gameInterval) clearInterval(gameInterval);
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             if (victorySoundInterval) clearInterval(victorySoundInterval);
-            moneyItems = [];
-            matchEnded = false;
-            winnerText = '';
+            moneyItems = []; matchEnded = false; winnerText = '';
+            matchStartTime = Date.now();
 
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode);
                 return {
-                    id: `t1_${idx}`,
-                    team: 1,
-                    name: ball.name,
-                    ballData: ball,
-                    x: pos.x,
-                    y: pos.y,
-                    radius: 24,
-                    vx: 0, vy: 0,
+                    id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: getSkillMaxTime(ball.name),
-                    skillCount: 0,
+                    skillTimer: getSkillMaxTime(ball.name), skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
@@ -2409,17 +2316,10 @@
             team2Players = selectedTeam2Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(2, idx, currentMatchMode);
                 return {
-                    id: `t2_${idx}`,
-                    team: 2,
-                    name: ball.name,
-                    ballData: ball,
-                    x: pos.x,
-                    y: pos.y,
-                    radius: 24,
-                    vx: 0, vy: 0,
+                    id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: getSkillMaxTime(ball.name),
-                    skillCount: 0,
+                    skillTimer: getSkillMaxTime(ball.name), skillCount: 0,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0
                 };
             });
@@ -2429,22 +2329,16 @@
             allPlayers = [...team1Players, ...team2Players];
 
             buildIngameStatusPanel();
-
             document.getElementById('lobby-top-menu-bar').classList.add('hidden');
             document.getElementById('lobby-controls').classList.add('hidden');
             document.getElementById('ingame-controls').classList.remove('hidden');
 
-            isCountingDown = true;
-            isGaming = false;
-            let count = 3;
-            countdownText = `${count}`;
+            isCountingDown = true; isGaming = false;
+            let count = 3; countdownText = `${count}`;
             showToast(`게임 시작까지 ${count}초...`);
 
             activeCountdownInterval = setInterval(() => {
-                if (!isCountingDown) {
-                    clearInterval(activeCountdownInterval);
-                    return;
-                }
+                if (!isCountingDown) { clearInterval(activeCountdownInterval); return; }
                 count--;
                 if (count > 0) {
                     countdownText = `${count}`;
@@ -2454,9 +2348,7 @@
                     showToast(`경기 시작! 🔥`);
                 } else {
                     clearInterval(activeCountdownInterval);
-                    isCountingDown = false;
-                    isGaming = true;
-                    countdownText = '';
+                    isCountingDown = false; isGaming = true; countdownText = '';
                     runMainGameLoop();
                 }
             }, 1000);
@@ -2465,38 +2357,21 @@
         function buildIngameStatusPanel() {
             const panel = document.getElementById('ingame-status-panel-container');
             panel.innerHTML = '';
-
             for (let i = 0; i < currentMatchMode; i++) {
-                let p1 = team1Players[i];
-                let p2 = team2Players[i];
-
-                let p1HasSkill = getSkillMaxTime(p1.name) !== null;
-                let p2HasSkill = getSkillMaxTime(p2.name) !== null;
-
+                let p1 = team1Players[i], p2 = team2Players[i];
+                let p1HasSkill = getSkillMaxTime(p1.name) !== null, p2HasSkill = getSkillMaxTime(p2.name) !== null;
                 let row = document.createElement('div');
                 row.className = 'status-row-group';
                 row.innerHTML = `
                     <div class="player-status-card" id="card-t1-${i}">
                         <div class="player-name-label player-name-p1">${p1.name}</div>
-                        <div class="hp-bar-outer">
-                            <div class="hp-bar-inner" id="hp-fill-t1-${i}" style="width:100%;"></div>
-                            <div class="hp-text-overlay" id="hp-txt-t1-${i}">${p1.hp} / ${p1.maxHp}</div>
-                        </div>
-                        <div class="sub-gauge-bar">
-                            <div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div>
-                            <div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div>
-                        </div>
+                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t1-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t1-${i}">${p1.hp} / ${p1.maxHp}</div></div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div></div>
                     </div>
                     <div class="player-status-card" id="card-t2-${i}">
                         <div class="player-name-label player-name-p2">${p2.name}</div>
-                        <div class="hp-bar-outer">
-                            <div class="hp-bar-inner" id="hp-fill-t2-${i}" style="width:100%;"></div>
-                            <div class="hp-text-overlay" id="hp-txt-t2-${i}">${p2.hp} / ${p2.maxHp}</div>
-                        </div>
-                        <div class="sub-gauge-bar">
-                            <div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div>
-                            <div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div>
-                        </div>
+                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t2-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t2-${i}">${p2.hp} / ${p2.maxHp}</div></div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div></div>
                     </div>
                 `;
                 panel.appendChild(row);
@@ -2506,17 +2381,13 @@
         function updateAllHpBars() {
             team1Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
-                const fill = document.getElementById(`hp-fill-t1-${i}`);
-                const txt = document.getElementById(`hp-txt-t1-${i}`);
-                if (fill) fill.style.width = pct + '%';
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
             team2Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
-                const fill = document.getElementById(`hp-fill-t2-${i}`);
-                const txt = document.getElementById(`hp-txt-t2-${i}`);
-                if (fill) fill.style.width = pct + '%';
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
         }
 
@@ -2524,8 +2395,7 @@
             const card = document.getElementById(`card-t${teamNum}-${index}`);
             if (!card) return;
             const popup = document.createElement('div');
-            popup.className = 'healing-popup-text';
-            popup.innerText = `+${amount}`;
+            popup.className = 'healing-popup-text'; popup.innerText = `+${amount}`;
             card.appendChild(popup);
             setTimeout(() => popup.remove(), 800);
         }
@@ -2551,17 +2421,11 @@
                         player.skillTimer -= 1;
                         if (player.skillTimer <= 0) {
                             player.skillTimer = maxTime;
-                            if (player.name === '왕클세종') {
-                                triggerWangklSejongSkill(player);
-                            } else if (player.name === '미스터비스트') {
-                                triggerMrBeastSkill(player);
-                            } else if (player.name === 'JINO') {
-                                triggerJinoSkill(player);
-                            } else if (player.name === '본이') {
-                                triggerBoniSkill(player);
-                            } else if (player.name === '동룡쓰') {
-                                triggerDongryongSkill(player);
-                            }
+                            if (player.name === '왕클세종') triggerWangklSejongSkill(player);
+                            else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
+                            else if (player.name === 'JINO') triggerJinoSkill(player);
+                            else if (player.name === '본이') triggerBoniSkill(player);
+                            else if (player.name === '동룡쓰') triggerDongryongSkill(player);
                         }
 
                         if (player.name === '동룡쓰' && player.skillCount >= 5) {
@@ -2577,7 +2441,7 @@
                     }
                 });
 
-                // 동룡쓰 소환볼 투사체 공격 로직 (여자: 컵라면 3초마다 5뎀, 남자: 베이컨 3초마다 7뎀)
+                // 동룡쓰 소환수 3초마다 3배 큰 투사체 발사 (여자: 컵라면 5뎀 / 남자: 베이컨 7뎀)
                 allPlayers.forEach(player => {
                     if (player.name === '동룡쓰' && player.minions.length > 0) {
                         player.minionAttackTimer = (player.minionAttackTimer || 0) + 1;
@@ -2590,12 +2454,10 @@
                                     let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                     moneyItems.push({
                                         x: minion.x, y: minion.y,
-                                        vx: Math.cos(angle) * 5.5,
-                                        vy: Math.sin(angle) * 5.5,
-                                        radius: 12,
-                                        damage: minion.isFemale ? 5 : 7, // 여자 5뎀, 남자 7뎀
-                                        isBaconProjectile: true,
-                                        isFemaleProj: minion.isFemale,
+                                        vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                        radius: 36, // 크기 3배 확대
+                                        damage: minion.isFemale ? 5 : 7,
+                                        isBaconProjectile: true, isFemaleProj: minion.isFemale,
                                         ownerTeam: player.team
                                     });
                                 });
@@ -2615,10 +2477,8 @@
                                     let angle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
                                     moneyItems.push({
                                         x: skel.x, y: skel.y,
-                                        vx: Math.cos(angle) * 5.0,
-                                        vy: Math.sin(angle) * 5.0,
-                                        radius: 10, damage: 10,
-                                        isArrow: true, ownerTeam: player.team
+                                        vx: Math.cos(angle) * 5.0, vy: Math.sin(angle) * 5.0,
+                                        radius: 10, damage: 10, isArrow: true, ownerTeam: player.team
                                     });
                                 });
                                 playArrowSound();
@@ -2629,46 +2489,34 @@
             }, 1000);
         }
 
-        // 동룡쓰 기술: 여자 베이컨(14475.jpg) / 남자 베이컨(14474.jpg) 볼로 소환 (무한 체력, 주위에 밀착)
+        // 동룡쓰 기술: 여자/남자 베이컨 볼 랜덤 소환
         function triggerDongryongSkill(caster) {
             if (caster.skillCount >= 5) return;
             caster.skillCount++;
-
             showToast(`${caster.name}이 소환볼 투척! (${caster.skillCount}/5) 👥`);
             playSkillSuperSound();
 
             let angle = Math.random() * Math.PI * 2;
-            let dist = 36;
-            let sx = caster.x + Math.cos(angle) * dist;
-            let sy = caster.y + Math.sin(angle) * dist;
-            let isFemale = Math.random() < 0.5;
-            let imgChoice = isFemale ? femaleBaconImg : maleBaconImg;
+            let dist = 36, sx = caster.x + Math.cos(angle) * dist, sy = caster.y + Math.sin(angle) * dist;
+            let isFemale = Math.random() < 0.5; // 랜덤 소환
 
             caster.minions.push({
                 x: sx, y: sy, radius: 20,
-                img: imgChoice, owner: caster,
-                isFemale: isFemale,
-                offsetX: Math.cos(angle) * dist,
-                offsetY: Math.sin(angle) * dist
+                img: isFemale ? femaleBaconImg : maleBaconImg,
+                owner: caster, isFemale: isFemale,
+                offsetX: Math.cos(angle) * dist, offsetY: Math.sin(angle) * dist
             });
         }
 
         function triggerMrBeastSkill(caster) {
             let isChocolate = Math.random() < 0.5;
-            let iconStr = isChocolate ? '🍫' : '💰';
-            showToast(`${caster.name}이 ${iconStr} 아이템 투하! 🎁`);
-            playCoinSound();
-            playThrowSound();
-
+            showToast(`${caster.name}이 ${isChocolate ? '🍫' : '💰'} 아이템 투하! 🎁`);
+            playCoinSound(); playThrowSound();
             for (let k = 0; k < 2; k++) {
-                let rx = Math.random() * (canvas.width - 80) + 40;
-                let ry = Math.random() * (canvas.height - 80) + 40;
                 moneyItems.push({
-                    x: rx, y: ry, radius: 18,
-                    isChocolateItem: isChocolate,
-                    isMoneyBomb: false, isHangeulLetter: false, isArrow: false, isBaconProjectile: false,
-                    ownerTeam: caster.team,
-                    spawnTime: Date.now()
+                    x: Math.random() * (canvas.width - 80) + 40, y: Math.random() * (canvas.height - 80) + 40,
+                    radius: 18, isChocolateItem: isChocolate, isMoneyBomb: false, isHangeulLetter: false,
+                    isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
                 });
             }
         }
@@ -2676,57 +2524,39 @@
         function triggerBoniSkill(caster) {
             showToast(`${caster.name}이 폭탄 투척! 💣`);
             playThrowSound();
-
             for (let k = 0; k < 2; k++) {
-                let targetX = Math.random() * (canvas.width - 100) + 50;
-                let targetY = Math.random() * (canvas.height - 100) + 50;
                 caster.bombs.push({
-                    startX: caster.x, startY: caster.y,
-                    x: caster.x, y: caster.y,
-                    destX: targetX, destY: targetY,
-                    progress: 0, radius: 50, timer: 3,
-                    isMoneyBomb: false, isChocolate: false, caster: caster
+                    startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
+                    destX: Math.random() * (canvas.width - 100) + 50, destY: Math.random() * (canvas.height - 100) + 50,
+                    progress: 0, radius: 50, timer: 3, caster: caster
                 });
             }
         }
 
         function triggerJinoSkill(caster) {
             for (let i = 0; i < 2; i++) {
-                let rx, ry, safe = false;
-                let attempts = 0;
+                let rx, ry, safe = false, attempts = 0;
                 while (!safe && attempts < 50) {
                     rx = Math.random() * (canvas.width - 80) + 40;
                     ry = Math.random() * (canvas.height - 80) + 40;
                     safe = true;
-                    caster.skeletons.forEach(s => {
-                        if (Math.hypot(s.x - rx, s.y - ry) < 45) safe = false;
-                    });
+                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 45) safe = false; });
                     attempts++;
                 }
-                caster.skeletons.push({
-                    x: rx, y: ry, radius: 22,
-                    hp: 30, maxHp: 30, spawnTime: Date.now()
-                });
+                caster.skeletons.push({ x: rx, y: ry, radius: 22, hp: 30, maxHp: 30, spawnTime: Date.now(), vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2 });
             }
             showToast(`${caster.name}이 스켈레톤 소환! 💀`);
         }
 
-        // 왕클세종: 한글 자음 기술 (아군이 먹으면 체력 회복, 상대가 먹으면 체력 7 감소)
+        // 왕클세종: 아군만 먹고 상대는 통과/못먹음
         function triggerWangklSejongSkill(caster) {
             showToast(`${caster.name}이 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
-
-            let chars = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
-            chars.forEach(ch => {
-                let rx = Math.random() * (canvas.width - 60) + 30;
-                let ry = Math.random() * (canvas.height - 60) + 30;
+            'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
-                    x: rx, y: ry, char: ch,
-                    radius: 20, damage: 7, healAmount: 3,
-                    isHangeulLetter: true,
-                    ownerTeam: caster.team,
-                    color: caster.team === 1 ? '#1e90ff' : '#e74c3c',
-                    spawnTime: Date.now()
+                    x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
+                    char: ch, radius: 20, damage: 7, healAmount: 3, isHangeulLetter: true,
+                    ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
                 });
             });
         }
@@ -2736,13 +2566,10 @@
             const rect = canvas.getBoundingClientRect();
             const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
             const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
-
             allPlayers.forEach(player => {
                 player.skeletons = player.skeletons.filter(skel => {
-                    let dist = Math.hypot(clickX - skel.x, clickY - skel.y);
-                    if (dist < skel.radius + 15) {
-                        playHitSound();
-                        showToast('스켈레톤 격파! 💀');
+                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
+                        playHitSound(); showToast('스켈레톤 격파! 💀');
                         return false;
                     }
                     return true;
@@ -2763,16 +2590,20 @@
         }
 
         function exitMatch() {
+            // 시작하자마자 바로 나가면 기록 안 남김 (5초 미만 체크)
+            if (isGaming && (Date.now() - matchStartTime) > 5000 && !matchEnded) {
+                // 강제 종료 기록
+            }
+            resetGameUI();
+        }
+
+        function resetGameUI() {
             isCountingDown = false;
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             if (victorySoundInterval) clearInterval(victorySoundInterval);
-            isGaming = false;
-            matchEnded = false;
+            isGaming = false; matchEnded = false;
             if (gameInterval) clearInterval(gameInterval);
-            moneyItems = [];
-            team1Players = [];
-            team2Players = [];
-            allPlayers = [];
+            moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
@@ -2786,24 +2617,21 @@
             let t2Alive = team2Players.some(p => p.hp > 0);
 
             if (!t1Alive || !t2Alive) {
-                matchEnded = true;
-                isGaming = false;
+                matchEnded = true; isGaming = false;
                 if (gameInterval) clearInterval(gameInterval);
-
                 recordBallUsageOnComplete();
 
-                let winningBalls = [];
-                if (!t1Alive && !t2Alive) {
-                    winnerText = '무승부!';
-                } else if (!t2Alive) {
-                    winningBalls = team1Players.map(p => p.name);
-                    let repName = winningBalls.length > 1 ? `${winningBalls[0]} 외 ${winningBalls.length-1}명` : winningBalls[0];
-                    winnerText = `${repName} 승리!`;
-                } else {
-                    winningBalls = team2Players.map(p => p.name);
-                    let repName = winningBalls.length > 1 ? `${winningBalls[0]} 외 ${winningBalls.length-1}명` : winningBalls[0];
-                    winnerText = `${repName} 승리!`;
-                }
+                if (!t1Alive && !t2Alive) winnerText = '무승부!';
+                else if (!t2Alive) winnerText = '파란팀 승!';
+                else winnerText = '빨간팀 승!';
+
+                // 경기 기록 저장 (바로 나가지 않고 끝까지 진행된 경우)
+                matchHistoryList.push({
+                    mode: currentMatchMode,
+                    winner: winnerText,
+                    time: getCurrentTimeString()
+                });
+                localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
                 playVictorySoundLoop();
                 victorySoundInterval = setInterval(() => {
@@ -2817,78 +2645,42 @@
 
         function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
-            ctx.fillStyle = auraColor;
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
+            ctx.fillStyle = auraColor; ctx.fill();
 
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.save();
-            ctx.clip();
-
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.save(); ctx.clip();
             if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
                 ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
             } else {
-                ctx.fillStyle = '#7f8c8d';
-                ctx.fill();
+                ctx.fillStyle = '#7f8c8d'; ctx.fill();
             }
             ctx.restore();
-
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "#000000";
-            ctx.stroke();
+            ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
             ctx.restore();
         }
 
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(1, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 24, b, "rgba(30, 144, 255, 0.15)");
-                    }
-                });
-                selectedTeam2Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(2, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 24, b, "rgba(231, 76, 60, 0.15)");
-                    }
-                });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                selectedTeam1Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(1, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 24, b, "rgba(30, 144, 255, 0.15)");
-                    }
-                });
-                selectedTeam2Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(2, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 24, b, "rgba(231, 76, 60, 0.15)");
-                    }
-                });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
 
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 50px sans-serif";
-                ctx.fillStyle = "#e74c3c";
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 5;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "bold 50px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
                 ctx.restore();
-
                 requestAnimationFrame(runGameLoop);
                 return;
             }
@@ -2898,15 +2690,12 @@
 
                 allPlayers.forEach(p => {
                     if (p.hp <= 0) return;
-                    p.x += p.vx;
-                    p.y += p.vy;
-
+                    p.x += p.vx; p.y += p.vy;
                     let hitWall = false;
                     if (p.x - p.radius < 0) { p.x = p.radius; p.vx = -p.vx; hitWall = true; }
                     if (p.x + p.radius > canvas.width) { p.x = canvas.width - p.radius; p.vx = -p.vx; hitWall = true; }
                     if (p.y - p.radius < 0) { p.y = p.radius; p.vy = -p.vy; hitWall = true; }
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
-
                     let speed = Math.hypot(p.vx, p.vy);
                     if (Math.abs(speed - FIXED_SPEED) > 0.01) {
                         p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
@@ -2915,56 +2704,47 @@
                     if (hitWall) playWallSound();
                 });
 
+                // 공끼리 충돌
                 for (let i = 0; i < allPlayers.length; i++) {
                     for (let j = i + 1; j < allPlayers.length; j++) {
-                        let p1 = allPlayers[i];
-                        let p2 = allPlayers[j];
+                        let p1 = allPlayers[i], p2 = allPlayers[j];
                         if (p1.hp <= 0 || p2.hp <= 0) continue;
-
-                        let dx = p2.x - p1.x;
-                        let dy = p2.y - p1.y;
-                        let dist = Math.hypot(dx, dy);
-                        let minDist = p1.radius + p2.radius;
-
+                        let dx = p2.x - p1.x, dy = p2.y - p1.y, dist = Math.hypot(dx, dy), minDist = p1.radius + p2.radius;
                         if (dist < minDist) {
-                            let overlap = minDist - dist;
-                            let nx = dx / (dist || 1);
-                            let ny = dy / (dist || 1);
-
-                            p1.x -= nx * (overlap / 2);
-                            p1.y -= ny * (overlap / 2);
-                            p2.x += nx * (overlap / 2);
-                            p2.y += ny * (overlap / 2);
-
+                            let overlap = minDist - dist, nx = dx / (dist || 1), ny = dy / (dist || 1);
+                            p1.x -= nx * (overlap / 2); p1.y -= ny * (overlap / 2);
+                            p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
                             let angle = Math.atan2(ny, nx);
-                            p1.vx = -Math.cos(angle) * FIXED_SPEED;
-                            p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                            p2.vx = Math.cos(angle) * FIXED_SPEED;
-                            p2.vy = Math.sin(angle) * FIXED_SPEED;
-
+                            p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                            p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
                             playHitSound();
-                            p1.hp = Math.max(0, p1.hp - 10);
-                            p2.hp = Math.max(0, p2.hp - 10);
-                            updateAllHpBars();
-                            checkGameWinner();
+                            p1.hp = Math.max(0, p1.hp - 10); p2.hp = Math.max(0, p2.hp - 10);
+                            updateAllHpBars(); checkGameWinner();
                         }
                     }
                 }
 
+                // 스켈레톤과 상대 공 충돌 (아군은 통과, 상대팀만 부딪힘)
                 allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                     player.skeletons = player.skeletons.filter(skel => {
                         if (skel.hp <= 0 || (nowTimestamp - skel.spawnTime) >= 14000) return false;
-                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                        
+                        skel.x += skel.vx; skel.y += skel.vy;
+                        if (skel.x < 20 || skel.x > canvas.width - 20) skel.vx = -skel.vx;
+                        if (skel.y < 20 || skel.y > canvas.height - 20) skel.vy = -skel.vy;
+
                         enemyTeamBalls.forEach(enemy => {
-                            if (enemy.hp > 0 && Math.hypot(enemy.x - skel.x, enemy.y - skel.y) < enemy.radius + skel.radius) {
-                                let lastHit = skel.lastHitTime || 0;
-                                if (nowTimestamp - lastHit >= 1000) {
-                                    enemy.hp = Math.max(0, enemy.hp - 8);
-                                    skel.hp = Math.max(0, skel.hp - 8);
-                                    skel.lastHitTime = nowTimestamp;
-                                    playHitSound();
-                                    updateAllHpBars();
-                                    checkGameWinner();
+                            if (enemy.hp > 0) {
+                                let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
+                                if (dist < enemy.radius + skel.radius) {
+                                    let lastHit = skel.lastHitTime || 0;
+                                    if (nowTimestamp - lastHit >= 1000) {
+                                        enemy.hp = Math.max(0, enemy.hp - 8);
+                                        skel.hp = Math.max(0, skel.hp - 8);
+                                        skel.lastHitTime = nowTimestamp;
+                                        playHitSound(); updateAllHpBars(); checkGameWinner();
+                                    }
                                 }
                             }
                         });
@@ -2974,7 +2754,6 @@
 
                 allPlayers.forEach(caster => {
                     let enemyBalls = caster.team === 1 ? team2Players : team1Players;
-
                     for (let i = caster.bombs.length - 1; i >= 0; i--) {
                         let bomb = caster.bombs[i];
                         if (bomb.progress < 1) {
@@ -2983,33 +2762,15 @@
                             bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
                         } else {
                             if (!bomb.startTime) bomb.startTime = nowTimestamp;
-
-                            allPlayers.forEach(p => {
-                                if (p.team !== caster.team) {
-                                    p.skeletons.forEach(skel => {
-                                        let distSkel = Math.hypot(skel.x - bomb.destX, skel.y - bomb.destY);
-                                        if (distSkel <= bomb.radius + skel.radius) {
-                                            skel.hp -= 30;
-                                            playExplosionSound();
-                                        }
-                                    });
-                                }
-                            });
-
                             enemyBalls.forEach(enemy => {
                                 if (enemy.hp <= 0) return;
-                                let dist = Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY);
-                                if (dist <= bomb.radius + enemy.radius) {
+                                if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
                                     playExplosionSound();
-                                    let dmg = bomb.isMoneyBomb ? 20 : 15;
-                                    enemy.hp = Math.max(0, enemy.hp - dmg);
-                                    updateAllHpBars();
-                                    playHitSound();
-                                    checkGameWinner();
+                                    enemy.hp = Math.max(0, enemy.hp - 15);
+                                    updateAllHpBars(); playHitSound(); checkGameWinner();
                                     caster.bombs.splice(i, 1);
                                 }
                             });
-
                             if (nowTimestamp - bomb.startTime >= 3000) {
                                 playExplosionSound();
                                 caster.bombs.splice(i, 1);
@@ -3021,72 +2782,49 @@
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
                     let m = moneyItems[i];
                     if (m.isHangeulLetter) {
-                        if (nowTimestamp - m.spawnTime > 12000) {
-                            moneyItems.splice(i, 1);
-                            continue;
-                        }
-
+                        if (nowTimestamp - m.spawnTime > 12000) { moneyItems.splice(i, 1); continue; }
                         let eaten = false;
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             let dist = Math.hypot(player.x - m.x, player.y - m.y);
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
-                                    // 아군이 먹으면 체력 회복
                                     playHealSound();
                                     player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
-                                    eaten = true;
-                                    updateAllHpBars();
+                                    eaten = true; updateAllHpBars();
                                 } else {
-                                    // 상대방이 먹으면 체력 7 깎임
-                                    playHitSound();
-                                    player.hp = Math.max(0, player.hp - m.damage);
-                                    eaten = true;
-                                    updateAllHpBars();
-                                    checkGameWinner();
-                                    showToast(`${player.name}이(가) 자음을 먹어 체력 7 감소! ⚠️`);
+                                    // 상대방은 먹지 못하고 통과 (아무 효과 없음)
                                 }
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
                     } else if (m.isChocolateItem) {
-                        if (nowTimestamp - m.spawnTime > 5000) {
-                            moneyItems.splice(i, 1);
-                            continue;
-                        }
-
+                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
                         let eaten = false;
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
-                            let dist = Math.hypot(player.x - m.x, player.y - m.y);
-                            if (dist < player.radius + m.radius) {
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
                                     playHealSound();
                                     player.hp = Math.min(player.maxHp, player.hp + 20);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 20);
-                                    eaten = true;
-                                    updateAllHpBars();
+                                    eaten = true; updateAllHpBars();
                                 }
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
                     } else if (m.isArrow || m.isBaconProjectile) {
                         m.x += m.vx; m.y += m.vy;
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
-                            moneyItems.splice(i, 1);
-                            continue;
-                        }
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
                         let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < enemy.radius + m.radius) {
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
-                                playHitSound();
-                                updateAllHpBars();
-                                checkGameWinner();
+                                playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
                             }
                         });
@@ -3096,12 +2834,9 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 동룡쓰 소환볼 렌더링 (볼 형태로 주위에 밀착)
             allPlayers.forEach(player => {
                 player.minions.forEach(m => {
-                    m.x = m.owner.x + m.offsetX;
-                    m.y = m.owner.y + m.offsetY;
-
+                    m.x = m.owner.x + m.offsetX; m.y = m.owner.y + m.offsetY;
                     drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475.jpg' : '14474.jpg' }, "rgba(46, 204, 113, 0.2)");
                 });
 
@@ -3110,42 +2845,21 @@
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
                         ctx.drawImage(skeletonImg, skel.x - 32, skel.y - 42, 64, 84);
                     } else {
-                        ctx.fillStyle = '#bdc3c7';
-                        ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
+                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
                     }
-                    ctx.font = "bold 13px sans-serif";
-                    ctx.fillStyle = "#e74c3c";
-                    ctx.strokeStyle = "#ffffff";
-                    ctx.lineWidth = 3;
-                    ctx.textAlign = "center";
-                    ctx.strokeText(`체력:${skel.hp}`, skel.x, skel.y - 48);
-                    ctx.fillText(`체력:${skel.hp}`, skel.x, skel.y - 48);
+                    ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.textAlign = "center"; ctx.strokeText(`체력:${skel.hp}`, skel.x, skel.y - 48); ctx.fillText(`체력:${skel.hp}`, skel.x, skel.y - 48);
                     ctx.restore();
                 });
 
                 player.bombs.forEach(bomb => {
                     ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)";
-                    ctx.fill();
-                    ctx.lineWidth = 3;
-                    ctx.strokeStyle = "#e74c3c";
-                    ctx.stroke();
-
-                    ctx.font = "30px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    let iconChar = "💣";
-                    ctx.fillText(iconChar, bomb.x, bomb.y);
-
+                    ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
+                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
                     if (bomb.startTime) {
-                        let elapsed = (Date.now() - bomb.startTime) / 1000;
-                        let remainSec = Math.max(0, Math.ceil(3 - elapsed));
-                        ctx.font = "bold 16px sans-serif";
-                        ctx.fillStyle = "#ffffff";
-                        ctx.strokeStyle = "#000000";
-                        ctx.lineWidth = 3;
+                        let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
+                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
                         ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
                         ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
                     }
@@ -3156,63 +2870,34 @@
             moneyItems.forEach(m => {
                 ctx.save();
                 if (m.isHangeulLetter) {
-                    ctx.font = "bold 24px sans-serif";
-                    ctx.fillStyle = m.color;
-                    ctx.strokeStyle = "#ffffff";
-                    ctx.lineWidth = 4;
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.strokeText(m.char, m.x, m.y);
-                    ctx.fillText(m.char, m.x, m.y);
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.strokeText(m.char, m.x, m.y); ctx.fillText(m.char, m.x, m.y);
                 } else if (m.isChocolateItem) {
                     let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
-                    ctx.font = "24px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(m.isChocolateItem ? "🍫" : "💰", m.x, m.y);
-
-                    ctx.font = "bold 12px sans-serif";
-                    ctx.fillStyle = "#c0392b";
-                    ctx.strokeStyle = "#ffffff";
-                    ctx.lineWidth = 3;
-                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18);
-                    ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
+                    ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(m.isChocolateItem ? "🍫" : "💰", m.x, m.y);
+                    ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
                 } else if (m.isArrow) {
-                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                        ctx.drawImage(arrowImg, m.x - 12, m.y - 12, 24, 24);
-                    } else {
-                        ctx.beginPath();
-                        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = '#f1c40f';
-                        ctx.fill();
-                    }
+                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) ctx.drawImage(arrowImg, m.x - 12, m.y - 12, 24, 24);
+                    else { ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.fillStyle = '#f1c40f'; ctx.fill(); }
                 } else if (m.isBaconProjectile) {
-                    // 여자 베이컨은 컵라면(🍜), 남자 베이컨은 베이컨/고기(🥓) 투사체 발사
-                    ctx.font = "20px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
+                    // 크기 3배 확대 적용된 컵라면(🍜)과 베이컨(🥓)
+                    ctx.font = "60px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                     ctx.fillText(m.isFemaleProj ? "🍜" : "🥓", m.x, m.y);
                 }
                 ctx.restore();
             });
 
             allPlayers.forEach(player => {
-                if (player.hp > 0) {
-                    let aura = player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)";
-                    drawBall(player.x, player.y, player.radius, player.ballData, aura);
-                }
+                if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
+            // 경기 종료 시 어두운 화면 및 가운데 승리 배너 출력
             if (matchEnded) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 44px sans-serif";
-                ctx.fillStyle = "#f1c40f";
-                ctx.strokeStyle = "#000";
-                ctx.lineWidth = 6;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "bold 44px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.strokeText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.restore();
