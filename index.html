@@ -797,14 +797,14 @@
             <div style="border:3px solid #000; background:#f8f9fa; padding:12px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:8px; text-align:left; overflow-y:auto; flex:1;">
                 <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:8px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.1 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.2 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button style="background:#3498db; color:#fff; border:2px solid #000; width:30px; height:30px; font-size:14px; font-weight:900; cursor:pointer;" onclick="playClickSound(); togglePatchDetails('patch-content-01');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-01" class="hidden" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px;">
-                        카운트다운 중 나가기 시 즉시 중단, 선택해제 삭제 및 재클릭 시 선택하기 변경, 기술 충전 게이지 [초] 및 위치별 자동 배치 완료!
+                        다인전 캐릭터 줄내림/분산 배치, 타캐릭터 머리 위 스킬명 제거, 로비 공 미리보기 및 브롤스타즈 스타일 5x4 아이콘 선택창 구현!
                     </div>
                 </div>
             </div>
@@ -903,13 +903,15 @@
     <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeProfileModal();">✕</button>
-            <div id="my-profile-square-icon" style="width:55px; height:55px; background:#2c3e50; border:4px solid #000; border-radius:6px; margin-bottom:10px; box-shadow:0 3px 0 #000;"></div>
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">내 프로필</div>
-            <div style="font-size:20px; font-weight:900; margin-bottom:10px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
-                <span style="font-size:16px; font-weight:900;">아이콘 색상:</span>
-                <input type="color" id="profile-color-picker" value="#2c3e50" style="width:45px; height:32px; border:3px solid #000; cursor:pointer; background:none; outline:none;" onchange="changeProfileColor(this.value)">
+            
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+                <div id="my-profile-square-icon" style="width:137px; height:137px; background:#1e90ff; border:5px solid #000; border-radius:6px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:60px;">👤</div>
+                <button style="width:48px; height:48px; background:#f1f2f6; border:3px solid #000; border-radius:6px; font-size:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
             </div>
+
+            <div style="font-size:24px; font-weight:900; margin-bottom:10px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:20px; font-weight:900; margin-bottom:8px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:17px; font-weight:900; margin-bottom:8px; color:#27ae60;" id="profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
             <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="profile-date-txt">접속한 날짜: -</div>
             <div class="admin-btn-group" style="width:100%;">
                 <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:12px 0; font-size:18px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
@@ -918,16 +920,29 @@
         </div>
     </div>
 
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 (6번 사진 참고) -->
+    <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
+        <div style="background:#1b4f72; border:6px solid #000; padding:24px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
+            <button class="modal-close-btn" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
+            <div style="font-size:24px; font-weight:900; color:#fff; margin-bottom:16px;">아이콘 선택</div>
+            
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; width:100%; max-height:60vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container">
+                <!-- 동적 생성 -->
+            </div>
+        </div>
+    </div>
+
     <!-- 다른 사람 프로필 확인용 팝업 창 -->
     <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
         <div class="profile-modal-box">
             <button class="modal-close-btn" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
-            <div id="other-profile-square-icon" style="width:55px; height:55px; background:#2c3e50; border:4px solid #000; border-radius:6px; margin-bottom:6px; box-shadow:0 3px 0 #000;"></div>
+            <div id="other-profile-square-icon" style="width:137px; height:137px; background:#1e90ff; border:5px solid #000; border-radius:6px; margin-bottom:10px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:60px;">👤</div>
             <div style="font-size:24px; font-weight:900; margin-bottom:10px; border-bottom:3px solid #000; padding-bottom:6px; width:100%; text-align:center;">플레이어 프로필</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px; width:100%;">
                 <div style="font-size:20px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
                 <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:6px 12px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
             </div>
+            <div style="font-size:17px; font-weight:900; margin-bottom:8px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
             <div style="font-size:15px; font-weight:bold; color:#555; margin-bottom:20px;" id="other-profile-date-txt">접속한 날짜: -</div>
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:12px 0; font-size:18px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
         </div>
@@ -1216,9 +1231,8 @@
             document.getElementById('zoom-input-box').value = z;
             applyZoomScale(z);
 
-            let savedColor = localStorage.getItem('lily_game_profile_color') || '#2c3e50';
-            document.getElementById('profile-color-picker').value = savedColor;
-            applyProfileColorUI(savedColor);
+            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
+            applyProfileIconUI(savedIcon);
 
             let savedMode = localStorage.getItem('lily_game_match_mode') || '1';
             currentMatchMode = parseInt(savedMode);
@@ -1301,17 +1315,108 @@
             content.classList.toggle('hidden');
         }
 
-        function changeProfileColor(colorHex) {
-            localStorage.setItem('lily_game_profile_color', colorHex);
-            applyProfileColorUI(colorHex);
-            showToast('아이콘 색상이 변경되었습니다!');
+        const ballList = [
+            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
+            { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
+            { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
+            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
+            { name: '본이', hp: 250, imageSrc: 'boni.png' },
+            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
+        ];
+
+        const loadedImages = {};
+        ballList.forEach(ball => {
+            if (ball.imageSrc) {
+                const img = new Image();
+                img.src = ball.imageSrc;
+                loadedImages[ball.name] = img;
+            }
+        });
+
+        const brawlIconsList = [
+            { type: 'text', val: '👤', bg: '#1e90ff' },
+            { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
+            { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
+            { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
+            { type: 'image', val: 'JINO', src: 'jino.jpg', bg: '#ffffff' },
+            { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
+            { type: 'image', val: '상품컴퍼니', src: 'sangsampany.png', bg: '#ffffff' },
+            { type: 'text', val: '⭐', bg: '#f1c40f' },
+            { type: 'text', val: '👑', bg: '#27ae60' },
+            { type: 'text', val: '💀', bg: '#2c3e50' },
+            { type: 'text', val: '🏆', bg: '#e67e22' },
+            { type: 'text', val: '🧪', bg: '#9b59b6' },
+            { type: 'text', val: '🔥', bg: '#e74c3c' },
+            { type: 'text', val: '💎', bg: '#3498db' },
+            { type: 'text', val: '⚡', bg: '#f39c12' },
+            { type: 'text', val: '🎯', bg: '#16a085' },
+            { type: 'text', val: '🚀', bg: '#2980b9' },
+            { type: 'text', val: '🛡️', bg: '#7f8c8d' },
+            { type: 'text', val: '⚔️', bg: '#c0392b' },
+            { type: 'text', val: '🌟', bg: '#f1c40f' }
+        ];
+
+        function openBrawlIconSelector() {
+            closeProfileModal();
+            const container = document.getElementById('brawl-icon-grid-container');
+            container.innerHTML = '';
+
+            brawlIconsList.forEach(item => {
+                const cell = document.createElement('div');
+                cell.style.width = '100%';
+                cell.style.aspectRatio = '1 / 1';
+                cell.style.backgroundColor = item.bg;
+                cell.style.border = '4px solid #000';
+                cell.style.borderRadius = '6px';
+                cell.style.display = 'flex';
+                cell.style.alignItems = 'center';
+                cell.style.justifyContent = 'center';
+                cell.style.cursor = 'pointer';
+                cell.style.boxShadow = '0 3px 0 #000';
+                cell.style.overflow = 'hidden';
+
+                if (item.type === 'text') {
+                    cell.style.fontSize = '36px';
+                    cell.innerText = item.val;
+                } else {
+                    cell.innerHTML = `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+
+                cell.onclick = () => {
+                    playClickSound();
+                    let storeVal = item.type === 'text' ? item.val : `img:${item.src}`;
+                    localStorage.setItem('lily_game_profile_icon', storeVal);
+                    applyProfileIconUI(storeVal);
+                    closeBrawlIconSelector();
+                    openProfileModal();
+                    showToast('프로필 아이콘이 변경되었습니다!');
+                };
+                container.appendChild(cell);
+            });
+
+            document.getElementById('brawl-icon-selector-modal').classList.remove('hidden');
         }
 
-        function applyProfileColorUI(colorHex) {
+        function closeBrawlIconSelector() {
+            document.getElementById('brawl-icon-selector-modal').classList.add('hidden');
+        }
+
+        function applyProfileIconUI(iconStr) {
             const sq1 = document.getElementById('my-profile-square-icon');
             const sq2 = document.getElementById('other-profile-square-icon');
-            if (sq1) sq1.style.backgroundColor = colorHex;
-            if (sq2) sq2.style.backgroundColor = colorHex;
+            [sq1, sq2].forEach(sq => {
+                if (!sq) return;
+                sq.innerHTML = '';
+                if (iconStr.startsWith('img:')) {
+                    let imgSrc = iconStr.replace('img:', '');
+                    sq.style.backgroundColor = '#ffffff';
+                    sq.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    sq.style.backgroundColor = '#1e90ff';
+                    sq.style.fontSize = '60px';
+                    sq.innerText = iconStr;
+                }
+            });
         }
 
         function saveGameSettings() {
@@ -1579,7 +1684,7 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            const forcedResetKey = 'lily_game_name_reset_v4';
+            const forcedResetKey = 'lily_game_name_reset_v5';
             if (!localStorage.getItem(forcedResetKey)) {
                 localStorage.removeItem('lily_game_user_name');
                 localStorage.setItem(forcedResetKey, 'true');
@@ -1667,15 +1772,31 @@
             openChatModal();
         }
 
+        function getMostUsedBallInfo() {
+            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+            let maxBall = '없음';
+            let maxCount = 0;
+            for (let bName in usage) {
+                if (usage[bName] > maxCount) {
+                    maxCount = usage[bName];
+                    maxBall = bName;
+                }
+            }
+            return { name: maxBall, count: maxCount };
+        }
+
         function openProfileModal() {
             if (!checkNameRegisteredOrBlock()) return;
             const savedName = localStorage.getItem('lily_game_user_name') || '미등록';
             const savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
             document.getElementById('profile-name-txt').innerText = `이름: ${savedName}`;
             document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${savedDate}`;
-            let savedColor = localStorage.getItem('lily_game_profile_color') || '#2c3e50';
-            document.getElementById('profile-color-picker').value = savedColor;
-            applyProfileColorUI(savedColor);
+
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
+
+            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
+            applyProfileIconUI(savedIcon);
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
@@ -1699,8 +1820,11 @@
 
             document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
             document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
-            let savedColor = localStorage.getItem('lily_game_profile_color') || '#2c3e50';
-            applyProfileColorUI(savedColor);
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('other-profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
+
+            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
+            applyProfileIconUI(savedIcon);
 
             const myName = localStorage.getItem('lily_game_user_name');
             const reportBtn = document.getElementById('btn-report-player');
@@ -2072,24 +2196,6 @@
             document.addEventListener('touchend', onEnd);
         })();
 
-        const ballList = [
-            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
-            { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
-            { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
-            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
-            { name: '본이', hp: 250, imageSrc: 'boni.png' },
-            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
-        ];
-
-        const loadedImages = {};
-        ballList.forEach(ball => {
-            if (ball.imageSrc) {
-                const img = new Image();
-                img.src = ball.imageSrc;
-                loadedImages[ball.name] = img;
-            }
-        });
-
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         const arrowImg = new Image(); arrowImg.src = '14215.png';
 
@@ -2132,6 +2238,13 @@
         }
 
         function chooseBall(ball) {
+            let ballNameForUsage = ball ? ball.name : null;
+            if (ballNameForUsage) {
+                let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+                usage[ballNameForUsage] = (usage[ballNameForUsage] || 0) + 1;
+                localStorage.setItem('lily_game_ball_usage', JSON.stringify(usage));
+            }
+
             if (currentPickingTeam === 'team1') {
                 if (selectedTeam1Balls[currentPickingIndex] === ball) {
                     selectedTeam1Balls[currentPickingIndex] = null;
@@ -2182,24 +2295,23 @@
             return null;
         }
 
-        function calculateInitialPositions(team, index, total) {
+        function calculateMultiPositions(team, index, total) {
             let x, y;
+            let width = 450, height = 450;
             if (team === 1) {
-                x = 100;
-                if (total === 1) {
-                    y = 225;
-                } else {
-                    let spacing = 320 / (total - 1 || 1);
-                    y = 65 + index * spacing;
-                }
+                x = 110;
+                if (total === 1) y = 225;
+                else if (total === 2) y = 140 + index * 170;
+                else if (total === 3) y = 90 + index * 135;
+                else if (total === 4) y = 70 + index * 103;
+                else y = 55 + index * 85;
             } else {
-                x = 350;
-                if (total === 1) {
-                    y = 225;
-                } else {
-                    let spacing = 320 / (total - 1 || 1);
-                    y = 65 + index * spacing;
-                }
+                x = 340;
+                if (total === 1) y = 225;
+                else if (total === 2) y = 140 + index * 170;
+                else if (total === 3) y = 90 + index * 135;
+                else if (total === 4) y = 70 + index * 103;
+                else y = 55 + index * 85;
             }
             return { x, y };
         }
@@ -2221,7 +2333,7 @@
             winnerText = '';
 
             team1Players = selectedTeam1Balls.map((ball, idx) => {
-                let pos = calculateInitialPositions(1, idx, currentMatchMode);
+                let pos = calculateMultiPositions(1, idx, currentMatchMode);
                 return {
                     id: `t1_${idx}`,
                     team: 1,
@@ -2229,7 +2341,7 @@
                     ballData: ball,
                     x: pos.x,
                     y: pos.y,
-                    radius: 26,
+                    radius: 24,
                     vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: getSkillMaxTime(ball.name),
@@ -2239,7 +2351,7 @@
             });
 
             team2Players = selectedTeam2Balls.map((ball, idx) => {
-                let pos = calculateInitialPositions(2, idx, currentMatchMode);
+                let pos = calculateMultiPositions(2, idx, currentMatchMode);
                 return {
                     id: `t2_${idx}`,
                     team: 2,
@@ -2247,7 +2359,7 @@
                     ballData: ball,
                     x: pos.x,
                     y: pos.y,
-                    radius: 26,
+                    radius: 24,
                     vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: getSkillMaxTime(ball.name),
@@ -2382,16 +2494,17 @@
                         player.skillTimer -= 1;
                         if (player.skillTimer <= 0) {
                             player.skillTimer = maxTime;
-                            triggerSkillNotice(player);
-
-                            if (player.name === '미스터비스트') {
-                                triggerMrBeastSkill(player);
-                            } else if (player.name === 'JINO') {
-                                triggerJinoSkill(player);
-                            } else if (player.name === '왕클세종') {
+                            if (player.name === '왕클세종') {
                                 triggerWangklSejongSkill(player);
-                            } else if (player.name === '본이') {
-                                triggerBoniSkill(player);
+                            } else {
+                                triggerSkillNotice(player);
+                                if (player.name === '미스터비스트') {
+                                    triggerMrBeastSkill(player);
+                                } else if (player.name === 'JINO') {
+                                    triggerJinoSkill(player);
+                                } else if (player.name === '본이') {
+                                    triggerBoniSkill(player);
+                                }
                             }
                         }
                         let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
@@ -2581,19 +2694,37 @@
         }
 
         function runGameLoop() {
+            if (!isGaming && !isCountingDown) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                selectedTeam1Balls.forEach((b, idx) => {
+                    if (b) {
+                        let pos = calculateMultiPositions(1, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 24, b, "rgba(30, 144, 255, 0.15)");
+                    }
+                });
+                selectedTeam2Balls.forEach((b, idx) => {
+                    if (b) {
+                        let pos = calculateMultiPositions(2, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 24, b, "rgba(231, 76, 60, 0.15)");
+                    }
+                });
+                requestAnimationFrame(runGameLoop);
+                return;
+            }
+
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 selectedTeam1Balls.forEach((b, idx) => {
                     if (b) {
-                        let pos = calculateInitialPositions(1, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 26, b, "rgba(30, 144, 255, 0.15)");
+                        let pos = calculateMultiPositions(1, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 24, b, "rgba(30, 144, 255, 0.15)");
                     }
                 });
                 selectedTeam2Balls.forEach((b, idx) => {
                     if (b) {
-                        let pos = calculateInitialPositions(2, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, 26, b, "rgba(231, 76, 60, 0.15)");
+                        let pos = calculateMultiPositions(2, idx, currentMatchMode);
+                        drawBall(pos.x, pos.y, 24, b, "rgba(231, 76, 60, 0.15)");
                     }
                 });
 
@@ -2857,7 +2988,7 @@
                     let aura = player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)";
                     drawBall(player.x, player.y, player.radius, player.ballData, aura);
 
-                    if (player.lastSkillNoticeTimer > 0) {
+                    if (player.name === '왕클세종' && player.lastSkillNoticeTimer > 0) {
                         player.lastSkillNoticeTimer--;
                         ctx.save();
                         ctx.font = "bold 72px sans-serif";
