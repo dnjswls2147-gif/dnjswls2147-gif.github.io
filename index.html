@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.2 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.2.3 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/08</span>
                             <button id="patch-btn-09" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-09', 'patch-btn-09');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-09" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        동룡쓰 부하 캐릭터 파일(남녀 베이컨) 완벽 연동, JINO 스켈레톤 및 화살 파일 전면 교체, 스켈레톤 체력 삭제, 화살 발사 주기를 정확히 2초로 고정하는 패치 완료!
+                        JINO 화살 파일 파일 연동 및 6 데미지 설정, 스켈레톤 영구 유지, 동룡쓰 첫 소환 시 무조건 남자 베이컨 소환, 왕클세종 글자를 상대가 먹으면 피해/회복 없이 곧바로 삭제되도록 수정 완료!
                     </div>
                 </div>
 
@@ -794,10 +794,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="14108.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="14215.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO 스켈레톤</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">체력바 없이 2초마다 화살을 발사하는 스켈레톤!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">화살 투사체</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">2초마다 발사되는 6 데미지의 화살!</div>
                     </div>
                 </div>
 
@@ -2461,7 +2461,7 @@
                         }
                     }
 
-                    // JINO 스켈레톤 (정확히 2초마다 화살 발사)
+                    // JINO 스켈레톤 (2초마다 6 데미지 화살 발사)
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
                         if (player.arrowTimer >= 2) {
@@ -2474,7 +2474,7 @@
                                     moneyItems.push({
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                        radius: 14, damage: 10, isArrow: true, ownerTeam: player.team
+                                        radius: 14, damage: 6, isArrow: true, ownerTeam: player.team
                                     });
                                 });
                                 playArrowSound();
@@ -2494,6 +2494,7 @@
             });
         }
 
+        // 동룡쓰 기술 (첫 소환 시 무조건 남자 베이컨)
         function triggerDongryongSkill(caster) {
             if (caster.skillCount >= 5) return;
             caster.skillCount++;
@@ -2578,7 +2579,7 @@
                 }
                 caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
             }
-            showToast(`${caster.name}이 스켈레톤 소환! (제자리 고정) 💀`);
+            showToast(`${caster.name}이 스켈레톤 소환! (영구 유지) 💀`);
         }
 
         function triggerWangklSejongSkill(caster) {
@@ -2829,12 +2830,10 @@
                     }
                 });
 
-                // JINO 스켈레톤 (체력 삭제 및 제자리 고정)
+                // JINO 스켈레톤 (영구 유지, 체력 없음)
                 allPlayers.forEach(player => {
                     let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                    player.skeletons = player.skeletons.filter(skel => {
-                        if ((nowTimestamp - skel.spawnTime) >= 14000) return false;
-                        
+                    player.skeletons.forEach(skel => {
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp > 0) {
                                 let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
@@ -2848,7 +2847,6 @@
                                 }
                             }
                         });
-                        return true;
                     });
                 });
 
@@ -2912,10 +2910,9 @@
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true; updateAllHpBars();
                                 } else {
-                                    playHitSound();
-                                    player.hp = Math.max(0, player.hp - m.damage);
-                                    showToast('🇰🇷 왕클세종 글자 함정! (체력 7 피해)');
-                                    eaten = true; updateAllHpBars(); checkGameWinner();
+                                    // 상대가 먹으면 피해/회복 없이 곧바로 삭제
+                                    showToast('🇰🇷 왕클세종 글자 삭제됨!');
+                                    eaten = true;
                                 }
                             }
                         });
@@ -2970,6 +2967,8 @@
                                     showToast('🥓 베이컨 공격! (데미지 4, 속도 저하)');
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
                                     showToast('🍜 라면 공격! (데미지 5)');
+                                } else if (m.isArrow) {
+                                    showToast('🏹 화살 명중! (데미지 6)');
                                 }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
@@ -3023,7 +3022,7 @@
                     drawBall(m.x, m.y, m.radius, { name: 'minion', imageSrc: m.isFemale ? '14475.jpg' : '14474.jpg' }, "rgba(46, 204, 113, 0.2)");
                 });
 
-                // JINO 스켈레톤 (체력 텍스트 삭제 완료)
+                // JINO 스켈레톤 (영구 유지, 클릭으로도 안 없어지게 하려면 아래 클릭 리스너 참고)
                 player.skeletons.forEach(skel => {
                     ctx.save();
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
