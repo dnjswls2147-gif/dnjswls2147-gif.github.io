@@ -788,45 +788,59 @@
         </div>
     </div>
 
-    <!-- 패치노트 모달 팝업 창 -->
+    <!-- 패치노트 모달 팝업 창 (글씨 크기 대폭 확대) -->
     <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
         <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:96%; max-width:700px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:85vh; display:flex; flex-direction:column;">
             <button class="modal-close-btn" onclick="playClickSound(); closePatchNoteModal();">✕</button>
-            <div style="font-size:26px; font-weight:900; margin-bottom:18px; color:#000;">📓 패치 노트</div>
+            <div style="font-size:30px; font-weight:900; margin-bottom:18px; color:#000;">📓 패치 노트</div>
             
-            <div style="border:3px solid #000; background:#f8f9fa; padding:16px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:12px; text-align:left; overflow-y:auto; flex:1;" id="patch-note-list-scroll-area">
+            <div style="border:3px solid #000; background:#f8f9fa; padding:18px; border-radius:6px; margin-bottom:16px; display:flex; flex-direction:column; gap:16px; text-align:left; overflow-y:auto; flex:1;" id="patch-note-list-scroll-area">
                 
-                <!-- v0.1.2 -->
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:10px;">
+                <!-- v0.1.3 -->
+                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.2 <span style="font-size:12px; background:#e74c3c; color:#fff; padding:2px 6px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:22px; font-weight:900; color:#2c3e50;">v0.1.3 <span style="font-size:14px; background:#e74c3c; color:#fff; padding:2px 8px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-02" style="background:#3498db; color:#fff; border:2px solid #000; width:32px; height:32px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-02', 'patch-btn-02');">⬇️</button>
+                            <span style="font-size:16px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-03" style="background:#3498db; color:#fff; border:2px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-03', 'patch-btn-03');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-02" style="font-size:15px; font-weight:bold; color:#e74c3c; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
-                        버그 수정 및: JINO 스켈레톤 충돌 데미지 8 정상 적용, 공 기술(미스터비스트, 본이 등) 작동 오류 수정, 스켈레톤 화살 데미지 10 조정, 경기 완료 시에만 '가장 많이 쓴 볼' 카운트 반영, 다인전(5대5 등) 동일 캐릭터 선택 시 중복 기록 수정.
+                    <div id="patch-content-03" style="font-size:18px; font-weight:900; color:#e74c3c; border-top:1px dashed #000; margin-top:10px; padding-top:8px; display:none; line-height:1.5;">
+                        상품컴퍼니 볼 삭제 및 버그 수정
+                    </div>
+                </div>
+
+                <!-- v0.1.2 -->
+                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:22px; font-weight:900; color:#2c3e50;">v0.1.2</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:16px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-02" style="background:#3498db; color:#fff; border:2px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-02', 'patch-btn-02');">⬇️</button>
+                        </div>
+                    </div>
+                    <div id="patch-content-02" style="font-size:18px; font-weight:900; color:#333; border-top:1px dashed #000; margin-top:10px; padding-top:8px; display:none; line-height:1.5;">
+                        버그 수정 및: JINO 스켈레톤 체력 30 및 겹침 방지 랜덤 소환, 1초 연속 공격 쿨타임, 폭탄 초 표시 추가.
                     </div>
                 </div>
 
                 <!-- v0.1.1 -->
-                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:10px;">
+                <div style="display:flex; flex-direction:column; border-bottom:2px solid #ddd; padding-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:18px; font-weight:900; color:#2c3e50;">v0.1.1</span>
+                        <span style="font-size:22px; font-weight:900; color:#2c3e50;">v0.1.1</span>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:14px; font-weight:bold; color:#666;">2026/11/08</span>
-                            <button id="patch-btn-01" style="background:#3498db; color:#fff; border:2px solid #000; width:32px; height:32px; font-size:15px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-01', 'patch-btn-01');">⬇️</button>
+                            <span style="font-size:16px; font-weight:bold; color:#666;">2026/11/08</span>
+                            <button id="patch-btn-01" style="background:#3498db; color:#fff; border:2px solid #000; width:36px; height:36px; font-size:18px; font-weight:900; cursor:pointer;" onclick="playSlideSound(); togglePatchDetails('patch-content-01', 'patch-btn-01');">⬇️</button>
                         </div>
                     </div>
-                    <div id="patch-content-01" style="font-size:15px; font-weight:bold; color:#555; border-top:1px dashed #000; margin-top:8px; padding-top:6px; display:none;">
+                    <div id="patch-content-01" style="font-size:18px; font-weight:900; color:#333; border-top:1px dashed #000; margin-top:10px; padding-top:8px; display:none; line-height:1.5;">
                         패치 노트 등장
                     </div>
                 </div>
 
             </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:18px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
         </div>
     </div>
 
@@ -1003,7 +1017,7 @@
     </div>
 
     <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
-    <div class="modal-overlay" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
+    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
         <div style="background:#fff; border:8px solid #000; padding:50px 40px; width:92%; max-width:650px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
             <div style="font-size:36px; font-weight:900; margin-bottom:24px; color:#000;">✍️ 이름 쓰기</div>
             <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:24px; font-size:28px; padding:22px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
@@ -1404,10 +1418,10 @@
             document.getElementById('patch-note-modal').classList.add('hidden');
         }
 
+        // 상품컴퍼니 완전 삭제된 볼 리스트
         const ballList = [
             { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
-            { name: '상품컴퍼니', hp: 250, imageSrc: 'sangsampany.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' }
@@ -1422,6 +1436,7 @@
             }
         });
 
+        // 프로필 아이콘 선택 목록에서도 상품컴퍼니 제외
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
@@ -1429,7 +1444,6 @@
             { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
             { type: 'image', val: 'JINO', src: 'jino.jpg', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
-            { type: 'image', val: '상품컴퍼니', src: 'sangsampany.png', bg: '#ffffff' },
             { type: 'text', val: '⭐', bg: '#f1c40f' },
             { type: 'text', val: '👑', bg: '#27ae60' },
             { type: 'text', val: '💀', bg: '#2c3e50' },
@@ -1668,18 +1682,12 @@
             let savedDate = localStorage.getItem('lily_game_login_date');
             const todayStr = getFormattedToday();
 
-            const forcedResetKey = 'lily_game_name_reset_v7';
-            if (!localStorage.getItem(forcedResetKey)) {
-                localStorage.removeItem('lily_game_user_name');
-                localStorage.setItem(forcedResetKey, 'true');
-                savedName = null;
-            }
-
             if (!savedDate) {
                 savedDate = todayStr;
                 localStorage.setItem('lily_game_login_date', savedDate);
             }
 
+            // 코드 수정 시 다시 이름 입력창이 뜨지 않도록 영구 유지
             if (!savedName) {
                 document.getElementById('name-input-modal').classList.remove('hidden');
             } else {
@@ -2462,11 +2470,6 @@
             setTimeout(() => popup.remove(), 800);
         }
 
-        function triggerSkillNotice(player) {
-            player.lastSkillName = `${player.name}`;
-            player.lastSkillNoticeTimer = 90;
-        }
-
         function runMainGameLoop() {
             gameInterval = setInterval(() => {
                 if (!isGaming || matchEnded) return;
@@ -2483,15 +2486,12 @@
                             player.skillTimer = maxTime;
                             if (player.name === '왕클세종') {
                                 triggerWangklSejongSkill(player);
-                            } else {
-                                triggerSkillNotice(player);
-                                if (player.name === '미스터비스트') {
-                                    triggerMrBeastSkill(player);
-                                } else if (player.name === 'JINO') {
-                                    triggerJinoSkill(player);
-                                } else if (player.name === '본이') {
-                                    triggerBoniSkill(player);
-                                }
+                            } else if (player.name === '미스터비스트') {
+                                triggerMrBeastSkill(player);
+                            } else if (player.name === 'JINO') {
+                                triggerJinoSkill(player);
+                            } else if (player.name === '본이') {
+                                triggerBoniSkill(player);
                             }
                         }
                         let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
@@ -2517,7 +2517,7 @@
                                         x: skel.x, y: skel.y,
                                         vx: Math.cos(angle) * 5.0,
                                         vy: Math.sin(angle) * 5.0,
-                                        radius: 10, damage: 10, // 화살 데미지 10으로 설정
+                                        radius: 10, damage: 10,
                                         isArrow: true, ownerTeam: player.team
                                     });
                                 });
@@ -2529,48 +2529,63 @@
             }, 1000);
         }
 
+        // 미스터비스트: 50% 확률로 돈(💰) 또는 초콜릿(🍫) 랜덤 2개 발동
         function triggerMrBeastSkill(caster) {
-            showToast(`${caster.name}이 돈(💰) 폭탄 투척! 💸`);
+            let isChocolate = Math.random() < 0.5;
+            let iconStr = isChocolate ? '🍫' : '💰';
+            showToast(`${caster.name}이 ${iconStr} 폭탄 투척! 💸`);
             playCoinSound();
             playThrowSound();
 
-            for (let k = 0; k < 3; k++) {
+            for (let k = 0; k < 2; k++) {
                 let targetX = Math.random() * (canvas.width - 100) + 50;
                 let targetY = Math.random() * (canvas.height - 100) + 50;
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y,
                     x: caster.x, y: caster.y,
                     destX: targetX, destY: targetY,
-                    progress: 0, radius: 60, timer: 4,
-                    isMoneyBomb: true, caster: caster
+                    progress: 0, radius: 60, timer: 3, // 폭발까지 3초 초 표시
+                    isMoneyBomb: true, isChocolate: isChocolate, caster: caster
                 });
             }
         }
 
+        // 본이: 폭탄 투척
         function triggerBoniSkill(caster) {
             showToast(`${caster.name}이 폭탄 투척! 💣`);
             playThrowSound();
 
-            for (let k = 0; k < 3; k++) {
+            for (let k = 0; k < 2; k++) {
                 let targetX = Math.random() * (canvas.width - 100) + 50;
                 let targetY = Math.random() * (canvas.height - 100) + 50;
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y,
                     x: caster.x, y: caster.y,
                     destX: targetX, destY: targetY,
-                    progress: 0, radius: 50, timer: 4,
-                    isMoneyBomb: false, caster: caster
+                    progress: 0, radius: 50, timer: 3, // 폭발까지 3초 초 표시
+                    isMoneyBomb: false, isChocolate: false, caster: caster
                 });
             }
         }
 
+        // JINO 스켈레톤: 절대 겹치지 않게(떨어져서) 랜덤 소환, 체력 30
         function triggerJinoSkill(caster) {
             for (let i = 0; i < 2; i++) {
-                let rx = Math.random() * (canvas.width - 60) + 30;
-                let ry = Math.random() * (canvas.height - 60) + 30;
+                let rx, ry, safe = false;
+                let attempts = 0;
+                while (!safe && attempts < 50) {
+                    rx = Math.random() * (canvas.width - 80) + 40;
+                    ry = Math.random() * (canvas.height - 80) + 40;
+                    safe = true;
+                    // 기존 스켈레톤들과 최소 45픽셀 이상 떨어지도록 검사
+                    caster.skeletons.forEach(s => {
+                        if (Math.hypot(s.x - rx, s.y - ry) < 45) safe = false;
+                    });
+                    attempts++;
+                }
                 caster.skeletons.push({
                     x: rx, y: ry, radius: 22,
-                    hp: 40, maxHp: 40, spawnTime: Date.now()
+                    hp: 30, maxHp: 30, spawnTime: Date.now()
                 });
             }
             showToast(`${caster.name}이 스켈레톤 소환! 💀`);
@@ -2655,7 +2670,7 @@
                 isGaming = false;
                 if (gameInterval) clearInterval(gameInterval);
 
-                recordBallUsageOnComplete(); // 경기 완료 시에만 정상 카운트 반영
+                recordBallUsageOnComplete();
 
                 let winningBalls = [];
                 if (!t1Alive && !t2Alive) {
@@ -2741,7 +2756,6 @@
                     }
                 });
 
-                // 카운트다운 시 화면 조금 어둡게 오버레이
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -2817,17 +2831,22 @@
                     }
                 }
 
+                // 스켈레톤 연속 공격 방지 쿨타임 (1초에 한 번만 데미지)
                 allPlayers.forEach(player => {
                     player.skeletons = player.skeletons.filter(skel => {
                         if (skel.hp <= 0 || (nowTimestamp - skel.spawnTime) >= 14000) return false;
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp > 0 && Math.hypot(enemy.x - skel.x, enemy.y - skel.y) < enemy.radius + skel.radius) {
-                                enemy.hp = Math.max(0, enemy.hp - 8); // 스켈레톤 충돌 데미지 8 정상 적용
-                                skel.hp = Math.max(0, skel.hp - 8);   // 스켈레톤 체력도 8 깎이도록 양방향 적용
-                                playHitSound();
-                                updateAllHpBars();
-                                checkGameWinner();
+                                let lastHit = skel.lastHitTime || 0;
+                                if (nowTimestamp - lastHit >= 1000) { // 1초 쿨타임
+                                    enemy.hp = Math.max(0, enemy.hp - 8);
+                                    skel.hp = Math.max(0, skel.hp - 8);
+                                    skel.lastHitTime = nowTimestamp;
+                                    playHitSound();
+                                    updateAllHpBars();
+                                    checkGameWinner();
+                                }
                             }
                         });
                         return true;
@@ -2872,7 +2891,7 @@
                                 }
                             });
 
-                            if (nowTimestamp - bomb.startTime >= 4000) {
+                            if (nowTimestamp - bomb.startTime >= 3000) {
                                 playExplosionSound();
                                 caster.bombs.splice(i, 1);
                             }
@@ -2940,7 +2959,7 @@
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < enemy.radius + m.radius) {
-                                enemy.hp = Math.max(0, enemy.hp - m.damage); // 화살 데미지 10 적용
+                                enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 playHitSound();
                                 updateAllHpBars();
                                 checkGameWinner();
@@ -2972,6 +2991,7 @@
                     ctx.restore();
                 });
 
+                // 폭탄 및 폭발 타이머 초(sec) 표시
                 player.bombs.forEach(bomb => {
                     ctx.save();
                     ctx.beginPath();
@@ -2985,7 +3005,20 @@
                     ctx.font = "30px sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText(bomb.isMoneyBomb ? "💰" : "💣", bomb.x, bomb.y);
+                    let iconChar = bomb.isMoneyBomb ? (bomb.isChocolate ? "🍫" : "💰") : "💣";
+                    ctx.fillText(iconChar, bomb.x, bomb.y);
+
+                    // 남은 초 계산 및 표시
+                    if (bomb.startTime) {
+                        let elapsed = (Date.now() - bomb.startTime) / 1000;
+                        let remainSec = Math.max(0, Math.ceil(3 - elapsed));
+                        ctx.font = "bold 16px sans-serif";
+                        ctx.fillStyle = "#ffffff";
+                        ctx.strokeStyle = "#000000";
+                        ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                    }
                     ctx.restore();
                 });
             });
@@ -3021,10 +3054,10 @@
                 }
             });
 
+            // 경기 종료 시 화면 어둡게 및 정중앙에 [이긴 공이름] 승리! 텍스트 출력
             if (matchEnded) {
-                // 게임 종료 시 화면 어둡게 오버레이
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "bold 44px sans-serif";
                 ctx.fillStyle = "#f1c40f";
