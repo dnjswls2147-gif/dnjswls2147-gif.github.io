@@ -696,7 +696,7 @@
     <!-- 상단 대형 실시간 공지 배너 -->
     <div id="global-announcement-banner"></div>
 
-    <!-- 화면 상단 토스트 알림 메시지 (요청하신 [볼이름]이 스킬을씀 형식 전용) -->
+    <!-- 화면 상단 토스트 알림 메시지 -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 메인 컨테이너 -->
@@ -733,7 +733,7 @@
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (재생/멈춤 컨트롤러 제거 버전) -->
+                <!-- 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (컨트롤러 제거 버전) -->
                 <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
                     <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
@@ -780,17 +780,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.1 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.2 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 본이 승리 시 재생 화면 및 컨트롤러 완벽 제거 후 영상만 깔끔하게 출력!<br>
-                        2. 플레이 중 스킬 텍스트를 '[볼이름]이 스킬을씀' 형식으로 깔끔하게 통일<br>
-                        3. JINO 스켈레톤 화살 이미지를 새로운 픽셀 화살(14215_2.png)로 교체<br>
-                        4. 왕클세종 글자 먹을 시 상대 데미지 + 본인(나) 체력 3 회복 기능 적용
+                        1. 승리 시 지정된 유튜브 쇼츠 영상 정상 출력 및 컨트롤러 완벽 제거<br>
+                        2. JINO 화살 이미지를 14215.png 파일로 완벽 교체<br>
+                        3. 왕클세종 글자 먹을 시 상대 데미지 + 본인 체력 3 회복 기능 유지
                     </div>
                 </div>
 
@@ -1572,8 +1571,8 @@
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
         
-        // 요구하신 7번째 사진 화살 이미지(14215_2.png) 적용
-        const arrowImg = new Image(); arrowImg.src = '14215_2.png';
+        // JINO 화살 이미지 파일 적용 (14215.png)
+        const arrowImg = new Image(); arrowImg.src = '14215.png';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -2340,7 +2339,7 @@
             if (playerName === '왕클세종') return 10;
             if (playerName === '미스터비스트') return 8;
             if (playerName === 'JINO') return 12;
-            if (playerName === '본이') return 6;
+            if (playerName === '본I' || playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
             return null;
         }
@@ -2512,14 +2511,13 @@
                         if (player.skillTimer <= 0) {
                             player.skillTimer = maxTime;
                             
-                            // 요구하신 [볼이름]이 스킬을씀 형식의 토스트 알림만 출력
                             showToast(`${player.name}이 스킬을씀`);
 
                             if (player.name === 'JIRO') triggerJiroSkill(player);
                             else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
                             else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
                             else if (player.name === 'JINO') triggerJinoSkill(player);
-                            else if (player.name === '본이') triggerBoniSkill(player);
+                            else if (player.name === '본이' || player.name === '본I') triggerBoniSkill(player);
                             else if (player.name === '동룡쓰') triggerDongryongSkill(player);
                         }
 
@@ -2790,8 +2788,8 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이'가 포함된 경우 컨트롤러 없는 유튜브 쇼츠 재생
-                let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
+                // 승리 팀에 '본이'가 포함된 경우 지정된 쇼츠 영상 재생
+                let isBoniWon = winningTeamBalls.some(p => p.name === '본이' || p.name === '본I');
                 if (isBoniWon) {
                     const iframe = document.getElementById('boni-win-iframe');
                     iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
@@ -3036,21 +3034,18 @@
                             let dist = Math.hypot(player.x - m.x, player.y - m.y);
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
-                                    // 아군(왕클세종 팀)이 먹었을 때: 상대에게 데미지 + 본인(나) 체력 3 회복
                                     playHealSound();
                                     let aliveEnemies = enemyBalls.filter(e => e.hp > 0);
                                     if (aliveEnemies.length > 0) {
                                         let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
                                         targetEnemy.hp = Math.max(0, targetEnemy.hp - m.damage);
                                     }
-                                    // 본인 체력 3 회복
                                     player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     
                                     eaten = true; updateAllHpBars(); checkGameWinner();
                                 } else {
-                                    // 상대 팀이 먹었을 때: 체력 깎이지 않음
                                     eaten = true;
                                 }
                             }
