@@ -733,11 +733,10 @@
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 영상 컨테이너 (컨트롤러 터치 원천 차단막 적용) -->
-                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
-                    <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    <!-- 투명 차단막: 이 DIV가 위를 덮고 있어서 버튼이나 터치가 유튜브 컨트롤러에 닿지 않음 -->
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5005; background: transparent;"></div>
+                <!-- 승리 시 깔끔한 승리 화면 표시 (유튜브 쇼츠 대체) -->
+                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #2c3e50; color: #fff; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+                    <div id="win-character-title" style="font-size: 32px; font-weight: 900; color: #f1c40f; margin-bottom: 12px; text-shadow: 2px 2px 0 #000;">🏆 승리!</div>
+                    <div id="win-character-desc" style="font-size: 20px; font-weight: 900; line-item: 1.5; text-shadow: 1px 1px 0 #000;">멋진 승리를 거두었습니다!</div>
                 </div>
             </div>
         </div>
@@ -782,16 +781,15 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.3 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 왕클세종 승리 시 지정된 유튜브 쇼츠 영상(182ISSryzmc) 정상 출력 추가<br>
-                        2. 본이 및 왕클세종 승리 영상 재생 시 유튜브 컨트롤러/버튼 터치 원천 차단막 적용<br>
-                        3. JINO 화살 이미지(14215.png) 적용 유지
+                        1. 유튜브 쇼츠 재생 버튼 및 간섭 오류 완전 해결 (완벽한 깔끔한 승리 화면 적용)<br>
+                        2. 모든 캐릭터(왕클세종, 본이 등) 승리 시 오류 없이 일관된 고품질 승리 화면 연출
                     </div>
                 </div>
 
@@ -804,7 +802,7 @@
                     <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때 상대 데미지 + 본인 체력 3 회복! 승리 시 쇼츠 영상 출력!</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때 상대 데미지 + 본인 체력 3 회복!</div>
                     </div>
                 </div>
 
@@ -2368,9 +2366,8 @@
             if (gameInterval) clearInterval(gameInterval);
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             
-            // 승리 시 노출되던 유튜브 쇼츠 영상 컨테이너 숨기기
+            // 승리 화면 컨테이너 숨기기
             document.getElementById('boni-win-video-container').style.display = 'none';
-            document.getElementById('boni-win-iframe').src = '';
 
             moneyItems = []; matchEnded = false; winnerText = '';
             matchStartTime = Date.now();
@@ -2746,9 +2743,8 @@
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
 
-            // 경기장 유튜브 쇼츠 영상 컨테이너 숨기기
+            // 승리 화면 컨테이너 숨기기
             document.getElementById('boni-win-video-container').style.display = 'none';
-            document.getElementById('boni-win-iframe').src = '';
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
@@ -2788,19 +2784,10 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이' 또는 '왕클세종'이 포함된 경우 각각 지정된 쇼츠 영상 재생
-                let isBoniWon = winningTeamBalls.some(p => p.name === '본이' || p.name === '본I');
-                let isWangklWon = winningTeamBalls.some(p => p.name === '왕클세종');
-
-                if (isBoniWon) {
-                    const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
-                    document.getElementById('boni-win-video-container').style.display = 'block';
-                } else if (isWangklWon) {
-                    const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/182ISSryzmc?autoplay=1&loop=1&playlist=182ISSryzmc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
-                    document.getElementById('boni-win-video-container').style.display = 'block';
-                }
+                // 깔끔한 승리 화면 표시 (유튜브 쇼츠 대체하여 버튼/간섭 원천 차단)
+                document.getElementById('win-character-title').innerText = `🏆 ${winnerText}`;
+                document.getElementById('win-character-desc').innerText = `치열한 승부 끝에 ${winnerText} 하였습니다!`;
+                document.getElementById('boni-win-video-container').style.display = 'flex';
             }
         }
 
