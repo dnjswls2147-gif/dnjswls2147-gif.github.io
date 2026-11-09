@@ -777,14 +777,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.3 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        본이 폭탄 기술 사운드 함수 누락 오류 수정 완료 및 JIRO 캐릭터 프로필 이미지(14605.jpg) 교체 완료!
+                        실시간 플레이어 목록 및 방 목록 연동 시스템 적용 완료! 접속 시 전체 채팅 및 플레이어 목록에 자동 등록됩니다.
                     </div>
                 </div>
 
@@ -1073,6 +1073,46 @@
     </div>
 
     <script>
+        // 실시간 멀티탭/크로스기기 동기화를 위한 채널 생성
+        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_sync_channel');
+
+        gameSyncChannel.onmessage = function (event) {
+            const data = event.data;
+            if (!data) return;
+
+            if (data.type === 'SYNC_PLAYERS') {
+                localStorage.setItem('lily_game_players_list', JSON.stringify(data.players));
+                updateOnlineOfflineCounts();
+                renderAdminPlayersList();
+                if (!document.getElementById('players-modal').classList.contains('hidden')) {
+                    openPlayersModal();
+                }
+            } else if (data.type === 'SYNC_ROOMS') {
+                localStorage.setItem('lily_game_friend_rooms', JSON.stringify(data.rooms));
+                if (!document.getElementById('friend-match-modal').classList.contains('hidden')) {
+                    renderFriendRooms();
+                }
+            } else if (data.type === 'SYNC_CHAT') {
+                localStorage.setItem('lily_game_chat_logs', JSON.stringify(data.logs));
+                loadChatLogs();
+            } else if (data.type === 'PING') {
+                localStorage.setItem('lily_game_ping_' + data.uid, data.time);
+                updateOnlineOfflineCounts();
+            }
+        };
+
+        function broadcastSync(type, payload) {
+            if (type === 'PLAYERS') {
+                gameSyncChannel.postMessage({ type: 'SYNC_PLAYERS', players: payload });
+            } else if (type === 'ROOMS') {
+                gameSyncChannel.postMessage({ type: 'SYNC_ROOMS', rooms: payload });
+            } else if (type === 'CHAT') {
+                gameSyncChannel.postMessage({ type: 'SYNC_CHAT', logs: payload });
+            } else if (type === 'PING') {
+                gameSyncChannel.postMessage({ type: 'PING', uid: payload.uid, time: payload.time });
+            }
+        }
+
         let audioCtx = null;
         let soundVolume = 1.0;
 
@@ -1520,7 +1560,7 @@
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' } // JIRO 캐릭터 프로필 이미지 14605.jpg 연동
+            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' }
         ];
 
         const loadedImages = {};
@@ -1700,7 +1740,10 @@
         function updateHeartbeat() {
             checkMidnightReset();
             const myUid = getDeviceUniqueId();
-            localStorage.setItem('lily_game_ping_' + myUid, Date.now());
+            const nowTime = Date.now();
+            localStorage.setItem('lily_game_ping_' + myUid, nowTime);
+            broadcastSync('PING', { uid: myUid, time: nowTime });
+
             let savedName = localStorage.getItem('lily_game_user_name');
             if (savedName) registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
             checkMaintenanceStatus();
@@ -1753,9 +1796,13 @@
             if (!name) return;
             let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
             let existing = players.find(p => p.uid === uid);
-            if (!existing) players.push({ uid: uid, name: name, date: date });
-            else { existing.name = name; existing.date = date; }
+            if (!existing) {
+                players.push({ uid: uid, name: name, date: date });
+            } else {
+                existing.name = name; existing.date = date;
+            }
             localStorage.setItem('lily_game_players_list', JSON.stringify(players));
+            broadcastSync('PLAYERS', players);
             updateOnlineOfflineCounts();
             renderAdminPlayersList();
         }
@@ -1775,6 +1822,7 @@
                 let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
                 chatData.forEach(c => { if (c.uid === myUid || c.name === oldName) c.name = inputVal; });
                 localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+                broadcastSync('CHAT', chatData);
                 loadChatLogs();
             }
 
@@ -1990,6 +2038,7 @@
             }
             rooms.push({ host: myName, participant: null, status: '대기중' });
             localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+            broadcastSync('ROOMS', rooms);
             showToast('방이 개설되었습니다! 🏠');
             renderFriendRooms();
         }
@@ -1999,6 +2048,7 @@
             let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
             let newRooms = rooms.filter(r => r.host !== myName);
             localStorage.setItem('lily_game_friend_rooms', JSON.stringify(newRooms));
+            broadcastSync('ROOMS', newRooms);
             showToast('방 만들기가 취소되었습니다.');
             renderFriendRooms();
         }
@@ -2051,6 +2101,7 @@
                 room.participant = myName;
                 room.status = '참여중입니다';
                 localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+                broadcastSync('ROOMS', rooms);
                 showToast(`"${hostName}"님의 방에 참여중입니다! 🚀`);
                 renderFriendRooms();
             }
@@ -2210,6 +2261,7 @@
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             chatData.push({ uid: getDeviceUniqueId(), name: name, msg: msg, time: timeStr });
             localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+            broadcastSync('CHAT', chatData);
             appendChatBubble(name, msg, timeStr, true);
             input.value = '';
         }
