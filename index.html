@@ -733,7 +733,7 @@
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (버튼/컨트롤러 제거 스타일) -->
+                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (검은화면 제거 및 무한 반복, 버튼 완전 삭제 스타일) -->
                 <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
                     <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
@@ -780,14 +780,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.9 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        본이 승리 시 재생되는 유튜브 쇼츠 영상의 재생/멈춤 버튼 등 컨트롤러 UI를 제거하고 오직 영상 화면만 꽉 차게 나오도록 개선!
+                        1. 유튜브 쇼츠 초기 검은색 화면 제거 및 무한 반복 재생 적용<br>
+                        2. 영상 내부 재생/멈춤 버튼 등 컨트롤러 완전 삭제<br>
+                        3. JINO 스켈레톤 화살 발사 시 3발씩 동시 발사되도록 상향 개편!
                     </div>
                 </div>
 
@@ -797,10 +799,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="boni.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">본이 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">승리 시 컨트롤러 없는 유튜브 쇼츠 전용 영상 재생 기능 연동!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤 소환 후 화살 3발 연사 능력 발동!</div>
                     </div>
                 </div>
 
@@ -2568,11 +2570,16 @@
                             if (enemyTeamBalls.length > 0) {
                                 player.skeletons.forEach(skel => {
                                     let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                                    let angle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
-                                    moneyItems.push({
-                                        x: skel.x, y: skel.y,
-                                        vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
-                                        radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                    let baseAngle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
+                                    
+                                    // 화살 3발 발사 (중앙, 좌측 15도, 우측 15도)
+                                    [-0.26, 0, 0.26].forEach(offset => {
+                                        let angle = baseAngle + offset;
+                                        moneyItems.push({
+                                            x: skel.x, y: skel.y,
+                                            vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
+                                            radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                        });
                                     });
                                 });
                                 playArrowSound();
@@ -2795,11 +2802,11 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생 (컨트롤러 숨김 파라미터 적용)
+                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생 (검은화면 제거 및 컨트롤러 완전 차단, 무한반복 파라미터 적용)
                 let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
                 if (isBoniWon) {
                     const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&mute=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
                     document.getElementById('boni-win-video-container').style.display = 'block';
                 }
             }
