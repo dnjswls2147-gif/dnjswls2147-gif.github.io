@@ -1,4 +1,4 @@
-noneㅔ<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -696,7 +696,7 @@ noneㅔ<!DOCTYPE html>
     <!-- 상단 대형 실시간 공지 배너 -->
     <div id="global-announcement-banner"></div>
 
-    <!-- 화면 상단 토스트 알림 메시지 -->
+    <!-- 화면 상단 토스트 알림 메시지 (요청하신 [볼이름]이 스킬을씀 형식 전용) -->
     <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
 
     <!-- 메인 컨테이너 -->
@@ -733,7 +733,7 @@ noneㅔ<!DOCTYPE html>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (소리 출력 및 검은화면 제거, 무한 반복) -->
+                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (재생/멈춤 컨트롤러 제거 버전) -->
                 <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
                     <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
@@ -780,16 +780,17 @@ noneㅔ<!DOCTYPE html>
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.1 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 왕클세종 한글 글자 로직 개편: 상대 팀이 먹어도 체력이 깎이지 않으며, 아군(왕클세종 팀)이 먹어야 상대 팀 체력이 깎이도록 변경!<br>
-                        2. 유튜브 쇼츠 승리 화면 음악(오디오) 출력 및 무한 반복 재생 적용<br>
-                        3. 컨트롤러 및 주변 여백 요소 완벽 제거 후 영상만 꽉 차게 출력
+                        1. 본이 승리 시 재생 화면 및 컨트롤러 완벽 제거 후 영상만 깔끔하게 출력!<br>
+                        2. 플레이 중 스킬 텍스트를 '[볼이름]이 스킬을씀' 형식으로 깔끔하게 통일<br>
+                        3. JINO 스켈레톤 화살 이미지를 새로운 픽셀 화살(14215_2.png)로 교체<br>
+                        4. 왕클세종 글자 먹을 시 상대 데미지 + 본인(나) 체력 3 회복 기능 적용
                     </div>
                 </div>
 
@@ -802,7 +803,7 @@ noneㅔ<!DOCTYPE html>
                     <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때만 상대 체력을 깎는 전략적 플레이!</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때 상대 데미지 + 본인 체력 3 회복!</div>
                     </div>
                 </div>
 
@@ -1570,7 +1571,9 @@ noneㅔ<!DOCTYPE html>
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
-        const arrowImg = new Image(); arrowImg.src = '14215.jpg';
+        
+        // 요구하신 7번째 사진 화살 이미지(14215_2.png) 적용
+        const arrowImg = new Image(); arrowImg.src = '14215_2.png';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -2508,6 +2511,10 @@ noneㅔ<!DOCTYPE html>
                         player.skillTimer -= 1;
                         if (player.skillTimer <= 0) {
                             player.skillTimer = maxTime;
+                            
+                            // 요구하신 [볼이름]이 스킬을씀 형식의 토스트 알림만 출력
+                            showToast(`${player.name}이 스킬을씀`);
+
                             if (player.name === 'JIRO') triggerJiroSkill(player);
                             else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
                             else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
@@ -2589,8 +2596,6 @@ noneㅔ<!DOCTYPE html>
         }
 
         function triggerJiroSkill(caster) {
-            showToast(`${caster.name}이 마지막 위치에 지뢰 매설! 💣`);
-            playSkillSuperSound();
             caster.mines.push({
                 x: caster.lastX, y: caster.lastY, radius: 46,
                 spawnTime: Date.now(), ownerTeam: caster.team, caster: caster
@@ -2598,12 +2603,7 @@ noneㅔ<!DOCTYPE html>
         }
 
         function triggerDongryongSkill(caster) {
-            if (caster.minions.length >= 10) {
-                showToast('동룡쓰 부하가 이미 최대 10명입니다!');
-                return;
-            }
-
-            showToast(`${caster.name}이 룰렛 돌리는 중! 🎰`);
+            if (caster.minions.length >= 10) return;
             playRouletteSpinSound();
 
             let spinCount = 0;
@@ -2619,8 +2619,6 @@ noneㅔ<!DOCTYPE html>
                     let isFemaleFinal = Math.random() < 0.5;
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
-
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩 (베이컨)' : '남자 캐릭터 👨'} 소환!`);
                     
                     if (caster.minions.length < 10) {
                         caster.skillCount++;
@@ -2647,7 +2645,6 @@ noneㅔ<!DOCTYPE html>
                             caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
                             targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
                             playJiroExplosionSound();
-                            showToast(`⚡ 동룡쓰 부하 10명 완성! 상대 공 옆으로 순간이동 쿵쾅! (15 데미지)`);
                             updateAllHpBars(); checkGameWinner();
                         }
                     }
@@ -2657,10 +2654,8 @@ noneㅔ<!DOCTYPE html>
 
         function triggerMrBeastSkill(caster) {
             caster.mrBeastToggleState = (caster.mrBeastToggleState === 0) ? 1 : 0;
-
+            playCoinSound();
             if (caster.mrBeastToggleState === 1) {
-                showToast(`${caster.name}이 초콜릿 🍫 2개 투척! 🎁`);
-                playCoinSound();
                 for (let k = 0; k < 2; k++) {
                     moneyItems.push({
                         x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
@@ -2669,8 +2664,6 @@ noneㅔ<!DOCTYPE html>
                     });
                 }
             } else {
-                showToast(`${caster.name}이 돈 주머니 💰 3개 소환! (제한시간 4초) 💰`);
-                playCoinSound();
                 for (let k = 0; k < 3; k++) {
                     moneyItems.push({
                         x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
@@ -2682,7 +2675,6 @@ noneㅔ<!DOCTYPE html>
         }
 
         function triggerBoniSkill(caster) {
-            showToast(`${caster.name}이 폭탄 투척! 💣`);
             for (let k = 0; k < 2; k++) {
                 caster.bombs.push({
                     startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
@@ -2704,16 +2696,14 @@ noneㅔ<!DOCTYPE html>
                 }
                 caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
             }
-            showToast(`${caster.name}이 스켈레톤 소환! (영구 유지) 💀`);
         }
 
         function triggerWangklSejongSkill(caster) {
-            showToast(`${caster.name}이 한글 자음 기술 발동! 🇰🇷`);
             playSkillSuperSound();
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
-                    char: ch, radius: 20, damage: 6, healAmount: 4, isHangeulLetter: true,
+                    char: ch, radius: 20, damage: 6, healAmount: 3, isHangeulLetter: true,
                     ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
                 });
             });
@@ -2727,7 +2717,7 @@ noneㅔ<!DOCTYPE html>
             allPlayers.forEach(player => {
                 player.skeletons = player.skeletons.filter(skel => {
                     if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
-                        playHitSound(); showToast('스켈레톤 격파! 💀');
+                        playHitSound();
                         return false;
                     }
                     return true;
@@ -2800,7 +2790,7 @@ noneㅔ<!DOCTYPE html>
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생 (오디오 출력 및 무한 반복 적용)
+                // 승리 팀에 '본이'가 포함된 경우 컨트롤러 없는 유튜브 쇼츠 재생
                 let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
                 if (isBoniWon) {
                     const iframe = document.getElementById('boni-win-iframe');
@@ -2909,7 +2899,6 @@ noneㅔ<!DOCTYPE html>
                                 otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
 
                                 playJiroExplosionSound();
-                                showToast(`💥 JIRO 펑!!! 콤보 ${jiroObj.jiroCombo} (${explosionDmg} 데미지)!`);
 
                                 jiroObj.comboPopups.push({
                                     text: `콤보 ${jiroObj.jiroCombo}!`,
@@ -2950,7 +2939,6 @@ noneㅔ<!DOCTYPE html>
                                     triggered = true;
                                     enemy.hp = Math.max(0, enemy.hp - 30);
                                     playJiroExplosionSound();
-                                    showToast('💣 지뢰 팡!!!!!! (30 데미지)');
                                     
                                     let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5);
@@ -3048,18 +3036,21 @@ noneㅔ<!DOCTYPE html>
                             let dist = Math.hypot(player.x - m.x, player.y - m.y);
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
-                                    // 아군(왕클세종 팀)이 먹었을 때: 상대 팀 무작위 공 체력 깎기
+                                    // 아군(왕클세종 팀)이 먹었을 때: 상대에게 데미지 + 본인(나) 체력 3 회복
                                     playHealSound();
                                     let aliveEnemies = enemyBalls.filter(e => e.hp > 0);
                                     if (aliveEnemies.length > 0) {
                                         let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
                                         targetEnemy.hp = Math.max(0, targetEnemy.hp - m.damage);
-                                        showToast(`🇰🇷 왕클세종 글자 획득! 상대 공에 ${m.damage} 데미지!`);
                                     }
+                                    // 본인 체력 3 회복
+                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
+                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
+                                    
                                     eaten = true; updateAllHpBars(); checkGameWinner();
                                 } else {
-                                    // 상대 팀이 먹었을 때: 체력이 깎이지 않음 (아무 효과 없음 또는 통과)
-                                    showToast(`🇰🇷 상대가 글자를 먹었지만 체력이 깎이지 않습니다!`);
+                                    // 상대 팀이 먹었을 때: 체력 깎이지 않음
                                     eaten = true;
                                 }
                             }
@@ -3093,10 +3084,8 @@ noneㅔ<!DOCTYPE html>
                                 if (isMyTeam) {
                                     player.hp = Math.min(player.maxHp, player.hp + 25);
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
-                                    showToast('💰 돈 주머니 획득! (체력 25 회복)');
                                 } else {
                                     player.hp = Math.max(0, player.hp - 30);
-                                    showToast('💰 상대 돈 주머니 폭발! (30 데미지)');
                                 }
                                 eaten = true; updateAllHpBars(); checkGameWinner();
                             }
@@ -3112,14 +3101,10 @@ noneㅔ<!DOCTYPE html>
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (m.isBaconProjectile && !m.isFemaleProj) {
                                     enemy.slowTimer = nowTimestamp + 3000;
-                                    showToast('🥓 남자 베이컨 명중! (4 데미지, 3초간 속도 2배 저하)');
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
                                     let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
                                     enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
-                                    showToast('💣 여자 폭탄 명중! (6 데미지, 튕김)');
-                                } else if (m.isArrow) {
-                                    showToast('🏹 커진 화살 명중! (6 데미지)');
                                 }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
@@ -3269,7 +3254,3275 @@ noneㅔ<!DOCTYPE html>
                 if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
-            // 경기 종료 시 어두운 화면 처리
+            if (matchEnded) {
+                ctx.save();
+                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            }
+
+            requestAnimationFrame(runGameLoop);
+        }
+
+        requestAnimationFrame(runGameLoop);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>릴리 볼 파이트</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            touch-action: none;
+        }
+        html, body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: fixed;
+            overscroll-behavior: none;
+        }
+
+        #global-announcement-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 16px 20px;
+            z-index: 99999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            display: none;
+            border-bottom: 4px solid #000;
+        }
+        #global-announcement-banner.show {
+            display: block;
+        }
+
+        .app-container {
+            width: 100vw;
+            max-width: 620px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            padding: 10px 6px;
+            transform: scale(1.35);
+            transform-origin: center center;
+            transition: transform 0.2s ease;
+        }
+
+        .top-menu-bar {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            margin-bottom: 6px;
+            z-index: 1000;
+        }
+
+        .profile-entry-box, .chat-entry-box, .friend-entry-box, .match-setting-entry-box, .friend-match-entry-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .profile-icon, .chat-icon, .friend-icon, .match-setting-icon, .friend-match-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+        .profile-label, .chat-label, .friend-label, .match-setting-label, .friend-match-label {
+            font-size: 14px;
+            font-weight: 900;
+            color: #000000;
+            margin-top: 3px;
+            white-space: nowrap;
+        }
+
+        .arena-container-wrapper {
+            position: relative;
+            width: 480px;
+            max-width: 92vw;
+        }
+        .settings-gear-btn {
+            position: absolute;
+            top: -44px;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: #f1f2f6;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 3px 0 #000;
+        }
+        .record-history-gear-btn {
+            position: absolute;
+            top: -94px;
+            right: 0;
+            height: 40px;
+            padding: 0 10px;
+            background: #f1f2f6;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 3px 0 #000;
+        }
+        .patch-note-gear-btn {
+            position: absolute;
+            top: -44px;
+            right: 48px;
+            height: 40px;
+            padding: 0 10px;
+            background: #f1f2f6;
+            border: 3px solid #000;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 3px 0 #000;
+        }
+        .patch-note-gear-btn:active, .settings-gear-btn:active, .record-history-gear-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        #toast-alert {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.94);
+            color: #ffffff;
+            padding: 14px 26px;
+            border-radius: 35px;
+            font-size: 24px;
+            font-weight: 900;
+            z-index: 100000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+            white-space: nowrap;
+            border: 3px solid #ffffff;
+        }
+        #toast-alert.show {
+            opacity: 1;
+        }
+
+        .arena-frame {
+            width: 480px;
+            height: 480px;
+            max-width: 100%;
+            max-height: 45vh;
+            border: 5px solid #000000;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls-wrapper {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .slot-container {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+        .slot-team-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .slot-team-title {
+            font-size: 15px;
+            font-weight: 900;
+            text-align: center;
+        }
+        .btn-add-slot {
+            width: 100%;
+            padding: 12px 4px;
+            background: #555555;
+            color: #ffffff;
+            border: 3px solid #000000;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            text-align: center;
+            outline: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-radius: 6px;
+            box-shadow: 0 3px 0 #000;
+        }
+        .btn-add-slot.selected {
+            background: #27ae60;
+        }
+
+        .btn-main-action {
+            margin-top: 6px;
+            width: 100%;
+            padding: 14px 0;
+            font-size: 22px;
+            font-weight: 900;
+            border: 3px solid #000000;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 3px 0 #000000;
+            outline: none;
+        }
+        .btn-start { background-color: #2ecc71; color: #ffffff; }
+        .btn-exit { background-color: #e74c3c; color: #ffffff; }
+        .btn-main-action:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #000000;
+        }
+
+        .ingame-status-panel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .status-row-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .player-status-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .player-name-label {
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .player-name-p1 { color: #1e90ff; }
+        .player-name-p2 { color: #e74c3c; text-align: right; }
+
+        .hp-bar-outer {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border: 3px solid #000000;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .hp-bar-inner {
+            height: 100%;
+            background: #2ecc71;
+            width: 100%;
+            transition: width 0.4s ease-in-out;
+        }
+        .hp-text-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .sub-gauge-bar {
+            width: 100%;
+            height: 20px;
+            background: #cccccc;
+            border: 3px solid #000000;
+            margin-top: 3px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .sub-gauge-fill {
+            height: 100%;
+            background: #8e44ad;
+            width: 0%;
+        }
+        .sub-gauge-text {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        @keyframes floatPlusAnim {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
+        }
+        .healing-popup-text {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #2ecc71;
+            font-size: 22px;
+            font-weight: 900;
+            text-shadow: 1px 1px 2px #000;
+            pointer-events: none;
+            animation: floatPlusAnim 0.8s ease-out forwards;
+            z-index: 500;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            pointer-events: none;
+            padding: 15px;
+        }
+        .modal-overlay.hidden { display: none !important; }
+        .modal-overlay > * { pointer-events: auto; }
+
+        .picker-modal-box {
+            width: 94vw;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 750px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            padding: 45px 26px 26px 26px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            z-index: 100000;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 48px; height: 48px;
+            border: 3px solid #000000;
+            background: #ffffff;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            z-index: 100;
+        }
+
+        .picker-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 18px;
+            flex: 1;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 6px;
+        }
+        .ball-select-btn {
+            background: #4a4a4a;
+            color: #ffffff;
+            border: 3px solid #000000;
+            padding: 20px 18px;
+            font-size: 22px;
+            font-weight: 900;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            outline: none;
+            flex-shrink: 0;
+            border-radius: 6px;
+        }
+
+        .profile-modal-box {
+            width: 94vw;
+            max-width: 680px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            padding: 45px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            z-index: 100000;
+        }
+
+        .chat-floating-window {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 94vw;
+            max-width: 780px;
+            height: 78vh;
+            max-height: 780px;
+            min-width: 320px;
+            min-height: 320px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            resize: both;
+            overflow: hidden;
+            z-index: 9998;
+        }
+        .chat-floating-window.hidden { display: none !important; }
+
+        .chat-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: move;
+            user-select: none;
+            padding: 8px 0;
+            flex-shrink: 0;
+        }
+        .chat-logs-area {
+            flex: 1;
+            border: 4px solid #000;
+            background: #f8f9fa;
+            margin: 12px 0;
+            padding: 18px;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .chat-msg-card {
+            background: #ffffff;
+            border: 3px solid #000;
+            padding: 14px 18px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .chat-sender-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #c0392b;
+            cursor: pointer;
+        }
+        .chat-msg-text {
+            font-size: 23px;
+            font-weight: bold;
+            word-break: break-all;
+            color: #000;
+        }
+        .chat-msg-time {
+            font-size: 14px;
+            color: #666666;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .players-modal-box {
+            width: 94vw;
+            max-width: 680px;
+            height: 78vh;
+            max-height: 780px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            padding: 38px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 100000;
+        }
+        .players-list-area {
+            flex: 1;
+            border: 3px solid #000;
+            background: #f8f9fa;
+            margin: 12px 0;
+            padding: 16px;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .player-item-card {
+            background: #fff;
+            border: 3px solid #000;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .admin-draggable-panel {
+            position: absolute;
+            width: 94vw;
+            max-width: 680px;
+            height: 80vh;
+            max-height: 780px;
+            background: #ffffff;
+            border: 6px solid #000000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            z-index: 10005;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .admin-drag-header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 16px 20px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #000;
+            flex-shrink: 0;
+        }
+
+        .admin-scroll-body {
+            padding: 20px;
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 22px;
+            border: 3px solid #000;
+            text-align: center;
+            outline: none;
+            border-radius: 6px;
+        }
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .admin-btn {
+            flex: 1;
+            padding: 16px 0;
+            font-size: 22px;
+            font-weight: 900;
+            border: 3px solid #000;
+            cursor: pointer;
+            outline: none;
+            border-radius: 6px;
+        }
+        .admin-btn-confirm { background: #2ecc71; color: #fff; }
+        .admin-btn-cancel { background: #e74c3c; color: #fff; }
+
+        .admin-section-box {
+            background: #f8f9fa;
+            border: 3px solid #000;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+        }
+        .admin-section-title {
+            font-size: 20px;
+            font-weight: 900;
+        }
+        .row-inline-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-send {
+            background-color: #000000;
+            color: #ffffff;
+            border: 3px solid #000;
+            font-size: 22px;
+            font-weight: 900;
+            padding: 0 28px;
+            cursor: pointer;
+            white-space: nowrap;
+            outline: none;
+            border-radius: 6px;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <script>
+        (function forceOpenInChrome() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const targetUrl = location.href;
+
+            if (userAgent.indexOf('kakaotalk') !== -1 || userAgent.indexOf('instagram') !== -1 || userAgent.indexOf('fbav') !== -1) {
+                if (userAgent.indexOf('android') !== -1) {
+                    location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+                } else if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1) {
+                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
+                }
+            }
+        })();
+
+        document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+        document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+        document.addEventListener('gestureend', function(e) { e.preventDefault(); });
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) { e.preventDefault(); }
+        }, { passive: false });
+    </script>
+
+    <!-- 상단 대형 실시간 공지 배너 -->
+    <div id="global-announcement-banner"></div>
+
+    <!-- 화면 상단 토스트 알림 메시지 (요청하신 [볼이름]이 스킬을씀 형식 전용) -->
+    <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
+
+    <!-- 메인 컨테이너 -->
+    <div class="app-container" id="main-app-container">
+
+        <!-- 프로필, 친구, 전체 채팅, 1대1 경기, 경기 메뉴 바 -->
+        <div class="top-menu-bar" id="lobby-top-menu-bar">
+            <div class="profile-entry-box" id="btn-profile-entry" onclick="handleProfileClickWithSecret();">
+                <div class="profile-icon">👤</div>
+                <div class="profile-label">프로필</div>
+            </div>
+            <div class="friend-entry-box" id="btn-friend-entry" onclick="playClickSound(); openFriendModal();">
+                <div class="friend-icon">👥</div>
+                <div class="friend-label">친구</div>
+            </div>
+            <div class="chat-entry-box" id="btn-chat-entry" onclick="playClickSound(); handleChatClick();">
+                <div class="chat-icon">📘</div>
+                <div class="chat-label">전체 채팅</div>
+            </div>
+            <div class="match-setting-entry-box" id="btn-match-setting" onclick="playClickSound(); openMatchSettingModal();">
+                <div class="match-setting-icon">⚙️</div>
+                <div class="match-label" id="match-setting-label-txt">1대1 경기</div>
+            </div>
+            <div class="friend-match-entry-box" id="btn-friend-match-entry" onclick="playClickSound(); openFriendMatchModal();">
+                <div class="friend-match-icon" style="width:34px; height:34px; background:#e67e22; color:#fff; border:3px solid #000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;">1vs1</div>
+                <div class="friend-match-label">경기</div>
+            </div>
+        </div>
+
+        <!-- 경기장 및 우측 상단 버튼 래퍼 -->
+        <div class="arena-container-wrapper">
+            <div class="record-history-gear-btn" id="top-btn-record" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
+            <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
+            <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
+            <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
+                <canvas id="gameCanvas" width="480" height="480"></canvas>
+                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (재생/멈춤 컨트롤러 제거 버전) -->
+                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
+                    <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로비 및 컨트롤 영역 -->
+        <div class="controls-wrapper">
+            <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+                <div class="slot-container" id="dynamic-slot-container"></div>
+                <button class="btn-main-action btn-start" id="btn-start-match" onclick="playClickSound(); startMatch();">시작하기 ▶</button>
+            </div>
+
+            <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+                <div class="ingame-status-panel" id="ingame-status-panel-container"></div>
+                <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 점검 중 오버레이 화면 -->
+    <div id="maintenance-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.95); z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div style="width:480px; height:480px; max-width:92vw; max-height:50vh; border:6px solid #000; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; padding:24px;">
+            <div style="font-size:60px; margin-bottom:15px;">🛠️</div>
+            <div style="font-size:28px; font-weight:900; color:#e74c3c; margin-bottom:12px;">현재 점검 중입니다</div>
+            <div style="font-size:18px; font-weight:bold; color:#555; line-height:1.4;">서버 점검 작업이 진행 중입니다.<br>나중에 다시 접속해 주세요!</div>
+        </div>
+    </div>
+
+    <!-- 패치노트 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="patch-note-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:40px 32px; width:96%; max-width:780px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative; max-height:88vh; display:flex; flex-direction:column;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closePatchNoteModal();">✕</button>
+            <div style="font-size:34px; font-weight:900; margin-bottom:20px; color:#000;">📓 패치 노트 & 캐릭터 설명</div>
+            
+            <div style="display:flex; gap:12px; margin-bottom:16px;">
+                <button id="tab-btn-patch" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#2980b9; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('patch');">패치 노트</button>
+                <button id="tab-btn-chars" style="flex:1; padding:16px; font-size:22px; font-weight:900; background:#7f8c8d; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;" onclick="playClickSound(); switchModalTab('chars');">캐릭터 설명</button>
+            </div>
+
+            <!-- 패치 노트 내용 -->
+            <div id="modal-content-patch" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:flex; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
+                
+                <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.1 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
+                            <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
+                        </div>
+                    </div>
+                    <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
+                        1. 본이 승리 시 재생 화면 및 컨트롤러 완벽 제거 후 영상만 깔끔하게 출력!<br>
+                        2. 플레이 중 스킬 텍스트를 '[볼이름]이 스킬을씀' 형식으로 깔끔하게 통일<br>
+                        3. JINO 스켈레톤 화살 이미지를 새로운 픽셀 화살(14215_2.png)로 교체<br>
+                        4. 왕클세종 글자 먹을 시 상대 데미지 + 본인(나) 체력 3 회복 기능 적용
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 캐릭터 설명 내용 -->
+            <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
+                
+                <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
+                    <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때 상대 데미지 + 본인 체력 3 회복!</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:24px;" onclick="playClickSound(); closePatchNoteModal();">확인</button>
+        </div>
+    </div>
+
+    <!-- 경기 모드 설정 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="match-setting-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:40px 28px; width:94%; max-width:460px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeMatchSettingModal();">✕</button>
+            <div style="font-size:30px; font-weight:900; margin-bottom:22px; color:#000;">⚙️ 경기 모드 설정</div>
+            
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:22px;">
+                <button class="ball-select-btn match-mode-btn" data-mode="1" onclick="playClickSound(); selectMatchMode(1, '1대1 경기');">1대1 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="2" onclick="playClickSound(); selectMatchMode(2, '2대2 경기');">2대2 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="3" onclick="playClickSound(); selectMatchMode(3, '3대3 경기');">3대3 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="4" onclick="playClickSound(); selectMatchMode(4, '4대4 경기');">4대4 경기</button>
+                <button class="ball-select-btn match-mode-btn" data-mode="5" onclick="playClickSound(); selectMatchMode(5, '5대5 경기');">5대5 경기</button>
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:16px; font-size:22px;" onclick="playClickSound(); closeMatchSettingModal();">닫기</button>
+        </div>
+    </div>
+
+    <!-- 경기 (방 만들기 및 참여) 정사각형 모달 창 -->
+    <div class="modal-overlay hidden" id="friend-match-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendMatchModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 경기 (방 목록)</div>
+
+            <div style="display:flex; gap:10px; margin-bottom:10px; flex-shrink:0;" id="room-action-buttons-box">
+                <button class="admin-btn admin-btn-confirm" style="font-size:18px; padding:12px;" onclick="playClickSound(); createFriendRoom();">방 만들기</button>
+                <button class="admin-btn admin-btn-cancel" style="font-size:18px; padding:12px;" onclick="playClickSound(); cancelFriendRoom();">방 만들기 취소</button>
+            </div>
+
+            <div class="players-list-area" id="friend-rooms-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
+    <!-- 친구 관리 정사각형 모달 창 -->
+    <div class="modal-overlay hidden" id="friend-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeFriendModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; text-align:center; color:#2980b9; flex-shrink:0;">👥 친구 관리</div>
+            <div class="players-list-area" id="friend-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
+    <!-- 1:1 친구 채팅 및 음성 통화 모달 창 -->
+    <div class="modal-overlay hidden" id="private-chat-modal" style="z-index: 210000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:600px; height:78vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePrivateChatModal();">✕</button>
+            <div style="font-size:24px; font-weight:900; margin-bottom:12px; text-align:center; color:#2c3e50; flex-shrink:0;" id="private-chat-title-txt">💬 1:1 채팅 & 통화</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f1f2f6; padding:12px; border:3px solid #000; border-radius:6px; margin-bottom:12px; flex-shrink:0;">
+                <span style="font-size:18px; font-weight:900;" id="voice-call-status-txt">🔊 음성 통화 대기 중</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); startVoiceCall();">통화 시작</button>
+                    <button class="admin-btn admin-btn-cancel" style="padding:10px 18px; font-size:16px;" onclick="playClickSound(); endVoiceCall();">통화 종료</button>
+                </div>
+            </div>
+
+            <div class="players-list-area" id="private-chat-logs" style="flex:1; margin-bottom:12px;"></div>
+
+            <div class="row-inline-group" style="flex-shrink:0;">
+                <input type="text" id="private-chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="모두에게 보낼 메시지" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
+                <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendPrivateChatMessage();">보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 경기 기록 정사각형 모달 창 -->
+    <div class="modal-overlay hidden" id="record-history-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:94%; max-width:500px; aspect-ratio: 1 / 1; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
+            <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
+    <!-- 관전 모달 창 -->
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.8);">
+        <div style="background:#fff; border:6px solid #000; padding:30px; width:94%; max-width:540px; display:flex; flex-direction:column; align-items:center; position:relative;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px;">📺 경기 리플레이 관전</div>
+            <div style="font-size:20px; font-weight:900; color:#27ae60; margin-bottom:20px;" id="spectate-info-txt">승리 팀: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
+        </div>
+    </div>
+
+    <!-- 게임 설정 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:45px 36px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
+            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
+            <div style="font-size:34px; font-weight:900; margin-bottom:26px; color:#000;">⚙️ 게임 설정</div>
+            
+            <div style="margin-bottom:26px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🔊 효과음 소리 (0 ~ 1000)</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="sfx-input-box" value="100" style="width:90px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applySfxInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
+                    </div>
+                </div>
+                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:10px;" oninput="syncSfxRange(this.value)">
+            </div>
+
+            <div style="margin-bottom:34px; text-align:left;">
+                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🔍 화면 확대 (0 ~ 150)</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="zoom-input-box" value="35" style="width:80px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
+                        <button onclick="playClickSound(); applyZoomInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
+                    </div>
+                </div>
+                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:10px;" oninput="syncZoomRange(this.value)">
+            </div>
+
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; font-size:24px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
+        </div>
+    </div>
+
+    <!-- 전체 채팅창 -->
+    <div class="chat-floating-window hidden" id="chat-floating-box">
+        <div class="chat-header-row" id="chat-drag-header">
+            <div style="font-size:24px; font-weight:900; color:#000;" id="chat-title-online-txt">전체 채팅</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="modal-close-btn" style="position:static; width:44px; height:44px; font-size:22px;" onclick="playClickSound(); closeChatModal();">✕</button>
+            </div>
+        </div>
+        <div class="chat-logs-area" id="chat-logs">
+            <div class="chat-msg-card">
+                <div class="chat-sender-name">공지</div>
+                <div class="chat-msg-text">다들 1대1 매칭 돌려주세요</div>
+                <div class="chat-msg-time">오후 4:30</div>
+            </div>
+        </div>
+        <div class="row-inline-group" style="flex-shrink:0;">
+            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0; text-align:left;" placeholder="모두에게 보낼 메시지" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:20px; padding:0 28px;" onclick="playClickSound(); sendChatMessage();">보내기</button>
+        </div>
+    </div>
+
+    <!-- 플레이어 목록 팝업 창 -->
+    <div class="modal-overlay hidden" id="players-modal" style="z-index: 100000;">
+        <div class="players-modal-box">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closePlayersModal();">✕</button>
+            <div style="font-size:28px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">👥 플레이어 목록</div>
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50; margin-bottom:8px; flex-shrink:0;" id="online-offline-summary-txt">
+                온라인 [0명] | 오프라인 [0명]
+            </div>
+            <div class="players-list-area" id="players-list-container"></div>
+        </div>
+    </div>
+
+    <!-- 내 프로필 정보 팝업 창 -->
+    <div class="modal-overlay hidden" id="profile-modal" style="z-index: 100000;">
+        <div class="profile-modal-box">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeProfileModal();">✕</button>
+            
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px;">
+                <div id="my-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+                <button style="width:52px; height:52px; background:#f1f2f6; border:3px solid #000; border-radius:6px; font-size:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 0 #000;" onclick="playClickSound(); openBrawlIconSelector();">⚙️</button>
+            </div>
+
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">내 프로필</div>
+            <div style="font-size:22px; font-weight:900; margin-bottom:10px; color:#2c3e50;" id="profile-name-txt">이름: -</div>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="profile-date-txt">접속한 날짜: -</div>
+            <div class="admin-btn-group" style="width:100%;">
+                <button class="admin-btn" style="background-color:#f39c12; color:#fff; padding:14px 0; font-size:20px;" onclick="playClickSound(); editUserNamePrompt();">이름 변경</button>
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeProfileModal();">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 브롤스타즈 스타일 아이콘 선택 팝업 -->
+    <div class="modal-overlay hidden" id="brawl-icon-selector-modal" style="z-index: 250000; background: rgba(0, 0, 0, 0.75);">
+        <div style="background:#1b4f72; border:6px solid #000; padding:28px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; display:flex; flex-direction:column; align-items:center;">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBrawlIconSelector();">✕</button>
+            <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:18px;">아이콘 선택</div>
+            
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; width:100%; max-height:62vh; overflow-y:auto; padding:6px;" id="brawl-icon-grid-container"></div>
+        </div>
+    </div>
+
+    <!-- 다른 사람 프로필 확인용 팝업 창 -->
+    <div class="modal-overlay hidden" id="other-profile-modal" style="z-index: 100000;">
+        <div class="profile-modal-box">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeOtherProfileModal();">✕</button>
+            <div id="other-profile-square-icon" style="width:145px; height:145px; background:#1e90ff; border:5px solid #000; border-radius:6px; margin-bottom:12px; box-shadow:0 4px 0 #000; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:64px;">👤</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:12px; border-bottom:3px solid #000; padding-bottom:8px; width:100%; text-align:center;">플레이어 프로필</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px; width:100%;">
+                <div style="font-size:22px; font-weight:900; color:#2c3e50;" id="other-profile-name-txt">이름: -</div>
+                <button id="btn-add-friend-action" style="background:#2ecc71; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); addFriendFromProfile();">🤝 친구추가</button>
+                <button id="btn-report-player" style="background:#e74c3c; color:#fff; border:3px solid #000; padding:8px 14px; font-size:16px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playClickSound(); openReportModal();">🚨 신고</button>
+            </div>
+            <div style="font-size:19px; font-weight:900; margin-bottom:10px; color:#27ae60;" id="other-profile-most-ball-txt">가장 많이 쓴 볼: - [0회]</div>
+            <div style="font-size:16px; font-weight:bold; color:#555; margin-bottom:22px;" id="other-profile-date-txt">접속한 날짜: -</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px 0; font-size:20px;" onclick="playClickSound(); closeOtherProfileModal();">닫기</button>
+        </div>
+    </div>
+
+    <!-- 신고 작성 모달 팝업 창 -->
+    <div class="modal-overlay hidden" id="report-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
+        <div style="background:#fff; border:6px solid #000; padding:35px 28px; width:94%; max-width:520px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:16px; color:#c0392b;">🚨 플레이어 신고하기</div>
+            <div style="font-size:18px; font-weight:900; margin-bottom:10px; text-align:left;" id="report-target-name-txt">대상: -</div>
+            
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">신고 사유</div>
+            <input type="text" id="report-reason-input" class="admin-input" placeholder="예: 욕설, 비매너 플레이 등" style="margin-bottom:16px; font-size:20px; padding:12px;">
+
+            <div style="font-size:18px; font-weight:900; margin-bottom:8px; text-align:left;">그사람에게 전할 말</div>
+            <textarea id="report-message-input" class="admin-input" placeholder="전할 메시지를 적어주세요" style="margin-bottom:18px; font-size:18px; height:100px; text-align:left; resize:none; padding:12px;"></textarea>
+
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" style="background:#27ae60; padding:14px 0; font-size:20px;" onclick="playClickSound(); submitReport();">전하기</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeReportModal();">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 볼 선택 모달 팝업창 -->
+    <div class="modal-overlay hidden" id="ball-picker-modal">
+        <div class="picker-modal-box">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBallPicker();">✕</button>
+            <div style="font-size:26px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">⚽ 볼 선택하기</div>
+            <div class="picker-grid" id="ball-picker-grid"></div>
+        </div>
+    </div>
+
+    <!-- 최초 접속 시 이름 쓰기 팝업 창 -->
+    <div class="modal-overlay hidden" id="name-input-modal" style="z-index: 300000; background: rgba(0, 0, 0, 0.85); pointer-events: auto;">
+        <div style="background:#fff; border:8px solid #000; padding:55px 45px; width:92%; max-width:680px; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,0.6); position:relative;">
+            <div style="font-size:38px; font-weight:900; margin-bottom:26px; color:#000;">✍️ 이름 쓰기</div>
+            <input type="text" id="user-name-input" class="admin-input" placeholder="이름을 입력하세요" style="margin-bottom:26px; font-size:30px; padding:24px; border:4px solid #000;" onkeydown="if(event.key==='Enter') submitUserName()">
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:24px; font-size:30px; font-weight:900; background:#2ecc71; border:4px solid #000;" onclick="playClickSound(); submitUserName();">등록하고 시작하기</button>
+        </div>
+    </div>
+
+    <!-- 어드민 비밀번호 입력 모달 -->
+    <div class="modal-overlay hidden" id="admin-password-modal" style="background: rgba(0, 0, 0, 0.5); z-index: 300000;">
+        <div style="background:#fff; border:6px solid #000; padding:32px; width:90%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:26px; font-weight:900; margin-bottom:18px;">🔒 어드민 비밀번호</div>
+            <input type="password" id="admin-pw-input" class="admin-input" placeholder="비밀번호 입력" style="margin-bottom:18px; font-size:22px; padding:14px;" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+            <div class="admin-btn-group">
+                <button class="admin-btn admin-btn-confirm" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); verifyAdminPassword();">확인</button>
+                <button class="admin-btn admin-btn-cancel" style="padding:14px 0; font-size:20px;" onclick="playClickSound(); closeAdminPassword();">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 패널 -->
+    <div class="admin-draggable-panel hidden" id="admin-panel-modal">
+        <div class="admin-drag-header" id="admin-drag-header-bar">
+            <span>⚙️ 관리자 패널</span>
+            <span style="cursor:pointer;" onclick="playClickSound(); closeAdminPanel();">✕</span>
+        </div>
+        <div class="admin-scroll-body" id="admin-scroll-body-content">
+            <div style="font-size:18px; font-weight:900; text-align:center; color:#2c3e50;">어드민 패널</div>
+            <div class="admin-section-box" style="background: #eaf2f8; border-color: #2980b9;">
+                <div class="admin-section-title" style="color: #2980b9;">👥 플레이어 목록 및 채팅 내역</div>
+                <div class="players-list-area" id="admin-players-list-container" style="max-height: 240px; margin-top:6px;"></div>
+            </div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px;" onclick="playClickSound(); closeAdminPanel();">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v2');
+
+        gameSyncChannel.onmessage = function (event) {
+            const data = event.data;
+            if (!data) return;
+
+            if (data.type === 'SYNC_PLAYERS') {
+                localStorage.setItem('lily_game_players_list', JSON.stringify(data.players));
+                updateOnlineOfflineCounts();
+                renderAdminPlayersList();
+            } else if (data.type === 'SYNC_ROOMS') {
+                localStorage.setItem('lily_game_friend_rooms', JSON.stringify(data.rooms));
+                if (!document.getElementById('friend-match-modal').classList.contains('hidden')) {
+                    renderFriendRooms();
+                }
+            } else if (data.type === 'SYNC_CHAT') {
+                localStorage.setItem('lily_game_chat_logs', JSON.stringify(data.logs));
+                loadChatLogs();
+            } else if (data.type === 'PING') {
+                localStorage.setItem('lily_game_ping_' + data.uid, data.time);
+                updateOnlineOfflineCounts();
+            }
+        };
+
+        function broadcastSync(type, payload) {
+            if (type === 'PLAYERS') {
+                gameSyncChannel.postMessage({ type: 'SYNC_PLAYERS', players: payload });
+            } else if (type === 'ROOMS') {
+                gameSyncChannel.postMessage({ type: 'SYNC_ROOMS', rooms: payload });
+            } else if (type === 'CHAT') {
+                gameSyncChannel.postMessage({ type: 'SYNC_CHAT', logs: payload });
+            } else if (type === 'PING') {
+                gameSyncChannel.postMessage({ type: 'PING', uid: payload.uid, time: payload.time });
+            }
+        }
+
+        let audioCtx = null;
+        let soundVolume = 1.0;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        window.addEventListener('pointerdown', () => { getAudioContext(); }, { once: true });
+
+        function playClickSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(500, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.2 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.05);
+            } catch(e) {}
+        }
+
+        function playSlideSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                gain.gain.setValueAtTime(0.15 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.15);
+            } catch(e) {}
+        }
+
+        function playHitSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.09);
+            } catch(e) {}
+        }
+
+        function playWallSound() {
+            try {
+                let ctx = getAudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
+                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.07);
+            } catch(e) {}
+        }
+
+        function playCountdownSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.12);
+            } catch(e) {}
+        }
+
+        function playJiroExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc1 = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
+                let gain1 = ctx.createGain();
+                let gain2 = ctx.createGain();
+                
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                
+                osc1.frequency.setValueAtTime(180, now);
+                osc1.frequency.exponentialRampToValueAtTime(30, now + 0.6);
+
+                osc2.frequency.setValueAtTime(90, now);
+                osc2.frequency.exponentialRampToValueAtTime(20, now + 0.6);
+
+                gain1.gain.setValueAtTime(0.8 * soundVolume, now);
+                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+                gain2.gain.setValueAtTime(0.6 * soundVolume, now);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+                osc1.connect(gain1); gain1.connect(ctx.destination);
+                osc2.connect(gain2); gain2.connect(ctx.destination);
+
+                osc1.start(now); osc2.start(now);
+                osc1.stop(now + 0.65); osc2.stop(now + 0.65);
+            } catch(e) {}
+        }
+
+        function playBoniBombSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.38);
+            } catch(e) {}
+        }
+
+        function playRouletteSpinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                for (let i = 0; i < 10; i++) {
+                    let time = now + i * 0.09;
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600 + i * 50, time);
+                    gain.gain.setValueAtTime(0.2 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(time); osc.stop(time + 0.06);
+                }
+            } catch(e) {}
+        }
+
+        function playRouletteWinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    let time = now + idx * 0.08;
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, time);
+                    gain.gain.setValueAtTime(0.4 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(time); osc.stop(time + 0.18);
+                });
+            } catch(e) {}
+        }
+
+        function playArrowSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(1000, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.14);
+            } catch(e) {}
+        }
+
+        function playCoinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(900, now);
+                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+                gain.gain.setValueAtTime(0.2 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.12);
+            } catch(e) {}
+        }
+
+        function playFoodThrowSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
+                let gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc2.type = 'triangle';
+                
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.25);
+
+                osc2.frequency.setValueAtTime(300, now);
+                osc2.frequency.exponentialRampToValueAtTime(900, now + 0.25);
+
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+                osc.connect(gain); osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now); osc2.start(now);
+                osc.stop(now + 0.28); osc2.stop(now + 0.28);
+            } catch(e) {}
+        }
+
+        function playSkillSuperSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.3);
+            } catch(e) {}
+        }
+
+        function playHealSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.25);
+            } catch(e) {}
+        }
+
+        let profileClickCount = 0;
+        let profileClickTimer = null;
+        function handleProfileClickWithSecret() {
+            playClickSound();
+            profileClickCount++;
+            if (profileClickTimer) clearTimeout(profileClickTimer);
+            if (profileClickCount >= 10) {
+                profileClickCount = 0;
+                openAdminPasswordPrompt();
+                return;
+            }
+            profileClickTimer = setTimeout(() => { profileClickCount = 0; }, 1000);
+            handleProfileClick();
+        }
+
+        function openAdminPasswordPrompt() {
+            document.getElementById('admin-pw-input').value = '';
+            document.getElementById('admin-password-modal').classList.remove('hidden');
+        }
+
+        function closeAdminPassword() {
+            document.getElementById('admin-password-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pw = document.getElementById('admin-pw-input').value;
+            if (pw === 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ77') {
+                closeAdminPassword();
+                localStorage.setItem('lily_game_is_admin', 'true');
+                const panel = document.getElementById('admin-panel-modal');
+                panel.style.left = '50%'; panel.style.top = '50%';
+                panel.style.transform = 'translate(-50%, -50%)';
+                panel.classList.remove('hidden');
+                renderAdminPlayersList();
+                showToast('어드민 인증 성공! 🔓');
+            } else {
+                showToast('비밀번호가 틀렸습니다!');
+            }
+        }
+
+        function togglePatchDetails(contentId, btnId) {
+            const content = document.getElementById(contentId);
+            const btn = document.getElementById(btnId);
+            if (!content || !btn) return;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                btn.innerText = '⏫️';
+            } else {
+                content.style.display = 'none';
+                btn.innerText = '⬇️';
+            }
+        }
+
+        function switchModalTab(tabName) {
+            const patchContent = document.getElementById('modal-content-patch');
+            const charsContent = document.getElementById('modal-content-chars');
+            const patchBtn = document.getElementById('tab-btn-patch');
+            const charsBtn = document.getElementById('tab-btn-chars');
+
+            if (tabName === 'patch') {
+                patchContent.style.display = 'flex';
+                charsContent.style.display = 'none';
+                patchBtn.style.background = '#2980b9';
+                charsBtn.style.background = '#7f8c8d';
+            } else {
+                patchContent.style.display = 'none';
+                charsContent.style.display = 'flex';
+                patchBtn.style.background = '#7f8c8d';
+                charsBtn.style.background = '#2980b9';
+            }
+        }
+
+        let currentMatchMode = 1;
+        let selectedTeam1Balls = [];
+        let selectedTeam2Balls = [];
+        let currentPickingTeam = null;
+        let currentPickingIndex = 0;
+
+        function loadSavedSettings() {
+            let savedVol = localStorage.getItem('lily_game_sfx_vol') || '100';
+            let v = parseInt(savedVol);
+            soundVolume = v / 100;
+            document.getElementById('sfx-volume-range').value = v;
+            document.getElementById('sfx-input-box').value = v;
+
+            let savedZoom = localStorage.getItem('lily_game_zoom_scale') || '35';
+            let z = parseInt(savedZoom);
+            document.getElementById('zoom-scale-range').value = z;
+            document.getElementById('zoom-input-box').value = z;
+            applyZoomScale(z);
+
+            let savedIcon = localStorage.getItem('lily_game_profile_icon') || '👤';
+            applyProfileIconUI(savedIcon);
+
+            let savedMode = localStorage.getItem('lily_game_match_mode') || '1';
+            currentMatchMode = parseInt(savedMode);
+            updateMatchModeLabel(currentMatchMode);
+            initSlotContainers();
+        }
+
+        function updateMatchModeLabel(modeNum) {
+            currentMatchMode = modeNum;
+            const lbl = document.getElementById('match-setting-label-txt');
+            if (lbl) lbl.innerText = `${modeNum}대${modeNum} 경기`;
+            initSlotContainers();
+        }
+
+        function initSlotContainers() {
+            selectedTeam1Balls = new Array(currentMatchMode).fill(null);
+            selectedTeam2Balls = new Array(currentMatchMode).fill(null);
+
+            const container = document.getElementById('dynamic-slot-container');
+            container.innerHTML = '';
+
+            const t1Box = document.createElement('div');
+            t1Box.className = 'slot-team-box';
+            t1Box.innerHTML = `<div class="slot-team-title" style="color:#1e90ff;">파란팀</div>`;
+            for (let i = 0; i < currentMatchMode; i++) {
+                let btn = document.createElement('button');
+                btn.className = 'btn-add-slot';
+                btn.id = `slot-t1-${i}`;
+                btn.innerText = '볼 선택하기';
+                btn.onclick = () => { playClickSound(); openBallPicker('team1', i); };
+                t1Box.appendChild(btn);
+            }
+
+            const t2Box = document.createElement('div');
+            t2Box.className = 'slot-team-box';
+            t2Box.innerHTML = `<div class="slot-team-title" style="color:#e74c3c;">빨간팀</div>`;
+            for (let i = 0; i < currentMatchMode; i++) {
+                let btn = document.createElement('button');
+                btn.className = 'btn-add-slot';
+                btn.id = `slot-t2-${i}`;
+                btn.innerText = '볼 선택하기';
+                btn.onclick = () => { playClickSound(); openBallPicker('team2', i); };
+                t2Box.appendChild(btn);
+            }
+
+            container.appendChild(t1Box);
+            container.appendChild(t2Box);
+        }
+
+        function openMatchSettingModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('match-setting-modal').classList.remove('hidden');
+        }
+
+        function closeMatchSettingModal() {
+            document.getElementById('match-setting-modal').classList.add('hidden');
+        }
+
+        function selectMatchMode(modeNum, modeName) {
+            localStorage.setItem('lily_game_match_mode', modeNum);
+            updateMatchModeLabel(modeNum);
+            showToast(`${modeName} 모드가 설정되었습니다!`);
+            closeMatchSettingModal();
+        }
+
+        function openPatchNoteModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            switchModalTab('patch');
+            document.getElementById('patch-note-modal').classList.remove('hidden');
+        }
+
+        function closePatchNoteModal() {
+            document.getElementById('patch-note-modal').classList.add('hidden');
+        }
+
+        const ballList = [
+            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
+            { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
+            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
+            { name: '본이', hp: 250, imageSrc: 'boni.png' },
+            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
+            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' }
+        ];
+
+        const loadedImages = {};
+        ballList.forEach(ball => {
+            if (ball.imageSrc) {
+                const img = new Image();
+                img.src = ball.imageSrc;
+                loadedImages[ball.name] = img;
+            }
+        });
+
+        const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
+        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
+        const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
+        
+        // 요구하신 7번째 사진 화살 이미지(14215_2.png) 적용
+        const arrowImg = new Image(); arrowImg.src = '14215_2.png';
+
+        const brawlIconsList = [
+            { type: 'text', val: '👤', bg: '#1e90ff' },
+            { type: 'text', val: '🇰🇷', bg: '#ffffff' },
+            { type: 'image', val: 'JIRO', src: '14605.jpg', bg: '#ffffff' },
+            { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
+            { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
+            { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
+            { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
+            { type: 'image', val: 'JINO', src: 'jino.jpg', bg: '#ffffff' },
+            { type: 'text', val: '⭐', bg: '#f1c40f' },
+            { type: 'text', val: '👑', bg: '#27ae60' },
+            { type: 'text', val: '💀', bg: '#2c3e50' },
+            { type: 'text', val: '🏆', bg: '#e67e22' },
+            { type: 'text', val: '🧪', bg: '#9b59b6' },
+            { type: 'text', val: '🔥', bg: '#e74c3c' },
+            { type: 'text', val: '💎', bg: '#3498db' },
+            { type: 'text', val: '⚡', bg: '#f39c12' },
+            { type: 'text', val: '🎯', bg: '#16a085' },
+            { type: 'text', val: '🚀', bg: '#2980b9' },
+            { type: 'text', val: '🛡️', bg: '#7f8c8d' },
+            { type: 'text', val: '⚔️', bg: '#c0392b' },
+            { type: 'text', val: '🌟', bg: '#f1c40f' }
+        ];
+
+        function openBrawlIconSelector() {
+            closeProfileModal();
+            const container = document.getElementById('brawl-icon-grid-container');
+            container.innerHTML = '';
+            brawlIconsList.forEach(item => {
+                const cell = document.createElement('div');
+                cell.style.width = '100%'; cell.style.aspectRatio = '1 / 1';
+                cell.style.backgroundColor = item.bg; cell.style.border = '4px solid #000';
+                cell.style.borderRadius = '6px'; cell.style.display = 'flex';
+                cell.style.alignItems = 'center'; cell.style.justifyContent = 'center';
+                cell.style.cursor = 'pointer'; cell.style.boxShadow = '0 3px 0 #000';
+                cell.style.overflow = 'hidden';
+
+                if (item.type === 'text') {
+                    cell.style.fontSize = '38px';
+                    cell.innerText = item.val;
+                } else {
+                    cell.innerHTML = `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+
+                cell.onclick = () => {
+                    playClickSound();
+                    let storeVal = item.type === 'text' ? item.val : `img:${item.src}`;
+                    localStorage.setItem('lily_game_profile_icon', storeVal);
+                    applyProfileIconUI(storeVal);
+                    closeBrawlIconSelector();
+                    openProfileModal();
+                    showToast('프로필 아이콘이 변경되었습니다!');
+                };
+                container.appendChild(cell);
+            });
+            document.getElementById('brawl-icon-selector-modal').classList.remove('hidden');
+        }
+
+        function closeBrawlIconSelector() {
+            document.getElementById('brawl-icon-selector-modal').classList.add('hidden');
+        }
+
+        function applyProfileIconUI(iconStr) {
+            const sq1 = document.getElementById('my-profile-square-icon');
+            const sq2 = document.getElementById('other-profile-square-icon');
+            [sq1, sq2].forEach(sq => {
+                if (!sq) return;
+                sq.innerHTML = '';
+                if (iconStr.startsWith('img:')) {
+                    let imgSrc = iconStr.replace('img:', '');
+                    sq.style.backgroundColor = '#ffffff';
+                    sq.innerHTML = `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    sq.style.backgroundColor = '#1e90ff';
+                    sq.style.fontSize = '64px';
+                    sq.innerText = iconStr;
+                }
+            });
+        }
+
+        function saveGameSettings() {
+            localStorage.setItem('lily_game_sfx_vol', document.getElementById('sfx-input-box').value);
+            localStorage.setItem('lily_game_zoom_scale', document.getElementById('zoom-input-box').value);
+            showToast('설정이 성공적으로 저장되었습니다! 💾');
+            closeSettingsModal();
+        }
+
+        function applySfxInput() {
+            let val = parseInt(document.getElementById('sfx-input-box').value) || 100;
+            if (val < 0) val = 0; if (val > 1000) val = 1000;
+            soundVolume = val / 100;
+            document.getElementById('sfx-volume-range').value = val;
+            showToast(`효과음 소리가 ${val}(으)로 설정되었습니다.`);
+        }
+
+        function syncSfxRange(val) {
+            document.getElementById('sfx-input-box').value = val;
+            soundVolume = parseInt(val) / 100;
+        }
+
+        function applyZoomInput() {
+            let val = parseInt(document.getElementById('zoom-input-box').value) || 35;
+            if (val < 0) val = 0; if (val > 150) val = 150;
+            document.getElementById('zoom-scale-range').value = val;
+            applyZoomScale(val);
+            showToast(`화면 확대가 ${val}(으)로 설정되었습니다.`);
+        }
+
+        function syncZoomRange(val) {
+            document.getElementById('zoom-input-box').value = val;
+            applyZoomScale(parseInt(val));
+        }
+
+        function applyZoomScale(numVal) {
+            let scaleFactor = 1.0 + (numVal / 150) * 1.0;
+            document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
+        }
+
+        function openSettingsModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function getFormattedToday() {
+            const now = new Date();
+            return `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
+        }
+
+        function getCurrentTimeString() {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes();
+            let ampm = h >= 12 ? '오후' : '오전';
+            h = h % 12 || 12;
+            return `${ampm} ${h}:${String(m).padStart(2, '0')}`;
+        }
+
+        function getDeviceUniqueId() {
+            let uid = localStorage.getItem('lily_game_device_uid');
+            if (!uid) {
+                uid = 'user_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+                localStorage.setItem('lily_game_device_uid', uid);
+            }
+            return uid;
+        }
+
+        function checkMidnightReset() {
+            const todayStr = getFormattedToday();
+            let lastDate = localStorage.getItem('lily_game_last_chat_date');
+            if (!lastDate) {
+                localStorage.setItem('lily_game_last_chat_date', todayStr);
+            } else if (lastDate !== todayStr) {
+                localStorage.setItem('lily_game_chat_logs', JSON.stringify([]));
+                localStorage.setItem('lily_game_last_chat_date', todayStr);
+            }
+        }
+
+        function updateHeartbeat() {
+            checkMidnightReset();
+            const myUid = getDeviceUniqueId();
+            const nowTime = Date.now();
+            localStorage.setItem('lily_game_ping_' + myUid, nowTime);
+            broadcastSync('PING', { uid: myUid, time: nowTime });
+
+            let savedName = localStorage.getItem('lily_game_user_name');
+            if (savedName) registerPlayer(myUid, savedName, localStorage.getItem('lily_game_login_date') || getFormattedToday());
+            checkMaintenanceStatus();
+            updateOnlineOfflineCounts();
+        }
+
+        setInterval(updateHeartbeat, 2000);
+        updateHeartbeat();
+
+        function checkMaintenanceStatus() {
+            const isMaint = localStorage.getItem('lily_game_maintenance') === 'true';
+            const isAdmin = localStorage.getItem('lily_game_is_admin') === 'true';
+            const overlay = document.getElementById('maintenance-overlay');
+            if (isMaint && !isAdmin) overlay.classList.remove('hidden');
+            else overlay.classList.add('hidden');
+        }
+
+        function checkNameRegisteredOrBlock() {
+            const savedName = localStorage.getItem('lily_game_user_name');
+            if (!savedName) {
+                showToast('이름을 등록하세요');
+                document.getElementById('name-input-modal').classList.remove('hidden');
+                return false;
+            }
+            return true;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkMidnightReset();
+            loadSavedSettings();
+
+            const myUid = getDeviceUniqueId();
+            let savedName = localStorage.getItem('lily_game_user_name');
+            let savedDate = localStorage.getItem('lily_game_login_date') || getFormattedToday();
+            if (!localStorage.getItem('lily_game_login_date')) localStorage.setItem('lily_game_login_date', savedDate);
+
+            if (!savedName) {
+                document.getElementById('name-input-modal').classList.remove('hidden');
+            } else {
+                registerPlayer(myUid, savedName, savedDate);
+                loadChatLogs();
+                updateOnlineOfflineCounts();
+                renderAdminPlayersList();
+                document.getElementById('name-input-modal').classList.add('hidden');
+            }
+            checkMaintenanceStatus();
+        });
+
+        function registerPlayer(uid, name, date) {
+            if (!name) return;
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let existing = players.find(p => p.uid === uid);
+            if (!existing) {
+                players.push({ uid: uid, name: name, date: date });
+            } else {
+                existing.name = name; existing.date = date;
+            }
+            localStorage.setItem('lily_game_players_list', JSON.stringify(players));
+            broadcastSync('PLAYERS', players);
+            updateOnlineOfflineCounts();
+            renderAdminPlayersList();
+        }
+
+        function submitUserName() {
+            const inputVal = document.getElementById('user-name-input').value.trim();
+            if (!inputVal) { showToast('이름을 입력해 주세요!'); return; }
+            const myUid = getDeviceUniqueId();
+            const today = getFormattedToday();
+            const oldName = localStorage.getItem('lily_game_user_name');
+
+            localStorage.setItem('lily_game_user_name', inputVal);
+            if (!localStorage.getItem('lily_game_login_date')) localStorage.setItem('lily_game_login_date', today);
+            registerPlayer(myUid, inputVal, localStorage.getItem('lily_game_login_date'));
+
+            if (oldName && oldName !== inputVal) {
+                let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+                chatData.forEach(c => { if (c.uid === myUid || c.name === oldName) c.name = inputVal; });
+                localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+                broadcastSync('CHAT', chatData);
+                loadChatLogs();
+            }
+
+            document.getElementById('name-input-modal').classList.add('hidden');
+            showToast(`환영합니다, ${inputVal}님!`);
+            loadChatLogs();
+            updateOnlineOfflineCounts();
+            renderAdminPlayersList();
+        }
+
+        function handleProfileClick() {
+            if (!checkNameRegisteredOrBlock()) return;
+            closeChatModal(); openProfileModal();
+        }
+
+        function handleChatClick() {
+            if (!checkNameRegisteredOrBlock()) return;
+            closeProfileModal(); closePlayersModal(); openChatModal();
+        }
+
+        function getMostUsedBallInfo() {
+            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+            let maxBall = '없음', maxCount = 0;
+            for (let bName in usage) {
+                if (usage[bName] > maxCount) { maxCount = usage[bName]; maxBall = bName; }
+            }
+            return { name: maxBall, count: maxCount };
+        }
+
+        function openProfileModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('profile-name-txt').innerText = `이름: ${localStorage.getItem('lily_game_user_name')}`;
+            document.getElementById('profile-date-txt').innerText = `접속한 날짜: ${localStorage.getItem('lily_game_login_date') || getFormattedToday()}`;
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
+            applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
+        function editUserNamePrompt() {
+            closeProfileModal();
+            document.getElementById('user-name-input').value = localStorage.getItem('lily_game_user_name') || '';
+            document.getElementById('name-input-modal').classList.remove('hidden');
+        }
+
+        let currentTargetProfileName = '';
+        function openOtherProfile(name) {
+            if (!checkNameRegisteredOrBlock()) return;
+            currentTargetProfileName = name;
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let player = players.find(p => p.name === name);
+            let joinDate = player ? player.date : getFormattedToday();
+
+            document.getElementById('other-profile-name-txt').innerText = `이름: ${name}`;
+            document.getElementById('other-profile-date-txt').innerText = `접속한 날짜: ${joinDate}`;
+            let mostObj = getMostUsedBallInfo();
+            document.getElementById('other-profile-most-ball-txt').innerText = `가장 많이 쓴 볼: ${mostObj.name} [${mostObj.count}회]`;
+            applyProfileIconUI(localStorage.getItem('lily_game_profile_icon') || '👤');
+
+            const myName = localStorage.getItem('lily_game_user_name');
+            document.getElementById('btn-report-player').style.display = (name === myName) ? 'none' : 'inline-block';
+            document.getElementById('btn-add-friend-action').style.display = (name === myName) ? 'none' : 'inline-block';
+            document.getElementById('other-profile-modal').classList.remove('hidden');
+        }
+
+        function closeOtherProfileModal() { document.getElementById('other-profile-modal').classList.add('hidden'); }
+
+        function addFriendFromProfile() {
+            if (!currentTargetProfileName || currentTargetProfileName === localStorage.getItem('lily_game_user_name')) return;
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            if (!friends.includes(currentTargetProfileName)) {
+                friends.push(currentTargetProfileName);
+                localStorage.setItem('lily_game_friends', JSON.stringify(friends));
+                showToast(`"${currentTargetProfileName}"님과 친구가 되었습니다! 🤝`);
+            } else {
+                showToast('이미 친구로 등록되어 있습니다.');
+            }
+            closeOtherProfileModal();
+        }
+
+        function openFriendModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            const container = document.getElementById('friend-list-container');
+            container.innerHTML = '';
+
+            if (friends.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:40px;">다른 사람과 친구를 해보세요</div>`;
+            } else {
+                friends.forEach(fName => {
+                    const card = document.createElement('div');
+                    card.className = 'player-item-card';
+                    card.style.flexDirection = 'row';
+                    card.style.justifyContent = 'space-between';
+                    card.style.alignItems = 'center';
+                    card.innerHTML = `
+                        <span style="font-size:20px; font-weight:900;">👤 ${fName}</span>
+                        <div style="display:flex; gap:8px;">
+                            <button class="admin-btn admin-btn-confirm" style="padding:8px 14px; font-size:16px;" onclick="openPrivateChat('${fName}')">채팅</button>
+                            <button class="admin-btn admin-btn-cancel" style="padding:8px 14px; font-size:16px;" onclick="removeFriend('${fName}')">친구 삭제</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('friend-modal').classList.remove('hidden');
+        }
+
+        function closeFriendModal() { document.getElementById('friend-modal').classList.add('hidden'); }
+
+        function removeFriend(fName) {
+            let friends = JSON.parse(localStorage.getItem('lily_game_friends') || '[]');
+            friends = friends.filter(f => f !== fName);
+            localStorage.setItem('lily_game_friends', JSON.stringify(friends));
+            showToast(`"${fName}"님이 친구에서 삭제되었습니다.`);
+            openFriendModal();
+        }
+
+        let activeChatFriendName = '';
+        function openPrivateChat(fName) {
+            closeFriendModal();
+            activeChatFriendName = fName;
+            document.getElementById('private-chat-title-txt').innerText = `💬 ${fName}님과 1:1 채팅 & 통화`;
+            loadPrivateChatLogs();
+            document.getElementById('private-chat-modal').classList.remove('hidden');
+        }
+
+        function closePrivateChatModal() {
+            endVoiceCall();
+            document.getElementById('private-chat-modal').classList.add('hidden');
+        }
+
+        function getPrivateChatKey(f1, f2) {
+            return 'lily_game_private_' + [f1, f2].sort().join('_');
+        }
+
+        function loadPrivateChatLogs() {
+            const logsContainer = document.getElementById('private-chat-logs');
+            const myName = localStorage.getItem('lily_game_user_name');
+            let key = getPrivateChatKey(myName, activeChatFriendName);
+            let msgs = JSON.parse(localStorage.getItem(key) || '[]');
+            logsContainer.innerHTML = '';
+
+            if (msgs.length === 0) {
+                logsContainer.innerHTML = `<div style="text-align:center; font-size:18px; font-weight:bold; color:#777; padding:20px;">대화 내용이 없습니다.</div>`;
+                return;
+            }
+
+            msgs.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'chat-msg-card';
+                card.innerHTML = `
+                    <div class="chat-sender-name">${m.sender}</div>
+                    <div class="chat-msg-text">${m.text}</div>
+                    <div class="chat-msg-time">${m.time}</div>
+                `;
+                logsContainer.appendChild(card);
+            });
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function sendPrivateChatMessage() {
+            const input = document.getElementById('private-chat-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+            const myName = localStorage.getItem('lily_game_user_name');
+            let key = getPrivateChatKey(myName, activeChatFriendName);
+            let msgs = JSON.parse(localStorage.getItem(key) || '[]');
+            msgs.push({ sender: myName, text: txt, time: getCurrentTimeString() });
+            localStorage.setItem(key, JSON.stringify(msgs));
+            input.value = '';
+            loadPrivateChatLogs();
+        }
+
+        let localAudioStream = null;
+        async function startVoiceCall() {
+            try {
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 연결됨 (통화 중)';
+                showToast('음성 통화가 연결되었습니다! 🎙️');
+            } catch(e) {
+                showToast('마이크 권한을 허용해주세요!');
+                document.getElementById('voice-call-status-txt').innerText = '❌ 마이크 권한 거부됨';
+            }
+        }
+
+        function endVoiceCall() {
+            if (localAudioStream) {
+                localAudioStream.getTracks().forEach(track => track.stop());
+                localAudioStream = null;
+            }
+            document.getElementById('voice-call-status-txt').innerText = '🔊 음성 통화 종료됨';
+            showToast('통화가 종료되었습니다.');
+        }
+
+        function openFriendMatchModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            renderFriendRooms();
+            document.getElementById('friend-match-modal').classList.remove('hidden');
+        }
+
+        function closeFriendMatchModal() {
+            document.getElementById('friend-match-modal').classList.add('hidden');
+        }
+
+        function createFriendRoom() {
+            const myName = localStorage.getItem('lily_game_user_name');
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            if (rooms.some(r => r.host === myName)) {
+                showToast('이미 개설한 방이 있습니다!');
+                return;
+            }
+            rooms.push({ host: myName, participant: null, status: '대기중' });
+            localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+            broadcastSync('ROOMS', rooms);
+            showToast('방이 개설되었습니다! 🏠');
+            renderFriendRooms();
+        }
+
+        function cancelFriendRoom() {
+            const myName = localStorage.getItem('lily_game_user_name');
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            let newRooms = rooms.filter(r => r.host !== myName);
+            localStorage.setItem('lily_game_friend_rooms', JSON.stringify(newRooms));
+            broadcastSync('ROOMS', newRooms);
+            showToast('방 만들기가 취소되었습니다.');
+            renderFriendRooms();
+        }
+
+        function renderFriendRooms() {
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            const container = document.getElementById('friend-rooms-list-container');
+            container.innerHTML = '';
+
+            if (rooms.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:22px; font-weight:900; color:#555; padding:50px;">만든 방이 없음</div>`;
+                return;
+            }
+
+            const myName = localStorage.getItem('lily_game_user_name');
+            rooms.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'player-item-card';
+                card.style.flexDirection = 'row';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                
+                let joinBtnHtml = '';
+                if (r.host === myName) {
+                    joinBtnHtml = `<span style="font-size:16px; color:#e74c3c; font-weight:900;">내 방은 입장 불가</span>`;
+                } else {
+                    joinBtnHtml = `<button class="admin-btn admin-btn-confirm" style="padding:10px 18px; font-size:16px;" onclick="joinFriendRoom('${r.host}')">참여하기</button>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div style="font-size:20px; font-weight:900;">🏠 ${r.host}님의 방</div>
+                        <div style="font-size:15px; color:#27ae60; font-weight:bold; margin-top:3px;">${r.participant ? `참여자: ${r.participant} (참여중입니다)` : '참여 대기 중'}</div>
+                    </div>
+                    ${joinBtnHtml}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function joinFriendRoom(hostName) {
+            const myName = localStorage.getItem('lily_game_user_name');
+            if (hostName === myName) {
+                showToast('자신이 만든 방에는 들어갈 수 없습니다!');
+                return;
+            }
+            let rooms = JSON.parse(localStorage.getItem('lily_game_friend_rooms') || '[]');
+            let room = rooms.find(r => r.host === hostName);
+            if (room) {
+                room.participant = myName;
+                room.status = '참여중입니다';
+                localStorage.setItem('lily_game_friend_rooms', JSON.stringify(rooms));
+                broadcastSync('ROOMS', rooms);
+                showToast(`"${hostName}"님의 방에 참여중입니다! 🚀`);
+                renderFriendRooms();
+            }
+        }
+
+        let matchHistoryList = JSON.parse(localStorage.getItem('lily_game_match_history') || '[]');
+
+        function openRecordHistoryModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            const container = document.getElementById('record-history-list-container');
+            container.innerHTML = '';
+
+            if (matchHistoryList.length === 0) {
+                container.innerHTML = `<div style="text-align:center; font-size:20px; font-weight:900; color:#555; padding:40px;">최근 경기 기록이 없습니다.</div>`;
+            } else {
+                matchHistoryList.forEach((hist, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'player-item-card';
+                    card.style.flexDirection = 'row';
+                    card.style.justifyContent = 'space-between';
+                    card.style.alignItems = 'center';
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
+                            <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
+                            <div style="font-size:13px; color:#777;">시간: ${hist.time}</div>
+                        </div>
+                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">경기 보기</button>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('record-history-modal').classList.add('hidden');
+            document.getElementById('record-history-modal').classList.remove('hidden');
+        }
+
+        function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
+
+        function openSpectate(winnerTxt) {
+            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt}`;
+            document.getElementById('spectate-modal').classList.remove('hidden');
+        }
+        function closeSpectateModal() { document.getElementById('spectate-modal').classList.add('hidden'); }
+
+        function openReportModal() {
+            document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
+            document.getElementById('report-reason-input').value = '';
+            document.getElementById('report-message-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() { document.getElementById('report-modal').classList.add('hidden'); }
+
+        function submitReport() {
+            const reason = document.getElementById('report-reason-input').value.trim();
+            if (!reason) { showToast('신고 사유를 적어주세요!'); return; }
+            showToast(`"${currentTargetProfileName}"님에 대한 신고가 접수되었습니다.`);
+            closeReportModal(); closeOtherProfileModal();
+        }
+
+        function openChatModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            document.getElementById('chat-floating-box').classList.remove('hidden');
+            loadChatLogs(); updateOnlineOfflineCounts();
+        }
+        function closeChatModal() { document.getElementById('chat-floating-box').classList.add('hidden'); }
+
+        function updateOnlineOfflineCounts() {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            let onlineCount = 0, offlineCount = 0, nowTime = Date.now(), myUid = getDeviceUniqueId();
+            players.forEach(p => {
+                let lastPing = parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0');
+                let isOnline = (nowTime - lastPing) < 8000 || p.uid === myUid;
+                if (isOnline) onlineCount++; else offlineCount++;
+            });
+            const titleTxt = document.getElementById('chat-title-online-txt');
+            if (titleTxt) titleTxt.innerText = `전체 채팅`;
+            const summaryTxt = document.getElementById('online-offline-summary-txt');
+            if (summaryTxt) summaryTxt.innerText = `온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명]`;
+        }
+
+        function openPlayersModal() {
+            if (!checkNameRegisteredOrBlock()) return;
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            const container = document.getElementById('players-list-container');
+            container.innerHTML = '';
+            let nowTime = Date.now(), myUid = getDeviceUniqueId();
+            players.forEach(p => {
+                let isOnline = (nowTime - parseInt(localStorage.getItem('lily_game_ping_' + p.uid) || '0')) < 8000 || p.uid === myUid;
+                const item = document.createElement('div');
+                item.className = 'player-item-card';
+                item.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>👤 ${p.name} (${p.date || '가입일'})</span>
+                        <span style="font-size:18px; color:${isOnline ? '#27ae60' : '#e74c3c'};">(${isOnline ? '온라인' : '오프라인'})</span>
+                    </div>
+                `;
+                item.onclick = () => { playClickSound(); openOtherProfile(p.name); };
+                container.appendChild(item);
+            });
+            document.getElementById('players-modal').classList.remove('hidden');
+        }
+
+        function renderAdminPlayersList() {
+            let players = JSON.parse(localStorage.getItem('lily_game_players_list') || '[]');
+            const container = document.getElementById('admin-players-list-container');
+            if (!container) return;
+            container.innerHTML = '';
+            players.forEach(p => {
+                let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+                let userChats = chatData.filter(c => c.name === p.name);
+                let chatSummaryText = userChats.length > 0 ? userChats.map(c => `"${c.msg}" (${c.time})`).join(', ') : '없음';
+                const card = document.createElement('div');
+                card.className = 'player-item-card';
+                card.style.fontSize = '18px';
+                card.innerHTML = `<div>🔹 [${p.name}] ${p.date || '가입일'}</div><div style="font-size:16px; color:#c0392b; font-weight:bold; margin-top:4px;">오늘 친 채팅: ${chatSummaryText}</div>`;
+                card.onclick = () => { playClickSound(); openOtherProfile(p.name); };
+                container.appendChild(card);
+            });
+        }
+
+        function closePlayersModal() { document.getElementById('players-modal').classList.add('hidden'); }
+
+        function loadChatLogs() {
+            const logs = document.getElementById('chat-logs');
+            let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+            logs.innerHTML = '';
+            if (chatData.length === 0) {
+                logs.innerHTML = `<div class="chat-msg-card"><div class="chat-sender-name">공지</div><div class="chat-msg-text">다들 1대1 매칭 돌려주세요</div><div class="chat-msg-time">오후 4:30</div></div>`;
+                return;
+            }
+            chatData.forEach(item => appendChatBubble(item.name, item.msg, item.time, false));
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'lily_game_chat_logs') {
+                loadChatLogs();
+            }
+            if (e.key === 'lily_game_players_list') {
+                updateOnlineOfflineCounts();
+                renderAdminPlayersList();
+            }
+        });
+
+        setInterval(() => {
+            loadChatLogs();
+            updateOnlineOfflineCounts();
+        }, 1500);
+
+        function sendChatMessage() {
+            if (!checkNameRegisteredOrBlock()) return;
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+            let name = localStorage.getItem('lily_game_user_name');
+            const timeStr = getCurrentTimeString();
+            let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
+            chatData.push({ uid: getDeviceUniqueId(), name: name, msg: msg, time: timeStr });
+            localStorage.setItem('lily_game_chat_logs', JSON.stringify(chatData));
+            broadcastSync('CHAT', chatData);
+            appendChatBubble(name, msg, timeStr, true);
+            input.value = '';
+        }
+
+        function appendChatBubble(senderName, msgText, timeText, shouldScroll) {
+            const logs = document.getElementById('chat-logs');
+            const card = document.createElement('div');
+            card.className = 'chat-msg-card';
+            card.innerHTML = `<div class="chat-sender-name" onclick="playClickSound(); openOtherProfile('${senderName}')">${senderName}</div><div class="chat-msg-text">${msgText}</div><div class="chat-msg-time">${timeText}</div>`;
+            logs.appendChild(card);
+            if (shouldScroll) logs.scrollTop = logs.scrollHeight;
+        }
+
+        let toastTimer = null;
+        function showToast(message) {
+            const toast = document.getElementById('toast-alert');
+            toast.innerText = message; toast.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hidden'); }
+
+        let isGaming = false, isCountingDown = false, matchEnded = false;
+        let countdownText = '', winnerText = '';
+        let activeCountdownInterval = null;
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const FIXED_SPEED = 3.6;
+
+        let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
+        let matchStartTime = 0;
+
+        function openBallPicker(team, index) {
+            if (!checkNameRegisteredOrBlock()) return;
+            currentPickingTeam = team; currentPickingIndex = index;
+            const grid = document.getElementById('ball-picker-grid');
+            grid.innerHTML = '';
+            ballList.forEach(ball => {
+                const btn = document.createElement('div');
+                btn.className = 'ball-select-btn';
+                btn.innerText = ball.name;
+                btn.onclick = () => { playClickSound(); chooseBall(ball); };
+                grid.appendChild(btn);
+            });
+            document.getElementById('ball-picker-modal').classList.remove('hidden');
+        }
+
+        function closeBallPicker() { document.getElementById('ball-picker-modal').classList.add('hidden'); }
+
+        function chooseBall(ball) {
+            if (currentPickingTeam === 'team1') {
+                selectedTeam1Balls[currentPickingIndex] = (selectedTeam1Balls[currentPickingIndex] === ball) ? null : ball;
+                const slotBtn = document.getElementById(`slot-t1-${currentPickingIndex}`);
+                slotBtn.innerText = selectedTeam1Balls[currentPickingIndex] ? selectedTeam1Balls[currentPickingIndex].name : '볼 선택하기';
+                if (selectedTeam1Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
+            } else {
+                selectedTeam2Balls[currentPickingIndex] = (selectedTeam2Balls[currentPickingIndex] === ball) ? null : ball;
+                const slotBtn = document.getElementById(`slot-t2-${currentPickingIndex}`);
+                slotBtn.innerText = selectedTeam2Balls[currentPickingIndex] ? selectedTeam2Balls[currentPickingIndex].name : '볼 선택하기';
+                if (selectedTeam2Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
+            }
+            closeBallPicker();
+        }
+
+        function setFixedSpeedVelocity(obj) {
+            const angle = Math.random() * Math.PI * 2;
+            let vx = Math.cos(angle) * FIXED_SPEED, vy = Math.sin(angle) * FIXED_SPEED;
+            if (Math.abs(vx) < 1.2) vx = vx > 0 ? 1.4 : -1.4;
+            if (Math.abs(vy) < 1.2) vy = vy > 0 ? 1.4 : -1.4;
+            obj.vx = vx; obj.vy = vy;
+        }
+
+        function getSkillMaxTime(playerName) {
+            if (playerName === 'JIRO') return 8;
+            if (playerName === '왕클세종') return 10;
+            if (playerName === '미스터비스트') return 8;
+            if (playerName === 'JINO') return 12;
+            if (playerName === '본이') return 6;
+            if (playerName === '동룡쓰') return 5;
+            return null;
+        }
+
+        function calculateMultiPositions(team, index, total) {
+            let x, y;
+            if (team === 1) {
+                x = 120;
+                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
+            } else {
+                x = 360;
+                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
+            }
+            return { x, y };
+        }
+
+        function startMatch() {
+            if (!checkNameRegisteredOrBlock()) return;
+            for (let i = 0; i < currentMatchMode; i++) {
+                if (!selectedTeam1Balls[i] || !selectedTeam2Balls[i]) {
+                    showToast('모든 팀의 볼을 선택해 주세요!');
+                    return;
+                }
+            }
+
+            if (gameInterval) clearInterval(gameInterval);
+            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
+            
+            // 승리 시 노출되던 유튜브 쇼츠 영상 컨테이너 숨기기
+            document.getElementById('boni-win-video-container').style.display = 'none';
+            document.getElementById('boni-win-iframe').src = '';
+
+            moneyItems = []; matchEnded = false; winnerText = '';
+            matchStartTime = Date.now();
+
+            team1Players = selectedTeam1Balls.map((ball, idx) => {
+                let pos = calculateMultiPositions(1, idx, currentMatchMode);
+                let maxT = getSkillMaxTime(ball.name);
+                return {
+                    id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
+                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
+                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
+                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    rouletteAnim: null
+                };
+            });
+
+            team2Players = selectedTeam2Balls.map((ball, idx) => {
+                let pos = calculateMultiPositions(2, idx, currentMatchMode);
+                let maxT = getSkillMaxTime(ball.name);
+                return {
+                    id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
+                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
+                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
+                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    rouletteAnim: null
+                };
+            });
+
+            team1Players.forEach(p => setFixedSpeedVelocity(p));
+            team2Players.forEach(p => setFixedSpeedVelocity(p));
+            allPlayers = [...team1Players, ...team2Players];
+
+            buildIngameStatusPanel();
+            document.getElementById('lobby-top-menu-bar').classList.add('hidden');
+            document.getElementById('lobby-controls').classList.add('hidden');
+            document.getElementById('ingame-controls').classList.remove('hidden');
+
+            document.getElementById('top-btn-record').classList.add('hidden');
+            document.getElementById('top-btn-patch').classList.add('hidden');
+
+            isCountingDown = true; isGaming = false;
+            let count = 3; 
+            countdownText = `${count}`;
+            playCountdownSound();
+            showToast(`게임 시작까지 ${count}초...`);
+
+            activeCountdownInterval = setInterval(() => {
+                if (!isCountingDown) { clearInterval(activeCountdownInterval); return; }
+                count--;
+                if (count > 0) {
+                    countdownText = `${count}`;
+                    playCountdownSound();
+                    showToast(`게임 시작까지 ${count}초...`);
+                } else if (count === 0) {
+                    countdownText = `시작!`;
+                    playCountdownSound();
+                    showToast(`경기 시작! 🔥`);
+                } else {
+                    clearInterval(activeCountdownInterval);
+                    isCountingDown = false; isGaming = true; countdownText = '';
+                    runMainGameLoop();
+                }
+            }, 1000);
+        }
+
+        function buildIngameStatusPanel() {
+            const panel = document.getElementById('ingame-status-panel-container');
+            panel.innerHTML = '';
+            for (let i = 0; i < currentMatchMode; i++) {
+                let p1 = team1Players[i], p2 = team2Players[i];
+                let p1HasSkill = getSkillMaxTime(p1.name) !== null, p2HasSkill = getSkillMaxTime(p2.name) !== null;
+                let row = document.createElement('div');
+                row.className = 'status-row-group';
+                row.innerHTML = `
+                    <div class="player-status-card" id="card-t1-${i}">
+                        <div class="player-name-label player-name-p1">${p1.name}</div>
+                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t1-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t1-${i}">${p1.hp} / ${p1.maxHp}</div></div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div></div>
+                    </div>
+                    <div class="player-status-card" id="card-t2-${i}">
+                        <div class="player-name-label player-name-p2">${p2.name}</div>
+                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t2-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t2-${i}">${p2.hp} / ${p2.maxHp}</div></div>
+                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div></div>
+                    </div>
+                `;
+                panel.appendChild(row);
+            }
+        }
+
+        function updateAllHpBars() {
+            team1Players.forEach((p, i) => {
+                let pct = Math.max(0, (p.hp / p.maxHp) * 100);
+                const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+            });
+            team2Players.forEach((p, i) => {
+                let pct = Math.max(0, (p.hp / p.maxHp) * 100);
+                const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+            });
+        }
+
+        function showHealingAnimationCard(teamNum, index, amount) {
+            const card = document.getElementById(`card-t${teamNum}-${index}`);
+            if (!card) return;
+            const popup = document.createElement('div');
+            popup.className = 'healing-popup-text'; popup.innerText = `+${amount}`;
+            card.appendChild(popup);
+            setTimeout(() => popup.remove(), 800);
+        }
+
+        function runMainGameLoop() {
+            gameInterval = setInterval(() => {
+                if (!isGaming || matchEnded) return;
+                const nowTimestamp = Date.now();
+
+                allPlayers.forEach(player => {
+                    if (player.name === 'JIRO' && player.jiroCombo > 0) {
+                        if (nowTimestamp - (player.lastJiroHitTime || 0) > 5000) {
+                            player.jiroCombo = 0;
+                        }
+                    }
+
+                    let maxTime = getSkillMaxTime(player.name);
+                    let teamPrefix = player.team === 1 ? 't1' : 't2';
+                    let idx = (player.team === 1 ? team1Players : team2Players).indexOf(player);
+                    const txt = document.getElementById(`gauge-txt-${teamPrefix}-${idx}`);
+                    const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
+
+                    if (maxTime !== null) {
+                        player.skillTimer -= 1;
+                        if (player.skillTimer <= 0) {
+                            player.skillTimer = maxTime;
+                            
+                            // 요구하신 [볼이름]이 스킬을씀 형식의 토스트 알림만 출력
+                            showToast(`${player.name}이 스킬을씀`);
+
+                            if (player.name === 'JIRO') triggerJiroSkill(player);
+                            else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
+                            else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
+                            else if (player.name === 'JINO') triggerJinoSkill(player);
+                            else if (player.name === '본이') triggerBoniSkill(player);
+                            else if (player.name === '동룡쓰') triggerDongryongSkill(player);
+                        }
+
+                        let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
+                        if (fill) fill.style.width = pct + '%';
+                        if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
+                    } else {
+                        if (txt) txt.innerText = '기술 없음';
+                    }
+                });
+
+                allPlayers.forEach(player => {
+                    if (player.name === '동룡쓰' && player.minions.length > 0) {
+                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                        if (enemyTeamBalls.length > 0) {
+                            player.minions.forEach(minion => {
+                                minion.attackTimer = (minion.attackTimer || 0) + 1;
+                                let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                                if (targetEnemy && targetEnemy.hp > 0) {
+                                    if (!minion.isFemale) {
+                                        if (minion.attackTimer >= 3) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                                            moneyItems.push({
+                                                x: minion.x, y: minion.y,
+                                                vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
+                                                ownerTeam: player.team
+                                            });
+                                            playFoodThrowSound();
+                                        }
+                                    } else {
+                                        if (minion.attackTimer >= 4) {
+                                            minion.attackTimer = 0;
+                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
+                                            moneyItems.push({
+                                                x: minion.x, y: minion.y,
+                                                vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
+                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
+                                                ownerTeam: player.team
+                                            });
+                                            playFoodThrowSound();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    if (player.name === 'JINO' && player.skeletons.length > 0) {
+                        player.arrowTimer = (player.arrowTimer || 0) + 1;
+                        if (player.arrowTimer >= 2) {
+                            player.arrowTimer = 0;
+                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                            if (enemyTeamBalls.length > 0) {
+                                player.skeletons.forEach(skel => {
+                                    let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                                    let baseAngle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
+                                    [-0.26, 0, 0.26].forEach(offset => {
+                                        let angle = baseAngle + offset;
+                                        moneyItems.push({
+                                            x: skel.x, y: skel.y,
+                                            vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
+                                            radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                        });
+                                    });
+                                });
+                                playArrowSound();
+                            }
+                        }
+                    }
+                });
+            }, 1000);
+        }
+
+        function triggerJiroSkill(caster) {
+            caster.mines.push({
+                x: caster.lastX, y: caster.lastY, radius: 46,
+                spawnTime: Date.now(), ownerTeam: caster.team, caster: caster
+            });
+        }
+
+        function triggerDongryongSkill(caster) {
+            if (caster.minions.length >= 10) return;
+            playRouletteSpinSound();
+
+            let spinCount = 0;
+            caster.rouletteAnim = { text: '돌리는 중...', timer: 15 };
+
+            let rouletteInterval = setInterval(() => {
+                spinCount++;
+                let tempIsFemale = Math.random() < 0.5;
+                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨!' : '남자 🥓 당첨!';
+
+                if (spinCount >= 6) {
+                    clearInterval(rouletteInterval);
+                    let isFemaleFinal = Math.random() < 0.5;
+                    caster.rouletteAnim = null;
+                    playRouletteWinSound();
+                    
+                    if (caster.minions.length < 10) {
+                        caster.skillCount++;
+                        let angle = Math.random() * Math.PI * 2;
+                        caster.minions.push({
+                            x: caster.x + Math.cos(angle) * 35,
+                            y: caster.y + Math.sin(angle) * 35,
+                            radius: 24,
+                            img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
+                            isFemale: isFemaleFinal,
+                            orbitAngle: angle,
+                            orbitDist: 42,
+                            attackTimer: 0
+                        });
+                    }
+
+                    if (caster.minions.length >= 10 && !caster.dongryongTeleported) {
+                        caster.dongryongTeleported = true;
+                        let enemyTeamBalls = caster.team === 1 ? team2Players : team1Players;
+                        if (enemyTeamBalls.length > 0) {
+                            let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                            let tpAngle = Math.random() * Math.PI * 2;
+                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
+                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
+                            targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
+                            playJiroExplosionSound();
+                            updateAllHpBars(); checkGameWinner();
+                        }
+                    }
+                }
+            }, 200);
+        }
+
+        function triggerMrBeastSkill(caster) {
+            caster.mrBeastToggleState = (caster.mrBeastToggleState === 0) ? 1 : 0;
+            playCoinSound();
+            if (caster.mrBeastToggleState === 1) {
+                for (let k = 0; k < 2; k++) {
+                    moneyItems.push({
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
+                    });
+                }
+            } else {
+                for (let k = 0; k < 3; k++) {
+                    moneyItems.push({
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, spawnTime: Date.now()
+                    });
+                }
+            }
+        }
+
+        function triggerBoniSkill(caster) {
+            for (let k = 0; k < 2; k++) {
+                caster.bombs.push({
+                    startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
+                    destX: Math.random() * (canvas.width - 100) + 50, destY: Math.random() * (canvas.height - 100) + 50,
+                    progress: 0, radius: 50, timer: 3, caster: caster
+                });
+            }
+        }
+
+        function triggerJinoSkill(caster) {
+            for (let i = 0; i < 2; i++) {
+                let rx, ry, safe = false, attempts = 0;
+                while (!safe && attempts < 50) {
+                    rx = Math.random() * (canvas.width - 120) + 60;
+                    ry = Math.random() * (canvas.height - 120) + 60;
+                    safe = true;
+                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 50) safe = false; });
+                    attempts++;
+                }
+                caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
+            }
+        }
+
+        function triggerWangklSejongSkill(caster) {
+            playSkillSuperSound();
+            'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
+                moneyItems.push({
+                    x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
+                    char: ch, radius: 20, damage: 6, healAmount: 3, isHangeulLetter: true,
+                    ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
+                });
+            });
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            if (!isGaming) return;
+            const rect = canvas.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
+            const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
+            allPlayers.forEach(player => {
+                player.skeletons = player.skeletons.filter(skel => {
+                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
+                        playHitSound();
+                        return false;
+                    }
+                    return true;
+                });
+            });
+        });
+
+        function recordBallUsageOnComplete() {
+            let usage = JSON.parse(localStorage.getItem('lily_game_ball_usage') || '{}');
+            let countedBalls = new Set();
+            selectedTeam1Balls.concat(selectedTeam2Balls).forEach(ball => {
+                if (ball && !countedBalls.has(ball.name)) {
+                    usage[ball.name] = (usage[ball.name] || 0) + 1;
+                    countedBalls.add(ball.name);
+                }
+            });
+            localStorage.setItem('lily_game_ball_usage', JSON.stringify(usage));
+        }
+
+        function exitMatch() {
+            resetGameUI();
+        }
+
+        function resetGameUI() {
+            isCountingDown = false;
+            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
+            isGaming = false; matchEnded = false;
+            if (gameInterval) clearInterval(gameInterval);
+            moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
+
+            // 경기장 유튜브 쇼츠 영상 컨테이너 숨기기
+            document.getElementById('boni-win-video-container').style.display = 'none';
+            document.getElementById('boni-win-iframe').src = '';
+
+            document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
+            document.getElementById('ingame-controls').classList.add('hidden');
+            document.getElementById('lobby-controls').classList.remove('hidden');
+
+            document.getElementById('top-btn-record').classList.remove('hidden');
+            document.getElementById('top-btn-patch').classList.remove('hidden');
+
+            initSlotContainers();
+        }
+
+        function checkGameWinner() {
+            if (matchEnded) return;
+            let t1Alive = team1Players.some(p => p.hp > 0);
+            let t2Alive = team2Players.some(p => p.hp > 0);
+
+            if (!t1Alive || !t2Alive) {
+                matchEnded = true; isGaming = false;
+                if (gameInterval) clearInterval(gameInterval);
+                recordBallUsageOnComplete();
+
+                let winningTeamBalls = [];
+                if (!t1Alive && !t2Alive) {
+                    winnerText = '무승부!';
+                } else if (!t2Alive) {
+                    winnerText = '파란팀 승!';
+                    winningTeamBalls = team1Players;
+                } else {
+                    winnerText = '빨간팀 승!';
+                    winningTeamBalls = team2Players;
+                }
+
+                matchHistoryList.push({
+                    mode: currentMatchMode,
+                    winner: winnerText,
+                    time: getCurrentTimeString()
+                });
+                localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
+
+                // 승리 팀에 '본이'가 포함된 경우 컨트롤러 없는 유튜브 쇼츠 재생
+                let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
+                if (isBoniWon) {
+                    const iframe = document.getElementById('boni-win-iframe');
+                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+                    document.getElementById('boni-win-video-container').style.display = 'block';
+                }
+            }
+        }
+
+        function drawBall(x, y, radius, ballObj, auraColor) {
+            ctx.save();
+            ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
+            ctx.fillStyle = auraColor; ctx.fill();
+
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.save(); ctx.clip();
+            if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
+                ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
+            } else {
+                ctx.fillStyle = '#7f8c8d'; ctx.fill();
+            }
+            ctx.restore();
+            ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+            ctx.restore();
+        }
+
+        function runGameLoop() {
+            if (!isGaming && !isCountingDown) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+                requestAnimationFrame(runGameLoop);
+                return;
+            }
+
+            if (isCountingDown) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+
+                ctx.save();
+                ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "bold 50px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
+                ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
+                ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
+                ctx.restore();
+                requestAnimationFrame(runGameLoop);
+                return;
+            }
+
+            if (isGaming && !matchEnded) {
+                const nowTimestamp = Date.now();
+
+                allPlayers.forEach(p => {
+                    if (p.hp <= 0) return;
+                    p.lastX = p.x; p.lastY = p.y;
+                    
+                    let currentSpeed = FIXED_SPEED;
+                    if (p.slowTimer && p.slowTimer > nowTimestamp) {
+                        currentSpeed = FIXED_SPEED * 0.5;
+                    }
+
+                    p.x += p.vx * (currentSpeed / FIXED_SPEED); 
+                    p.y += p.vy * (currentSpeed / FIXED_SPEED);
+
+                    let hitWall = false;
+                    if (p.x - p.radius < 0) { p.x = p.radius; p.vx = -p.vx; hitWall = true; }
+                    if (p.x + p.radius > canvas.width) { p.x = canvas.width - p.radius; p.vx = -p.vx; hitWall = true; }
+                    if (p.y - p.radius < 0) { p.y = p.radius; p.vy = -p.vy; hitWall = true; }
+                    if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
+                    
+                    let speed = Math.hypot(p.vx, p.vy);
+                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
+                        p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
+                        p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
+                    }
+                    if (hitWall) playWallSound();
+                });
+
+                for (let i = 0; i < allPlayers.length; i++) {
+                    for (let j = i + 1; j < allPlayers.length; j++) {
+                        let p1 = allPlayers[i], p2 = allPlayers[j];
+                        if (p1.hp <= 0 || p2.hp <= 0) continue;
+                        let dx = p2.x - p1.x, dy = p2.y - p1.y, dist = Math.hypot(dx, dy), minDist = p1.radius + p2.radius;
+                        if (dist < minDist) {
+                            let overlap = minDist - dist, nx = dx / (dist || 1), ny = dy / (dist || 1);
+                            p1.x -= nx * (overlap / 2); p1.y -= ny * (overlap / 2);
+                            p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
+                            let angle = Math.atan2(ny, nx);
+
+                            let isJiro1 = (p1.name === 'JIRO');
+                            let isJiro2 = (p2.name === 'JIRO');
+
+                            if (isJiro1 || isJiro2) {
+                                let jiroObj = isJiro1 ? p1 : p2;
+                                let otherObj = isJiro1 ? p2 : p1;
+                                
+                                if (nowTimestamp - (jiroObj.lastJiroHitTime || 0) > 5000) {
+                                    jiroObj.jiroCombo = 0;
+                                }
+                                jiroObj.jiroCombo++;
+                                jiroObj.lastJiroHitTime = nowTimestamp;
+
+                                let explosionDmg = 15 + (jiroObj.jiroCombo - 1) * 2;
+                                otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
+
+                                playJiroExplosionSound();
+
+                                jiroObj.comboPopups.push({
+                                    text: `콤보 ${jiroObj.jiroCombo}!`,
+                                    x: jiroObj.x,
+                                    y: jiroObj.y - 35,
+                                    alpha: 1.0,
+                                    startTime: Date.now()
+                                });
+
+                                jiroObj.explosionVisuals.push({ x: otherObj.x, y: otherObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (콤보${jiroObj.jiroCombo})` });
+
+                                let knockAngle = Math.atan2(otherObj.y - jiroObj.y, otherObj.x - jiroObj.x);
+                                otherObj.vx = Math.cos(knockAngle) * (FIXED_SPEED * 4.2);
+                                otherObj.vy = Math.sin(knockAngle) * (FIXED_SPEED * 4.2);
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+
+                                updateAllHpBars(); checkGameWinner();
+                            } else {
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+                                playHitSound();
+                                p1.hp = Math.max(0, p1.hp - 10); p2.hp = Math.max(0, p2.hp - 10);
+                                updateAllHpBars(); checkGameWinner();
+                            }
+                        }
+                    }
+                }
+
+                allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                    if (player.name === 'JIRO' && player.mines.length > 0) {
+                        player.mines = player.mines.filter(mine => {
+                            let triggered = false;
+                            enemyTeamBalls.forEach(enemy => {
+                                if (enemy.hp <= 0) return;
+                                if (Math.hypot(enemy.x - mine.x, enemy.y - mine.y) < enemy.radius + mine.radius) {
+                                    triggered = true;
+                                    enemy.hp = Math.max(0, enemy.hp - 30);
+                                    playJiroExplosionSound();
+                                    
+                                    let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
+
+                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
+                                    updateAllHpBars(); checkGameWinner();
+                                }
+                            });
+                            return !triggered;
+                        });
+                    }
+                });
+
+                allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                    player.skeletons.forEach(skel => {
+                        enemyTeamBalls.forEach(enemy => {
+                            if (enemy.hp > 0) {
+                                let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
+                                if (dist < enemy.radius + skel.radius) {
+                                    let lastHit = skel.lastHitTime || 0;
+                                    if (nowTimestamp - lastHit >= 1000) {
+                                        enemy.hp = Math.max(0, enemy.hp - 8);
+                                        skel.lastHitTime = nowTimestamp;
+                                        playHitSound(); updateAllHpBars(); checkGameWinner();
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
+
+                allPlayers.forEach(player => {
+                    player.explosionVisuals.forEach(ev => {
+                        ev.radius += 5;
+                        ev.alpha -= 0.025;
+                    });
+                    player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
+
+                    player.comboPopups.forEach(cp => {
+                        let elapsed = (Date.now() - cp.startTime) / 1000;
+                        cp.y -= 0.6;
+                        cp.alpha = Math.max(0, 1.0 - (elapsed / 2.5));
+                    });
+                    player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
+                });
+
+                allPlayers.forEach(caster => {
+                    let enemyBalls = caster.team === 1 ? team2Players : team1Players;
+                    for (let i = caster.bombs.length - 1; i >= 0; i--) {
+                        let bomb = caster.bombs[i];
+                        if (bomb.progress < 1) {
+                            bomb.progress += 0.03;
+                            bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
+                            bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
+                        } else {
+                            if (!bomb.startTime) {
+                                bomb.startTime = nowTimestamp;
+                                playBoniBombSound();
+                            }
+                            enemyBalls.forEach(enemy => {
+                                if (enemy.hp <= 0) return;
+                                if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
+                                    enemy.hp = Math.max(0, enemy.hp - 15);
+                                    
+                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
+
+                                    updateAllHpBars(); 
+                                    playBoniBombSound(); 
+                                    checkGameWinner();
+                                    caster.bombs.splice(i, 1);
+                                }
+                            });
+                            if (nowTimestamp - bomb.startTime >= 3000) {
+                                caster.bombs.splice(i, 1);
+                            }
+                        }
+                    }
+                });
+
+                for (let i = moneyItems.length - 1; i >= 0; i--) {
+                    let m = moneyItems[i];
+                    
+                    if (m.isHangeulLetter) {
+                        if (nowTimestamp - m.spawnTime > 12000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        let enemyBalls = m.ownerTeam === 1 ? team2Players : team1Players;
+                        let myTeamBalls = m.ownerTeam === 1 ? team1Players : team2Players;
+
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            let dist = Math.hypot(player.x - m.x, player.y - m.y);
+                            if (dist < player.radius + m.radius) {
+                                if (player.team === m.ownerTeam) {
+                                    // 아군(왕클세종 팀)이 먹었을 때: 상대에게 데미지 + 본인(나) 체력 3 회복
+                                    playHealSound();
+                                    let aliveEnemies = enemyBalls.filter(e => e.hp > 0);
+                                    if (aliveEnemies.length > 0) {
+                                        let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+                                        targetEnemy.hp = Math.max(0, targetEnemy.hp - m.damage);
+                                    }
+                                    // 본인 체력 3 회복
+                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
+                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
+                                    
+                                    eaten = true; updateAllHpBars(); checkGameWinner();
+                                } else {
+                                    // 상대 팀이 먹었을 때: 체력 깎이지 않음
+                                    eaten = true;
+                                }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isChocolateItem) {
+                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                if (player.team === m.ownerTeam) {
+                                    playHealSound();
+                                    player.hp = Math.min(player.maxHp, player.hp + 20);
+                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 20);
+                                    eaten = true; updateAllHpBars();
+                                }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isMoneyBag) {
+                        if (nowTimestamp - m.spawnTime > 4000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                let isMyTeam = (player.team === m.ownerTeam);
+                                playHealSound();
+                                let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                if (isMyTeam) {
+                                    player.hp = Math.min(player.maxHp, player.hp + 25);
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
+                                } else {
+                                    player.hp = Math.max(0, player.hp - 30);
+                                }
+                                eaten = true; updateAllHpBars(); checkGameWinner();
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isArrow || m.isBaconProjectile) {
+                        m.x += m.vx; m.y += m.vy;
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
+                        let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
+                        enemyTeamBalls.forEach(enemy => {
+                            if (enemy.hp <= 0) return;
+                            if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
+                                enemy.hp = Math.max(0, enemy.hp - m.damage);
+                                if (m.isBaconProjectile && !m.isFemaleProj) {
+                                    enemy.slowTimer = nowTimestamp + 3000;
+                                } else if (m.isBaconProjectile && m.isFemaleProj) {
+                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
+                                }
+                                playHitSound(); updateAllHpBars(); checkGameWinner();
+                                moneyItems.splice(i, 1);
+                            }
+                        });
+                    }
+                }
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            allPlayers.forEach(player => {
+                player.mines.forEach(mine => {
+                    ctx.save();
+                    let elapsed = Date.now() - mine.spawnTime;
+                    let alpha = elapsed > 2000 ? 0.3 : 0.92;
+                    ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`; ctx.stroke();
+                    
+                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                    ctx.fillText("지뢰", mine.x, mine.y);
+                    ctx.restore();
+                });
+
+                player.explosionVisuals.forEach(ev => {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
+                    ctx.restore();
+                });
+
+                player.comboPopups.forEach(cp => {
+                    ctx.save();
+                    ctx.font = "bold 20px sans-serif";
+                    ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`;
+                    ctx.lineWidth = 4;
+                    ctx.textAlign = "center";
+                    ctx.strokeText(cp.text, cp.x, cp.y);
+                    ctx.fillText(cp.text, cp.x, cp.y);
+                    ctx.restore();
+                });
+
+                player.minions.forEach(m => {
+                    m.orbitAngle += 0.05;
+                    m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
+                    m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
+
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(46, 204, 113, 0.25)"; ctx.fill();
+
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                    ctx.save(); 
+                    ctx.clip();
+                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
+                        ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
+                    } else {
+                        ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
+                    }
+                    ctx.restore();
+                    ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+                    ctx.restore();
+                });
+
+                player.skeletons.forEach(skel => {
+                    ctx.save();
+                    if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
+                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
+                    } else {
+                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
+                    }
+                    ctx.restore();
+                });
+
+                player.bombs.forEach(bomb => {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
+                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
+                    if (bomb.startTime) {
+                        let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
+                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                    }
+                    ctx.restore();
+                });
+
+                if (player.rouletteAnim) {
+                    ctx.save();
+                    ctx.font = "bold 20px sans-serif";
+                    ctx.fillStyle = "#f1c40f";
+                    ctx.strokeStyle = "#000";
+                    ctx.lineWidth = 4;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "bottom";
+                    ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
+                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
+                    ctx.restore();
+                }
+            });
+
+            moneyItems.forEach(m => {
+                ctx.save();
+                if (m.isHangeulLetter) {
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.strokeText(m.char, m.x, m.y); ctx.fillText(m.char, m.x, m.y);
+                } else if (m.isChocolateItem) {
+                    let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
+                    ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                    ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
+                } else if (m.isMoneyBag) {
+                    let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
+                    ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                    ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
+                } else if (m.isArrow) {
+                    ctx.save();
+                    ctx.translate(m.x, m.y);
+                    ctx.rotate(m.angle);
+                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
+                        ctx.drawImage(arrowImg, -36, -20, 72, 40);
+                    } else {
+                        ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
+                    }
+                    ctx.restore();
+                } else if (m.isBaconProjectile) {
+                    if (m.isFemaleProj) {
+                        ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.fillText("💣", m.x, m.y);
+                    } else {
+                        ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.fillText("🥓", m.x, m.y);
+                    }
+                }
+                ctx.restore();
+            });
+
+            allPlayers.forEach(player => {
+                if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
+            });
+
             if (matchEnded) {
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
