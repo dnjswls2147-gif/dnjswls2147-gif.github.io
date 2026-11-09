@@ -731,11 +731,11 @@
             <div class="record-history-gear-btn" id="top-btn-record" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
             <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
-            <div class="arena-frame" id="arena-frame-box" style="position: relative;">
+            <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 -->
-                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000;">
-                    <iframe id="boni-win-iframe" style="width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (버튼/컨트롤러 제거 스타일) -->
+                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
+                    <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -780,14 +780,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        경기 종료 시 [팀] 승리 문구 및 효과음 삭제, 어두운 화면 처리 및 본이 승리 시 유튜브 쇼츠 풀스크린 재생 추가!
+                        본이 승리 시 재생되는 유튜브 쇼츠 영상의 재생/멈춤 버튼 등 컨트롤러 UI를 제거하고 오직 영상 화면만 꽉 차게 나오도록 개선!
                     </div>
                 </div>
 
@@ -800,7 +800,7 @@
                     <img src="boni.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">본이 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">승리 시 유튜브 쇼츠 전용 영상 재생 기능 연동!</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">승리 시 컨트롤러 없는 유튜브 쇼츠 전용 영상 재생 기능 연동!</div>
                     </div>
                 </div>
 
@@ -2795,11 +2795,11 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생
+                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생 (컨트롤러 숨김 파라미터 적용)
                 let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
                 if (isBoniWon) {
                     const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc';
+                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
                     document.getElementById('boni-win-video-container').style.display = 'block';
                 }
             }
@@ -3257,7 +3257,7 @@
                 if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
-            // 경기 종료 시 텍스트 및 효과음 없이 어둡게만 처리
+            // 경기 종료 시 어두운 화면 처리
             if (matchEnded) {
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
