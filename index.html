@@ -731,8 +731,12 @@
             <div class="record-history-gear-btn" id="top-btn-record" onclick="playClickSound(); openRecordHistoryModal();">⚔️ 경기 기록</div>
             <div class="patch-note-gear-btn" id="top-btn-patch" onclick="playClickSound(); openPatchNoteModal();">📓 패치 노트</div>
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
-            <div class="arena-frame" id="arena-frame-box">
+            <div class="arena-frame" id="arena-frame-box" style="position: relative;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
+                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 -->
+                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000;">
+                    <iframe id="boni-win-iframe" style="width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
 
@@ -776,14 +780,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        카운트다운 및 폭발 효과음 추가, 승리 화면 유지 기능 및 본이 폭탄 넉백 적용 완료!
+                        경기 종료 시 [팀] 승리 문구 및 효과음 삭제, 어두운 화면 처리 및 본이 승리 시 유튜브 쇼츠 풀스크린 재생 추가!
                     </div>
                 </div>
 
@@ -793,10 +797,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="14605.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="boni.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JIRO 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">신규 프로필 이미지(14605.jpg) 적용 완료!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">본이 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">승리 시 유튜브 쇼츠 전용 영상 재생 기능 연동!</div>
                     </div>
                 </div>
 
@@ -1372,25 +1376,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.25);
-            } catch(e) {}
-        }
-
-        function playVictorySoundLoop() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
-                notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.12;
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, time);
-                    gain.gain.setValueAtTime(0.5 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.3);
-                });
             } catch(e) {}
         }
 
@@ -2296,7 +2281,7 @@
 
         let isGaming = false, isCountingDown = false, matchEnded = false;
         let countdownText = '', winnerText = '';
-        let activeCountdownInterval = null, victorySoundInterval = null;
+        let activeCountdownInterval = null;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -2378,7 +2363,11 @@
 
             if (gameInterval) clearInterval(gameInterval);
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
-            if (victorySoundInterval) clearInterval(victorySoundInterval);
+            
+            // 승리 시 노출되던 유튜브 쇼츠 영상 컨테이너 숨기기
+            document.getElementById('boni-win-video-container').style.display = 'none';
+            document.getElementById('boni-win-iframe').src = '';
+
             moneyItems = []; matchEnded = false; winnerText = '';
             matchStartTime = Date.now();
 
@@ -2760,10 +2749,13 @@
         function resetGameUI() {
             isCountingDown = false;
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
-            if (victorySoundInterval) clearInterval(victorySoundInterval);
             isGaming = false; matchEnded = false;
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
+
+            // 경기장 유튜브 쇼츠 영상 컨테이너 숨기기
+            document.getElementById('boni-win-video-container').style.display = 'none';
+            document.getElementById('boni-win-iframe').src = '';
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
@@ -2785,9 +2777,16 @@
                 if (gameInterval) clearInterval(gameInterval);
                 recordBallUsageOnComplete();
 
-                if (!t1Alive && !t2Alive) winnerText = '무승부!';
-                else if (!t2Alive) winnerText = '파란팀 승!';
-                else winnerText = '빨간팀 승!';
+                let winningTeamBalls = [];
+                if (!t1Alive && !t2Alive) {
+                    winnerText = '무승부!';
+                } else if (!t2Alive) {
+                    winnerText = '파란팀 승!';
+                    winningTeamBalls = team1Players;
+                } else {
+                    winnerText = '빨간팀 승!';
+                    winningTeamBalls = team2Players;
+                }
 
                 matchHistoryList.push({
                     mode: currentMatchMode,
@@ -2796,13 +2795,13 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                playVictorySoundLoop();
-                victorySoundInterval = setInterval(() => {
-                    if (matchEnded) playVictorySoundLoop();
-                    else clearInterval(victorySoundInterval);
-                }, 1200);
-
-                showToast(`🏆 ${winnerText}`);
+                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생
+                let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
+                if (isBoniWon) {
+                    const iframe = document.getElementById('boni-win-iframe');
+                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc';
+                    document.getElementById('boni-win-video-container').style.display = 'block';
+                }
             }
         }
 
@@ -3013,7 +3012,6 @@
                                 if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
                                     enemy.hp = Math.max(0, enemy.hp - 15);
                                     
-                                    // 폭탄 맞을 때 살짝 튕기는 넉백 효과 추가
                                     let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
                                     enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
                                     enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
@@ -3259,13 +3257,10 @@
                 if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
+            // 경기 종료 시 텍스트 및 효과음 없이 어둡게만 처리
             if (matchEnded) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 44px sans-serif"; ctx.fillStyle = "#f1c40f"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.strokeText(winnerText, canvas.width / 2, canvas.height / 2);
-                ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.restore();
             }
 
