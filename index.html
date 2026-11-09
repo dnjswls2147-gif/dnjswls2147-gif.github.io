@@ -776,14 +776,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        실시간 글로벌 채팅 및 방 목록 통합 연동 시스템(3번째 사진 스타일) 적용 완료!
+                        카운트다운 및 폭발 효과음 추가, 승리 화면 유지 기능 및 본이 폭탄 넉백 적용 완료!
                     </div>
                 </div>
 
@@ -922,7 +922,7 @@
         </div>
     </div>
 
-    <!-- 전체 채팅창 (3번째 사진 스타일 적용) -->
+    <!-- 전체 채팅창 -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
             <div style="font-size:24px; font-weight:900; color:#000;" id="chat-title-online-txt">전체 채팅</div>
@@ -1069,7 +1069,6 @@
     </div>
 
     <script>
-        // 전역 실시간 동기화 채널 (GitHub Pages / 여러 브라우저 탭 간 실시간 공유)
         const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v2');
 
         gameSyncChannel.onmessage = function (event) {
@@ -1182,6 +1181,22 @@
             } catch(e) {}
         }
 
+        function playCountdownSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.12);
+            } catch(e) {}
+        }
+
         function playJiroExplosionSound() {
             try {
                 let ctx = getAudioContext();
@@ -1221,12 +1236,12 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(250, now);
-                osc.frequency.exponentialRampToValueAtTime(60, now + 0.2);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
                 osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.22);
+                osc.start(now); osc.stop(now + 0.38);
             } catch(e) {}
         }
 
@@ -1364,17 +1379,17 @@
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
-                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
                 notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.15;
+                    let time = now + idx * 0.12;
                     let osc = ctx.createOscillator();
                     let gain = ctx.createGain();
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(freq, time);
-                    gain.gain.setValueAtTime(0.6 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.35);
+                    gain.gain.setValueAtTime(0.5 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
                     osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.35);
+                    osc.start(time); osc.stop(time + 0.3);
                 });
             } catch(e) {}
         }
@@ -2127,7 +2142,7 @@
                     container.appendChild(card);
                 });
             }
-            document.getElementById('record-history-modal').classList.add('hidden'); // fix
+            document.getElementById('record-history-modal').classList.add('hidden');
             document.getElementById('record-history-modal').classList.remove('hidden');
         }
 
@@ -2410,7 +2425,9 @@
             document.getElementById('top-btn-patch').classList.add('hidden');
 
             isCountingDown = true; isGaming = false;
-            let count = 3; countdownText = `${count}`;
+            let count = 3; 
+            countdownText = `${count}`;
+            playCountdownSound();
             showToast(`게임 시작까지 ${count}초...`);
 
             activeCountdownInterval = setInterval(() => {
@@ -2418,9 +2435,11 @@
                 count--;
                 if (count > 0) {
                     countdownText = `${count}`;
+                    playCountdownSound();
                     showToast(`게임 시작까지 ${count}초...`);
                 } else if (count === 0) {
                     countdownText = `시작!`;
+                    playCountdownSound();
                     showToast(`경기 시작! 🔥`);
                 } else {
                     clearInterval(activeCountdownInterval);
@@ -2993,7 +3012,15 @@
                                 if (enemy.hp <= 0) return;
                                 if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
                                     enemy.hp = Math.max(0, enemy.hp - 15);
-                                    updateAllHpBars(); playHitSound(); checkGameWinner();
+                                    
+                                    // 폭탄 맞을 때 살짝 튕기는 넉백 효과 추가
+                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
+
+                                    updateAllHpBars(); 
+                                    playBoniBombSound(); 
+                                    checkGameWinner();
                                     caster.bombs.splice(i, 1);
                                 }
                             });
