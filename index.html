@@ -733,9 +733,9 @@
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 본이 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (검은화면 제거 및 무한 반복, 버튼 완전 삭제 스타일) -->
-                <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
-                    <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- 승리 시 경기장을 꽉 채우는 유튜브 쇼츠 아이프레임 (본이 / 왕클세종 공용) -->
+                <div id="win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
+                    <iframe id="win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none; pointer-events: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -780,16 +780,18 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.9 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 유튜브 쇼츠 초기 검은색 화면 제거 및 무한 반복 재생 적용<br>
-                        2. 영상 내부 재생/멈춤 버튼 등 컨트롤러 완전 삭제<br>
-                        3. JINO 스켈레톤 화살 발사 시 3발씩 동시 발사되도록 상향 개편!
+                        1. JINO 화살 1.5초마다 발사, 데미지 4 및 2번째 사진 화살 이미지 적용<br>
+                        2. 동룡쓰 룰렛 텍스트(남자/여자 🥓) 버그 수정, 부하 최대 5명 제한 및 "기술을 다씀" 표시<br>
+                        3. 남자 베이컨(1.5초 주기, 데미지 3, 3초간 2배 느려짐) & 여자 폭탄(2초 주기, 데미지 5)<br>
+                        4. 왕클세종 글자 상대 공이 먹으면 체력 6 데미지, 아군이 먹으면 체력 3 회복 + 효과음 재생<br>
+                        5. 왕클세종 승리 시 유튜브 쇼츠 영상 연동!
                     </div>
                 </div>
 
@@ -799,10 +801,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="jino.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">JINO 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스켈레톤 소환 후 화살 3발 연사 능력 발동!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 자음 기술 및 승리 시 쇼츠 영상 재생 지원!</div>
                     </div>
                 </div>
 
@@ -1570,7 +1572,7 @@
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
         const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
-        const arrowImg = new Image(); arrowImg.src = '14215.jpg';
+        const arrowImg = new Image(); arrowImg.src = '14215.png'; // 2번째 사진 화살 이미지
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -2367,8 +2369,8 @@
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
             
             // 승리 시 노출되던 유튜브 쇼츠 영상 컨테이너 숨기기
-            document.getElementById('boni-win-video-container').style.display = 'none';
-            document.getElementById('boni-win-iframe').src = '';
+            document.getElementById('win-video-container').style.display = 'none';
+            document.getElementById('win-iframe').src = '';
 
             moneyItems = []; matchEnded = false; winnerText = '';
             matchStartTime = Date.now();
@@ -2505,20 +2507,25 @@
                     const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
 
                     if (maxTime !== null) {
-                        player.skillTimer -= 1;
-                        if (player.skillTimer <= 0) {
-                            player.skillTimer = maxTime;
-                            if (player.name === 'JIRO') triggerJiroSkill(player);
-                            else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
-                            else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
-                            else if (player.name === 'JINO') triggerJinoSkill(player);
-                            else if (player.name === '본이') triggerBoniSkill(player);
-                            else if (player.name === '동룡쓰') triggerDongryongSkill(player);
-                        }
+                        if (player.name === '동룡쓰' && player.minions.length >= 5) {
+                            if (txt) txt.innerText = '기술을 다씀';
+                            if (fill) fill.style.width = '100%';
+                        } else {
+                            player.skillTimer -= 1;
+                            if (player.skillTimer <= 0) {
+                                player.skillTimer = maxTime;
+                                if (player.name === 'JIRO') triggerJiroSkill(player);
+                                else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
+                                else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
+                                else if (player.name === 'JINO') triggerJinoSkill(player);
+                                else if (player.name === '본이') triggerBoniSkill(player);
+                                else if (player.name === '동룡쓰') triggerDongryongSkill(player);
+                            }
 
-                        let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
-                        if (fill) fill.style.width = pct + '%';
-                        if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
+                            let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
+                            if (fill) fill.style.width = pct + '%';
+                            if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
+                        }
                     } else {
                         if (txt) txt.innerText = '기술 없음';
                     }
@@ -2533,25 +2540,27 @@
                                 let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                 if (targetEnemy && targetEnemy.hp > 0) {
                                     if (!minion.isFemale) {
-                                        if (minion.attackTimer >= 3) {
+                                        // 남자 부하: 1.5초마다 베이컨(🥓) 발사 (틱 단위 기준 2번마다 = 1.5초)
+                                        if (minion.attackTimer >= 2) {
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
                                                 x: minion.x, y: minion.y,
                                                 vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
+                                                radius: 18, damage: 3, isBaconProjectile: true, isFemaleProj: false,
                                                 ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
                                         }
                                     } else {
-                                        if (minion.attackTimer >= 4) {
+                                        // 여자 부하: 2초마다 폭탄(💣) 발사
+                                        if (minion.attackTimer >= 2) {
                                             minion.attackTimer = 0;
                                             let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
                                             moneyItems.push({
                                                 x: minion.x, y: minion.y,
                                                 vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
-                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
+                                                radius: 24, damage: 5, isBaconProjectile: true, isFemaleProj: true,
                                                 ownerTeam: player.team
                                             });
                                             playFoodThrowSound();
@@ -2564,6 +2573,7 @@
 
                     if (player.name === 'JINO' && player.skeletons.length > 0) {
                         player.arrowTimer = (player.arrowTimer || 0) + 1;
+                        // JINO 화살: 1.5초마다 발사 (틱 2회 = 1.5초)
                         if (player.arrowTimer >= 2) {
                             player.arrowTimer = 0;
                             let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
@@ -2572,13 +2582,13 @@
                                     let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
                                     let baseAngle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
                                     
-                                    // 화살 3발 발사 (중앙, 좌측 15도, 우측 15도)
+                                    // 화살 3발 부채꼴 발사, 데미지 4
                                     [-0.26, 0, 0.26].forEach(offset => {
                                         let angle = baseAngle + offset;
                                         moneyItems.push({
                                             x: skel.x, y: skel.y,
                                             vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
-                                            radius: 32, damage: 6, isArrow: true, ownerTeam: player.team, angle: angle
+                                            radius: 32, damage: 4, isArrow: true, ownerTeam: player.team, angle: angle
                                         });
                                     });
                                 });
@@ -2587,7 +2597,7 @@
                         }
                     }
                 });
-            }, 1000);
+            }, 750);
         }
 
         function triggerJiroSkill(caster) {
@@ -2600,8 +2610,8 @@
         }
 
         function triggerDongryongSkill(caster) {
-            if (caster.minions.length >= 10) {
-                showToast('동룡쓰 부하가 이미 최대 10명입니다!');
+            if (caster.minions.length >= 5) {
+                showToast('동룡쓰 부하가 이미 최대 5명입니다! (기술을 다씀)');
                 return;
             }
 
@@ -2614,7 +2624,7 @@
             let rouletteInterval = setInterval(() => {
                 spinCount++;
                 let tempIsFemale = Math.random() < 0.5;
-                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨!' : '남자 🥓 당첨!';
+                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓' : '남자 🥓';
 
                 if (spinCount >= 6) {
                     clearInterval(rouletteInterval);
@@ -2622,9 +2632,9 @@
                     caster.rouletteAnim = null;
                     playRouletteWinSound();
 
-                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩 (베이컨)' : '남자 캐릭터 👨'} 소환!`);
+                    showToast(`🎰 룰렛 결과: ${isFemaleFinal ? '여자 캐릭터 👩 (베이컨)' : '남자 캐릭터 👨 (베이컨)'} 소환!`);
                     
-                    if (caster.minions.length < 10) {
+                    if (caster.minions.length < 5) {
                         caster.skillCount++;
                         let angle = Math.random() * Math.PI * 2;
                         caster.minions.push({
@@ -2639,7 +2649,7 @@
                         });
                     }
 
-                    if (caster.minions.length >= 10 && !caster.dongryongTeleported) {
+                    if (caster.minions.length >= 5 && !caster.dongryongTeleported) {
                         caster.dongryongTeleported = true;
                         let enemyTeamBalls = caster.team === 1 ? team2Players : team1Players;
                         if (enemyTeamBalls.length > 0) {
@@ -2649,7 +2659,7 @@
                             caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
                             targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
                             playJiroExplosionSound();
-                            showToast(`⚡ 동룡쓰 부하 10명 완성! 상대 공 옆으로 순간이동 쿵쾅! (15 데미지)`);
+                            showToast(`⚡ 동룡쓰 부하 5명 완성! 기술을 다씀! 상대 공 옆으로 순간이동 쿵쾅! (15 데미지)`);
                             updateAllHpBars(); checkGameWinner();
                         }
                     }
@@ -2715,7 +2725,7 @@
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
-                    char: ch, radius: 20, damage: 6, healAmount: 4, isHangeulLetter: true,
+                    char: ch, radius: 20, damage: 6, healAmount: 3, isHangeulLetter: true,
                     ownerTeam: caster.team, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
                 });
             });
@@ -2760,9 +2770,9 @@
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
 
-            // 경기장 유튜브 쇼츠 영상 컨테이너 숨기기
-            document.getElementById('boni-win-video-container').style.display = 'none';
-            document.getElementById('boni-win-iframe').src = '';
+            // 경기장 쇼츠 영상 컨테이너 숨기기
+            document.getElementById('win-video-container').style.display = 'none';
+            document.getElementById('win-iframe').src = '';
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
@@ -2802,12 +2812,18 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 승리 팀에 '본이'가 포함되어 있는지 확인 후 유튜브 쇼츠 재생 (검은화면 제거 및 컨트롤러 완전 차단, 무한반복 파라미터 적용)
+                // 승리 팀에 '본이' 또는 '왕클세종' 포함 여부 확인 후 유튜브 쇼츠 재생
                 let isBoniWon = winningTeamBalls.some(p => p.name === '본이');
+                let isWangklWon = winningTeamBalls.some(p => p.name === '왕클세종');
+
                 if (isBoniWon) {
-                    const iframe = document.getElementById('boni-win-iframe');
+                    const iframe = document.getElementById('win-iframe');
                     iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&mute=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
-                    document.getElementById('boni-win-video-container').style.display = 'block';
+                    document.getElementById('win-video-container').style.display = 'block';
+                } else if (isWangklWon) {
+                    const iframe = document.getElementById('win-iframe');
+                    iframe.src = 'https://www.youtube.com/embed/182ISSryzmc?autoplay=1&mute=1&loop=1&playlist=182ISSryzmc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+                    document.getElementById('win-video-container').style.display = 'block';
                 }
             }
         }
@@ -2863,7 +2879,7 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 0.5;
+                        currentSpeed = FIXED_SPEED * 0.5; // 2배 느려짐
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -3047,14 +3063,15 @@
                             let dist = Math.hypot(player.x - m.x, player.y - m.y);
                             if (dist < player.radius + m.radius) {
                                 if (player.team === m.ownerTeam) {
-                                    playHealSound();
+                                    playHealSound(); // 왕클세종 글자 먹을 때 효과음 재생
                                     player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
                                     eaten = true; updateAllHpBars();
                                 } else {
+                                    playHealSound(); // 상대가 먹어도 효과음 재생 및 체력 6 데미지
                                     player.hp = Math.max(0, player.hp - m.damage);
-                                    showToast(`🇰🇷 왕클세종 글자 폭발! (${m.damage} 데미지)`);
+                                    showToast(`🇰🇷 왕클세종 글자 상대 공이 먹음! (${m.damage} 데미지)`);
                                     eaten = true; updateAllHpBars(); checkGameWinner();
                                 }
                             }
@@ -3106,15 +3123,12 @@
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (m.isBaconProjectile && !m.isFemaleProj) {
-                                    enemy.slowTimer = nowTimestamp + 3000;
-                                    showToast('🥓 남자 베이컨 명중! (4 데미지, 3초간 속도 2배 저하)');
+                                    enemy.slowTimer = nowTimestamp + 3000; // 3초간 느려짐
+                                    showToast(`🥓 남자 베이컨 명중! (${m.damage} 데미지, 3초간 2배 느려짐)`);
                                 } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
-                                    showToast('💣 여자 폭탄 명중! (6 데미지, 튕김)');
+                                    showToast(`💣 여자 폭탄 명중! (${m.damage} 데미지)`);
                                 } else if (m.isArrow) {
-                                    showToast('🏹 커진 화살 명중! (6 데미지)');
+                                    showToast(`🏹 JINO 화살 명중! (${m.damage} 데미지)`);
                                 }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
