@@ -512,9 +512,8 @@
         .chat-sender-name {
             font-size: 20px;
             font-weight: 900;
-            color: #2980b9;
+            color: #c0392b;
             cursor: pointer;
-            text-decoration: underline;
         }
         .chat-msg-text {
             font-size: 23px;
@@ -656,12 +655,12 @@
             width: 100%;
         }
         .btn-send {
-            background-color: #3498db;
+            background-color: #000000;
             color: #ffffff;
             border: 3px solid #000;
             font-size: 22px;
             font-weight: 900;
-            padding: 0 24px;
+            padding: 0 28px;
             cursor: pointer;
             white-space: nowrap;
             outline: none;
@@ -777,14 +776,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.4 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.3.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/09</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        실시간 플레이어 목록 및 방 목록 연동 시스템 적용 완료! 접속 시 전체 채팅 및 플레이어 목록에 자동 등록됩니다.
+                        실시간 글로벌 채팅 및 방 목록 통합 연동 시스템(3번째 사진 스타일) 적용 완료!
                     </div>
                 </div>
 
@@ -866,8 +865,8 @@
             <div class="players-list-area" id="private-chat-logs" style="flex:1; margin-bottom:12px;"></div>
 
             <div class="row-inline-group" style="flex-shrink:0;">
-                <input type="text" id="private-chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
-                <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendPrivateChatMessage();">전송</button>
+                <input type="text" id="private-chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="모두에게 보낼 메시지" onkeydown="if(event.key==='Enter') sendPrivateChatMessage()">
+                <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendPrivateChatMessage();">보내기</button>
             </div>
         </div>
     </div>
@@ -923,27 +922,24 @@
         </div>
     </div>
 
-    <!-- 전체 채팅창 -->
+    <!-- 전체 채팅창 (3번째 사진 스타일 적용) -->
     <div class="chat-floating-window hidden" id="chat-floating-box">
         <div class="chat-header-row" id="chat-drag-header">
-            <div style="font-size:20px; font-weight:900;" id="chat-title-online-txt">📘 전체 채팅 (온라인 [0명] | 오프라인 [0명])</div>
+            <div style="font-size:24px; font-weight:900; color:#000;" id="chat-title-online-txt">전체 채팅</div>
             <div style="display:flex; gap:10px; align-items:center;">
-                <div style="font-size:18px; font-weight:900; background:#eee; padding:8px 14px; border:3px solid #000; border-radius:6px; cursor:pointer;" onclick="playClickSound(); openPlayersModal();">
-                    플레이어 목록 ➡️
-                </div>
                 <button class="modal-close-btn" style="position:static; width:44px; height:44px; font-size:22px;" onclick="playClickSound(); closeChatModal();">✕</button>
             </div>
         </div>
         <div class="chat-logs-area" id="chat-logs">
             <div class="chat-msg-card">
-                <div class="chat-sender-name">시스템</div>
-                <div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div>
-                <div class="chat-msg-time">오전 12:00</div>
+                <div class="chat-sender-name">공지</div>
+                <div class="chat-msg-text">다들 1대1 매칭 돌려주세요</div>
+                <div class="chat-msg-time">오후 4:30</div>
             </div>
         </div>
         <div class="row-inline-group" style="flex-shrink:0;">
-            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0;" placeholder="메시지를 입력하세요" onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn-send" style="font-size:20px; padding:0 24px;" onclick="playClickSound(); sendChatMessage();">전송</button>
+            <input type="text" id="chat-input" class="admin-input" style="font-size:20px; padding:14px; margin-bottom:0; text-align:left;" placeholder="모두에게 보낼 메시지" onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" style="font-size:20px; padding:0 28px;" onclick="playClickSound(); sendChatMessage();">보내기</button>
         </div>
     </div>
 
@@ -1073,8 +1069,8 @@
     </div>
 
     <script>
-        // 실시간 멀티탭/크로스기기 동기화를 위한 채널 생성
-        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_sync_channel');
+        // 전역 실시간 동기화 채널 (GitHub Pages / 여러 브라우저 탭 간 실시간 공유)
+        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v2');
 
         gameSyncChannel.onmessage = function (event) {
             const data = event.data;
@@ -1084,9 +1080,6 @@
                 localStorage.setItem('lily_game_players_list', JSON.stringify(data.players));
                 updateOnlineOfflineCounts();
                 renderAdminPlayersList();
-                if (!document.getElementById('players-modal').classList.contains('hidden')) {
-                    openPlayersModal();
-                }
             } else if (data.type === 'SYNC_ROOMS') {
                 localStorage.setItem('lily_game_friend_rooms', JSON.stringify(data.rooms));
                 if (!document.getElementById('friend-match-modal').classList.contains('hidden')) {
@@ -2134,6 +2127,7 @@
                     container.appendChild(card);
                 });
             }
+            document.getElementById('record-history-modal').classList.add('hidden'); // fix
             document.getElementById('record-history-modal').classList.remove('hidden');
         }
 
@@ -2177,7 +2171,7 @@
                 if (isOnline) onlineCount++; else offlineCount++;
             });
             const titleTxt = document.getElementById('chat-title-online-txt');
-            if (titleTxt) titleTxt.innerText = `📘 전체 채팅 (온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명])`;
+            if (titleTxt) titleTxt.innerText = `전체 채팅`;
             const summaryTxt = document.getElementById('online-offline-summary-txt');
             if (summaryTxt) summaryTxt.innerText = `온라인 [${onlineCount}명] | 오프라인 [${offlineCount}명]`;
         }
@@ -2229,7 +2223,7 @@
             let chatData = JSON.parse(localStorage.getItem('lily_game_chat_logs') || '[]');
             logs.innerHTML = '';
             if (chatData.length === 0) {
-                logs.innerHTML = `<div class="chat-msg-card"><div class="chat-sender-name">시스템</div><div class="chat-msg-text">전체 채팅에 오신 것을 환영합니다!</div><div class="chat-msg-time">오전 12:00</div></div>`;
+                logs.innerHTML = `<div class="chat-msg-card"><div class="chat-sender-name">공지</div><div class="chat-msg-text">다들 1대1 매칭 돌려주세요</div><div class="chat-msg-time">오후 4:30</div></div>`;
                 return;
             }
             chatData.forEach(item => appendChatBubble(item.name, item.msg, item.time, false));
