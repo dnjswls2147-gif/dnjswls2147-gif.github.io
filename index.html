@@ -310,9 +310,6 @@
             width: 100%;
             transition: width 0.4s ease-in-out;
         }
-        .hp-bar-inner.blue-state {
-            background: #3498db !important;
-        }
         .hp-text-overlay {
             position: absolute;
             top: 0; left: 0;
@@ -797,17 +794,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v1.0.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.7.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 모든 공 크기 1.3배 축소 적용<br>
-                        2. 공이 느려지거나 빨라질 때 체력바 색상을 파란색으로 변경<br>
-                        3. 발작아저씨(레온) 은신 및 4발 표창 투척 메커니즘 완벽 수정<br>
-                        4. 미스터비스트, JIRO, 왕클세jong 등 모든 캐릭터 기술 충돌 버그 및 정상 출력 완벽 복구
+                        1. 신규 캐릭터 '발작아저씨(baljak.jpg)' 추가<br>
+                        2. 왕클세종 기술 사용 시 외곽선 동그라미를 제거하고 빨간색 텍스트만 출력<br>
+                        3. 미스터비스트 승리 리플레이 영상(video_1.mp4) 8초 재생 정상 연동
                     </div>
                 </div>
 
@@ -819,8 +815,8 @@
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
                     <img src="baljak.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 (레온) 공</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">은신 상태와 4발 표창 투척 기능이 완벽하게 동기화되었습니다!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">신규 추가된 강력한 파괴력을 지닌 발작아저씨 공입니다!</div>
                     </div>
                 </div>
 
@@ -901,6 +897,22 @@
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
             <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
             <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
+        </div>
+    </div>
+
+    <!-- 미스터비스트 승리 리플레이 관전 모달 창 (처음 8초만 재생) -->
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.85);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:520px; display:flex; flex-direction:column; align-items:center; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.6);">
+            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
+            <div style="font-size:24px; font-weight:900; margin-bottom:14px; color:#2c3e50;">🏆 미스터비스트 승리 댄스 (8초)</div>
+            
+            <div style="width:100%; aspect-ratio: 9 / 16; max-height: 55vh; background:#000; border:4px solid #000; border-radius:6px; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center;">
+                <video id="winner-dance-video" src="video_1.mp4" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent; z-index:10;"></div>
+            </div>
+
+            <div style="font-size:16px; font-weight:900; color:#27ae60; margin-top:12px; margin-bottom:16px;" id="spectate-info-txt">미스터비스트 승리!</div>
+            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
 
@@ -1083,7 +1095,7 @@
     </div>
 
     <script>
-        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v4');
+        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v2');
 
         gameSyncChannel.onmessage = function (event) {
             const data = event.data;
@@ -1243,6 +1255,59 @@
             } catch(e) {}
         }
 
+        function playBoniBombSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+                gain.gain.setValueAtTime(0.5 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.38);
+            } catch(e) {}
+        }
+
+        function playRouletteSpinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                for (let i = 0; i < 10; i++) {
+                    let time = now + i * 0.09;
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600 + i * 50, time);
+                    gain.gain.setValueAtTime(0.2 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(time); osc.stop(time + 0.06);
+                }
+            } catch(e) {}
+        }
+
+        function playRouletteWinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    let time = now + idx * 0.08;
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, time);
+                    gain.gain.setValueAtTime(0.4 * soundVolume, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(time); osc.stop(time + 0.18);
+                });
+            } catch(e) {}
+        }
+
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1250,12 +1315,60 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(950, now);
-                osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+                osc.frequency.setValueAtTime(1000, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
                 gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.14);
+            } catch(e) {}
+        }
+
+        function playCoinSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(900, now);
+                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+                gain.gain.setValueAtTime(0.25 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.12);
+            } catch(e) {}
+        }
+
+        function playMrBeastChocolateSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.18);
+            } catch(e) {}
+        }
+
+        function playMrBeastMoneyBagSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.22);
             } catch(e) {}
         }
 
@@ -1275,6 +1388,51 @@
             } catch(e) {}
         }
 
+        function playFoodThrowSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let osc2 = ctx.createOscillator();
+                let gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc2.type = 'triangle';
+                
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.25);
+
+                osc2.frequency.setValueAtTime(300, now);
+                osc2.frequency.exponentialRampToValueAtTime(900, now + 0.25);
+
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+                osc.connect(gain); osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now); osc2.start(now);
+                osc.stop(now + 0.28); osc2.stop(now + 0.28);
+            } catch(e) {}
+        }
+
+        function playSkillSuperSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.3);
+            } catch(e) {}
+        }
+
         function playHealSound() {
             try {
                 let ctx = getAudioContext();
@@ -1288,54 +1446,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.25);
-            } catch(e) {}
-        }
-
-        function playLeonStealthSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(700, now);
-                osc.frequency.exponentialRampToValueAtTime(250, now + 0.35);
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.4);
-            } catch(e) {}
-        }
-
-        function playLeonThrowSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(1100, now);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.12);
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.14);
-            } catch(e) {}
-        }
-
-        function playPengExplosionSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.45);
-                gain.gain.setValueAtTime(0.7 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.48);
             } catch(e) {}
         }
 
@@ -1528,6 +1638,8 @@
 
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
+        const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
+        const arrowImg = new Image(); arrowImg.src = '14215.png';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -2077,13 +2189,20 @@
                     card.style.justifyContent = 'space-between';
                     card.style.alignItems = 'center';
                     
+                    let viewBtnHtml = '';
+                    if (hist.hasMrBeastWin) {
+                        viewBtnHtml = `<button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">영상 보기</button>`;
+                    } else {
+                        viewBtnHtml = `<span style="font-size:14px; color:#777; font-weight:bold;">일반 경기</span>`;
+                    }
+
                     card.innerHTML = `
                         <div>
                             <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
                             <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
                             <div style="font-size:13px; color:#777;">시간: ${hist.time}</div>
                         </div>
-                        <span style="font-size:14px; color:#777; font-weight:bold;">일반 경기</span>
+                        ${viewBtnHtml}
                     `;
                     container.appendChild(card);
                 });
@@ -2093,6 +2212,32 @@
         }
 
         function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
+
+        let videoTimeChecker = null;
+        function openSpectate(winnerTxt) {
+            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt} (미스터비스트 8초 댄스)`;
+            const vid = document.getElementById('winner-dance-video');
+            vid.currentTime = 0;
+            vid.play().catch(e => {});
+
+            // 처음 8초만 재생되도록 제한
+            if (videoTimeChecker) clearInterval(videoTimeChecker);
+            videoTimeChecker = setInterval(() => {
+                if (vid.currentTime >= 8.0) {
+                    vid.pause();
+                    clearInterval(videoTimeChecker);
+                }
+            }, 100);
+
+            document.getElementById('spectate-modal').classList.remove('hidden');
+        }
+
+        function closeSpectateModal() {
+            if (videoTimeChecker) clearInterval(videoTimeChecker);
+            const vid = document.getElementById('winner-dance-video');
+            vid.pause();
+            document.getElementById('spectate-modal').classList.add('hidden');
+        }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -2240,9 +2385,10 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const FIXED_SPEED = 3.6 * 1.3;
+        const FIXED_SPEED = 3.6;
 
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
+        let matchStartTime = 0;
 
         function openBallPicker(team, index) {
             if (!checkNameRegisteredOrBlock()) return;
@@ -2291,7 +2437,7 @@
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
-            if (playerName === '발작아저씨') return 5;
+            if (playerName === '발작아저씨') return 7;
             return null;
         }
 
@@ -2320,20 +2466,19 @@
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
 
             moneyItems = []; matchEnded = false; winnerText = '';
+            matchStartTime = Date.now();
 
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
-                // 공 크기 1.3배 작게 적용 (기존 24*1.5 -> (24*1.5)/1.3)
-                let baseRadius = (24 * 1.5) / 1.3;
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, stealthTimer: 0,
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
                     rouletteAnim: null
                 };
             });
@@ -2341,15 +2486,14 @@
             team2Players = selectedTeam2Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(2, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
-                let baseRadius = (24 * 1.5) / 1.3;
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    jiroCombo: 0, lastJiroHitTime: 0, lastY: pos.y,
+                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, stealthTimer: 0,
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
                     rouletteAnim: null
                 };
             });
@@ -2416,33 +2560,15 @@
         }
 
         function updateAllHpBars() {
-            const nowTimestamp = Date.now();
             team1Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
-                if (fill) {
-                    fill.style.width = pct + '%';
-                    // 느려지거나 빨라질 때 체력바 색상을 파란색으로 변경
-                    if ((p.slowTimer && p.slowTimer > nowTimestamp) || (p.stealthTimer && p.stealthTimer > nowTimestamp)) {
-                        fill.classList.add('blue-state');
-                    } else {
-                        fill.classList.remove('blue-state');
-                    }
-                }
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
             team2Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
-                if (fill) {
-                    fill.style.width = pct + '%';
-                    if ((p.slowTimer && p.slowTimer > nowTimestamp) || (p.stealthTimer && p.stealthTimer > nowTimestamp)) {
-                        fill.classList.add('blue-state');
-                    } else {
-                        fill.classList.remove('blue-state');
-                    }
-                }
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
         }
 
@@ -2504,39 +2630,6 @@
                     } else {
                         if (txt) txt.innerText = '기술 없음';
                     }
-
-                    // 발작아저씨 기본 공격: 1초마다 레온 투사체 4발 발사
-                    if (player.name === '발작아저씨' && player.hp > 0) {
-                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                        let aliveEnemies = enemyTeamBalls.filter(e => e.hp > 0);
-                        if (aliveEnemies.length > 0) {
-                            let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-                            let baseAngle = Math.atan2(targetEnemy.y - player.y, targetEnemy.x - player.x);
-                            
-                            [-0.35, -0.12, 0.12, 0.35].forEach(offset => {
-                                let angle = baseAngle + offset;
-                                moneyItems.push({
-                                    x: player.x, y: player.y,
-                                    vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                    radius: 16, damage: 5, isLeonProjectile: true,
-                                    ownerTeam: player.team, caster: player, angle: angle
-                                });
-                            });
-                            playLeonThrowSound();
-                        }
-
-                        // 은신 중 체력 회복
-                        if (player.stealthTimer && player.stealthTimer > nowTimestamp) {
-                            let oldHp = player.hp;
-                            player.hp = Math.min(player.maxHp, player.hp + 8);
-                            if (player.hp > oldHp) {
-                                playHealSound();
-                                showHealingAnimationCard(player.team, idx, 8);
-                                player.explosionVisuals.push({ x: player.x, y: player.y, radius: 10, maxRadius: 60, alpha: 1.0, text: '+8 회복!' });
-                                updateAllHpBars();
-                            }
-                        }
-                    }
                 });
 
                 allPlayers.forEach(player => {
@@ -2557,7 +2650,7 @@
                                                 radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
                                                 ownerTeam: player.team, caster: player
                                             });
-                                            playArrowSound();
+                                            playFoodThrowSound();
                                         }
                                     } else {
                                         if (minion.attackTimer >= 4) {
@@ -2569,7 +2662,7 @@
                                                 radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
                                                 ownerTeam: player.team, caster: player
                                             });
-                                            playArrowSound();
+                                            playFoodThrowSound();
                                         }
                                     }
                                 }
@@ -2611,38 +2704,96 @@
         }
 
         function triggerBaljakSkill(caster) {
-            caster.stealthTimer = Date.now() + 3000;
-            playLeonStealthSound();
-            caster.explosionVisuals.push({ x: caster.x, y: caster.y, radius: 15, maxRadius: 100, alpha: 1.0, text: '은신 발동! 👻' });
+            let enemyBalls = caster.team === 1 ? team2Players : team1Players;
+            enemyBalls.forEach(enemy => {
+                if (enemy.hp > 0) {
+                    let oldHp = enemy.hp;
+                    enemy.hp = Math.max(0, enemy.hp - 20);
+                    if (enemy.hp < oldHp) {
+                        playMinusDamageSound();
+                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
+                    }
+                    playJiroExplosionSound();
+                    caster.explosionVisuals.push({ x: enemy.x, y: enemy.y, radius: 15, maxRadius: 130, alpha: 1.0, text: '발작 폭발! (-20)' });
+                }
+            });
+            updateAllHpBars(); checkGameWinner();
         }
 
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) return;
-            let isFemaleFinal = Math.random() < 0.5;
-            playArrowSound();
-            caster.skillCount++;
-            let angle = Math.random() * Math.PI * 2;
-            caster.minions.push({
-                x: caster.x + Math.cos(angle) * 35,
-                y: caster.y + Math.sin(angle) * 35,
-                radius: 24,
-                img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
-                isFemale: isFemaleFinal,
-                orbitAngle: angle,
-                orbitDist: 42,
-                attackTimer: 0
-            });
+            playRouletteSpinSound();
+
+            let spinCount = 0;
+            caster.rouletteAnim = { text: '돌리는 중...', timer: 15 };
+
+            let rouletteInterval = setInterval(() => {
+                spinCount++;
+                let tempIsFemale = Math.random() < 0.5;
+                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨!' : '남자 🥓 당첨!';
+
+                if (spinCount >= 6) {
+                    clearInterval(rouletteInterval);
+                    let isFemaleFinal = Math.random() < 0.5;
+                    caster.rouletteAnim = null;
+                    playRouletteWinSound();
+                    
+                    if (caster.minions.length < 10) {
+                        caster.skillCount++;
+                        let angle = Math.random() * Math.PI * 2;
+                        caster.minions.push({
+                            x: caster.x + Math.cos(angle) * 35,
+                            y: caster.y + Math.sin(angle) * 35,
+                            radius: 24,
+                            img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
+                            isFemale: isFemaleFinal,
+                            orbitAngle: angle,
+                            orbitDist: 42,
+                            attackTimer: 0
+                        });
+                    }
+
+                    if (caster.minions.length >= 10 && !caster.dongryongTeleported) {
+                        caster.dongryongTeleported = true;
+                        let enemyTeamBalls = caster.team === 1 ? team2Players : team1Players;
+                        if (enemyTeamBalls.length > 0) {
+                            let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
+                            let tpAngle = Math.random() * Math.PI * 2;
+                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
+                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
+                            targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
+                            playJiroExplosionSound();
+                            updateAllHpBars(); checkGameWinner();
+                        }
+                    }
+                }
+            }, 200);
         }
 
         function triggerMrBeastSkill(caster) {
             moneyItems = moneyItems.filter(m => m.ownerTeam !== caster.team || (!m.isChocolateItem && !m.isMoneyBag));
+
             caster.mrBeastToggleState = Math.random() < 0.5 ? 0 : 1;
-            for (let k = 0; k < 2; k++) {
-                moneyItems.push({
-                    x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                    radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
-                    isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
-                });
+
+            if (caster.mrBeastToggleState === 0) {
+                playMrBeastChocolateSound();
+                for (let k = 0; k < 2; k++) {
+                    moneyItems.push({
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
+                    });
+                }
+            } else {
+                playMrBeastMoneyBagSound();
+                for (let k = 0; k < 3; k++) {
+                    moneyItems.push({
+                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
+                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
+                    });
+                }
             }
         }
 
@@ -2672,7 +2823,7 @@
         }
 
         function triggerWangklSejongSkill(caster) {
-            playArrowSound();
+            playSkillSuperSound();
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
@@ -2741,33 +2892,35 @@
                 if (gameInterval) clearInterval(gameInterval);
                 recordBallUsageOnComplete();
 
+                let winningTeamBalls = [];
+                let hasMrBeastWin = false;
+
                 if (!t1Alive && !t2Alive) {
                     winnerText = '무승부!';
                 } else if (!t2Alive) {
-                    winnerText = '파란팀 승리!';
+                    winnerText = '파란팀 승!';
+                    winningTeamBalls = team1Players;
                 } else {
-                    winnerText = '빨간팀 승리!';
+                    winnerText = '빨간팀 승!';
+                    winningTeamBalls = team2Players;
+                }
+
+                if (winningTeamBalls.some(p => p.name === '미스터비스트')) {
+                    hasMrBeastWin = true;
                 }
 
                 matchHistoryList.push({
                     mode: currentMatchMode,
                     winner: winnerText,
-                    time: getCurrentTimeString()
+                    time: getCurrentTimeString(),
+                    hasMrBeastWin: hasMrBeastWin
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
             }
         }
 
-        function drawBall(x, y, radius, ballObj, auraColor, isStealth, isBaljak, teamNum) {
+        function drawBall(x, y, radius, ballObj, auraColor) {
             ctx.save();
-            if (isStealth) {
-                if (isBaljak) {
-                    ctx.globalAlpha = 0.4;
-                } else {
-                    ctx.globalAlpha = 0.15;
-                }
-            }
-
             ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
             ctx.fillStyle = auraColor; ctx.fill();
 
@@ -2786,16 +2939,16 @@
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, (24 * 1.5) / 1.3, b, "rgba(30, 144, 255, 0.15)", false, false, 1); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, (24 * 1.5) / 1.3, b, "rgba(231, 76, 60, 0.15)", false, false, 2); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, (24 * 1.5) / 1.3, b, "rgba(30, 144, 255, 0.15)", false, false, 1); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, (24 * 1.5) / 1.3, b, "rgba(231, 76, 60, 0.15)", false, false, 2); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
 
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -2817,10 +2970,7 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED / 1.5;
-                    }
-                    if (p.stealthTimer && p.stealthTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 1.3;
+                        currentSpeed = FIXED_SPEED * 0.5;
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -2833,38 +2983,11 @@
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
                     
                     let speed = Math.hypot(p.vx, p.vy);
-                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp) && (!p.stealthTimer || p.stealthTimer <= nowTimestamp)) {
+                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
                         p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
                         p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
                     }
                     if (hitWall) playWallSound();
-                });
-
-                // 본이 폭탄 업데이트
-                allPlayers.forEach(player => {
-                    player.bombs.forEach((bomb, bIdx) => {
-                        bomb.progress += 0.03;
-                        bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
-                        bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
-                        if (bomb.progress >= 1.0) {
-                            playPengExplosionSound();
-                            player.explosionVisuals.push({ x: bomb.destX, y: bomb.destY, radius: 10, maxRadius: 75, alpha: 1.0, text: '펑!!!' });
-                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                            enemyTeamBalls.forEach(enemy => {
-                                if (enemy.hp > 0 && Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) < bomb.radius + enemy.radius) {
-                                    let oldHp = enemy.hp;
-                                    enemy.hp = Math.max(0, enemy.hp - 15);
-                                    if (enemy.hp < oldHp) {
-                                        playMinusDamageSound();
-                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
-                                    }
-                                }
-                            });
-                            player.bombs.splice(bIdx, 1);
-                            updateAllHpBars(); checkGameWinner();
-                        }
-                    });
                 });
 
                 for (let i = 0; i < allPlayers.length; i++) {
@@ -2878,29 +3001,128 @@
                             p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
                             let angle = Math.atan2(ny, nx);
 
-                            p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                            p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-                            playHitSound();
-                            
-                            let oldHp1 = p1.hp, oldHp2 = p2.hp;
-                            p1.hp = Math.max(0, p1.hp - 10); 
-                            p2.hp = Math.max(0, p2.hp - 10);
+                            let isJiro1 = (p1.name === 'JIRO');
+                            let isJiro2 = (p2.name === 'JIRO');
 
-                            if (p1.hp < oldHp1) {
-                                playMinusDamageSound();
-                                let tIdx = p1.team === 1 ? team1Players : team2Players;
-                                showMinusDamageAnimationCard(p1.team, tIdx.indexOf(p1), 10);
-                            }
-                            if (p2.hp < oldHp2) {
-                                playMinusDamageSound();
-                                let tIdx = p2.team === 1 ? team1Players : team2Players;
-                                showMinusDamageAnimationCard(p2.team, tIdx.indexOf(p2), 10);
-                            }
+                            if (isJiro1 || isJiro2) {
+                                let jiroObj = isJiro1 ? p1 : p2;
+                                let otherObj = isJiro1 ? p2 : p1;
+                                
+                                if (nowTimestamp - (jiroObj.lastJiroHitTime || 0) > 5000) {
+                                    jiroObj.jiroCombo = 0;
+                                }
+                                jiroObj.jiroCombo++;
+                                jiroObj.lastJiroHitTime = nowTimestamp;
 
-                            updateAllHpBars(); checkGameWinner();
+                                let explosionDmg = 15 + (jiroObj.jiroCombo - 1) * 2;
+                                let oldHp = otherObj.hp;
+                                otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
+                                if (otherObj.hp < oldHp) {
+                                    playMinusDamageSound();
+                                    let teamIdx = otherObj.team === 1 ? team1Players : team2Players;
+                                    showMinusDamageAnimationCard(otherObj.team, teamIdx.indexOf(otherObj), explosionDmg);
+                                }
+
+                                playJiroExplosionSound();
+
+                                jiroObj.comboPopups.push({
+                                    text: `콤보 ${jiroObj.jiroCombo}!`,
+                                    x: jiroObj.x,
+                                    y: jiroObj.y - 35,
+                                    alpha: 1.0,
+                                    startTime: Date.now()
+                                });
+
+                                jiroObj.explosionVisuals.push({ x: otherObj.x, y: otherObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (콤보${jiroObj.jiroCombo})` });
+
+                                let knockAngle = Math.atan2(otherObj.y - jiroObj.y, otherObj.x - jiroObj.x);
+                                otherObj.vx = Math.cos(knockAngle) * (FIXED_SPEED * 4.2);
+                                otherObj.vy = Math.sin(knockAngle) * (FIXED_SPEED * 4.2);
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+
+                                updateAllHpBars(); checkGameWinner();
+                            } else {
+                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+                                playHitSound();
+                                
+                                let oldHp1 = p1.hp, oldHp2 = p2.hp;
+                                p1.hp = Math.max(0, p1.hp - 10); 
+                                p2.hp = Math.max(0, p2.hp - 10);
+
+                                if (p1.hp < oldHp1) {
+                                    playMinusDamageSound();
+                                    let tIdx = p1.team === 1 ? team1Players : team2Players;
+                                    showMinusDamageAnimationCard(p1.team, tIdx.indexOf(p1), 10);
+                                }
+                                if (p2.hp < oldHp2) {
+                                    playMinusDamageSound();
+                                    let tIdx = p2.team === 1 ? team1Players : team2Players;
+                                    showMinusDamageAnimationCard(p2.team, tIdx.indexOf(p2), 10);
+                                }
+
+                                updateAllHpBars(); checkGameWinner();
+                            }
                         }
                     }
                 }
+
+                allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                    if (player.name === 'JIRO' && player.mines.length > 0) {
+                        player.mines = player.mines.filter(mine => {
+                            let triggered = false;
+                            enemyTeamBalls.forEach(enemy => {
+                                if (enemy.hp <= 0) return;
+                                if (Math.hypot(enemy.x - mine.x, enemy.y - mine.y) < enemy.radius + mine.radius) {
+                                    triggered = true;
+                                    let oldHp = enemy.hp;
+                                    enemy.hp = Math.max(0, enemy.hp - 30);
+                                    if (enemy.hp < oldHp) {
+                                        playMinusDamageSound();
+                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 30);
+                                    }
+                                    playJiroExplosionSound();
+                                    
+                                    let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
+
+                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
+                                    updateAllHpBars(); checkGameWinner();
+                                }
+                            });
+                            return !triggered;
+                        });
+                    }
+                });
+
+                allPlayers.forEach(player => {
+                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                    player.skeletons.forEach(skel => {
+                        enemyTeamBalls.forEach(enemy => {
+                            if (enemy.hp > 0) {
+                                let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
+                                if (dist < enemy.radius + skel.radius) {
+                                    let lastHit = skel.lastHitTime || 0;
+                                    if (nowTimestamp - lastHit >= 1000) {
+                                        let oldHp = enemy.hp;
+                                        enemy.hp = Math.max(0, enemy.hp - 4);
+                                        if (enemy.hp < oldHp) {
+                                            playMinusDamageSound();
+                                            let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                                            showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 4);
+                                        }
+                                        skel.lastHitTime = nowTimestamp;
+                                        playHitSound(); updateAllHpBars(); checkGameWinner();
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
 
                 allPlayers.forEach(player => {
                     player.explosionVisuals.forEach(ev => {
@@ -2908,6 +3130,54 @@
                         ev.alpha -= 0.025;
                     });
                     player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
+
+                    player.comboPopups.forEach(cp => {
+                        let elapsed = (Date.now() - cp.startTime) / 1000;
+                        cp.y -= 0.6;
+                        cp.alpha = Math.max(0, 1.0 - (elapsed / 2.5));
+                    });
+                    player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
+                });
+
+                allPlayers.forEach(caster => {
+                    let enemyBalls = caster.team === 1 ? team2Players : team1Players;
+                    for (let i = caster.bombs.length - 1; i >= 0; i--) {
+                        let bomb = caster.bombs[i];
+                        if (bomb.progress < 1) {
+                            bomb.progress += 0.03;
+                            bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
+                            bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
+                        } else {
+                            if (!bomb.startTime) {
+                                bomb.startTime = nowTimestamp;
+                                playBoniBombSound();
+                            }
+                            enemyBalls.forEach(enemy => {
+                                if (enemy.hp <= 0) return;
+                                if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
+                                    let oldHp = enemy.hp;
+                                    enemy.hp = Math.max(0, enemy.hp - 15);
+                                    if (enemy.hp < oldHp) {
+                                        playMinusDamageSound();
+                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
+                                    }
+                                    
+                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
+
+                                    updateAllHpBars(); 
+                                    playBoniBombSound(); 
+                                    checkGameWinner();
+                                    caster.bombs.splice(i, 1);
+                                }
+                            });
+                            if (nowTimestamp - bomb.startTime >= 3000) {
+                                caster.bombs.splice(i, 1);
+                            }
+                        }
+                    }
                 });
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -2946,25 +3216,81 @@
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isLeonProjectile) {
+                    } else if (m.isChocolateItem) {
+                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
+                                    playHealSound();
+                                    player.hp = Math.min(player.maxHp, player.hp + 10);
+                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 10);
+                                    eaten = true; updateAllHpBars();
+                                }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isMoneyBag) {
+                        if (nowTimestamp - m.spawnTime > 4000) { moneyItems.splice(i, 1); continue; }
+                        let eaten = false;
+                        allPlayers.forEach(player => {
+                            if (eaten || player.hp <= 0) return;
+                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
+                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
+                                    playHealSound();
+                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
+                                    player.hp = Math.min(player.maxHp, player.hp + 25);
+                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
+                                    
+                                    [{vx: 4.5, vy: 0}, {vx: -4.5, vy: 0}, {vx: 0, vy: -4.5}, {vx: 0, vy: 4.5}].forEach(dir => {
+                                        moneyItems.push({
+                                            x: player.x, y: player.y,
+                                            vx: dir.vx, vy: dir.vy,
+                                            radius: 20, damage: 15, isMoneyBullet: true,
+                                            ownerTeam: player.team, caster: player, spawnTime: Date.now()
+                                        });
+                                    });
+                                    playCoinSound();
+                                    eaten = true; updateAllHpBars(); checkGameWinner();
+                                }
+                            }
+                        });
+                        if (eaten) moneyItems.splice(i, 1);
+                    } else if (m.isMoneyBullet) {
                         m.x += m.vx; m.y += m.vy;
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
+                            playJiroExplosionSound();
+                            if (m.caster) {
+                                m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 80, alpha: 1.0, text: '펑!' });
+                            }
+                            moneyItems.splice(i, 1);
+                            continue;
+                        }
+                        let hitEnemy = false;
                         let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - m.damage);
+                                enemy.hp = Math.max(0, enemy.hp - 15);
                                 if (enemy.hp < oldHp) {
                                     playMinusDamageSound();
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
+                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
                                 }
-                                enemy.slowTimer = nowTimestamp + 3000;
-                                playHitSound(); updateAllHpBars(); checkGameWinner();
-                                moneyItems.splice(i, 1);
+                                playJiroExplosionSound();
+                                if (m.caster) {
+                                    m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-15)' });
+                                }
+                                updateAllHpBars(); checkGameWinner();
+                                hitEnemy = true;
                             }
                         });
+                        if (hitEnemy) {
+                            moneyItems.splice(i, 1);
+                        }
                     } else if (m.isArrow || m.isBaconProjectile) {
                         m.x += m.vx; m.y += m.vy;
                         if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
@@ -2979,6 +3305,13 @@
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
                                     showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
                                 }
+                                if (m.isBaconProjectile && !m.isFemaleProj) {
+                                    enemy.slowTimer = nowTimestamp + 3000;
+                                } else if (m.isBaconProjectile && m.isFemaleProj) {
+                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
+                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
+                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
+                                }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
                             }
@@ -2990,67 +3323,164 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             allPlayers.forEach(player => {
-                if (player.slowTimer && player.slowTimer > Date.now()) {
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 8, 0, Math.PI * 2);
-                    ctx.strokeStyle = '#3498db'; ctx.lineWidth = 4; ctx.stroke();
-                    ctx.restore();
-                }
+                let teamColorHex = player.team === 1 ? '#1e90ff' : '#e74c3c';
 
-                if (player.stealthTimer && player.stealthTimer > Date.now()) {
+                player.mines.forEach(mine => {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 12, 0, Math.PI * 2);
-                    ctx.strokeStyle = '#f1c40f'; ctx.lineWidth = 4; ctx.setLineDash([6, 6]); ctx.stroke();
+                    let elapsed = Date.now() - mine.spawnTime;
+                    let alpha = elapsed > 2000 ? 0.3 : 0.92;
+                    ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = teamColorHex; ctx.stroke();
+                    
+                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = teamColorHex;
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                    ctx.fillText("지뢰", mine.x, mine.y);
                     ctx.restore();
-                }
+                });
 
                 player.explosionVisuals.forEach(ev => {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(46, 204, 113, ${ev.alpha * 0.4})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.stroke();
-                    ctx.font = "bold 20px sans-serif"; ctx.fillStyle = `rgba(46, 204, 113, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 35); ctx.fillText(ev.text, ev.x, ev.y - 35);
+                    ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
                     ctx.restore();
                 });
+
+                player.comboPopups.forEach(cp => {
+                    ctx.save();
+                    ctx.font = "bold 20px sans-serif";
+                    ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`;
+                    ctx.lineWidth = 4;
+                    ctx.textAlign = "center";
+                    ctx.strokeText(cp.text, cp.x, cp.y);
+                    ctx.fillText(cp.text, cp.x, cp.y);
+                    ctx.restore();
+                });
+
+                player.minions.forEach(m => {
+                    m.orbitAngle += 0.05;
+                    m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
+                    m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
+
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 8, 0, Math.PI * 2);
+                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                    ctx.save(); 
+                    ctx.clip();
+                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
+                        ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
+                    } else {
+                        ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
+                    }
+                    ctx.restore();
+                    ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
+                    ctx.restore();
+                });
+
+                player.skeletons.forEach(skel => {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(skel.x, skel.y, skel.radius + 10, 0, Math.PI * 2);
+                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+
+                    if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
+                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
+                    } else {
+                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
+                    }
+                    ctx.restore();
+                });
+
+                player.bombs.forEach(bomb => {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = teamColorHex; ctx.stroke();
+                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
+                    if (bomb.startTime) {
+                        let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
+                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
+                    }
+                    ctx.restore();
+                });
+
+                if (player.rouletteAnim) {
+                    ctx.save();
+                    ctx.font = "bold 20px sans-serif";
+                    ctx.fillStyle = "#f1c40f";
+                    ctx.strokeStyle = "#000";
+                    ctx.lineWidth = 4;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "bottom";
+                    ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
+                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
+                    ctx.restore();
+                }
             });
 
             moneyItems.forEach(m => {
                 ctx.save();
                 let teamColorHex = m.ownerTeam === 1 ? '#1e90ff' : '#e74c3c';
 
+                // 왕클세종 한글 글자 아이템: 동그라미 제거, 빨간색 텍스트만 출력
                 if (m.isHangeulLetter) {
                     ctx.font = "bold 26px sans-serif"; 
                     ctx.fillStyle = m.color; 
                     ctx.textAlign = "center"; 
                     ctx.textBaseline = "middle"; 
                     ctx.fillText(m.char, m.x, m.y);
-                } else if (m.isLeonProjectile) {
-                    ctx.translate(m.x, m.y);
-                    ctx.rotate(m.angle);
-                    ctx.fillStyle = '#3498db';
-                    ctx.beginPath();
-                    ctx.arc(0, 0, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
                 } else {
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
                     ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+
+                    if (m.isChocolateItem) {
+                        let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
+                        ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                        ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
+                    } else if (m.isMoneyBag) {
+                        let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
+                        ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                        ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
+                    } else if (m.isMoneyBullet) {
+                        ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
+                    } else if (m.isArrow) {
+                        ctx.save();
+                        ctx.translate(m.x, m.y);
+                        ctx.rotate(m.angle);
+                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
+                            ctx.drawImage(arrowImg, -36, -20, 72, 40);
+                        } else {
+                            ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
+                        }
+                        ctx.restore();
+                    } else if (m.isBaconProjectile) {
+                        if (m.isFemaleProj) {
+                            ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                            ctx.fillText("💣", m.x, m.y);
+                        } else {
+                            ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                            ctx.fillText("🥓", m.x, m.y);
+                        }
+                    }
                 }
                 ctx.restore();
             });
 
             allPlayers.forEach(player => {
-                if (player.hp > 0) {
-                    let isStealthActive = player.stealthTimer && player.stealthTimer > Date.now();
-                    let isBaljak = player.name === '발작아저씨';
-                    drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)", isStealthActive, isBaljak, player.team);
-                }
+                if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
             });
 
             if (matchEnded) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "bold 45px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.restore();
@@ -3062,4 +3492,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-                    </html>
+</html>
