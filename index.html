@@ -1214,12 +1214,13 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(440, now);
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+                osc.frequency.setValueAtTime(2200, now);
+                osc.frequency.exponentialRampToValueAtTime(2700, now + 0.2);
+                osc.frequency.exponentialRampToValueAtTime(2000, now + 0.4);
                 gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
                 osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.12);
+                osc.start(now); osc.stop(now + 0.5);
             } catch(e) {}
         }
 
@@ -2220,7 +2221,6 @@
             vid.currentTime = 0;
             vid.play().catch(e => {});
 
-            // 처음 8초만 재생되도록 제한
             if (videoTimeChecker) clearInterval(videoTimeChecker);
             videoTimeChecker = setInterval(() => {
                 if (vid.currentTime >= 8.0) {
@@ -2431,10 +2431,10 @@
         }
 
         function getSkillMaxTime(playerName) {
-            if (playerName === '미스터비스트') return 8;
+            if (playerName === '미스터비스트') return 8; // 8초로 설정
             if (playerName === 'JIRO') return 8;
             if (playerName === '왕클세종') return 10;
-            if (playerName === 'JINO') return 12;
+            if (playerName === 'JINO') return 12; // JINO 기술 12초
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
             if (playerName === '발작아저씨') return 7;
@@ -2479,7 +2479,7 @@
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
                     mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
-                    rouletteAnim: null
+                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
                 };
             });
 
@@ -2494,7 +2494,7 @@
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
                     mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
-                    rouletteAnim: null
+                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
                 };
             });
 
@@ -2525,7 +2525,7 @@
                     showToast(`게임 시작까지 ${count}초...`);
                 } else if (count === 0) {
                     countdownText = `시작!`;
-                    playCountdownSound();
+                    playCountdownSound(); // 호루라기 효과음 재생
                     showToast(`경기 시작! 🔥`);
                 } else {
                     clearInterval(activeCountdownInterval);
@@ -2596,6 +2596,23 @@
                 const nowTimestamp = Date.now();
 
                 allPlayers.forEach(player => {
+                    // 미스터비스트 독 데미지 처리 (2초 동안 0.3초마다 3씩 감소, 머리 옆 -3 팝업)
+                    if (player.poisonTimer > 0) {
+                        player.poisonTimer -= 1;
+                        player.poisonTickTimer = (player.poisonTickTimer || 0) + 1;
+                        if (player.poisonTickTimer >= 0.3) {
+                            player.poisonTickTimer = 0;
+                            let oldHp = player.hp;
+                            player.hp = Math.max(0, player.hp - 3);
+                            if (player.hp < oldHp) {
+                                playMinusDamageSound();
+                                let tIdx = player.team === 1 ? team1Players : team2Players;
+                                showMinusDamageAnimationCard(player.team, tIdx.indexOf(player), 3);
+                            }
+                            updateAllHpBars(); checkGameWinner();
+                        }
+                    }
+
                     if (player.name === 'JIRO' && player.jiroCombo > 0) {
                         if (nowTimestamp - (player.lastJiroHitTime || 0) > 5000) {
                             player.jiroCombo = 0;
@@ -3219,6 +3236,8 @@
                     } else if (m.isChocolateItem) {
                         if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
                         let eaten = false;
+                        let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
+
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
@@ -3227,6 +3246,15 @@
                                     player.hp = Math.min(player.maxHp, player.hp + 10);
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 10);
+
+                                    // 상대방에게 독 데미지 부여 (2초 동안 0.3초마다 3데미지)
+                                    enemyTeamBalls.forEach(enemy => {
+                                        if (enemy.hp > 0) {
+                                            enemy.poisonTimer = 2; // 2초
+                                            enemy.poisonTickTimer = 0;
+                                        }
+                                    });
+
                                     eaten = true; updateAllHpBars();
                                 }
                             }
@@ -3244,14 +3272,28 @@
                                     player.hp = Math.min(player.maxHp, player.hp + 25);
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
                                     
-                                    [{vx: 4.5, vy: 0}, {vx: -4.5, vy: 0}, {vx: 0, vy: -4.5}, {vx: 0, vy: 4.5}].forEach(dir => {
+                                    // 2번째 기술 💰 돈 발사: 오른쪽, 왼쪽, 아래 대각선 포함 8방향, 데미지 20
+                                    const spd = 4.5;
+                                    const dirs8 = [
+                                        {vx: 0, vy: -spd},   // 위
+                                        {vx: 0, vy: spd},    // 아래
+                                        {vx: -spd, vy: 0},   // 왼쪽
+                                        {vx: spd, vy: 0},    // 오른쪽
+                                        {vx: spd, vy: spd},  // 우하 대각선
+                                        {vx: -spd, vy: spd}, // 좌하 대각선
+                                        {vx: spd, vy: -spd}, // 우상 대각선
+                                        {vx: -spd, vy: -spd} // 좌상 대각선
+                                    ];
+
+                                    dirs8.forEach(dir => {
                                         moneyItems.push({
                                             x: player.x, y: player.y,
                                             vx: dir.vx, vy: dir.vy,
-                                            radius: 20, damage: 15, isMoneyBullet: true,
+                                            radius: 20, damage: 20, isMoneyBullet: true,
                                             ownerTeam: player.team, caster: player, spawnTime: Date.now()
                                         });
                                     });
+
                                     playCoinSound();
                                     eaten = true; updateAllHpBars(); checkGameWinner();
                                 }
@@ -3274,15 +3316,15 @@
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - 15);
+                                enemy.hp = Math.max(0, enemy.hp - 20); // 데미지 20
                                 if (enemy.hp < oldHp) {
                                     playMinusDamageSound();
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
+                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
                                 }
                                 playJiroExplosionSound();
                                 if (m.caster) {
-                                    m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-15)' });
+                                    m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-20)' });
                                 }
                                 updateAllHpBars(); checkGameWinner();
                                 hitEnemy = true;
@@ -3383,11 +3425,9 @@
                     ctx.restore();
                 });
 
+                // JINO 캐릭터 스켈레톤 (외곽선 테두리 원 제거)
                 player.skeletons.forEach(skel => {
                     ctx.save();
-                    ctx.beginPath(); ctx.arc(skel.x, skel.y, skel.radius + 10, 0, Math.PI * 2);
-                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
                     if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
                         ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
                     } else {
@@ -3431,13 +3471,21 @@
                 // 왕클세종 한글 글자 아이템: 동그라미 제거, 빨간색 텍스트만 출력
                 if (m.isHangeulLetter) {
                     ctx.font = "bold 26px sans-serif"; 
-                    ctx.fillStyle = m.color; 
+                    ctx.fillStyle = "#e74c3c"; // 빨간색 텍스트
                     ctx.textAlign = "center"; 
                     ctx.textBaseline = "middle"; 
                     ctx.fillText(m.char, m.x, m.y);
                 } else {
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
-                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+                    if (m.isChocolateItem) {
+                        // 미스터비스트 1번 기술 초콜릿 주변 보라색 오라(파티클) 풍성하게 연출
+                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 10, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(155, 89, 182, 0.45)'; ctx.fill();
+                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 5, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(142, 68, 173, 0.65)'; ctx.fill();
+                    } else {
+                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
+                        ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+                    }
 
                     if (m.isChocolateItem) {
                         let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
@@ -3452,6 +3500,7 @@
                     } else if (m.isMoneyBullet) {
                         ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
                     } else if (m.isArrow) {
+                        // JINO 화살 (외곽선 테두리 원 제거)
                         ctx.save();
                         ctx.translate(m.x, m.y);
                         ctx.rotate(m.angle);
