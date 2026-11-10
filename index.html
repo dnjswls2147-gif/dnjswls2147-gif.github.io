@@ -776,14 +776,14 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.7 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.8 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 유튜브 쇼츠 영상 및 불필요한 버튼·아이콘 완전 삭제 및 최적화
+                        1. 미스터비스트 승리 시 워터마크(마지막 4초)가 제거된 댄스 영상 무한 반복 재생 적용
                     </div>
                 </div>
 
@@ -793,10 +793,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="wangkl.png" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="character.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">왕클세종 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">한글 글자 기술: 아군이 먹을 때 상대 데미지 + 본인 체력 3 회복!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">미스터비스트 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스킬 발동 시 초콜릿과 돈 보따리를 생성하여 아군을 회복시키고 적을 공격합니다! 승리 시 전용 댄스 영상이 반복 재생됩니다.</div>
                     </div>
                 </div>
 
@@ -880,12 +880,20 @@
         </div>
     </div>
 
-    <!-- 관전 모달 창 -->
-    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.8);">
-        <div style="background:#fff; border:6px solid #000; padding:30px; width:94%; max-width:540px; display:flex; flex-direction:column; align-items:center; position:relative;">
+    <!-- 미스터비스트 승리 리플레이 관전 모달 창 (워터마크 4초 제외 및 무한 반복 재생) -->
+    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.85);">
+        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:520px; display:flex; flex-direction:column; align-items:center; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.6);">
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
-            <div style="font-size:26px; font-weight:900; margin-bottom:16px;">📺 경기 리플레이 관전</div>
-            <div style="font-size:20px; font-weight:900; color:#27ae60; margin-bottom:20px;" id="spectate-info-txt">승리 팀: -</div>
+            <div style="font-size:24px; font-weight:900; margin-bottom:14px; color:#2c3e50;">🏆 미스터비스트 승리 댄스</div>
+            
+            <!-- 동영상 재생 컨테이너 (컨트롤러 완전 제거 및 무한 반복) -->
+            <div style="width:100%; aspect-ratio: 9 / 16; max-height: 55vh; background:#000; border:4px solid #000; border-radius:6px; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center;">
+                <video id="winner-dance-video" src="14854.mp4" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
+                <!-- 터치 차단 투명막 -->
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent; z-index:10;"></div>
+            </div>
+
+            <div style="font-size:16px; font-weight:900; color:#27ae60; margin-top:12px; margin-bottom:16px;" id="spectate-info-txt">미스터비스트 승리!</div>
             <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
@@ -1544,8 +1552,8 @@
         }
 
         const ballList = [
-            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
+            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
@@ -1569,11 +1577,11 @@
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
+            { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
             { type: 'image', val: 'JIRO', src: '14605.jpg', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
             { type: 'image', val: '본이', src: 'boni.png', bg: '#ffffff' },
-            { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
             { type: 'image', val: 'JINO', src: 'jino.jpg', bg: '#ffffff' },
             { type: 'text', val: '⭐', bg: '#f1c40f' },
             { type: 'text', val: '👑', bg: '#27ae60' },
@@ -2112,13 +2120,21 @@
                     card.style.flexDirection = 'row';
                     card.style.justifyContent = 'space-between';
                     card.style.alignItems = 'center';
+                    
+                    let viewBtnHtml = '';
+                    if (hist.hasMrBeastWin) {
+                        viewBtnHtml = `<button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">영상 보기</button>`;
+                    } else {
+                        viewBtnHtml = `<span style="font-size:14px; color:#777; font-weight:bold;">일반 경기</span>`;
+                    }
+
                     card.innerHTML = `
                         <div>
                             <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
                             <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
                             <div style="font-size:13px; color:#777;">시간: ${hist.time}</div>
                         </div>
-                        <button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">경기 보기</button>
+                        ${viewBtnHtml}
                     `;
                     container.appendChild(card);
                 });
@@ -2129,11 +2145,34 @@
 
         function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
 
+        let videoTimeChecker = null;
         function openSpectate(winnerTxt) {
-            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt}`;
+            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt} (미스터비스트 댄스)`;
+            const vid = document.getElementById('winner-dance-video');
+            vid.currentTime = 0;
+            vid.play().catch(e => {});
+
+            // 마지막 4초 구간을 제외하기 위해 동영상 길이 체크 후 루프 (전체 길이 - 4초 지점에서 다시 처음으로)
+            if (videoTimeChecker) clearInterval(videoTimeChecker);
+            videoTimeChecker = setInterval(() => {
+                if (vid.duration && !isNaN(vid.duration)) {
+                    let cutoffTime = Math.max(0, vid.duration - 4.0);
+                    if (vid.currentTime >= cutoffTime) {
+                        vid.currentTime = 0;
+                        vid.play().catch(e => {});
+                    }
+                }
+            }, 200);
+
             document.getElementById('spectate-modal').classList.remove('hidden');
         }
-        function closeSpectateModal() { document.getElementById('spectate-modal').classList.add('hidden'); }
+
+        function closeSpectateModal() {
+            if (videoTimeChecker) clearInterval(videoTimeChecker);
+            const vid = document.getElementById('winner-dance-video');
+            vid.pause();
+            document.getElementById('spectate-modal').classList.add('hidden');
+        }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -2327,11 +2366,11 @@
         }
 
         function getSkillMaxTime(playerName) {
+            if (playerName === '미스터비스트') return 8;
             if (playerName === 'JIRO') return 8;
             if (playerName === '왕클세종') return 10;
-            if (playerName === '미스터비스트') return 8;
             if (playerName === 'JINO') return 12;
-            if (playerName === '본I' || playerName === '본이') return 6;
+            if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
             return null;
         }
@@ -2501,11 +2540,11 @@
                             
                             showToast(`${player.name}이 스킬을씀`);
 
-                            if (player.name === 'JIRO') triggerJiroSkill(player);
+                            if (player.name === '미스터비스트') triggerMrBeastSkill(player);
+                            else if (player.name === 'JIRO') triggerJiroSkill(player);
                             else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
-                            else if (player.name === '미스터비스트') triggerMrBeastSkill(player);
                             else if (player.name === 'JINO') triggerJinoSkill(player);
-                            else if (player.name === '본이' || player.name === '본I') triggerBoniSkill(player);
+                            else if (player.name === '본이') triggerBoniSkill(player);
                             else if (player.name === '동룡쓰') triggerDongryongSkill(player);
                         }
 
@@ -2755,6 +2794,8 @@
                 recordBallUsageOnComplete();
 
                 let winningTeamBalls = [];
+                let hasMrBeastWin = false;
+
                 if (!t1Alive && !t2Alive) {
                     winnerText = '무승부!';
                 } else if (!t2Alive) {
@@ -2765,10 +2806,16 @@
                     winningTeamBalls = team2Players;
                 }
 
+                // 승리 팀에 미스터비스트가 포함되어 있는지 확인
+                if (winningTeamBalls.some(p => p.name === '미스터비스트')) {
+                    hasMrBeastWin = true;
+                }
+
                 matchHistoryList.push({
                     mode: currentMatchMode,
                     winner: winnerText,
-                    time: getCurrentTimeString()
+                    time: getCurrentTimeString(),
+                    hasMrBeastWin: hasMrBeastWin
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
             }
