@@ -794,18 +794,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.6.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.7.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 미스터비스트 💰 보따리 오직 본인만 획득 가능하도록 수정<br>
-                        2. 💰 획득 시 발사되는 💸 탄환 속도 하향 및 느리게 이동<br>
-                        3. 💸 탄환 경기장 벽 또는 상대 공 적중 시 폭발 효과음 및 15 데미지 적용<br>
-                        4. 본이, 왕클세종 캐릭터 정상 출현 및 이미지 로딩 수정<br>
-                        5. 미스터비스트 승리 리플레이 영상 처음 8초만 재생되도록 제한
+                        1. 신규 캐릭터 '발작아저씨(baljak.jpg)' 추가<br>
+                        2. 왕클세종 기술 사용 시 외곽선 동그라미를 제거하고 빨간색 텍스트만 출력<br>
+                        3. 미스터비스트 승리 리플레이 영상(video_1.mp4) 8초 재생 정상 연동
                     </div>
                 </div>
 
@@ -815,10 +813,10 @@
             <div id="modal-content-chars" style="border:3px solid #000; background:#f8f9fa; padding:22px; border-radius:6px; margin-bottom:18px; display:none; flex-direction:column; gap:18px; text-align:left; overflow-y:scroll !important; -webkit-overflow-scrolling:touch; max-height:50vh; flex:1;">
                 
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
-                    <img src="character.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
+                    <img src="baljak.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">미스터비스트 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">스킬 발동 시 초콜릿과 돈 보따리를 랜덤 소환합니다. 돈 보따리는 오직 미스터비스트만 먹을 수 있습니다!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 캐릭터</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">신규 추가된 강력한 파괴력을 지닌 발작아저씨 공입니다!</div>
                     </div>
                 </div>
 
@@ -1625,7 +1623,8 @@
             { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
             { name: '본이', hp: 250, imageSrc: 'boni.png' },
             { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' }
+            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' },
+            { name: '발작아저씨', hp: 250, imageSrc: 'baljak.jpg' }
         ];
 
         const loadedImages = {};
@@ -1646,6 +1645,7 @@
             { type: 'text', val: '👤', bg: '#1e90ff' },
             { type: 'text', val: '🇰🇷', bg: '#ffffff' },
             { type: 'image', val: '미스터비스트', src: 'character.jpg', bg: '#ffffff' },
+            { type: 'image', val: '발작아저씨', src: 'baljak.jpg', bg: '#ffffff' },
             { type: 'image', val: 'JIRO', src: '14605.jpg', bg: '#ffffff' },
             { type: 'image', val: '동룡쓰', src: 'dongryong.png', bg: '#ffffff' },
             { type: 'image', val: '왕클세종', src: 'wangkl.png', bg: '#ffffff' },
@@ -2437,6 +2437,7 @@
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
+            if (playerName === '발작아저씨') return 7;
             return null;
         }
 
@@ -2620,6 +2621,7 @@
                             else if (player.name === 'JINO') triggerJinoSkill(player);
                             else if (player.name === '본이') triggerBoniSkill(player);
                             else if (player.name === '동룡쓰') triggerDongryongSkill(player);
+                            else if (player.name === '발작아저씨') triggerBaljakSkill(player);
                         }
 
                         let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
@@ -2699,6 +2701,24 @@
                 x: caster.lastX, y: caster.lastY, radius: 46,
                 spawnTime: Date.now(), ownerTeam: caster.team, caster: caster
             });
+        }
+
+        function triggerBaljakSkill(caster) {
+            let enemyBalls = caster.team === 1 ? team2Players : team1Players;
+            enemyBalls.forEach(enemy => {
+                if (enemy.hp > 0) {
+                    let oldHp = enemy.hp;
+                    enemy.hp = Math.max(0, enemy.hp - 20);
+                    if (enemy.hp < oldHp) {
+                        playMinusDamageSound();
+                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
+                    }
+                    playJiroExplosionSound();
+                    caster.explosionVisuals.push({ x: enemy.x, y: enemy.y, radius: 15, maxRadius: 130, alpha: 1.0, text: '발작 폭발! (-20)' });
+                }
+            });
+            updateAllHpBars(); checkGameWinner();
         }
 
         function triggerDongryongSkill(caster) {
@@ -2808,7 +2828,7 @@
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
                     char: ch, radius: 20, damage: 6, healAmount: 3, isHangeulLetter: true,
-                    ownerTeam: caster.team, caster: caster, color: caster.team === 1 ? '#1e90ff' : '#e74c3c', spawnTime: Date.now()
+                    ownerTeam: caster.team, caster: caster, color: '#e74c3c', spawnTime: Date.now()
                 });
             });
         }
@@ -3202,7 +3222,6 @@
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                // 오직 미스터비스트 본인만 먹을 수 있도록 체크
                                 if (player.team === m.ownerTeam && player.name === '미스터비스트') {
                                     playHealSound();
                                     player.hp = Math.min(player.maxHp, player.hp + 10);
@@ -3219,14 +3238,12 @@
                         allPlayers.forEach(player => {
                             if (eaten || player.hp <= 0) return;
                             if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                // 오직 미스터비스트 본인만 먹을 수 있도록 체크
                                 if (player.team === m.ownerTeam && player.name === '미스터비스트') {
                                     playHealSound();
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     player.hp = Math.min(player.maxHp, player.hp + 25);
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
                                     
-                                    // 💸 탄환 속도를 느리게 설정 (기존 12에서 4.5로 낮춤)
                                     [{vx: 4.5, vy: 0}, {vx: -4.5, vy: 0}, {vx: 0, vy: -4.5}, {vx: 0, vy: 4.5}].forEach(dir => {
                                         moneyItems.push({
                                             x: player.x, y: player.y,
@@ -3243,7 +3260,6 @@
                         if (eaten) moneyItems.splice(i, 1);
                     } else if (m.isMoneyBullet) {
                         m.x += m.vx; m.y += m.vy;
-                        // 경기장 벽에 닿으면 펑 폭발 효과음 및 소멸
                         if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
                             playJiroExplosionSound();
                             if (m.caster) {
@@ -3258,13 +3274,13 @@
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - 15); // 맞으면 15 데미지
+                                enemy.hp = Math.max(0, enemy.hp - 15);
                                 if (enemy.hp < oldHp) {
                                     playMinusDamageSound();
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
                                     showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
                                 }
-                                playJiroExplosionSound(); // 폭발 효과음
+                                playJiroExplosionSound();
                                 if (m.caster) {
                                     m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-15)' });
                                 }
@@ -3412,41 +3428,47 @@
                 ctx.save();
                 let teamColorHex = m.ownerTeam === 1 ? '#1e90ff' : '#e74c3c';
 
-                ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
-                ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
+                // 왕클세종 한글 글자 아이템: 동그라미 제거, 빨간색 텍스트만 출력
                 if (m.isHangeulLetter) {
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = m.color; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.strokeText(m.char, m.x, m.y); ctx.fillText(m.char, m.x, m.y);
-                } else if (m.isChocolateItem) {
-                    let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
-                    ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
-                    ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
-                } else if (m.isMoneyBag) {
-                    let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
-                    ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
-                    ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                    ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
-                } else if (m.isMoneyBullet) {
-                    ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
-                } else if (m.isArrow) {
-                    ctx.save();
-                    ctx.translate(m.x, m.y);
-                    ctx.rotate(m.angle);
-                    if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                        ctx.drawImage(arrowImg, -36, -20, 72, 40);
-                    } else {
-                        ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
-                    }
-                    ctx.restore();
-                } else if (m.isBaconProjectile) {
-                    if (m.isFemaleProj) {
-                        ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.fillText("💣", m.x, m.y);
-                    } else {
-                        ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.fillText("🥓", m.x, m.y);
+                    ctx.font = "bold 26px sans-serif"; 
+                    ctx.fillStyle = m.color; 
+                    ctx.textAlign = "center"; 
+                    ctx.textBaseline = "middle"; 
+                    ctx.fillText(m.char, m.x, m.y);
+                } else {
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
+                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
+
+                    if (m.isChocolateItem) {
+                        let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
+                        ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
+                        ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
+                    } else if (m.isMoneyBag) {
+                        let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
+                        ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
+                        ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
+                    } else if (m.isMoneyBullet) {
+                        ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
+                    } else if (m.isArrow) {
+                        ctx.save();
+                        ctx.translate(m.x, m.y);
+                        ctx.rotate(m.angle);
+                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
+                            ctx.drawImage(arrowImg, -36, -20, 72, 40);
+                        } else {
+                            ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
+                        }
+                        ctx.restore();
+                    } else if (m.isBaconProjectile) {
+                        if (m.isFemaleProj) {
+                            ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                            ctx.fillText("💣", m.x, m.y);
+                        } else {
+                            ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                            ctx.fillText("🥓", m.x, m.y);
+                        }
                     }
                 }
                 ctx.restore();
