@@ -733,7 +733,7 @@
             <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
             <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
                 <canvas id="gameCanvas" width="480" height="480"></canvas>
-                <!-- 승리 시 본이 / 왕클세종 쇼츠 영상 플레이어 컨테이너 (터치 간섭 원천 차단막 적용) -->
+                <!-- 승리 시 본이 / 왕클세종 쇼츠 영상 플레이어 컨테이너 (미디어 알림 및 대기화면 방지 최적화) -->
                 <div id="boni-win-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5000; background: #000; overflow: hidden;">
                     <iframe id="boni-win-iframe" style="position: absolute; top: 50%; left: 50%; width: 300%; height: 300%; transform: translate(-50%, -50%); border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     <!-- 투명 차단막: 터치나 클릭이 유튜브 자체 컨트롤러에 닿지 않도록 완전 차단 -->
@@ -782,15 +782,15 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.5 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.4.6 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 본이 및 왕클세종 승리 시 유튜브 쇼츠 영상(본이: S14lQmdK9Mc, 왕클세종: 182ISSryzmc) 정상 출력 복구<br>
-                        2. 유튜브 재생 버튼 및 컨트롤러 터치 간섭 방지 투명 차단막 적용
+                        1. 유튜브 쇼츠 재생 시 스마트폰 상단바에 '이 휴대전화 영상' 미디어 알림 및 첫 화면 검은 대기 화면 발생 문제 완전 해결<br>
+                        2. 불필요한 컨트롤러 간섭 제거 및 깔끔한 영상 출력 최적화
                     </div>
                 </div>
 
@@ -2745,9 +2745,10 @@
             if (gameInterval) clearInterval(gameInterval);
             moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
 
-            // 승리 영상 컨테이너 숨기기
+            // 승리 영상 컨테이너 숨기기 및 iframe 초기화로 상단바 미디어 알림 제거
+            const iframe = document.getElementById('boni-win-iframe');
+            if (iframe) iframe.src = '';
             document.getElementById('boni-win-video-container').style.display = 'none';
-            document.getElementById('boni-win-iframe').src = '';
 
             document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
             document.getElementById('ingame-controls').classList.add('hidden');
@@ -2787,17 +2788,16 @@
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
 
-                // 본이 또는 왕클세종 승리 시 유튜브 쇼츠 영상 재생
+                // 본이 또는 왕클세종 승리 시 쇼츠 영상 재생 (검은 대기 화면 및 상단바 알림 방지 파라미터 적용)
                 let isBoniWon = winningTeamBalls.some(p => p.name === '본이' || p.name === '본I');
                 let isWangklWon = winningTeamBalls.some(p => p.name === '왕클세종');
 
+                const iframe = document.getElementById('boni-win-iframe');
                 if (isBoniWon) {
-                    const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+                    iframe.src = 'https://www.youtube.com/embed/S14lQmdK9Mc?autoplay=1&mute=0&loop=1&playlist=S14lQmdK9Mc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1';
                     document.getElementById('boni-win-video-container').style.display = 'block';
                 } else if (isWangklWon) {
-                    const iframe = document.getElementById('boni-win-iframe');
-                    iframe.src = 'https://www.youtube.com/embed/182ISSryzmc?autoplay=1&loop=1&playlist=182ISSryzmc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+                    iframe.src = 'https://www.youtube.com/embed/182ISSryzmc?autoplay=1&mute=0&loop=1&playlist=182ISSryzmc&controls=0&showinfo=0&autohide=1&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1';
                     document.getElementById('boni-win-video-container').style.display = 'block';
                 }
             }
