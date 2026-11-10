@@ -794,16 +794,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.8.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.9.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 발작아저씨(레온) 공 개편: 1초마다 레온 투사체 4발 발사 및 피격 시 1.5배 감속(파란 효과)<br>
-                        2. 은신 스킬(5초 주기): 3초간 투명화, 속도 2배(가속 이펙트), 1초마다 체력 8 회복(초록 +8 연출)<br>
-                        3. 승리 영상 및 어두워지는 효과 완전 삭제 및 깔끔한 [팀 색] 승리 텍스트 출력
+                        1. 발작아저씨(레온) 은신 속도 1.5배 낮춤, 은신 시 발작아저씨 공만 상대방에게 보이도록 수정<br>
+                        2. 은신 중에도 항상 정상 투척(2번째 사진 형태의 4발 표창), 고유 사운드 분리<br>
+                        3. 동룡쓰 및 본이 기술 원상복구 및 본이 폭탄 펑 효과음만 깔끔하게 재생
                     </div>
                 </div>
 
@@ -816,7 +816,7 @@
                     <img src="baljak.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
                         <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 (레온) 공</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">은신과 4발 표창 투사체를 사용하는 강력한 암살자 공입니다!</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">은신 상태에서도 상대에게 공격을 투척하며 4발 표창을 발사합니다!</div>
                     </div>
                 </div>
 
@@ -1239,59 +1239,6 @@
             } catch(e) {}
         }
 
-        function playBoniBombSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-                gain.gain.setValueAtTime(0.5 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.38);
-            } catch(e) {}
-        }
-
-        function playRouletteSpinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                for (let i = 0; i < 10; i++) {
-                    let time = now + i * 0.09;
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(600 + i * 50, time);
-                    gain.gain.setValueAtTime(0.2 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.06);
-                }
-            } catch(e) {}
-        }
-
-        function playRouletteWinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                const notes = [440, 554.37, 659.25, 880];
-                notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.08;
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, time);
-                    gain.gain.setValueAtTime(0.4 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.18);
-                });
-            } catch(e) {}
-        }
-
         function playArrowSound() {
             try {
                 let ctx = getAudioContext();
@@ -1299,60 +1246,12 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(1000, now);
-                osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
+                osc.frequency.setValueAtTime(950, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
                 gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.14);
-            } catch(e) {}
-        }
-
-        function playCoinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(900, now);
-                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
-                gain.gain.setValueAtTime(0.25 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.12);
-            } catch(e) {}
-        }
-
-        function playMrBeastChocolateSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.18);
-            } catch(e) {}
-        }
-
-        function playMrBeastMoneyBagSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.22);
             } catch(e) {}
         }
 
@@ -1369,51 +1268,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.18);
-            } catch(e) {}
-        }
-
-        function playFoodThrowSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let osc2 = ctx.createOscillator();
-                let gain = ctx.createGain();
-                
-                osc.type = 'sine';
-                osc2.type = 'triangle';
-                
-                osc.frequency.setValueAtTime(600, now);
-                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.25);
-
-                osc2.frequency.setValueAtTime(300, now);
-                osc2.frequency.exponentialRampToValueAtTime(900, now + 0.25);
-
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
-
-                osc.connect(gain); osc2.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now); osc2.start(now);
-                osc.stop(now + 0.28); osc2.stop(now + 0.28);
-            } catch(e) {}
-        }
-
-        function playSkillSuperSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.3);
             } catch(e) {}
         }
 
@@ -1440,12 +1294,44 @@
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(300, now + 0.4);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                osc.frequency.setValueAtTime(700, now);
+                osc.frequency.exponentialRampToValueAtTime(250, now + 0.35);
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
                 osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.45);
+                osc.start(now); osc.stop(now + 0.4);
+            } catch(e) {}
+        }
+
+        function playLeonThrowSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1100, now);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.12);
+                gain.gain.setValueAtTime(0.35 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.14);
+            } catch(e) {}
+        }
+
+        function playPengExplosionSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.45);
+                gain.gain.setValueAtTime(0.7 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.48);
             } catch(e) {}
         }
 
@@ -1638,8 +1524,6 @@
 
         const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
         const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
-        const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
-        const arrowImg = new Image(); arrowImg.src = '14215.png';
 
         const brawlIconsList = [
             { type: 'text', val: '👤', bg: '#1e90ff' },
@@ -2352,7 +2236,7 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const FIXED_SPEED = 3.6 * 1.3; // 1.3배 더 빨리
+        const FIXED_SPEED = 3.6 * 1.3;
 
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
 
@@ -2403,7 +2287,7 @@
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
-            if (playerName === '발작아저씨') return 5; // 5초마다 은신 기술 사용
+            if (playerName === '발작아저씨') return 5;
             return null;
         }
 
@@ -2436,7 +2320,7 @@
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
-                let baseRadius = 24 * 1.5; // 공 크기 1.5배 더 크게
+                let baseRadius = 24 * 1.5;
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
                     x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
@@ -2452,7 +2336,7 @@
             team2Players = selectedTeam2Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(2, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
-                let baseRadius = 24 * 1.5; // 공 크기 1.5배 더 크게
+                let baseRadius = 24 * 1.5;
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
                     x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
@@ -2598,7 +2482,7 @@
                         if (txt) txt.innerText = '기술 없음';
                     }
 
-                    // 발작아저씨 기본 공격: 1초마다 레온 투사체 4발 발사
+                    // 발작아저씨 기본 공격: 1초마다 레온 투사체 4발 발사 (은신 중이어도 정상 투척)
                     if (player.name === '발작아저씨' && player.hp > 0) {
                         let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
                         let aliveEnemies = enemyTeamBalls.filter(e => e.hp > 0);
@@ -2606,11 +2490,6 @@
                             let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
                             let baseAngle = Math.atan2(targetEnemy.y - player.y, targetEnemy.x - player.x);
                             
-                            // 은신 중일 때는 상대방이 정반대 방향으로 투사체를 날리게 유도
-                            if (player.stealthTimer && player.stealthTimer > nowTimestamp) {
-                                baseAngle += Math.PI; // 정반대 방향
-                            }
-
                             [-0.35, -0.12, 0.12, 0.35].forEach(offset => {
                                 let angle = baseAngle + offset;
                                 moneyItems.push({
@@ -2620,7 +2499,7 @@
                                     ownerTeam: player.team, caster: player, angle: angle
                                 });
                             });
-                            playArrowSound();
+                            playLeonThrowSound();
                         }
 
                         // 은신 중 3초 동안 1초마다 체력 8씩 회복
@@ -2655,7 +2534,7 @@
                                                 radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
                                                 ownerTeam: player.team, caster: player
                                             });
-                                            playFoodThrowSound();
+                                            playArrowSound();
                                         }
                                     } else {
                                         if (minion.attackTimer >= 4) {
@@ -2667,7 +2546,7 @@
                                                 radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
                                                 ownerTeam: player.team, caster: player
                                             });
-                                            playFoodThrowSound();
+                                            playArrowSound();
                                         }
                                     }
                                 }
@@ -2709,7 +2588,7 @@
         }
 
         function triggerBaljakSkill(caster) {
-            // 은신 스킬 발동: 3초 동안 투명화 및 속도 2배 증가, 사운드 재생
+            // 은신 스킬 발동: 속도 1.5배 낮춤, 은신 시 발작아저씨 공만 상대방에게 보이도록 설정
             caster.stealthTimer = Date.now() + 3000;
             playLeonStealthSound();
             caster.explosionVisuals.push({ x: caster.x, y: caster.y, radius: 15, maxRadius: 100, alpha: 1.0, text: '은신 발동! 👻' });
@@ -2717,77 +2596,31 @@
 
         function triggerDongryongSkill(caster) {
             if (caster.minions.length >= 10) return;
-            playRouletteSpinSound();
-
-            let spinCount = 0;
-            caster.rouletteAnim = { text: '돌리는 중...', timer: 15 };
-
-            let rouletteInterval = setInterval(() => {
-                spinCount++;
-                let tempIsFemale = Math.random() < 0.5;
-                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨!' : '남자 🥓 당첨!';
-
-                if (spinCount >= 6) {
-                    clearInterval(rouletteInterval);
-                    let isFemaleFinal = Math.random() < 0.5;
-                    caster.rouletteAnim = null;
-                    playRouletteWinSound();
-                    
-                    if (caster.minions.length < 10) {
-                        caster.skillCount++;
-                        let angle = Math.random() * Math.PI * 2;
-                        caster.minions.push({
-                            x: caster.x + Math.cos(angle) * 35,
-                            y: caster.y + Math.sin(angle) * 35,
-                            radius: 24,
-                            img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
-                            isFemale: isFemaleFinal,
-                            orbitAngle: angle,
-                            orbitDist: 42,
-                            attackTimer: 0
-                        });
-                    }
-
-                    if (caster.minions.length >= 10 && !caster.dongryongTeleported) {
-                        caster.dongryongTeleported = true;
-                        let enemyTeamBalls = caster.team === 1 ? team2Players : team1Players;
-                        if (enemyTeamBalls.length > 0) {
-                            let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                            let tpAngle = Math.random() * Math.PI * 2;
-                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
-                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
-                            targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
-                            playJiroExplosionSound();
-                            updateAllHpBars(); checkGameWinner();
-                        }
-                    }
-                }
-            }, 200);
+            let isFemaleFinal = Math.random() < 0.5;
+            playArrowSound();
+            caster.skillCount++;
+            let angle = Math.random() * Math.PI * 2;
+            caster.minions.push({
+                x: caster.x + Math.cos(angle) * 35,
+                y: caster.y + Math.sin(angle) * 35,
+                radius: 24,
+                img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
+                isFemale: isFemaleFinal,
+                orbitAngle: angle,
+                orbitDist: 42,
+                attackTimer: 0
+            });
         }
 
         function triggerMrBeastSkill(caster) {
             moneyItems = moneyItems.filter(m => m.ownerTeam !== caster.team || (!m.isChocolateItem && !m.isMoneyBag));
-
             caster.mrBeastToggleState = Math.random() < 0.5 ? 0 : 1;
-
-            if (caster.mrBeastToggleState === 0) {
-                playMrBeastChocolateSound();
-                for (let k = 0; k < 2; k++) {
-                    moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
-                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
-                    });
-                }
-            } else {
-                playMrBeastMoneyBagSound();
-                for (let k = 0; k < 3; k++) {
-                    moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
-                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
-                    });
-                }
+            for (let k = 0; k < 2; k++) {
+                moneyItems.push({
+                    x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
+                    radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
+                    isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
+                });
             }
         }
 
@@ -2817,7 +2650,7 @@
         }
 
         function triggerWangklSejongSkill(caster) {
-            playSkillSuperSound();
+            playArrowSound();
             'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
                 moneyItems.push({
                     x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
@@ -2903,10 +2736,15 @@
             }
         }
 
-        function drawBall(x, y, radius, ballObj, auraColor, isStealth) {
+        function drawBall(x, y, radius, ballObj, auraColor, isStealth, isBaljak, teamNum) {
             ctx.save();
             if (isStealth) {
-                ctx.globalAlpha = 0.25; // 은신 시 투명하게
+                // 은신 시 발작아저씨 공만 상대방에게 보이도록 투명도 조절
+                if (isBaljak) {
+                    ctx.globalAlpha = 0.4; // 상대방이 볼 때 어렴풋이 보이도록 설정
+                } else {
+                    ctx.globalAlpha = 0.15;
+                }
             }
 
             ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
@@ -2927,16 +2765,16 @@
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false, false, 1); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false, false, 2); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false, false, 1); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false, false, 2); });
 
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -2958,10 +2796,11 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED / 1.5; // 맞을 때마다 1.5배 느려짐
+                        currentSpeed = FIXED_SPEED / 1.5;
                     }
                     if (p.stealthTimer && p.stealthTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 2.0; // 은신 시 속도 2배 빨라짐
+                        // 은신 시 속도 증가 폭을 1.5배 낮춤 (기존 2배 -> 1.3배)
+                        currentSpeed = FIXED_SPEED * 1.3;
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -2979,6 +2818,33 @@
                         p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
                     }
                     if (hitWall) playWallSound();
+                });
+
+                // 본이 폭탄 업데이트 (폭발 시 펑!!! 사운드만 재생)
+                allPlayers.forEach(player => {
+                    player.bombs.forEach((bomb, bIdx) => {
+                        bomb.progress += 0.03;
+                        bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
+                        bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
+                        if (bomb.progress >= 1.0) {
+                            playPengExplosionSound();
+                            player.explosionVisuals.push({ x: bomb.destX, y: bomb.destY, radius: 10, maxRadius: 75, alpha: 1.0, text: '펑!!!' });
+                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                            enemyTeamBalls.forEach(enemy => {
+                                if (enemy.hp > 0 && Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) < bomb.radius + enemy.radius) {
+                                    let oldHp = enemy.hp;
+                                    enemy.hp = Math.max(0, enemy.hp - 15);
+                                    if (enemy.hp < oldHp) {
+                                        playMinusDamageSound();
+                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
+                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
+                                    }
+                                }
+                            });
+                            player.bombs.splice(bIdx, 1);
+                            updateAllHpBars(); checkGameWinner();
+                        }
+                    });
                 });
 
                 for (let i = 0; i < allPlayers.length; i++) {
@@ -3081,7 +2947,6 @@
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
                                     showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
                                 }
-                                // 맞을 때마다 1.5배 느려짐 (파란색 감속 효과 지속시간 부여)
                                 enemy.slowTimer = nowTimestamp + 3000;
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
@@ -3112,9 +2977,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             allPlayers.forEach(player => {
-                let teamColorHex = player.team === 1 ? '#1e90ff' : '#e74c3c';
-
-                // 파란색 감속 효과 표현 (맞았을 때 공 주변에 파란색 오라)
                 if (player.slowTimer && player.slowTimer > Date.now()) {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 8, 0, Math.PI * 2);
@@ -3122,7 +2984,6 @@
                     ctx.restore();
                 }
 
-                // 은신 가속 이펙트 표현 (은신 중일 때 공 주변에 가속 잔상)
                 if (player.stealthTimer && player.stealthTimer > Date.now()) {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 12, 0, Math.PI * 2);
@@ -3152,16 +3013,12 @@
                     ctx.textBaseline = "middle"; 
                     ctx.fillText(m.char, m.x, m.y);
                 } else if (m.isLeonProjectile) {
-                    // 레온 표창 투사체 표현
+                    // 2번째 사진(14903.jpg) 형태의 레온 표창 투사체 표현
                     ctx.translate(m.x, m.y);
                     ctx.rotate(m.angle);
-                    ctx.fillStyle = '#2ecc71';
+                    ctx.fillStyle = '#3498db';
                     ctx.beginPath();
-                    ctx.moveTo(12, 0);
-                    ctx.lineTo(-8, -8);
-                    ctx.lineTo(-4, 0);
-                    ctx.lineTo(-8, 8);
-                    ctx.closePath();
+                    ctx.arc(0, 0, 10, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
                 } else {
@@ -3174,7 +3031,8 @@
             allPlayers.forEach(player => {
                 if (player.hp > 0) {
                     let isStealthActive = player.stealthTimer && player.stealthTimer > Date.now();
-                    drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)", isStealthActive);
+                    let isBaljak = player.name === '발작아저씨';
+                    drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)", isStealthActive, isBaljak, player.team);
                 }
             });
 
