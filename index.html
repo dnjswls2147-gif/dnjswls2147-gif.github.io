@@ -794,16 +794,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.7.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.8.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 신규 캐릭터 '발작아저씨(baljak.jpg)' 추가<br>
-                        2. 왕클세종 기술 사용 시 외곽선 동그라미를 제거하고 빨간색 텍스트만 출력<br>
-                        3. 미스터비스트 승리 리플레이 영상(video_1.mp4) 8초 재생 정상 연동
+                        1. 발작아저씨(레온) 공 개편: 1초마다 레온 투사체 4발 발사 및 피격 시 1.5배 감속(파란 효과)<br>
+                        2. 은신 스킬(5초 주기): 3초간 투명화, 속도 2배(가속 이펙트), 1초마다 체력 8 회복(초록 +8 연출)<br>
+                        3. 승리 영상 및 어두워지는 효과 완전 삭제 및 깔끔한 [팀 색] 승리 텍스트 출력
                     </div>
                 </div>
 
@@ -815,8 +815,8 @@
                 <div style="display:flex; align-items:center; gap:18px; background:#fff; border:3px solid #000; padding:18px; border-radius:8px;">
                     <img src="baljak.jpg" style="width:78px; height:78px; object-fit:cover; border:3px solid #000; border-radius:6px;">
                     <div>
-                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 캐릭터</div>
-                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">신규 추가된 강력한 파괴력을 지닌 발작아저씨 공입니다!</div>
+                        <div style="font-size:24px; font-weight:900; color:#2c3e50;">발작아저씨 (레온) 공</div>
+                        <div style="font-size:18px; font-weight:900; color:#444; margin-top:6px; line-height:1.4;">은신과 4발 표창 투사체를 사용하는 강력한 암살자 공입니다!</div>
                     </div>
                 </div>
 
@@ -897,22 +897,6 @@
             <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeRecordHistoryModal();">✕</button>
             <div style="font-size:26px; font-weight:900; margin-bottom:14px; text-align:center; color:#2c3e50; flex-shrink:0;">⚔️ 최근 경기 기록</div>
             <div class="players-list-area" id="record-history-list-container" style="flex:1;"></div>
-        </div>
-    </div>
-
-    <!-- 미스터비스트 승리 리플레이 관전 모달 창 (처음 8초만 재생) -->
-    <div class="modal-overlay hidden" id="spectate-modal" style="z-index: 220000; background: rgba(0, 0, 0, 0.85);">
-        <div style="background:#fff; border:6px solid #000; padding:24px; width:94%; max-width:520px; display:flex; flex-direction:column; align-items:center; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.6);">
-            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeSpectateModal();">✕</button>
-            <div style="font-size:24px; font-weight:900; margin-bottom:14px; color:#2c3e50;">🏆 미스터비스트 승리 댄스 (8초)</div>
-            
-            <div style="width:100%; aspect-ratio: 9 / 16; max-height: 55vh; background:#000; border:4px solid #000; border-radius:6px; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center;">
-                <video id="winner-dance-video" src="video_1.mp4" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
-                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent; z-index:10;"></div>
-            </div>
-
-            <div style="font-size:16px; font-weight:900; color:#27ae60; margin-top:12px; margin-bottom:16px;" id="spectate-info-txt">미스터비스트 승리!</div>
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:14px; font-size:20px;" onclick="playClickSound(); closeSpectateModal();">닫기</button>
         </div>
     </div>
 
@@ -1095,7 +1079,7 @@
     </div>
 
     <script>
-        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v2');
+        const gameSyncChannel = new BroadcastChannel('lily_ball_fight_global_sync_v3');
 
         gameSyncChannel.onmessage = function (event) {
             const data = event.data;
@@ -1446,6 +1430,22 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.25);
+            } catch(e) {}
+        }
+
+        function playLeonStealthSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.4);
+                gain.gain.setValueAtTime(0.4 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.45);
             } catch(e) {}
         }
 
@@ -2189,20 +2189,13 @@
                     card.style.justifyContent = 'space-between';
                     card.style.alignItems = 'center';
                     
-                    let viewBtnHtml = '';
-                    if (hist.hasMrBeastWin) {
-                        viewBtnHtml = `<button class="admin-btn admin-btn-confirm" style="padding:10px 16px; font-size:16px;" onclick="openSpectate('${hist.winner}')">영상 보기</button>`;
-                    } else {
-                        viewBtnHtml = `<span style="font-size:14px; color:#777; font-weight:bold;">일반 경기</span>`;
-                    }
-
                     card.innerHTML = `
                         <div>
                             <div style="font-size:18px; color:#2c3e50;">[경기 #${idx+1}] 모드: ${hist.mode}대${hist.mode}</div>
                             <div style="font-size:16px; color:#27ae60; font-weight:900; margin-top:3px;">결과: ${hist.winner}</div>
                             <div style="font-size:13px; color:#777;">시간: ${hist.time}</div>
                         </div>
-                        ${viewBtnHtml}
+                        <span style="font-size:14px; color:#777; font-weight:bold;">일반 경기</span>
                     `;
                     container.appendChild(card);
                 });
@@ -2212,32 +2205,6 @@
         }
 
         function closeRecordHistoryModal() { document.getElementById('record-history-modal').classList.add('hidden'); }
-
-        let videoTimeChecker = null;
-        function openSpectate(winnerTxt) {
-            document.getElementById('spectate-info-txt').innerText = `승리 팀: ${winnerTxt} (미스터비스트 8초 댄스)`;
-            const vid = document.getElementById('winner-dance-video');
-            vid.currentTime = 0;
-            vid.play().catch(e => {});
-
-            // 처음 8초만 재생되도록 제한
-            if (videoTimeChecker) clearInterval(videoTimeChecker);
-            videoTimeChecker = setInterval(() => {
-                if (vid.currentTime >= 8.0) {
-                    vid.pause();
-                    clearInterval(videoTimeChecker);
-                }
-            }, 100);
-
-            document.getElementById('spectate-modal').classList.remove('hidden');
-        }
-
-        function closeSpectateModal() {
-            if (videoTimeChecker) clearInterval(videoTimeChecker);
-            const vid = document.getElementById('winner-dance-video');
-            vid.pause();
-            document.getElementById('spectate-modal').classList.add('hidden');
-        }
 
         function openReportModal() {
             document.getElementById('report-target-name-txt').innerText = `대상 플레이어: ${currentTargetProfileName}`;
@@ -2385,10 +2352,9 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const FIXED_SPEED = 3.6;
+        const FIXED_SPEED = 3.6 * 1.3; // 1.3배 더 빨리
 
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
-        let matchStartTime = 0;
 
         function openBallPicker(team, index) {
             if (!checkNameRegisteredOrBlock()) return;
@@ -2437,7 +2403,7 @@
             if (playerName === 'JINO') return 12;
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
-            if (playerName === '발작아저씨') return 7;
+            if (playerName === '발작아저씨') return 5; // 5초마다 은신 기술 사용
             return null;
         }
 
@@ -2466,19 +2432,19 @@
             if (activeCountdownInterval) clearInterval(activeCountdownInterval);
 
             moneyItems = []; matchEnded = false; winnerText = '';
-            matchStartTime = Date.now();
 
             team1Players = selectedTeam1Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(1, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
+                let baseRadius = 24 * 1.5; // 공 크기 1.5배 더 크게
                 return {
                     id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, stealthTimer: 0,
                     rouletteAnim: null
                 };
             });
@@ -2486,14 +2452,15 @@
             team2Players = selectedTeam2Balls.map((ball, idx) => {
                 let pos = calculateMultiPositions(2, idx, currentMatchMode);
                 let maxT = getSkillMaxTime(ball.name);
+                let baseRadius = 24 * 1.5; // 공 크기 1.5배 더 크게
                 return {
                     id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: 24, vx: 0, vy: 0,
+                    x: pos.x, y: pos.y, radius: baseRadius, vx: 0, vy: 0,
                     hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
+                    jiroCombo: 0, lastJiroHitTime: 0, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, stealthTimer: 0,
                     rouletteAnim: null
                 };
             });
@@ -2630,6 +2597,44 @@
                     } else {
                         if (txt) txt.innerText = '기술 없음';
                     }
+
+                    // 발작아저씨 기본 공격: 1초마다 레온 투사체 4발 발사
+                    if (player.name === '발작아저씨' && player.hp > 0) {
+                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
+                        let aliveEnemies = enemyTeamBalls.filter(e => e.hp > 0);
+                        if (aliveEnemies.length > 0) {
+                            let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+                            let baseAngle = Math.atan2(targetEnemy.y - player.y, targetEnemy.x - player.x);
+                            
+                            // 은신 중일 때는 상대방이 정반대 방향으로 투사체를 날리게 유도
+                            if (player.stealthTimer && player.stealthTimer > nowTimestamp) {
+                                baseAngle += Math.PI; // 정반대 방향
+                            }
+
+                            [-0.35, -0.12, 0.12, 0.35].forEach(offset => {
+                                let angle = baseAngle + offset;
+                                moneyItems.push({
+                                    x: player.x, y: player.y,
+                                    vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
+                                    radius: 16, damage: 5, isLeonProjectile: true,
+                                    ownerTeam: player.team, caster: player, angle: angle
+                                });
+                            });
+                            playArrowSound();
+                        }
+
+                        // 은신 중 3초 동안 1초마다 체력 8씩 회복
+                        if (player.stealthTimer && player.stealthTimer > nowTimestamp) {
+                            let oldHp = player.hp;
+                            player.hp = Math.min(player.maxHp, player.hp + 8);
+                            if (player.hp > oldHp) {
+                                playHealSound();
+                                showHealingAnimationCard(player.team, idx, 8);
+                                player.explosionVisuals.push({ x: player.x, y: player.y, radius: 10, maxRadius: 60, alpha: 1.0, text: '+8 회복!' });
+                                updateAllHpBars();
+                            }
+                        }
+                    }
                 });
 
                 allPlayers.forEach(player => {
@@ -2704,21 +2709,10 @@
         }
 
         function triggerBaljakSkill(caster) {
-            let enemyBalls = caster.team === 1 ? team2Players : team1Players;
-            enemyBalls.forEach(enemy => {
-                if (enemy.hp > 0) {
-                    let oldHp = enemy.hp;
-                    enemy.hp = Math.max(0, enemy.hp - 20);
-                    if (enemy.hp < oldHp) {
-                        playMinusDamageSound();
-                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
-                    }
-                    playJiroExplosionSound();
-                    caster.explosionVisuals.push({ x: enemy.x, y: enemy.y, radius: 15, maxRadius: 130, alpha: 1.0, text: '발작 폭발! (-20)' });
-                }
-            });
-            updateAllHpBars(); checkGameWinner();
+            // 은신 스킬 발동: 3초 동안 투명화 및 속도 2배 증가, 사운드 재생
+            caster.stealthTimer = Date.now() + 3000;
+            playLeonStealthSound();
+            caster.explosionVisuals.push({ x: caster.x, y: caster.y, radius: 15, maxRadius: 100, alpha: 1.0, text: '은신 발동! 👻' });
         }
 
         function triggerDongryongSkill(caster) {
@@ -2892,35 +2886,29 @@
                 if (gameInterval) clearInterval(gameInterval);
                 recordBallUsageOnComplete();
 
-                let winningTeamBalls = [];
-                let hasMrBeastWin = false;
-
                 if (!t1Alive && !t2Alive) {
                     winnerText = '무승부!';
                 } else if (!t2Alive) {
-                    winnerText = '파란팀 승!';
-                    winningTeamBalls = team1Players;
+                    winnerText = '파란팀 승리!';
                 } else {
-                    winnerText = '빨간팀 승!';
-                    winningTeamBalls = team2Players;
-                }
-
-                if (winningTeamBalls.some(p => p.name === '미스터비스트')) {
-                    hasMrBeastWin = true;
+                    winnerText = '빨간팀 승리!';
                 }
 
                 matchHistoryList.push({
                     mode: currentMatchMode,
                     winner: winnerText,
-                    time: getCurrentTimeString(),
-                    hasMrBeastWin: hasMrBeastWin
+                    time: getCurrentTimeString()
                 });
                 localStorage.setItem('lily_game_match_history', JSON.stringify(matchHistoryList));
             }
         }
 
-        function drawBall(x, y, radius, ballObj, auraColor) {
+        function drawBall(x, y, radius, ballObj, auraColor, isStealth) {
             ctx.save();
+            if (isStealth) {
+                ctx.globalAlpha = 0.25; // 은신 시 투명하게
+            }
+
             ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
             ctx.fillStyle = auraColor; ctx.fill();
 
@@ -2939,16 +2927,16 @@
         function runGameLoop() {
             if (!isGaming && !isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false); });
                 requestAnimationFrame(runGameLoop);
                 return;
             }
 
             if (isCountingDown) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24, b, "rgba(231, 76, 60, 0.15)"); });
+                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(30, 144, 255, 0.15)", false); });
+                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, 24 * 1.5, b, "rgba(231, 76, 60, 0.15)", false); });
 
                 ctx.save();
                 ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -2970,7 +2958,10 @@
                     
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 0.5;
+                        currentSpeed = FIXED_SPEED / 1.5; // 맞을 때마다 1.5배 느려짐
+                    }
+                    if (p.stealthTimer && p.stealthTimer > nowTimestamp) {
+                        currentSpeed = FIXED_SPEED * 2.0; // 은신 시 속도 2배 빨라짐
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -2983,7 +2974,7 @@
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
                     
                     let speed = Math.hypot(p.vx, p.vy);
-                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
+                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp) && (!p.stealthTimer || p.stealthTimer <= nowTimestamp)) {
                         p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
                         p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
                     }
@@ -3001,128 +2992,29 @@
                             p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
                             let angle = Math.atan2(ny, nx);
 
-                            let isJiro1 = (p1.name === 'JIRO');
-                            let isJiro2 = (p2.name === 'JIRO');
+                            p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
+                            p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
+                            playHitSound();
+                            
+                            let oldHp1 = p1.hp, oldHp2 = p2.hp;
+                            p1.hp = Math.max(0, p1.hp - 10); 
+                            p2.hp = Math.max(0, p2.hp - 10);
 
-                            if (isJiro1 || isJiro2) {
-                                let jiroObj = isJiro1 ? p1 : p2;
-                                let otherObj = isJiro1 ? p2 : p1;
-                                
-                                if (nowTimestamp - (jiroObj.lastJiroHitTime || 0) > 5000) {
-                                    jiroObj.jiroCombo = 0;
-                                }
-                                jiroObj.jiroCombo++;
-                                jiroObj.lastJiroHitTime = nowTimestamp;
-
-                                let explosionDmg = 15 + (jiroObj.jiroCombo - 1) * 2;
-                                let oldHp = otherObj.hp;
-                                otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
-                                if (otherObj.hp < oldHp) {
-                                    playMinusDamageSound();
-                                    let teamIdx = otherObj.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(otherObj.team, teamIdx.indexOf(otherObj), explosionDmg);
-                                }
-
-                                playJiroExplosionSound();
-
-                                jiroObj.comboPopups.push({
-                                    text: `콤보 ${jiroObj.jiroCombo}!`,
-                                    x: jiroObj.x,
-                                    y: jiroObj.y - 35,
-                                    alpha: 1.0,
-                                    startTime: Date.now()
-                                });
-
-                                jiroObj.explosionVisuals.push({ x: otherObj.x, y: otherObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (콤보${jiroObj.jiroCombo})` });
-
-                                let knockAngle = Math.atan2(otherObj.y - jiroObj.y, otherObj.x - jiroObj.x);
-                                otherObj.vx = Math.cos(knockAngle) * (FIXED_SPEED * 4.2);
-                                otherObj.vy = Math.sin(knockAngle) * (FIXED_SPEED * 4.2);
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-
-                                updateAllHpBars(); checkGameWinner();
-                            } else {
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-                                playHitSound();
-                                
-                                let oldHp1 = p1.hp, oldHp2 = p2.hp;
-                                p1.hp = Math.max(0, p1.hp - 10); 
-                                p2.hp = Math.max(0, p2.hp - 10);
-
-                                if (p1.hp < oldHp1) {
-                                    playMinusDamageSound();
-                                    let tIdx = p1.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(p1.team, tIdx.indexOf(p1), 10);
-                                }
-                                if (p2.hp < oldHp2) {
-                                    playMinusDamageSound();
-                                    let tIdx = p2.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(p2.team, tIdx.indexOf(p2), 10);
-                                }
-
-                                updateAllHpBars(); checkGameWinner();
+                            if (p1.hp < oldHp1) {
+                                playMinusDamageSound();
+                                let tIdx = p1.team === 1 ? team1Players : team2Players;
+                                showMinusDamageAnimationCard(p1.team, tIdx.indexOf(p1), 10);
                             }
+                            if (p2.hp < oldHp2) {
+                                playMinusDamageSound();
+                                let tIdx = p2.team === 1 ? team1Players : team2Players;
+                                showMinusDamageAnimationCard(p2.team, tIdx.indexOf(p2), 10);
+                            }
+
+                            updateAllHpBars(); checkGameWinner();
                         }
                     }
                 }
-
-                allPlayers.forEach(player => {
-                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                    if (player.name === 'JIRO' && player.mines.length > 0) {
-                        player.mines = player.mines.filter(mine => {
-                            let triggered = false;
-                            enemyTeamBalls.forEach(enemy => {
-                                if (enemy.hp <= 0) return;
-                                if (Math.hypot(enemy.x - mine.x, enemy.y - mine.y) < enemy.radius + mine.radius) {
-                                    triggered = true;
-                                    let oldHp = enemy.hp;
-                                    enemy.hp = Math.max(0, enemy.hp - 30);
-                                    if (enemy.hp < oldHp) {
-                                        playMinusDamageSound();
-                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 30);
-                                    }
-                                    playJiroExplosionSound();
-                                    
-                                    let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
-
-                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
-                                    updateAllHpBars(); checkGameWinner();
-                                }
-                            });
-                            return !triggered;
-                        });
-                    }
-                });
-
-                allPlayers.forEach(player => {
-                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                    player.skeletons.forEach(skel => {
-                        enemyTeamBalls.forEach(enemy => {
-                            if (enemy.hp > 0) {
-                                let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
-                                if (dist < enemy.radius + skel.radius) {
-                                    let lastHit = skel.lastHitTime || 0;
-                                    if (nowTimestamp - lastHit >= 1000) {
-                                        let oldHp = enemy.hp;
-                                        enemy.hp = Math.max(0, enemy.hp - 4);
-                                        if (enemy.hp < oldHp) {
-                                            playMinusDamageSound();
-                                            let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                            showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 4);
-                                        }
-                                        skel.lastHitTime = nowTimestamp;
-                                        playHitSound(); updateAllHpBars(); checkGameWinner();
-                                    }
-                                }
-                            }
-                        });
-                    });
-                });
 
                 allPlayers.forEach(player => {
                     player.explosionVisuals.forEach(ev => {
@@ -3137,47 +3029,6 @@
                         cp.alpha = Math.max(0, 1.0 - (elapsed / 2.5));
                     });
                     player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
-                });
-
-                allPlayers.forEach(caster => {
-                    let enemyBalls = caster.team === 1 ? team2Players : team1Players;
-                    for (let i = caster.bombs.length - 1; i >= 0; i--) {
-                        let bomb = caster.bombs[i];
-                        if (bomb.progress < 1) {
-                            bomb.progress += 0.03;
-                            bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
-                            bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
-                        } else {
-                            if (!bomb.startTime) {
-                                bomb.startTime = nowTimestamp;
-                                playBoniBombSound();
-                            }
-                            enemyBalls.forEach(enemy => {
-                                if (enemy.hp <= 0) return;
-                                if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
-                                    let oldHp = enemy.hp;
-                                    enemy.hp = Math.max(0, enemy.hp - 15);
-                                    if (enemy.hp < oldHp) {
-                                        playMinusDamageSound();
-                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
-                                    }
-                                    
-                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
-
-                                    updateAllHpBars(); 
-                                    playBoniBombSound(); 
-                                    checkGameWinner();
-                                    caster.bombs.splice(i, 1);
-                                }
-                            });
-                            if (nowTimestamp - bomb.startTime >= 3000) {
-                                caster.bombs.splice(i, 1);
-                            }
-                        }
-                    }
                 });
 
                 for (let i = moneyItems.length - 1; i >= 0; i--) {
@@ -3216,81 +3067,26 @@
                             }
                         });
                         if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isChocolateItem) {
-                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
-                        let eaten = false;
-                        allPlayers.forEach(player => {
-                            if (eaten || player.hp <= 0) return;
-                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
-                                    playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + 10);
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 10);
-                                    eaten = true; updateAllHpBars();
-                                }
-                            }
-                        });
-                        if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isMoneyBag) {
-                        if (nowTimestamp - m.spawnTime > 4000) { moneyItems.splice(i, 1); continue; }
-                        let eaten = false;
-                        allPlayers.forEach(player => {
-                            if (eaten || player.hp <= 0) return;
-                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
-                                    playHealSound();
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    player.hp = Math.min(player.maxHp, player.hp + 25);
-                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
-                                    
-                                    [{vx: 4.5, vy: 0}, {vx: -4.5, vy: 0}, {vx: 0, vy: -4.5}, {vx: 0, vy: 4.5}].forEach(dir => {
-                                        moneyItems.push({
-                                            x: player.x, y: player.y,
-                                            vx: dir.vx, vy: dir.vy,
-                                            radius: 20, damage: 15, isMoneyBullet: true,
-                                            ownerTeam: player.team, caster: player, spawnTime: Date.now()
-                                        });
-                                    });
-                                    playCoinSound();
-                                    eaten = true; updateAllHpBars(); checkGameWinner();
-                                }
-                            }
-                        });
-                        if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isMoneyBullet) {
+                    } else if (m.isLeonProjectile) {
                         m.x += m.vx; m.y += m.vy;
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
-                            playJiroExplosionSound();
-                            if (m.caster) {
-                                m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 80, alpha: 1.0, text: '펑!' });
-                            }
-                            moneyItems.splice(i, 1);
-                            continue;
-                        }
-                        let hitEnemy = false;
+                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
                         let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
                         enemyTeamBalls.forEach(enemy => {
                             if (enemy.hp <= 0) return;
                             if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
                                 let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - 15);
+                                enemy.hp = Math.max(0, enemy.hp - m.damage);
                                 if (enemy.hp < oldHp) {
                                     playMinusDamageSound();
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
+                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
                                 }
-                                playJiroExplosionSound();
-                                if (m.caster) {
-                                    m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-15)' });
-                                }
-                                updateAllHpBars(); checkGameWinner();
-                                hitEnemy = true;
+                                // 맞을 때마다 1.5배 느려짐 (파란색 감속 효과 지속시간 부여)
+                                enemy.slowTimer = nowTimestamp + 3000;
+                                playHitSound(); updateAllHpBars(); checkGameWinner();
+                                moneyItems.splice(i, 1);
                             }
                         });
-                        if (hitEnemy) {
-                            moneyItems.splice(i, 1);
-                        }
                     } else if (m.isArrow || m.isBaconProjectile) {
                         m.x += m.vx; m.y += m.vy;
                         if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
@@ -3305,13 +3101,6 @@
                                     let tIdx = enemy.team === 1 ? team1Players : team2Players;
                                     showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
                                 }
-                                if (m.isBaconProjectile && !m.isFemaleProj) {
-                                    enemy.slowTimer = nowTimestamp + 3000;
-                                } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
-                                }
                                 playHitSound(); updateAllHpBars(); checkGameWinner();
                                 moneyItems.splice(i, 1);
                             }
@@ -3325,162 +3114,73 @@
             allPlayers.forEach(player => {
                 let teamColorHex = player.team === 1 ? '#1e90ff' : '#e74c3c';
 
-                player.mines.forEach(mine => {
+                // 파란색 감속 효과 표현 (맞았을 때 공 주변에 파란색 오라)
+                if (player.slowTimer && player.slowTimer > Date.now()) {
                     ctx.save();
-                    let elapsed = Date.now() - mine.spawnTime;
-                    let alpha = elapsed > 2000 ? 0.3 : 0.92;
-                    ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = teamColorHex; ctx.stroke();
-                    
-                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = teamColorHex;
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText("지뢰", mine.x, mine.y);
+                    ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 8, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#3498db'; ctx.lineWidth = 4; ctx.stroke();
                     ctx.restore();
-                });
+                }
+
+                // 은신 가속 이펙트 표현 (은신 중일 때 공 주변에 가속 잔상)
+                if (player.stealthTimer && player.stealthTimer > Date.now()) {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(player.x, player.y, player.radius + 12, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#f1c40f'; ctx.lineWidth = 4; ctx.setLineDash([6, 6]); ctx.stroke();
+                    ctx.restore();
+                }
 
                 player.explosionVisuals.forEach(ev => {
                     ctx.save();
                     ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
+                    ctx.fillStyle = `rgba(46, 204, 113, ${ev.alpha * 0.4})`; ctx.fill();
+                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.stroke();
+                    ctx.font = "bold 20px sans-serif"; ctx.fillStyle = `rgba(46, 204, 113, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
+                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 35); ctx.fillText(ev.text, ev.x, ev.y - 35);
                     ctx.restore();
                 });
-
-                player.comboPopups.forEach(cp => {
-                    ctx.save();
-                    ctx.font = "bold 20px sans-serif";
-                    ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
-                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`;
-                    ctx.lineWidth = 4;
-                    ctx.textAlign = "center";
-                    ctx.strokeText(cp.text, cp.x, cp.y);
-                    ctx.fillText(cp.text, cp.x, cp.y);
-                    ctx.restore();
-                });
-
-                player.minions.forEach(m => {
-                    m.orbitAngle += 0.05;
-                    m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
-                    m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
-
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 8, 0, Math.PI * 2);
-                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                    ctx.save(); 
-                    ctx.clip();
-                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
-                        ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
-                    } else {
-                        ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
-                    }
-                    ctx.restore();
-                    ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
-                    ctx.restore();
-                });
-
-                player.skeletons.forEach(skel => {
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(skel.x, skel.y, skel.radius + 10, 0, Math.PI * 2);
-                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
-                    if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
-                    } else {
-                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
-                    }
-                    ctx.restore();
-                });
-
-                player.bombs.forEach(bomb => {
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = teamColorHex; ctx.stroke();
-                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
-                    if (bomb.startTime) {
-                        let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
-                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
-                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
-                    }
-                    ctx.restore();
-                });
-
-                if (player.rouletteAnim) {
-                    ctx.save();
-                    ctx.font = "bold 20px sans-serif";
-                    ctx.fillStyle = "#f1c40f";
-                    ctx.strokeStyle = "#000";
-                    ctx.lineWidth = 4;
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "bottom";
-                    ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
-                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
-                    ctx.restore();
-                }
             });
 
             moneyItems.forEach(m => {
                 ctx.save();
                 let teamColorHex = m.ownerTeam === 1 ? '#1e90ff' : '#e74c3c';
 
-                // 왕클세종 한글 글자 아이템: 동그라미 제거, 빨간색 텍스트만 출력
                 if (m.isHangeulLetter) {
                     ctx.font = "bold 26px sans-serif"; 
                     ctx.fillStyle = m.color; 
                     ctx.textAlign = "center"; 
                     ctx.textBaseline = "middle"; 
                     ctx.fillText(m.char, m.x, m.y);
+                } else if (m.isLeonProjectile) {
+                    // 레온 표창 투사체 표현
+                    ctx.translate(m.x, m.y);
+                    ctx.rotate(m.angle);
+                    ctx.fillStyle = '#2ecc71';
+                    ctx.beginPath();
+                    ctx.moveTo(12, 0);
+                    ctx.lineTo(-8, -8);
+                    ctx.lineTo(-4, 0);
+                    ctx.lineTo(-8, 8);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.stroke();
                 } else {
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
                     ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
-                    if (m.isChocolateItem) {
-                        let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
-                        ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
-                        ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
-                    } else if (m.isMoneyBag) {
-                        let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
-                        ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
-                        ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
-                    } else if (m.isMoneyBullet) {
-                        ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
-                    } else if (m.isArrow) {
-                        ctx.save();
-                        ctx.translate(m.x, m.y);
-                        ctx.rotate(m.angle);
-                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                            ctx.drawImage(arrowImg, -36, -20, 72, 40);
-                        } else {
-                            ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
-                        }
-                        ctx.restore();
-                    } else if (m.isBaconProjectile) {
-                        if (m.isFemaleProj) {
-                            ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                            ctx.fillText("💣", m.x, m.y);
-                        } else {
-                            ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                            ctx.fillText("🥓", m.x, m.y);
-                        }
-                    }
                 }
                 ctx.restore();
             });
 
             allPlayers.forEach(player => {
-                if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
+                if (player.hp > 0) {
+                    let isStealthActive = player.stealthTimer && player.stealthTimer > Date.now();
+                    drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)", isStealthActive);
+                }
             });
 
             if (matchEnded) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "bold 45px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                 ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
                 ctx.restore();
