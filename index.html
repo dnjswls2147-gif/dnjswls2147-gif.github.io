@@ -794,18 +794,16 @@
                 
                 <div style="display:flex; flex-direction:column; border-bottom:3px solid #ddd; padding-bottom:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.9.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
+                        <span style="font-size:26px; font-weight:900; color:#2c3e50;">v0.8.0 <span style="font-size:16px; background:#e74c3c; color:#fff; padding:3px 10px; border-radius:4px;">최신</span></span>
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/11</span>
+                            <span style="font-size:18px; font-weight:bold; color:#666;">2026/11/10</span>
                             <button id="patch-btn-11" style="background:#3498db; color:#fff; border:3px solid #000; width:42px; height:42px; font-size:20px; font-weight:900; cursor:pointer; border-radius:6px;" onclick="playSlideSound(); togglePatchDetails('patch-content-11', 'patch-btn-11');">⬇️</button>
                         </div>
                     </div>
                     <div id="patch-content-11" style="font-size:22px; font-weight:900; color:#e74c3c; border-top:2px dashed #000; margin-top:12px; padding-top:10px; display:none; line-height:1.5;">
-                        1. 초콜릿 독 데미지 시 상대 체력바 보라색 변경 및 2번 연속 섭취 시 2번씩 3(총 6) 중첩 데미지 적용<br>
-                        2. 속도 상태별 체력바 색상 변경 (빠름: 노란색, 느림: 파란색)<br>
-                        3. JINO(9초) 및 왕클세종(8초) 쿨타임 조정<br>
-                        4. 미스터비스트 돈 투사체 1.4배 감속 적용<br>
-                        5. 3,2,1 카운트다운 효과음 정상화 및 '시작' 무음 처리, 공 크기 1.4배 추가 확대
+                        1. 카운트다운(3,2,1) 일반 효과음 및 '시작' 호루라기 소리로 분리<br>
+                        2. 캐릭터 기술 충전 시간 변경 (JINO 8초, 미스터비스트 7초, 왕클세종 8초, JIRO 7초, 발작아저씨 5초)<br>
+                        3. 공 크기 1.3배 확대 및 이동 속도 1.25배 상향
                     </div>
                 </div>
 
@@ -1209,20 +1207,37 @@
             } catch(e) {}
         }
 
-        // 3, 2, 1 카운트다운 때 재생되는 일반 효과음
-        function playCountdownBeep() {
+        // 3, 2, 1 카운트다운 때 재생되는 일반 삑- 효과음
+        function playNormalBeepSound() {
             try {
                 let ctx = getAudioContext();
                 let now = ctx.currentTime;
                 let osc = ctx.createOscillator();
                 let gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, now);
-                osc.frequency.exponentialRampToValueAtTime(700, now + 0.15);
-                gain.gain.setValueAtTime(0.25 * soundVolume, now);
+                osc.frequency.setValueAtTime(800, now);
+                gain.gain.setValueAtTime(0.2 * soundVolume, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(now); osc.stop(now + 0.15);
+            } catch(e) {}
+        }
+
+        // '시작' 순간에만 울리는 호루라기 효과음
+        function playCountdownSound() {
+            try {
+                let ctx = getAudioContext();
+                let now = ctx.currentTime;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(2200, now);
+                osc.frequency.exponentialRampToValueAtTime(2700, now + 0.2);
+                osc.frequency.exponentialRampToValueAtTime(2000, now + 0.4);
+                gain.gain.setValueAtTime(0.3 * soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.5);
             } catch(e) {}
         }
 
@@ -2388,10 +2403,10 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        // 이동 속도 1.25배 상향
+        // 공 이동 속도 1.25배 상향 (기존 3.6 -> 4.5)
         const FIXED_SPEED = 4.5;
-        // 공 크기 1.4배 추가 확대 (기존 31 -> 43)
-        const BALL_RADIUS = 43;
+        // 공 크기 1.3배 확대 (기존 24 -> 31)
+        const BALL_RADIUS = 31;
 
         let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
         let matchStartTime = 0;
@@ -2436,13 +2451,13 @@
             obj.vx = vx; obj.vy = vy;
         }
 
-        // 요청하신 캐릭터별 기술 충전 시간 반영 (JINO 9초, 왕클세종 8초)
+        // 요청하신 캐릭터별 기술 충전 시간 적용
         function getSkillMaxTime(playerName) {
-            if (playerName === '미스터비스트') return 7;
-            if (playerName === 'JIRO') return 7;
-            if (playerName === '왕클세종') return 8; // 왕클세종 8초
-            if (playerName === 'JINO') return 9;     // JINO 9초
-            if (playerName === '발작아저씨') return 5;
+            if (playerName === '미스터비스트') return 7; // 미스터비스트 7초
+            if (playerName === 'JIRO') return 7;         // JIRO 7초
+            if (playerName === '왕클세종') return 8;     // 왕클세종 8초
+            if (playerName === 'JINO') return 8;         // JINO 8초
+            if (playerName === '발작아저씨') return 5;   // 발작아저씨 5초
             if (playerName === '본이') return 6;
             if (playerName === '동룡쓰') return 5;
             return null;
@@ -2485,8 +2500,8 @@
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, fastTimer: 0,
-                    rouletteAnim: null, poisonStacks: 0, poisonTimer: 0, poisonTickTimer: 0
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
                 };
             });
 
@@ -2500,8 +2515,8 @@
                     skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
                     jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
                     skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0, fastTimer: 0,
-                    rouletteAnim: null, poisonStacks: 0, poisonTimer: 0, poisonTickTimer: 0
+                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
+                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
                 };
             });
 
@@ -2520,7 +2535,7 @@
             isCountingDown = true; isGaming = false;
             let count = 3; 
             countdownText = `${count}`;
-            playCountdownBeep(); // 3초 시작 시 카운트다운 효과음 재생
+            playNormalBeepSound(); // 3초 시작 시 일반 삑- 소리
             showToast(`게임 시작까지 ${count}초...`);
 
             activeCountdownInterval = setInterval(() => {
@@ -2528,11 +2543,11 @@
                 count--;
                 if (count > 0) {
                     countdownText = `${count}`;
-                    playCountdownBeep(); // 2, 1초 카운트다운 효과음 재생
+                    playNormalBeepSound(); // 2, 1초 시 일반 삑- 소리
                     showToast(`게임 시작까지 ${count}초...`);
                 } else if (count === 0) {
                     countdownText = `시작!`;
-                    // 시작 순간에는 소리 안 나도록 무음 처리
+                    playCountdownSound(); // '시작' 순간에만 호루라기 소리 웅장하게 울림!
                     showToast(`경기 시작! 🔥`);
                 } else {
                     clearInterval(activeCountdownInterval);
@@ -2567,40 +2582,15 @@
         }
 
         function updateAllHpBars() {
-            const now = Date.now();
             team1Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
-                if (fill) {
-                    fill.style.width = pct + '%';
-                    if (p.poisonTimer > now) {
-                        fill.style.backgroundColor = '#9b59b6'; // 독 데미지 시 보라색
-                    } else if (p.fastTimer > now) {
-                        fill.style.backgroundColor = '#f1c40f'; // 속도 빨라질 때 노란색
-                    } else if (p.slowTimer > now) {
-                        fill.style.backgroundColor = '#3498db'; // 느려질 때 파란색
-                    } else {
-                        fill.style.backgroundColor = '#2ecc71';
-                    }
-                }
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
             team2Players.forEach((p, i) => {
                 let pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
-                if (fill) {
-                    fill.style.width = pct + '%';
-                    if (p.poisonTimer > now) {
-                        fill.style.backgroundColor = '#9b59b6'; // 독 데미지 시 보라색
-                    } else if (p.fastTimer > now) {
-                        fill.style.backgroundColor = '#f1c40f'; // 속도 빨라질 때 노란색
-                    } else if (p.slowTimer > now) {
-                        fill.style.backgroundColor = '#3498db'; // 느려질 때 파란색
-                    } else {
-                        fill.style.backgroundColor = '#2ecc71';
-                    }
-                }
-                if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
             });
         }
 
@@ -2628,23 +2618,20 @@
                 const nowTimestamp = Date.now();
 
                 allPlayers.forEach(player => {
-                    // 초콜릿 독 데미지 처리 (2개 먹으면 2번씩 3 중첩 피해)
-                    if (player.poisonTimer > nowTimestamp) {
+                    if (player.poisonTimer > 0) {
+                        player.poisonTimer -= 1;
                         player.poisonTickTimer = (player.poisonTickTimer || 0) + 1;
-                        if (player.poisonTickTimer >= 1) { // 매초마다
+                        if (player.poisonTickTimer >= 0.3) {
                             player.poisonTickTimer = 0;
-                            let totalPoisonDmg = 3 * (player.poisonStacks || 1);
                             let oldHp = player.hp;
-                            player.hp = Math.max(0, player.hp - totalPoisonDmg);
+                            player.hp = Math.max(0, player.hp - 3);
                             if (player.hp < oldHp) {
                                 playMinusDamageSound();
                                 let tIdx = player.team === 1 ? team1Players : team2Players;
-                                showMinusDamageAnimationCard(player.team, tIdx.indexOf(player), totalPoisonDmg);
+                                showMinusDamageAnimationCard(player.team, tIdx.indexOf(player), 3);
                             }
                             updateAllHpBars(); checkGameWinner();
                         }
-                    } else {
-                        player.poisonStacks = 0;
                     }
 
                     if (player.name === 'JIRO' && player.jiroCombo > 0) {
@@ -2670,6 +2657,8 @@
                             else if (player.name === 'JIRO') triggerJiroSkill(player);
                             else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
                             else if (player.name === 'JINO') triggerJinoSkill(player);
+                            else if (player.name === '본이') triggerBoniSkill(player);
+                            else if (player.name === '동룡쓰') triggerDongryongSkill(player);
                             else if (player.name === '발작아저씨') triggerBaljakSkill(player);
                         }
 
@@ -3020,8 +3009,6 @@
                     let currentSpeed = FIXED_SPEED;
                     if (p.slowTimer && p.slowTimer > nowTimestamp) {
                         currentSpeed = FIXED_SPEED * 0.5;
-                    } else if (p.fastTimer && p.fastTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 1.5;
                     }
 
                     p.x += p.vx * (currentSpeed / FIXED_SPEED); 
@@ -3034,7 +3021,7 @@
                     if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
                     
                     let speed = Math.hypot(p.vx, p.vy);
-                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp) && (!p.fastTimer || p.fastTimer <= nowTimestamp)) {
+                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
                         p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
                         p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
                     }
@@ -3281,11 +3268,9 @@
                                     let teamIdx = player.team === 1 ? team1Players : team2Players;
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 10);
 
-                                    // 초콜릿 독 데미지 및 2개 연속 먹을 시 중첩(2번씩 3 데미지) 부여
                                     enemyTeamBalls.forEach(enemy => {
                                         if (enemy.hp > 0) {
-                                            enemy.poisonStacks = (enemy.poisonStacks || 0) + 1;
-                                            enemy.poisonTimer = nowTimestamp + 3000; // 3초간 지속
+                                            enemy.poisonTimer = 2;
                                             enemy.poisonTickTimer = 0;
                                         }
                                     });
@@ -3307,8 +3292,7 @@
                                     player.hp = Math.min(player.maxHp, player.hp + 25);
                                     showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
                                     
-                                    // 2번째 기술 💰 돈 발사: 1.4배 더 느리게 이동하도록 속도 조정
-                                    const spd = 4.5 / 1.4;
+                                    const spd = 4.5;
                                     const dirs8 = [
                                         {vx: 0, vy: -spd},   // 위
                                         {vx: 0, vy: spd},    // 아래
@@ -3572,4 +3556,4 @@
         requestAnimationFrame(runGameLoop);
     </script>
 </body>
-</html>
+    </html>
