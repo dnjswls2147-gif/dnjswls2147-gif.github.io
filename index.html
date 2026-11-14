@@ -1,2081 +1,1004 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>릴리 볼 파이트</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-        }
-        html, body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: fixed;
-            overscroll-behavior: none;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Ball Fight Arena</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-        .app-container {
-            width: 100vw;
-            max-width: 620px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 10;
-            padding: 10px 6px;
-            transform: scale(1.35);
-            transform-origin: center center;
-            transition: transform 0.2s ease;
-        }
+    body {
+      background: #0d0f17;
+      color: #f1f5f9;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        .top-menu-bar {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0;
-            margin-bottom: 6px;
-            z-index: 1000;
-        }
+    /* 좌측 컨트롤 패널 */
+    #sidebar {
+      width: 340px;
+      background: #151926;
+      border-right: 1px solid #262d42;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
 
-        .settings-gear-btn {
-            width: 40px;
-            height: 40px;
-            background: #f1f2f6;
-            border: 3px solid #000;
-            border-radius: 6px;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #000;
-            pointer-events: auto;
-        }
-        .settings-gear-btn:active {
-            transform: translateY(2px);
-            box-shadow: none;
-        }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #38bdf8, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
 
-        #toast-alert {
-            position: fixed;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.94);
-            color: #ffffff;
-            padding: 14px 26px;
-            border-radius: 35px;
-            font-size: 24px;
-            font-weight: 900;
-            z-index: 100000;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-            white-space: nowrap;
-            border: 3px solid #ffffff;
-        }
-        #toast-alert.show {
-            opacity: 1;
-        }
+    .panel-box {
+      background: #1c2233;
+      border: 1px solid #2a334d;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-        .arena-container-wrapper {
-            position: relative;
-            width: 480px;
-            max-width: 92vw;
-            pointer-events: auto;
-        }
+    .panel-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        .arena-frame {
-            width: 480px;
-            height: 480px;
-            max-width: 100%;
-            max-height: 45vh;
-            border: 5px solid #000000;
-            background-color: #ffffff;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            pointer-events: auto;
-        }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-        .controls-wrapper {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 6px;
-            pointer-events: auto;
-            z-index: 100;
-        }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: transform 0.1s, filter 0.15s;
+    }
 
-        .slot-container {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            margin-bottom: 6px;
-            pointer-events: auto;
-        }
-        .slot-team-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            pointer-events: auto;
-        }
-        .slot-team-title {
-            font-size: 15px;
-            font-weight: 900;
-            text-align: center;
-        }
-        .btn-add-slot {
-            width: 100%;
-            padding: 12px 4px;
-            background: #555555;
-            color: #ffffff;
-            border: 3px solid #000000;
-            font-size: 16px;
-            font-weight: 900;
-            cursor: pointer;
-            text-align: center;
-            outline: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-radius: 6px;
-            box-shadow: 0 3px 0 #000;
-            pointer-events: auto;
-            position: relative;
-            z-index: 101;
-        }
-        .btn-add-slot.selected {
-            background: #27ae60;
-        }
+    button:active {
+      transform: scale(0.96);
+    }
 
-        .btn-main-action {
-            margin-top: 6px;
-            width: 100%;
-            padding: 14px 0;
-            font-size: 22px;
-            font-weight: 900;
-            border: 3px solid #000000;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 3px 0 #000000;
-            outline: none;
-            pointer-events: auto;
-            position: relative;
-            z-index: 101;
-        }
-        .btn-start { background-color: #2ecc71; color: #ffffff; }
-        .btn-exit { background-color: #e74c3c; color: #ffffff; }
-        .btn-main-action:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #000000;
-        }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #fff;
+      flex: 1;
+      font-size: 0.95rem;
+      padding: 12px;
+    }
 
-        .ingame-status-panel {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 160px;
-            overflow-y: auto;
-        }
-        .status-row-group {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-        .player-status-card {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .player-name-label {
-            font-size: 15px;
-            font-weight: 900;
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .player-name-p1 { color: #1e90ff; }
-        .player-name-p2 { color: #e74c3c; text-align: right; }
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
 
-        .hp-bar-outer {
-            width: 100%;
-            height: 30px;
-            background: #e0e0e0;
-            border: 3px solid #000000;
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-        .hp-bar-inner {
-            height: 100%;
-            background: #2ecc71;
-            width: 100%;
-            transition: width 0.4s ease-in-out;
-        }
-        .hp-text-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-weight: 900;
-            font-size: 14px;
-            text-shadow: 1px 1px 2px #000;
-        }
-        .sub-gauge-bar {
-            width: 100%;
-            height: 20px;
-            background: #cccccc;
-            border: 3px solid #000000;
-            margin-top: 3px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-        .sub-gauge-fill {
-            height: 100%;
-            background: #8e44ad;
-            width: 0%;
-        }
-        .sub-gauge-text {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 900;
-            color: #000;
-        }
+    .btn-secondary {
+      background: #2b344d;
+      color: #e2e8f0;
+      flex: 1;
+    }
 
-        @keyframes floatPlusAnim {
-            0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
-        }
-        .healing-popup-text {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #2ecc71;
-            font-size: 22px;
-            font-weight: 900;
-            text-shadow: 1px 1px 2px #000;
-            pointer-events: none;
-            animation: floatPlusAnim 0.8s ease-out forwards;
-            z-index: 500;
-        }
+    .btn-secondary:hover {
+      background: #364161;
+    }
 
-        @keyframes floatMinusAnim {
-            0% { transform: translateY(0) scale(0.9); opacity: 1; }
-            100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
-        }
-        .minus-popup-text {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #e74c3c;
-            font-size: 22px;
-            font-weight: 900;
-            text-shadow: 1px 1px 2px #000;
-            pointer-events: none;
-            animation: floatMinusAnim 0.8s ease-out forwards;
-            z-index: 500;
-        }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            pointer-events: none;
-            padding: 15px;
-        }
-        .modal-overlay.hidden { display: none !important; }
-        .modal-overlay > * { pointer-events: auto; }
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      color: #cbd5e1;
+    }
 
-        .picker-modal-box {
-            width: 94vw;
-            max-width: 680px;
-            height: 78vh;
-            max-height: 750px;
-            background: #ffffff;
-            border: 6px solid #000000;
-            padding: 45px 26px 26px 26px;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            display: flex;
-            flex-direction: column;
-            z-index: 100000;
-        }
-        
-        .modal-close-btn {
-            position: absolute;
-            top: 14px; right: 14px;
-            width: 48px; height: 48px;
-            border: 3px solid #000000;
-            background: #ffffff;
-            font-size: 24px;
-            font-weight: 900;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
-            z-index: 100;
-            pointer-events: auto;
-        }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #38bdf8;
+    }
 
-        .picker-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-top: 18px;
-            flex: 1;
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
-            padding-right: 6px;
-            pointer-events: auto;
-        }
-        .ball-select-btn {
-            background: #4a4a4a;
-            color: #ffffff;
-            border: 3px solid #000000;
-            padding: 20px 18px;
-            font-size: 22px;
-            font-weight: 900;
-            text-align: center;
-            cursor: pointer;
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            outline: none;
-            flex-shrink: 0;
-            border-radius: 6px;
-            pointer-events: auto;
-        }
+    select, input[type="text"] {
+      background: #0f131f;
+      border: 1px solid #333e5c;
+      color: #f8fafc;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
 
-        .admin-btn {
-            padding: 16px 0;
-            font-size: 22px;
-            font-weight: 900;
-            border: 3px solid #000;
-            cursor: pointer;
-            outline: none;
-            border-radius: 6px;
-            pointer-events: auto;
-        }
-        .admin-btn-confirm { background: #2ecc71; color: #fff; }
-        .hidden { display: none !important; }
-    </style>
+    .add-form {
+      display: flex;
+      gap: 6px;
+    }
+
+    .add-form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .add-form input[type="color"] {
+      width: 36px;
+      height: 34px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    #fighter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .fighter-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #121622;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #262f47;
+      font-size: 0.85rem;
+    }
+
+    .fighter-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .remove-btn {
+      background: transparent;
+      color: #94a3b8;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+    }
+
+    .remove-btn:hover {
+      color: #ef4444;
+    }
+
+    /* 우측 게임 아레나 영역 */
+    #main-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #171c2e 0%, #090b10 100%);
+    }
+
+    canvas {
+      display: block;
+    }
+
+    /* 우상단 실시간 순위 & 킬로그 */
+    #hud {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .hud-box {
+      background: rgba(15, 20, 34, 0.82);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .hud-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    #leaderboard {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.8rem;
+    }
+
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lb-dead {
+      opacity: 0.4;
+      text-decoration: line-through;
+    }
+
+    #kill-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      max-height: 120px;
+      overflow: hidden;
+    }
+
+    /* 우승 배너 */
+    #winner-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 11, 16, 0.75);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    #winner-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #winner-text {
+      font-size: 2.8rem;
+      font-weight: 900;
+      text-shadow: 0 4px 24px rgba(56, 189, 248, 0.6);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
 
-    <script>
-        document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
-        document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
-        document.addEventListener('gestureend', function(e) { e.preventDefault(); });
-    </script>
+  <!-- 좌측 설정 사이드바 -->
+  <div id="sidebar">
+    <h1>⚔️ BALL FIGHT ARENA</h1>
 
-    <!-- 화면 상단 토스트 알림 메시지 -->
-    <div id="toast-alert">양쪽 공을 모두 선택해 주세요!</div>
-
-    <!-- 메인 컨테이너 -->
-    <div class="app-container" id="main-app-container">
-
-        <!-- 상단 설정 메뉴 바 -->
-        <div class="top-menu-bar" id="lobby-top-menu-bar">
-            <div class="settings-gear-btn" onclick="playClickSound(); openSettingsModal();">⚙️</div>
-        </div>
-
-        <!-- 경기장 및 래퍼 -->
-        <div class="arena-container-wrapper">
-            <div class="arena-frame" id="arena-frame-box" style="position: relative; overflow: hidden;">
-                <canvas id="gameCanvas" width="480" height="480"></canvas>
-            </div>
-        </div>
-
-        <!-- 로비 및 컨트롤 영역 -->
-        <div class="controls-wrapper">
-            <div id="lobby-controls" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-                <div class="slot-container" id="dynamic-slot-container"></div>
-                <button class="btn-main-action btn-start" id="btn-start-match" onclick="playClickSound(); startMatch();">시작하기 ▶</button>
-            </div>
-
-            <div id="ingame-controls" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-                <div class="ingame-status-panel" id="ingame-status-panel-container"></div>
-                <button class="btn-main-action btn-exit" id="btn-exit-match" onclick="playClickSound(); exitMatch();">나가기 🚪</button>
-            </div>
-        </div>
-
+    <div class="panel-box">
+      <div class="btn-row">
+        <button id="start-btn" class="btn-primary">▶ 배틀 시작 / 리셋</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="loadPreset('colors')">🎨 기본 컬러</button>
+        <button class="btn-secondary" onclick="loadPreset('countries')">🌍 국가 대항전</button>
+        <button class="btn-secondary" onclick="loadPreset('animals')">🦁 맹수 배틀</button>
+      </div>
     </div>
 
-    <!-- 게임 설정 모달 팝업 창 -->
-    <div class="modal-overlay hidden" id="settings-modal" style="z-index: 200000; background: rgba(0, 0, 0, 0.5);">
-        <div style="background:#fff; border:6px solid #000; padding:45px 36px; width:94%; max-width:560px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.5); position:relative;">
-            <button class="modal-close-btn" style="width:52px; height:52px; font-size:26px;" onclick="playClickSound(); closeSettingsModal();">✕</button>
-            <div style="font-size:34px; font-weight:900; margin-bottom:26px; color:#000;">⚙️ 게임 설정</div>
-            
-            <div style="margin-bottom:26px; text-align:left;">
-                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔊 효과음 소리 (0 ~ 1000)</span>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <input type="text" id="sfx-input-box" value="100" style="width:90px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
-                        <button onclick="playClickSound(); applySfxInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
-                    </div>
-                </div>
-                <input type="range" id="sfx-volume-range" min="0" max="1000" value="100" style="width:100%; cursor:pointer; height:10px;" oninput="syncSfxRange(this.value)">
-            </div>
+    <div class="panel-box">
+      <div class="panel-title">게임 규칙 & 무기 설정</div>
 
-            <div style="margin-bottom:34px; text-align:left;">
-                <div style="font-size:20px; font-weight:900; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🔍 화면 확대 (0 ~ 150)</span>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <input type="text" id="zoom-input-box" value="35" style="width:80px; padding:8px; font-size:18px; font-weight:900; border:3px solid #000; text-align:center; outline:none; border-radius:6px;">
-                        <button onclick="playClickSound(); applyZoomInput();" style="padding:8px 14px; font-size:18px; font-weight:900; background:#3498db; color:#fff; border:3px solid #000; cursor:pointer; border-radius:6px;">확인</button>
-                    </div>
-                </div>
-                <input type="range" id="zoom-scale-range" min="0" max="150" value="35" style="width:100%; cursor:pointer; height:10px;" oninput="syncZoomRange(this.value)">
-            </div>
+      <div class="control-group">
+        <label><span>무기 타입</span></label>
+        <select id="weapon-type">
+          <option value="sword">⚔️ 회전 장검 (기본)</option>
+          <option value="dual">🗡️ 쌍검 (빠른 연타)</option>
+          <option value="scythe">🌙 대낫 (긴 사거리)</option>
+        </select>
+      </div>
 
-            <button class="admin-btn admin-btn-confirm" style="width:100%; padding:18px; font-size:24px; font-weight:900; background-color:#27ae60;" onclick="playClickSound(); saveGameSettings();">💾 저장하기</button>
-        </div>
+      <div class="control-group">
+        <label><span>기본 체력 (HP)</span> <span id="hp-val">100</span></label>
+        <input type="range" id="base-hp" min="50" max="300" step="10" value="100" />
+      </div>
+
+      <div class="control-group">
+        <label><span>기본 공격력</span> <span id="dmg-val">20</span></label>
+        <input type="range" id="base-dmg" min="10" max="60" step="5" value="20" />
+      </div>
+
+      <div class="control-group">
+        <label><span>이동 속도</span> <span id="spd-val">5</span></label>
+        <input type="range" id="base-spd" min="2" max="10" step="1" value="5" />
+      </div>
+
+      <div class="control-group">
+        <label>
+          <span>🔥 자기장 축소 (서든데스)</span>
+          <input type="checkbox" id="shrink-arena" checked />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <span>🔊 효과음 활성화</span>
+          <input type="checkbox" id="sound-toggle" checked />
+        </label>
+      </div>
     </div>
 
-    <!-- 볼 선택 모달 팝업창 -->
-    <div class="modal-overlay hidden" id="ball-picker-modal">
-        <div class="picker-modal-box">
-            <button class="modal-close-btn" style="width:48px; height:48px; font-size:24px;" onclick="playClickSound(); closeBallPicker();">✕</button>
-            <div style="font-size:26px; font-weight:900; text-align:center; margin-bottom:8px; flex-shrink:0;">⚽ 볼 선택하기</div>
-            <div class="picker-grid" id="ball-picker-grid"></div>
-        </div>
+    <div class="panel-box">
+      <div class="panel-title">참가자 목록 (<span id="count-label">0</span>명)</div>
+      <div class="add-form">
+        <input type="text" id="new-name" placeholder="이름 / 이모지 (예: 🇰🇷 한국)" maxlength="12" />
+        <input type="color" id="new-color" value="#38bdf8" />
+        <button class="btn-secondary" style="flex:0;" onclick="addFighter()">추가</button>
+      </div>
+      <div id="fighter-list"></div>
+    </div>
+  </div>
+
+  <!-- 메인 캔버스 영역 -->
+  <div id="main-area">
+    <canvas id="arena"></canvas>
+
+    <div id="hud">
+      <div class="hud-box">
+        <div class="hud-title">🏆 생존 순위</div>
+        <div id="leaderboard"></div>
+      </div>
+      <div class="hud-box">
+        <div class="hud-title">💀 킬 로그</div>
+        <div id="kill-feed"></div>
+      </div>
     </div>
 
-    <script>
-        let audioCtx = null;
-        let soundVolume = 1.0;
+    <div id="winner-overlay">
+      <div style="font-size: 1.2rem; color: #94a3b8; font-weight: 700;">VICTORY ROYALE</div>
+      <div id="winner-text">👑 WINNER</div>
+      <button class="btn-primary" style="flex:0; padding: 14px 32px; font-size: 1.1rem;" onclick="startBattle()">다시 싸우기</button>
+    </div>
+  </div>
 
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
+  <script>
+    const canvas = document.getElementById('arena');
+    const ctx = canvas.getContext('2d');
+    const mainArea = document.getElementById('main-area');
+
+    // 오디오 합성기 (외부 파일 없이 타격음 생성)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!document.getElementById('sound-toggle').checked) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+      if (type === 'hit') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      } else if (type === 'clash') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(950, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.08);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } else if (type === 'kill') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'win') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(554, now + 0.1);
+        osc.frequency.setValueAtTime(659, now + 0.2);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+    }
+
+    // 프리셋 데이터
+    const PRESETS = {
+      colors: [
+        { name: 'RED', color: '#ef4444' },
+        { name: 'BLUE', color: '#3b82f6' },
+        { name: 'GREEN', color: '#22c55e' },
+        { name: 'YELLOW', color: '#eab308' },
+        { name: 'PURPLE', color: '#a855f7' },
+        { name: 'CYAN', color: '#06b6d4' }
+      ],
+      countries: [
+        { name: '🇰🇷 한국', color: '#3b82f6' },
+        { name: '🇯🇵 일본', color: '#f8fafc' },
+        { name: '🇺🇸 미국', color: '#ef4444' },
+        { name: '🇨🇳 중국', color: '#dc2626' },
+        { name: '🇬🇧 영국', color: '#6366f1' },
+        { name: '🇧🇷 브라질', color: '#22c55e' }
+      ],
+      animals: [
+        { name: '🦁 사자', color: '#f59e0b' },
+        { name: '🐯 호랑이', color: '#ea580c' },
+        { name: '🐺 늑대', color: '#64748b' },
+        { name: '🐻 곰', color: '#92400e' },
+        { name: '🦈 상어', color: '#0284c7' },
+        { name: '🐉 드래곤', color: '#10b981' }
+      ]
+    };
+
+    let roster = [...PRESETS.colors];
+    let balls = [];
+    let particles = [];
+    let floatingTexts = [];
+    let arenaRadius = 280;
+    let initialArenaRadius = 280;
+    let hitStopFrames = 0;
+    let shakeTime = 0;
+    let gameRunning = false;
+
+    // UI 슬라이더 바인딩
+    const hpSlider = document.getElementById('base-hp');
+    const dmgSlider = document.getElementById('base-dmg');
+    const spdSlider = document.getElementById('base-spd');
+    hpSlider.oninput = () => document.getElementById('hp-val').textContent = hpSlider.value;
+    dmgSlider.oninput = () => document.getElementById('dmg-val').textContent = dmgSlider.value;
+    spdSlider.oninput = () => document.getElementById('spd-val').textContent = spdSlider.value;
+
+    function resizeCanvas() {
+      canvas.width = mainArea.clientWidth;
+      canvas.height = mainArea.clientHeight;
+      initialArenaRadius = Math.min(canvas.width, canvas.height) * 0.42;
+      if (!gameRunning) arenaRadius = initialArenaRadius;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function renderRoster() {
+      const list = document.getElementById('fighter-list');
+      document.getElementById('count-label').textContent = roster.length;
+      list.innerHTML = '';
+      roster.forEach((f, idx) => {
+        const div = document.createElement('div');
+        div.className = 'fighter-item';
+        div.innerHTML = `
+          <div class="fighter-info">
+            <span class="color-dot" style="background:${f.color}"></span>
+            <span>${f.name}</span>
+          </div>
+          <button class="remove-btn" onclick="removeFighter(${idx})">✕</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function loadPreset(key) {
+      roster = PRESETS[key].map(item => ({ ...item }));
+      renderRoster();
+      startBattle();
+    }
+
+    function addFighter() {
+      const nameInput = document.getElementById('new-name');
+      const colorInput = document.getElementById('new-color');
+      const name = nameInput.value.trim() || `BALL ${roster.length + 1}`;
+      roster.push({ name, color: colorInput.value });
+      nameInput.value = '';
+      renderRoster();
+    }
+
+    function removeFighter(idx) {
+      if (roster.length <= 2) {
+        alert('최소 2명의 참가자가 필요합니다.');
+        return;
+      }
+      roster.splice(idx, 1);
+      renderRoster();
+    }
+
+    class Ball {
+      constructor(data, x, y, hp, dmg, speed, weaponType) {
+        this.name = data.name;
+        this.color = data.color;
+        this.x = x;
+        this.y = y;
+        this.radius = 26;
+        this.maxHp = hp;
+        this.hp = hp;
+        this.dmg = dmg;
+        this.weaponType = weaponType;
+        this.kills = 0;
+        this.alive = true;
+
+        const angle = Math.random() * Math.PI * 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.baseSpeed = speed;
+
+        this.weaponAngle = Math.random() * Math.PI * 2;
+        this.weaponDir = Math.random() < 0.5 ? 1 : -1;
+        this.weaponSpeed = weaponType === 'dual' ? 0.13 : 0.09;
+        this.weaponLength = weaponType === 'scythe' ? 68 : 54;
+        this.hitCooldown = 0;
+        this.flashTime = 0;
+      }
+
+      getBlades() {
+        const blades = [{
+          x1: this.x + Math.cos(this.weaponAngle) * this.radius,
+          y1: this.y + Math.sin(this.weaponAngle) * this.radius,
+          x2: this.x + Math.cos(this.weaponAngle) * (this.radius + this.weaponLength),
+          y2: this.y + Math.sin(this.weaponAngle) * (this.radius + this.weaponLength)
+        }];
+
+        if (this.weaponType === 'dual') {
+          const opp = this.weaponAngle + Math.PI;
+          blades.push({
+            x1: this.x + Math.cos(opp) * this.radius,
+            y1: this.y + Math.sin(opp) * this.radius,
+            x2: this.x + Math.cos(opp) * (this.radius + this.weaponLength * 0.85),
+            y2: this.y + Math.sin(opp) * (this.radius + this.weaponLength * 0.85)
+          });
+        }
+        return blades;
+      }
+
+      update(cx, cy, arenaR) {
+        if (!this.alive) return;
+
+        if (this.hitCooldown > 0) this.hitCooldown--;
+        if (this.flashTime > 0) this.flashTime--;
+
+        // 무기 회전
+        this.weaponAngle += this.weaponSpeed * this.weaponDir;
+
+        // 위치 이동
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // 일정 속도 유지 보정
+        const currentSpd = Math.hypot(this.vx, this.vy);
+        if (currentSpd > 0.01) {
+          const targetSpd = this.baseSpeed + (this.kills * 0.4);
+          this.vx = (this.vx / currentSpd) * (currentSpd * 0.96 + targetSpd * 0.04);
+          this.vy = (this.vy / currentSpd) * (currentSpd * 0.96 + targetSpd * 0.04);
         }
 
-        window.addEventListener('pointerdown', () => { getAudioContext(); }, { once: true });
+        // 원형 경기장 벽면 충돌
+        const dx = this.x - cx;
+        const dy = this.y - cy;
+        const dist = Math.hypot(dx, dy);
 
-        function playClickSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.2 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.05);
-            } catch(e) {}
+        if (dist + this.radius > arenaR) {
+          const nx = dx / dist;
+          const ny = dy / dist;
+          this.x = cx + nx * (arenaR - this.radius);
+          this.y = cy + ny * (arenaR - this.radius);
+
+          const dot = this.vx * nx + this.vy * ny;
+          this.vx -= 2 * dot * nx;
+          this.vy -= 2 * dot * ny;
         }
+      }
 
-        function playHitSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(320, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.09);
-                gain.gain.setValueAtTime(0.3 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.09);
-            } catch(e) {}
-        }
+      draw(ctx) {
+        if (!this.alive) return;
 
-        function playWallSound() {
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(180, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.07);
-                gain.gain.setValueAtTime(0.25 * soundVolume, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.07);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.07);
-            } catch(e) {}
-        }
+        // 무기 렌더링
+        const blades = this.getBlades();
+        blades.forEach(b => {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(b.x1, b.y1);
+          ctx.lineTo(b.x2, b.y2);
+          ctx.lineWidth = this.weaponType === 'scythe' ? 7 : 6;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 10;
+          ctx.stroke();
 
-        function playNormalBeepSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, now);
-                gain.gain.setValueAtTime(0.2 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.15);
-            } catch(e) {}
-        }
-
-        function playCountdownSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(2200, now);
-                osc.frequency.exponentialRampToValueAtTime(2700, now + 0.2);
-                osc.frequency.exponentialRampToValueAtTime(2000, now + 0.4);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.5);
-            } catch(e) {}
-        }
-
-        function playJiroExplosionSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc1 = ctx.createOscillator();
-                let osc2 = ctx.createOscillator();
-                let gain1 = ctx.createGain();
-                let gain2 = ctx.createGain();
-                
-                osc1.type = 'sawtooth';
-                osc2.type = 'square';
-                
-                osc1.frequency.setValueAtTime(180, now);
-                osc1.frequency.exponentialRampToValueAtTime(30, now + 0.6);
-
-                osc2.frequency.setValueAtTime(90, now);
-                osc2.frequency.exponentialRampToValueAtTime(20, now + 0.6);
-
-                gain1.gain.setValueAtTime(0.8 * soundVolume, now);
-                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
-
-                gain2.gain.setValueAtTime(0.6 * soundVolume, now);
-                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
-
-                osc1.connect(gain1); gain1.connect(ctx.destination);
-                osc2.connect(gain2); gain2.connect(ctx.destination);
-
-                osc1.start(now); osc2.start(now);
-                osc1.stop(now + 0.65); osc2.stop(now + 0.65);
-            } catch(e) {}
-        }
-
-        function playBoniBombSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-                gain.gain.setValueAtTime(0.5 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.38);
-            } catch(e) {}
-        }
-
-        function playRouletteSpinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                for (let i = 0; i < 10; i++) {
-                    let time = now + i * 0.09;
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(600 + i * 50, time);
-                    gain.gain.setValueAtTime(0.2 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.06);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.06);
-                }
-            } catch(e) {}
-        }
-
-        function playRouletteWinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                const notes = [440, 554.37, 659.25, 880];
-                notes.forEach((freq, idx) => {
-                    let time = now + idx * 0.08;
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, time);
-                    gain.gain.setValueAtTime(0.4 * soundVolume, time);
-                    gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(time); osc.stop(time + 0.18);
-                });
-            } catch(e) {}
-        }
-
-        function playArrowSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(1000, now);
-                osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.14);
-            } catch(e) {}
-        }
-
-        function playCoinSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(900, now);
-                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
-                gain.gain.setValueAtTime(0.25 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.12);
-            } catch(e) {}
-        }
-
-        function playMrBeastChocolateSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.18);
-            } catch(e) {}
-        }
-
-        function playMrBeastMoneyBagSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.22);
-            } catch(e) {}
-        }
-
-        function playMinusDamageSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(250, now);
-                osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
-                gain.gain.setValueAtTime(0.3 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.18);
-            } catch(e) {}
-        }
-
-        function playFoodThrowSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let osc2 = ctx.createOscillator();
-                let gain = ctx.createGain();
-                
-                osc.type = 'sine';
-                osc2.type = 'triangle';
-                
-                osc.frequency.setValueAtTime(600, now);
-                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.25);
-
-                osc2.frequency.setValueAtTime(300, now);
-                osc2.frequency.exponentialRampToValueAtTime(900, now + 0.25);
-
-                gain.gain.setValueAtTime(0.35 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
-
-                osc.connect(gain); osc2.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now); osc2.start(now);
-                osc.stop(now + 0.28); osc2.stop(now + 0.28);
-            } catch(e) {}
-        }
-
-        function playSkillSuperSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.25);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.3);
-            } catch(e) {}
-        }
-
-        function playHealSound() {
-            try {
-                let ctx = getAudioContext();
-                let now = ctx.currentTime;
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, now);
-                osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.2);
-                gain.gain.setValueAtTime(0.4 * soundVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(now); osc.stop(now + 0.25);
-            } catch(e) {}
-        }
-
-        function loadSavedSettings() {
-            let savedVol = localStorage.getItem('lily_game_sfx_vol') || '100';
-            let v = parseInt(savedVol);
-            soundVolume = v / 100;
-            document.getElementById('sfx-volume-range').value = v;
-            document.getElementById('sfx-input-box').value = v;
-
-            let savedZoom = localStorage.getItem('lily_game_zoom_scale') || '35';
-            let z = parseInt(savedZoom);
-            document.getElementById('zoom-scale-range').value = z;
-            document.getElementById('zoom-input-box').value = z;
-            applyZoomScale(z);
-        }
-
-        function saveGameSettings() {
-            localStorage.setItem('lily_game_sfx_vol', document.getElementById('sfx-input-box').value);
-            localStorage.setItem('lily_game_zoom_scale', document.getElementById('zoom-input-box').value);
-            showToast('설정이 성공적으로 저장되었습니다! 💾');
-            closeSettingsModal();
-        }
-
-        function applySfxInput() {
-            let val = parseInt(document.getElementById('sfx-input-box').value) || 100;
-            if (val < 0) val = 0; if (val > 1000) val = 1000;
-            soundVolume = val / 100;
-            document.getElementById('sfx-volume-range').value = val;
-            showToast(`효과음 소리가 ${val}(으)로 설정되었습니다.`);
-        }
-
-        function syncSfxRange(val) {
-            document.getElementById('sfx-input-box').value = val;
-            soundVolume = parseInt(val) / 100;
-        }
-
-        function applyZoomInput() {
-            let val = parseInt(document.getElementById('zoom-input-box').value) || 35;
-            if (val < 0) val = 0; if (val > 150) val = 150;
-            document.getElementById('zoom-scale-range').value = val;
-            applyZoomScale(val);
-            showToast(`화면 확대가 ${val}(으)로 설정되었습니다.`);
-        }
-
-        function syncZoomRange(val) {
-            document.getElementById('zoom-input-box').value = val;
-            applyZoomScale(parseInt(val));
-        }
-
-        function applyZoomScale(numVal) {
-            let scaleFactor = 1.0 + (numVal / 150) * 1.0;
-            document.getElementById('main-app-container').style.transform = `scale(${scaleFactor})`;
-        }
-
-        function openSettingsModal() {
-            document.getElementById('settings-modal').classList.remove('hidden');
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settings-modal').classList.add('hidden');
-        }
-
-        let currentMatchMode = 1;
-        let selectedTeam1Balls = [];
-        let selectedTeam2Balls = [];
-        let currentPickingTeam = null;
-        let currentPickingIndex = 0;
-
-        function initSlotContainers() {
-            selectedTeam1Balls = new Array(currentMatchMode).fill(null);
-            selectedTeam2Balls = new Array(currentMatchMode).fill(null);
-
-            const container = document.getElementById('dynamic-slot-container');
-            container.innerHTML = '';
-
-            const t1Box = document.createElement('div');
-            t1Box.className = 'slot-team-box';
-            t1Box.innerHTML = `<div class="slot-team-title" style="color:#1e90ff;">파란팀</div>`;
-            for (let i = 0; i < currentMatchMode; i++) {
-                let btn = document.createElement('button');
-                btn.className = 'btn-add-slot';
-                btn.id = `slot-t1-${i}`;
-                btn.innerText = '볼 선택하기';
-                btn.onclick = () => { playClickSound(); openBallPicker('team1', i); };
-                t1Box.appendChild(btn);
-            }
-
-            const t2Box = document.createElement('div');
-            t2Box.className = 'slot-team-box';
-            t2Box.innerHTML = `<div class="slot-team-title" style="color:#e74c3c;">빨간팀</div>`;
-            for (let i = 0; i < currentMatchMode; i++) {
-                let btn = document.createElement('button');
-                btn.className = 'btn-add-slot';
-                btn.id = `slot-t2-${i}`;
-                btn.innerText = '볼 선택하기';
-                btn.onclick = () => { playClickSound(); openBallPicker('team2', i); };
-                t2Box.appendChild(btn);
-            }
-
-            container.appendChild(t1Box);
-            container.appendChild(t2Box);
-        }
-
-        const ballList = [
-            { name: '미스터비스트', hp: 250, imageSrc: 'character.jpg' },
-            { name: '동룡쓰', hp: 250, imageSrc: 'dongryong.png' },
-            { name: '왕클세종', hp: 250, imageSrc: 'wangkl.png' },
-            { name: '본이', hp: 250, imageSrc: 'boni.png' },
-            { name: 'JINO', hp: 250, imageSrc: 'jino.jpg' },
-            { name: 'JIRO', hp: 250, imageSrc: '14605.jpg' },
-            { name: '발작아저씨', hp: 250, imageSrc: 'baljak.jpg' }
-        ];
-
-        const loadedImages = {};
-        ballList.forEach(ball => {
-            if (ball.imageSrc) {
-                const img = new Image();
-                img.src = ball.imageSrc;
-                loadedImages[ball.name] = img;
-            }
+          // 칼날 궤적 하이라이트
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius + this.weaponLength * 0.85, this.weaponAngle - 0.5 * this.weaponDir, this.weaponAngle, this.weaponDir < 0);
+          ctx.strokeStyle = this.color + '55';
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          ctx.restore();
         });
 
-        const maleBaconImg = new Image(); maleBaconImg.src = '14474.jpg';
-        const femaleBaconImg = new Image(); femaleBaconImg.src = '14475.jpg';
-        const skeletonImg = new Image(); skeletonImg.src = '14108.jpg';
-        const arrowImg = new Image(); arrowImg.src = '14215.png';
+        // 본체 원
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.flashTime > 0 ? '#ffffff' : this.color;
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#0f172a';
+        ctx.stroke();
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedSettings();
-            initSlotContainers();
+        // 체력 텍스트 (공 내부)
+        ctx.fillStyle = this.flashTime > 0 ? '#000' : '#fff';
+        ctx.font = '800 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(Math.ceil(this.hp), this.x, this.y);
+
+        // 이름 라벨 (공 위쪽)
+        ctx.font = '700 12px sans-serif';
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText(this.name, this.x, this.y - this.radius - 10);
+        ctx.restore();
+      }
+    }
+
+    // 선분과 원의 최단 거리 계산
+    function distToSegment(px, py, x1, y1, x2, y2) {
+      const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+      if (l2 === 0) return Math.hypot(px - x1, py - y1);
+      let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(px - (x1 + t * (x2 - x1)), py - (y1 + t * (y2 - y1)));
+    }
+
+    // 두 선분 교차 검사 (무기 패링용)
+    function segmentsIntersect(a, b, c, d, p, q, r, s) {
+      const det = (c - a) * (s - q) - (r - p) * (d - b);
+      if (det === 0) return false;
+      const lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+      const gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+    }
+
+    function spawnParticles(x, y, color, count = 12) {
+      for (let i = 0; i < count; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 2 + Math.random() * 5;
+        particles.push({
+          x, y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          life: 20 + Math.random() * 15,
+          maxLife: 35,
+          color,
+          size: 2 + Math.random() * 3
         });
+      }
+    }
 
-        function openBallPicker(team, index) {
-            currentPickingTeam = team; currentPickingIndex = index;
-            const grid = document.getElementById('ball-picker-grid');
-            grid.innerHTML = '';
-            ballList.forEach(ball => {
-                const btn = document.createElement('div');
-                btn.className = 'ball-select-btn';
-                btn.innerText = ball.name;
-                btn.onclick = () => { playClickSound(); chooseBall(ball); };
-                grid.appendChild(btn);
-            });
-            document.getElementById('ball-picker-modal').classList.remove('hidden');
-        }
+    function spawnFloatingText(x, y, text, color = '#fff') {
+      floatingTexts.push({
+        x, y, text, color,
+        vy: -1.5,
+        life: 35
+      });
+    }
 
-        function closeBallPicker() { document.getElementById('ball-picker-modal').classList.add('hidden'); }
+    function addKillLog(killer, victim) {
+      const feed = document.getElementById('kill-feed');
+      const item = document.createElement('div');
+      item.innerHTML = `<strong style="color:${killer.color}">${killer.name}</strong> ⚔️ <span style="color:${victim.color}">${victim.name}</span>`;
+      feed.prepend(item);
+      if (feed.children.length > 6) feed.lastChild.remove();
+    }
 
-        function chooseBall(ball) {
-            if (currentPickingTeam === 'team1') {
-                selectedTeam1Balls[currentPickingIndex] = (selectedTeam1Balls[currentPickingIndex] === ball) ? null : ball;
-                const slotBtn = document.getElementById(`slot-t1-${currentPickingIndex}`);
-                slotBtn.innerText = selectedTeam1Balls[currentPickingIndex] ? selectedTeam1Balls[currentPickingIndex].name : '볼 선택하기';
-                if (selectedTeam1Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
-            } else {
-                selectedTeam2Balls[currentPickingIndex] = (selectedTeam2Balls[currentPickingIndex] === ball) ? null : ball;
-                const slotBtn = document.getElementById(`slot-t2-${currentPickingIndex}`);
-                slotBtn.innerText = selectedTeam2Balls[currentPickingIndex] ? selectedTeam2Balls[currentPickingIndex].name : '볼 선택하기';
-                if (selectedTeam2Balls[currentPickingIndex]) slotBtn.classList.add('selected'); else slotBtn.classList.remove('selected');
+    function updateLeaderboard() {
+      const lb = document.getElementById('leaderboard');
+      const sorted = [...balls].sort((a, b) => {
+        if (a.alive !== b.alive) return b.alive - a.alive;
+        return b.hp - a.hp;
+      });
+
+      lb.innerHTML = sorted.map(b => `
+        <div class="lb-row ${b.alive ? '' : 'lb-dead'}">
+          <span><span class="color-dot" style="background:${b.color};width:9px;height:9px;"></span> ${b.name}</span>
+          <span>${b.alive ? Math.ceil(b.hp) + ' HP' : 'OUT'}</span>
+        </div>
+      `).join('');
+    }
+
+    function startBattle() {
+      if (roster.length < 2) return;
+      document.getElementById('winner-overlay').classList.remove('show');
+      document.getElementById('kill-feed').innerHTML = '';
+
+      resizeCanvas();
+      arenaRadius = initialArenaRadius;
+      particles = [];
+      floatingTexts = [];
+
+      const hp = Number(hpSlider.value);
+      const dmg = Number(dmgSlider.value);
+      const spd = Number(spdSlider.value);
+      const weaponType = document.getElementById('weapon-type').value;
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const spawnDist = arenaRadius * 0.55;
+
+      balls = roster.map((f, i) => {
+        const angle = (i / roster.length) * Math.PI * 2;
+        const x = cx + Math.cos(angle) * spawnDist;
+        const y = cy + Math.sin(angle) * spawnDist;
+        return new Ball(f, x, y, hp, dmg, spd, weaponType);
+      });
+
+      gameRunning = true;
+      updateLeaderboard();
+    }
+
+    document.getElementById('start-btn').onclick = startBattle;
+
+    function handleCollisions() {
+      for (let i = 0; i < balls.length; i++) {
+        const b1 = balls[i];
+        if (!b1.alive) continue;
+
+        for (let j = i + 1; j < balls.length; j++) {
+          const b2 = balls[j];
+          if (!b2.alive) continue;
+
+          // 1. 공 본체끼리 탄성 충돌
+          const dx = b2.x - b1.x;
+          const dy = b2.y - b1.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = b1.radius + b2.radius;
+
+          if (dist < minDist && dist > 0) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (minDist - dist) / 2;
+
+            b1.x -= nx * overlap;
+            b1.y -= ny * overlap;
+            b2.x += nx * overlap;
+            b2.y += ny * overlap;
+
+            const dvx = b2.vx - b1.vx;
+            const dvy = b2.vy - b1.vy;
+            const velAlongNormal = dvx * nx + dvy * ny;
+
+            if (velAlongNormal < 0) {
+              const impulse = -velAlongNormal;
+              b1.vx -= impulse * nx;
+              b1.vy -= impulse * ny;
+              b2.vx += impulse * nx;
+              b2.vy += impulse * ny;
             }
-            closeBallPicker();
-        }
+          }
 
-        function setFixedSpeedVelocity(obj) {
-            const angle = Math.random() * Math.PI * 2;
-            let vx = Math.cos(angle) * FIXED_SPEED, vy = Math.sin(angle) * FIXED_SPEED;
-            if (Math.abs(vx) < 1.2) vx = vx > 0 ? 1.4 : -1.4;
-            if (Math.abs(vy) < 1.2) vy = vy > 0 ? 1.4 : -1.4;
-            obj.vx = vx; obj.vy = vy;
-        }
+          // 2. 무기끼리 패링(튕김) 검사
+          const blades1 = b1.getBlades();
+          const blades2 = b2.getBlades();
+          let clashed = false;
 
-        function getSkillMaxTime(playerName) {
-            if (playerName === '미스터비스트') return 7;
-            if (playerName === 'JIRO') return 7;
-            if (playerName === '왕클세종') return 8;
-            if (playerName === 'JINO') return 8;
-            if (playerName === '발작아저씨') return 5;
-            if (playerName === '본이') return 6;
-            if (playerName === '동룡쓰') return 5;
-            return null;
-        }
-
-        function calculateMultiPositions(team, index, total) {
-            let x, y;
-            if (team === 1) {
-                x = 120;
-                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
-            } else {
-                x = 360;
-                y = total === 1 ? 240 : (total === 2 ? 150 + index * 180 : (total === 3 ? 100 + index * 140 : 75 + index * 110));
+          for (const s1 of blades1) {
+            for (const s2 of blades2) {
+              if (segmentsIntersect(s1.x1, s1.y1, s1.x2, s1.y2, s2.x1, s2.y1, s2.x2, s2.y2)) {
+                clashed = true;
+                const mx = (s1.x2 + s2.x2) / 2;
+                const my = (s1.y2 + s2.y2) / 2;
+                spawnParticles(mx, my, '#fde047', 6);
+                break;
+              }
             }
-            return { x, y };
+            if (clashed) break;
+          }
+
+          if (clashed) {
+            b1.weaponDir *= -1;
+            b2.weaponDir *= -1;
+            b1.weaponAngle += b1.weaponSpeed * b1.weaponDir * 2;
+            b2.weaponAngle += b2.weaponSpeed * b2.weaponDir * 2;
+            playSound('clash');
+          }
+
+          // 3. 무기 -> 상대 본체 타격 검사
+          checkBladeHit(b1, b2, blades1);
+          checkBladeHit(b2, b1, blades2);
         }
+      }
+    }
 
-        function startMatch() {
-            for (let i = 0; i < currentMatchMode; i++) {
-                if (!selectedTeam1Balls[i] || !selectedTeam2Balls[i]) {
-                    showToast('모든 팀의 볼을 선택해 주세요!');
-                    return;
-                }
-            }
+    function checkBladeHit(attacker, defender, blades) {
+      if (!attacker.alive || !defender.alive || defender.hitCooldown > 0) return;
 
-            if (gameInterval) clearInterval(gameInterval);
-            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
+      for (const s of blades) {
+        const d = distToSegment(defender.x, defender.y, s.x1, s.y1, s.x2, s.y2);
+        if (d <= defender.radius + 4) {
+          // 데미지 적용
+          const damage = attacker.dmg + attacker.kills * 3;
+          defender.hp -= damage;
+          defender.hitCooldown = 14;
+          defender.flashTime = 6;
 
-            moneyItems = []; matchEnded = false; winnerText = '';
+          // 넉백 적용
+          const angle = Math.atan2(defender.y - attacker.y, defender.x - attacker.x);
+          defender.vx = Math.cos(angle) * (attacker.baseSpeed * 1.6);
+          defender.vy = Math.sin(angle) * (attacker.baseSpeed * 1.6);
 
-            team1Players = selectedTeam1Balls.map((ball, idx) => {
-                let pos = calculateMultiPositions(1, idx, currentMatchMode);
-                let maxT = getSkillMaxTime(ball.name);
-                return {
-                    id: `t1_${idx}`, team: 1, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: BALL_RADIUS, vx: 0, vy: 0,
-                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
-                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
-                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
-                };
-            });
+          // 타격감 연출
+          hitStopFrames = 2;
+          shakeTime = 6;
+          spawnParticles(defender.x, defender.y, defender.color, 14);
+          spawnFloatingText(defender.x, defender.y - 20, `-${damage}`, '#f87171');
+          playSound('hit');
 
-            team2Players = selectedTeam2Balls.map((ball, idx) => {
-                let pos = calculateMultiPositions(2, idx, currentMatchMode);
-                let maxT = getSkillMaxTime(ball.name);
-                return {
-                    id: `t2_${idx}`, team: 2, name: ball.name, ballData: ball,
-                    x: pos.x, y: pos.y, radius: BALL_RADIUS, vx: 0, vy: 0,
-                    hp: ball.hp, maxHp: ball.hp, displayHp: ball.hp,
-                    skillTimer: maxT !== null ? maxT : 0, skillCount: 0,
-                    jiroCombo: 0, lastJiroHitTime: 0, lastX: pos.x, lastY: pos.y,
-                    skeletons: [], minions: [], bombs: [], arrowTimer: 0, mines: [], explosionVisuals: [], comboPopups: [],
-                    mrBeastToggleState: 0, dongryongTeleported: false, slowTimer: 0,
-                    rouletteAnim: null, poisonTimer: 0, poisonTickTimer: 0
-                };
-            });
+          // 사망 처리
+          if (defender.hp <= 0) {
+            defender.hp = 0;
+            defender.alive = false;
+            attacker.kills += 1;
+            attacker.hp = Math.min(attacker.maxHp, attacker.hp + 20); // 킬 보너스 회복
+            attacker.radius = Math.min(38, attacker.radius + 2);
 
-            team1Players.forEach(p => setFixedSpeedVelocity(p));
-            team2Players.forEach(p => setFixedSpeedVelocity(p));
-            allPlayers = [...team1Players, ...team2Players];
+            spawnParticles(defender.x, defender.y, defender.color, 35);
+            spawnFloatingText(attacker.x, attacker.y - 30, '+20 HP!', '#4ade80');
+            addKillLog(attacker, defender);
+            playSound('kill');
+          }
 
-            buildIngameStatusPanel();
-            document.getElementById('lobby-top-menu-bar').classList.add('hidden');
-            document.getElementById('lobby-controls').classList.add('hidden');
-            document.getElementById('ingame-controls').classList.remove('hidden');
-
-            isCountingDown = true; isGaming = false;
-            let count = 3; 
-            countdownText = `${count}`;
-            playNormalBeepSound();
-            showToast(`게임 시작까지 ${count}초...`);
-
-            activeCountdownInterval = setInterval(() => {
-                if (!isCountingDown) { clearInterval(activeCountdownInterval); return; }
-                count--;
-                if (count > 0) {
-                    countdownText = `${count}`;
-                    playNormalBeepSound();
-                    showToast(`게임 시작까지 ${count}초...`);
-                } else if (count === 0) {
-                    countdownText = `시작!`;
-                    playCountdownSound();
-                    showToast(`경기 시작! 🔥`);
-                } else {
-                    clearInterval(activeCountdownInterval);
-                    isCountingDown = false; isGaming = true; countdownText = '';
-                    runMainGameLoop();
-                }
-            }, 1000);
+          updateLeaderboard();
+          break;
         }
+      }
+    }
 
-        function buildIngameStatusPanel() {
-            const panel = document.getElementById('ingame-status-panel-container');
-            panel.innerHTML = '';
-            for (let i = 0; i < currentMatchMode; i++) {
-                let p1 = team1Players[i], p2 = team2Players[i];
-                let p1HasSkill = getSkillMaxTime(p1.name) !== null, p2HasSkill = getSkillMaxTime(p2.name) !== null;
-                let row = document.createElement('div');
-                row.className = 'status-row-group';
-                row.innerHTML = `
-                    <div class="player-status-card" id="card-t1-${i}">
-                        <div class="player-name-label player-name-p1">${p1.name}</div>
-                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t1-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t1-${i}">${p1.hp} / ${p1.maxHp}</div></div>
-                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t1-${i}" style="width:${p1HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t1-${i}">${p1HasSkill ? `기술 충전중.. ${p1.skillTimer}초` : '기술 없음'}</div></div>
-                    </div>
-                    <div class="player-status-card" id="card-t2-${i}">
-                        <div class="player-name-label player-name-p2">${p2.name}</div>
-                        <div class="hp-bar-outer"><div class="hp-bar-inner" id="hp-fill-t2-${i}" style="width:100%;"></div><div class="hp-text-overlay" id="hp-txt-t2-${i}">${p2.hp} / ${p2.maxHp}</div></div>
-                        <div class="sub-gauge-bar"><div class="sub-gauge-fill" id="gauge-fill-t2-${i}" style="width:${p2HasSkill ? '0%' : '100%'}"></div><div class="sub-gauge-text" id="gauge-txt-t2-${i}">${p2HasSkill ? `기술 충전중.. ${p2.skillTimer}초` : '기술 없음'}</div></div>
-                    </div>
-                `;
-                panel.appendChild(row);
-            }
+    function loop() {
+      requestAnimationFrame(loop);
+
+      if (hitStopFrames > 0) {
+        hitStopFrames--;
+        return;
+      }
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 화면 흔들림(Screen Shake)
+      if (shakeTime > 0) {
+        shakeTime--;
+        const mag = shakeTime * 1.2;
+        ctx.translate((Math.random() - 0.5) * mag, (Math.random() - 0.5) * mag);
+      }
+
+      // 서든데스 자기장 축소
+      if (gameRunning && document.getElementById('shrink-arena').checked) {
+        if (arenaRadius > 110) {
+          arenaRadius -= 0.08;
         }
+      }
 
-        function updateAllHpBars() {
-            team1Players.forEach((p, i) => {
-                let pct = Math.max(0, (p.hp / p.maxHp) * 100);
-                const fill = document.getElementById(`hp-fill-t1-${i}`), txt = document.getElementById(`hp-txt-t1-${i}`);
-                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
-            });
-            team2Players.forEach((p, i) => {
-                let pct = Math.max(0, (p.hp / p.maxHp) * 100);
-                const fill = document.getElementById(`hp-fill-t2-${i}`), txt = document.getElementById(`hp-txt-t2-${i}`);
-                if (fill) fill.style.width = pct + '%'; if (txt) txt.innerText = `${Math.ceil(p.hp)} / ${p.maxHp}`;
-            });
+      // 원형 아레나 바닥 및 테두리
+      ctx.beginPath();
+      ctx.arc(cx, cy, arenaRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#111625';
+      ctx.fill();
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = arenaRadius < initialArenaRadius * 0.6 ? '#ef4444' : '#38bdf8';
+      ctx.shadowColor = ctx.strokeStyle;
+      ctx.shadowBlur = 18;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // 경기장 중앙 가이드 링
+      ctx.beginPath();
+      ctx.arc(cx, cy, arenaRadius * 0.35, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      if (gameRunning) {
+        balls.forEach(b => b.update(cx, cy, arenaRadius));
+        handleCollisions();
+
+        // 최후의 1인 체크
+        const aliveBalls = balls.filter(b => b.alive);
+        if (aliveBalls.length <= 1) {
+          gameRunning = false;
+          const winner = aliveBalls[0];
+          const overlay = document.getElementById('winner-overlay');
+          const winText = document.getElementById('winner-text');
+          if (winner) {
+            winText.textContent = `👑 ${winner.name} 승리!`;
+            winText.style.color = winner.color;
+          } else {
+            winText.textContent = '무승부!';
+          }
+          overlay.classList.add('show');
+          playSound('win');
         }
+      }
 
-        function showHealingAnimationCard(teamNum, index, amount) {
-            const card = document.getElementById(`card-t${teamNum}-${index}`);
-            if (!card) return;
-            const popup = document.createElement('div');
-            popup.className = 'healing-popup-text'; popup.innerText = `+${amount}`;
-            card.appendChild(popup);
-            setTimeout(() => popup.remove(), 800);
+      // 공 & 무기 그리기
+      balls.forEach(b => b.draw(ctx));
+
+      // 파티클 업데이트 및 그리기
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.94;
+        p.vy *= 0.94;
+        p.life--;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
         }
+        ctx.globalAlpha = p.life / p.maxLife;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
 
-        function showMinusDamageAnimationCard(teamNum, index, amount) {
-            const card = document.getElementById(`card-t${teamNum}-${index}`);
-            if (!card) return;
-            const popup = document.createElement('div');
-            popup.className = 'minus-popup-text'; popup.innerText = `-${amount}`;
-            card.appendChild(popup);
-            setTimeout(() => popup.remove(), 800);
+      // 데미지 플로팅 텍스트
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y += ft.vy;
+        ft.life--;
+        if (ft.life <= 0) {
+          floatingTexts.splice(i, 1);
+          continue;
         }
-
-        function runMainGameLoop() {
-            gameInterval = setInterval(() => {
-                if (!isGaming || matchEnded) return;
-                const nowTimestamp = Date.now();
-
-                allPlayers.forEach(player => {
-                    if (player.poisonTimer > 0) {
-                        player.poisonTimer -= 1;
-                        player.poisonTickTimer = (player.poisonTickTimer || 0) + 1;
-                        if (player.poisonTickTimer >= 0.3) {
-                            player.poisonTickTimer = 0;
-                            let oldHp = player.hp;
-                            player.hp = Math.max(0, player.hp - 3);
-                            if (player.hp < oldHp) {
-                                playMinusDamageSound();
-                                let tIdx = player.team === 1 ? team1Players : team2Players;
-                                showMinusDamageAnimationCard(player.team, tIdx.indexOf(player), 3);
-                            }
-                            updateAllHpBars(); checkGameWinner();
-                        }
-                    }
-
-                    if (player.name === 'JIRO' && player.jiroCombo > 0) {
-                        if (nowTimestamp - (player.lastJiroHitTime || 0) > 5000) {
-                            player.jiroCombo = 0;
-                        }
-                    }
-
-                    let maxTime = getSkillMaxTime(player.name);
-                    let teamPrefix = player.team === 1 ? 't1' : 't2';
-                    let idx = (player.team === 1 ? team1Players : team2Players).indexOf(player);
-                    const txt = document.getElementById(`gauge-txt-${teamPrefix}-${idx}`);
-                    const fill = document.getElementById(`gauge-fill-${teamPrefix}-${idx}`);
-
-                    if (maxTime !== null) {
-                        player.skillTimer -= 1;
-                        if (player.skillTimer <= 0) {
-                            player.skillTimer = maxTime;
-                            
-                            showToast(`${player.name} 기술 발동`);
-
-                            if (player.name === '미스터비스트') triggerMrBeastSkill(player);
-                            else if (player.name === 'JIRO') triggerJiroSkill(player);
-                            else if (player.name === '왕클세종') triggerWangklSejongSkill(player);
-                            else if (player.name === 'JINO') triggerJinoSkill(player);
-                            else if (player.name === '본이') triggerBoniSkill(player);
-                            else if (player.name === '동룡쓰') triggerDongryongSkill(player);
-                            else if (player.name === '발작아저씨') triggerBaljakSkill(player);
-                        }
-
-                        let pct = ((maxTime - player.skillTimer) / maxTime) * 100;
-                        if (fill) fill.style.width = pct + '%';
-                        if (txt) txt.innerText = `기술 충전중.. ${player.skillTimer}초`;
-                    } else {
-                        if (txt) txt.innerText = '기술 없음';
-                    }
-                });
-
-                allPlayers.forEach(player => {
-                    if (player.name === '동룡쓰' && player.minions.length > 0) {
-                        let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                        if (enemyTeamBalls.length > 0) {
-                            player.minions.forEach(minion => {
-                                minion.attackTimer = (minion.attackTimer || 0) + 1;
-                                let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                                if (targetEnemy && targetEnemy.hp > 0) {
-                                    if (!minion.isFemale) {
-                                        if (minion.attackTimer >= 3) {
-                                            minion.attackTimer = 0;
-                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
-                                            moneyItems.push({
-                                                x: minion.x, y: minion.y,
-                                                vx: Math.cos(angle) * 5.5, vy: Math.sin(angle) * 5.5,
-                                                radius: 18, damage: 4, isBaconProjectile: true, isFemaleProj: false,
-                                                ownerTeam: player.team, caster: player
-                                            });
-                                            playFoodThrowSound();
-                                        }
-                                    } else {
-                                        if (minion.attackTimer >= 4) {
-                                            minion.attackTimer = 0;
-                                            let angle = Math.atan2(targetEnemy.y - minion.y, targetEnemy.x - minion.x);
-                                            moneyItems.push({
-                                                x: minion.x, y: minion.y,
-                                                vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8,
-                                                radius: 24, damage: 6, isBaconProjectile: true, isFemaleProj: true,
-                                                ownerTeam: player.team, caster: player
-                                            });
-                                            playFoodThrowSound();
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-                    if (player.name === 'JINO' && player.skeletons.length > 0) {
-                        player.arrowTimer = (player.arrowTimer || 0) + 1;
-                        if (player.arrowTimer >= 2) {
-                            player.arrowTimer = 0;
-                            let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                            if (enemyTeamBalls.length > 0) {
-                                player.skeletons.forEach(skel => {
-                                    let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                                    let baseAngle = Math.atan2(targetEnemy.y - skel.y, targetEnemy.x - skel.x);
-                                    [-0.26, 0, 0.26].forEach(offset => {
-                                        let angle = baseAngle + offset;
-                                        moneyItems.push({
-                                            x: skel.x, y: skel.y,
-                                            vx: Math.cos(angle) * 6.0, vy: Math.sin(angle) * 6.0,
-                                            radius: 32, damage: 4, isArrow: true, ownerTeam: player.team, angle: angle, caster: player
-                                        });
-                                    });
-                                });
-                                playArrowSound();
-                            }
-                        }
-                    }
-                });
-            }, 1000);
-        }
-
-        function triggerJiroSkill(caster) {
-            caster.mines.push({
-                x: caster.lastX, y: caster.lastY, radius: 46,
-                spawnTime: Date.now(), ownerTeam: caster.team, caster: caster
-            });
-        }
-
-        function triggerBaljakSkill(caster) {
-            let enemyBalls = caster.team === 1 ? team2Players : team1Players;
-            enemyBalls.forEach(enemy => {
-                if (enemy.hp > 0) {
-                    let oldHp = enemy.hp;
-                    enemy.hp = Math.max(0, enemy.hp - 20);
-                    if (enemy.hp < oldHp) {
-                        playMinusDamageSound();
-                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
-                    }
-                    playJiroExplosionSound();
-                    caster.explosionVisuals.push({ x: enemy.x, y: enemy.y, radius: 15, maxRadius: 130, alpha: 1.0, text: '발작 폭발! (-20)' });
-                }
-            });
-            updateAllHpBars(); checkGameWinner();
-        }
-
-        function triggerDongryongSkill(caster) {
-            if (caster.minions.length >= 10) return;
-            playRouletteSpinSound();
-
-            let spinCount = 0;
-            caster.rouletteAnim = { text: '돌리는 중...', timer: 15 };
-
-            let rouletteInterval = setInterval(() => {
-                spinCount++;
-                let tempIsFemale = Math.random() < 0.5;
-                caster.rouletteAnim.text = tempIsFemale ? '여자 🥓 당첨!' : '남자 🥓 당첨!';
-
-                if (spinCount >= 6) {
-                    clearInterval(rouletteInterval);
-                    let isFemaleFinal = Math.random() < 0.5;
-                    caster.rouletteAnim = null;
-                    playRouletteWinSound();
-                    
-                    if (caster.minions.length < 10) {
-                        caster.skillCount++;
-                        let angle = Math.random() * Math.PI * 2;
-                        caster.minions.push({
-                            x: caster.x + Math.cos(angle) * 35,
-                            y: caster.y + Math.sin(angle) * 35,
-                            radius: 24,
-                            img: isFemaleFinal ? femaleBaconImg : maleBaconImg,
-                            isFemale: isFemaleFinal,
-                            orbitAngle: angle,
-                            orbitDist: 42,
-                            attackTimer: 0
-                        });
-                    }
-
-                    if (caster.minions.length >= 10 && !caster.dongryongTeleported) {
-                        caster.dongryongTeleported = true;
-                        let enemyTeamBalls = caster.team === 1 ? team2Players : team1Players;
-                        if (enemyTeamBalls.length > 0) {
-                            let targetEnemy = enemyTeamBalls[Math.floor(Math.random() * enemyTeamBalls.length)];
-                            let tpAngle = Math.random() * Math.PI * 2;
-                            caster.x = targetEnemy.x + Math.cos(tpAngle) * 35;
-                            caster.y = targetEnemy.y + Math.sin(tpAngle) * 35;
-                            targetEnemy.hp = Math.max(0, targetEnemy.hp - 15);
-                            playJiroExplosionSound();
-                            updateAllHpBars(); checkGameWinner();
-                        }
-                    }
-                }
-            }, 200);
-        }
-
-        function triggerMrBeastSkill(caster) {
-            moneyItems = moneyItems.filter(m => m.ownerTeam !== caster.team || (!m.isChocolateItem && !m.isMoneyBag));
-
-            caster.mrBeastToggleState = Math.random() < 0.5 ? 0 : 1;
-
-            if (caster.mrBeastToggleState === 0) {
-                playMrBeastChocolateSound();
-                for (let k = 0; k < 2; k++) {
-                    moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 20, isChocolateItem: true, isMoneyBag: false, isHangeulLetter: false,
-                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
-                    });
-                }
-            } else {
-                playMrBeastMoneyBagSound();
-                for (let k = 0; k < 3; k++) {
-                    moneyItems.push({
-                        x: Math.random() * (canvas.width - 100) + 50, y: Math.random() * (canvas.height - 100) + 50,
-                        radius: 22, isChocolateItem: false, isMoneyBag: true, isHangeulLetter: false,
-                        isArrow: false, isBaconProjectile: false, ownerTeam: caster.team, caster: caster, spawnTime: Date.now()
-                    });
-                }
-            }
-        }
-
-        function triggerBoniSkill(caster) {
-            for (let k = 0; k < 2; k++) {
-                caster.bombs.push({
-                    startX: caster.x, startY: caster.y, x: caster.x, y: caster.y,
-                    destX: Math.random() * (canvas.width - 100) + 50, destY: Math.random() * (canvas.height - 100) + 50,
-                    progress: 0, radius: 50, timer: 3, caster: caster
-                });
-            }
-        }
-
-        function triggerJinoSkill(caster) {
-            caster.skeletons = [];
-            for (let i = 0; i < 2; i++) {
-                let rx, ry, safe = false, attempts = 0;
-                while (!safe && attempts < 50) {
-                    rx = Math.random() * (canvas.width - 120) + 60;
-                    ry = Math.random() * (canvas.height - 120) + 60;
-                    safe = true;
-                    caster.skeletons.forEach(s => { if (Math.hypot(s.x - rx, s.y - ry) < 50) safe = false; });
-                    attempts++;
-                }
-                caster.skeletons.push({ x: rx, y: ry, radius: 24, spawnTime: Date.now() });
-            }
-        }
-
-        function triggerWangklSejongSkill(caster) {
-            playSkillSuperSound();
-            'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('').forEach(ch => {
-                moneyItems.push({
-                    x: Math.random() * (canvas.width - 60) + 30, y: Math.random() * (canvas.height - 60) + 30,
-                    char: ch, radius: 20, damage: 6, healAmount: 3, isHangeulLetter: true,
-                    ownerTeam: caster.team, caster: caster, color: '#e74c3c', spawnTime: Date.now()
-                });
-            });
-        }
-
-        canvas.addEventListener('pointerdown', (e) => {
-            if (!isGaming) return;
-            const rect = canvas.getBoundingClientRect();
-            const clickX = ((e.clientX - rect.left) / rect.width) * canvas.width;
-            const clickY = ((e.clientY - rect.top) / rect.height) * canvas.height;
-            allPlayers.forEach(player => {
-                player.skeletons = player.skeletons.filter(skel => {
-                    if (Math.hypot(clickX - skel.x, clickY - skel.y) < skel.radius + 15) {
-                        playHitSound();
-                        return false;
-                    }
-                    return true;
-                });
-            });
-        });
-
-        function exitMatch() {
-            resetGameUI();
-        }
-
-        function resetGameUI() {
-            isCountingDown = false;
-            if (activeCountdownInterval) clearInterval(activeCountdownInterval);
-            isGaming = false; matchEnded = false;
-            if (gameInterval) clearInterval(gameInterval);
-            moneyItems = []; team1Players = []; team2Players = []; allPlayers = [];
-
-            document.getElementById('lobby-top-menu-bar').classList.remove('hidden');
-            document.getElementById('ingame-controls').classList.add('hidden');
-            document.getElementById('lobby-controls').classList.remove('hidden');
-
-            initSlotContainers();
-        }
-
-        function checkGameWinner() {
-            if (matchEnded) return;
-            let t1Alive = team1Players.some(p => p.hp > 0);
-            let t2Alive = team2Players.some(p => p.hp > 0);
-
-            if (!t1Alive || !t2Alive) {
-                matchEnded = true; isGaming = false;
-                if (gameInterval) clearInterval(gameInterval);
-
-                if (!t1Alive && !t2Alive) {
-                    winnerText = '무승부!';
-                } else if (!t2Alive) {
-                    winnerText = '파란팀 승!';
-                } else {
-                    winnerText = '빨간팀 승!';
-                }
-            }
-        }
-
-        function drawBall(x, y, radius, ballObj, auraColor) {
-            ctx.save();
-            ctx.beginPath(); ctx.arc(x, y, radius + 12, 0, Math.PI * 2);
-            ctx.fillStyle = auraColor; ctx.fill();
-
-            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.save(); ctx.clip();
-            if (ballObj && ballObj.imageSrc && loadedImages[ballObj.name] && loadedImages[ballObj.name].complete && loadedImages[ballObj.name].naturalWidth !== 0) {
-                ctx.drawImage(loadedImages[ballObj.name], x - radius, y - radius, radius * 2, radius * 2);
-            } else {
-                ctx.fillStyle = '#7f8c8d'; ctx.fill();
-            }
-            ctx.restore();
-            ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
-            ctx.restore();
-        }
-
-        let isGaming = false, isCountingDown = false, matchEnded = false;
-        let countdownText = '', winnerText = '';
-        let activeCountdownInterval = null;
-
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        const FIXED_SPEED = 4.5;
-        const BALL_RADIUS = 31;
-
-        let team1Players = [], team2Players = [], allPlayers = [], moneyItems = [], gameInterval = null;
-
-        function runGameLoop() {
-            if (!isGaming && !isCountingDown) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, BALL_RADIUS, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, BALL_RADIUS, b, "rgba(231, 76, 60, 0.15)"); });
-                requestAnimationFrame(runGameLoop);
-                return;
-            }
-
-            if (isCountingDown) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                selectedTeam1Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(1, idx, currentMatchMode).x, calculateMultiPositions(1, idx, currentMatchMode).y, BALL_RADIUS, b, "rgba(30, 144, 255, 0.15)"); });
-                selectedTeam2Balls.forEach((b, idx) => { if (b) drawBall(calculateMultiPositions(2, idx, currentMatchMode).x, calculateMultiPositions(2, idx, currentMatchMode).y, BALL_RADIUS, b, "rgba(231, 76, 60, 0.15)"); });
-
-                ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 50px sans-serif"; ctx.fillStyle = "#e74c3c"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5;
-                ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.strokeText(countdownText, canvas.width / 2, canvas.height / 2);
-                ctx.fillText(countdownText, canvas.width / 2, canvas.height / 2);
-                ctx.restore();
-                requestAnimationFrame(runGameLoop);
-                return;
-            }
-
-            if (isGaming && !matchEnded) {
-                const nowTimestamp = Date.now();
-
-                allPlayers.forEach(p => {
-                    if (p.hp <= 0) return;
-                    p.lastX = p.x; p.lastY = p.y;
-                    
-                    let currentSpeed = FIXED_SPEED;
-                    if (p.slowTimer && p.slowTimer > nowTimestamp) {
-                        currentSpeed = FIXED_SPEED * 0.5;
-                    }
-
-                    p.x += p.vx * (currentSpeed / FIXED_SPEED); 
-                    p.y += p.vy * (currentSpeed / FIXED_SPEED);
-
-                    let hitWall = false;
-                    if (p.x - p.radius < 0) { p.x = p.radius; p.vx = -p.vx; hitWall = true; }
-                    if (p.x + p.radius > canvas.width) { p.x = canvas.width - p.radius; p.vx = -p.vx; hitWall = true; }
-                    if (p.y - p.radius < 0) { p.y = p.radius; p.vy = -p.vy; hitWall = true; }
-                    if (p.y + p.radius > canvas.height) { p.y = canvas.height - p.radius; p.vy = -p.vy; hitWall = true; }
-                    
-                    let speed = Math.hypot(p.vx, p.vy);
-                    if (Math.abs(speed - FIXED_SPEED) > 0.01 && (!p.slowTimer || p.slowTimer <= nowTimestamp)) {
-                        p.vx = (p.vx / (speed || 1)) * FIXED_SPEED;
-                        p.vy = (p.vy / (speed || 1)) * FIXED_SPEED;
-                    }
-                    if (hitWall) playWallSound();
-                });
-
-                for (let i = 0; i < allPlayers.length; i++) {
-                    for (let j = i + 1; j < allPlayers.length; j++) {
-                        let p1 = allPlayers[i], p2 = allPlayers[j];
-                        if (p1.hp <= 0 || p2.hp <= 0) continue;
-                        let dx = p2.x - p1.x, dy = p2.y - p1.y, dist = Math.hypot(dx, dy), minDist = p1.radius + p2.radius;
-                        if (dist < minDist) {
-                            let overlap = minDist - dist, nx = dx / (dist || 1), ny = dy / (dist || 1);
-                            p1.x -= nx * (overlap / 2); p1.y -= ny * (overlap / 2);
-                            p2.x += nx * (overlap / 2); p2.y += ny * (overlap / 2);
-                            let angle = Math.atan2(ny, nx);
-
-                            let isJiro1 = (p1.name === 'JIRO');
-                            let isJiro2 = (p2.name === 'JIRO');
-
-                            if (isJiro1 || isJiro2) {
-                                let jiroObj = isJiro1 ? p1 : p2;
-                                let otherObj = isJiro1 ? p2 : p1;
-                                
-                                if (nowTimestamp - (jiroObj.lastJiroHitTime || 0) > 5000) {
-                                    jiroObj.jiroCombo = 0;
-                                }
-                                jiroObj.jiroCombo++;
-                                jiroObj.lastJiroHitTime = nowTimestamp;
-
-                                let explosionDmg = 15 + (jiroObj.jiroCombo - 1) * 2;
-                                let oldHp = otherObj.hp;
-                                otherObj.hp = Math.max(0, otherObj.hp - explosionDmg);
-                                if (otherObj.hp < oldHp) {
-                                    playMinusDamageSound();
-                                    let teamIdx = otherObj.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(otherObj.team, teamIdx.indexOf(otherObj), explosionDmg);
-                                }
-
-                                playJiroExplosionSound();
-
-                                jiroObj.comboPopups.push({
-                                    text: `콤보 ${jiroObj.jiroCombo}!`,
-                                    x: jiroObj.x,
-                                    y: jiroObj.y - 35,
-                                    alpha: 1.0,
-                                    startTime: Date.now()
-                                });
-
-                                jiroObj.explosionVisuals.push({ x: otherObj.x, y: otherObj.y, radius: 10, maxRadius: 120, alpha: 1.0, text: `펑!!! (콤보${jiroObj.jiroCombo})` });
-
-                                let knockAngle = Math.atan2(otherObj.y - jiroObj.y, otherObj.x - jiroObj.x);
-                                otherObj.vx = Math.cos(knockAngle) * (FIXED_SPEED * 4.2);
-                                otherObj.vy = Math.sin(knockAngle) * (FIXED_SPEED * 4.2);
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-
-                                updateAllHpBars(); checkGameWinner();
-                            } else {
-                                p1.vx = -Math.cos(angle) * FIXED_SPEED; p1.vy = -Math.sin(angle) * FIXED_SPEED;
-                                p2.vx = Math.cos(angle) * FIXED_SPEED; p2.vy = Math.sin(angle) * FIXED_SPEED;
-                                playHitSound();
-                                
-                                let oldHp1 = p1.hp, oldHp2 = p2.hp;
-                                p1.hp = Math.max(0, p1.hp - 10); 
-                                p2.hp = Math.max(0, p2.hp - 10);
-
-                                if (p1.hp < oldHp1) {
-                                    playMinusDamageSound();
-                                    let tIdx = p1.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(p1.team, tIdx.indexOf(p1), 10);
-                                }
-                                if (p2.hp < oldHp2) {
-                                    playMinusDamageSound();
-                                    let tIdx = p2.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(p2.team, tIdx.indexOf(p2), 10);
-                                }
-
-                                updateAllHpBars(); checkGameWinner();
-                            }
-                        }
-                    }
-                }
-
-                allPlayers.forEach(player => {
-                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                    if (player.name === 'JIRO' && player.mines.length > 0) {
-                        player.mines = player.mines.filter(mine => {
-                            let triggered = false;
-                            enemyTeamBalls.forEach(enemy => {
-                                if (enemy.hp <= 0) return;
-                                if (Math.hypot(enemy.x - mine.x, enemy.y - mine.y) < enemy.radius + mine.radius) {
-                                    triggered = true;
-                                    let oldHp = enemy.hp;
-                                    enemy.hp = Math.max(0, enemy.hp - 30);
-                                    if (enemy.hp < oldHp) {
-                                        playMinusDamageSound();
-                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 30);
-                                    }
-                                    playJiroExplosionSound();
-                                    
-                                    let kbAngle = Math.atan2(enemy.y - mine.y, enemy.x - mine.x);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 4.5);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 4.5);
-
-                                    player.explosionVisuals.push({ x: mine.x, y: mine.y, radius: 15, maxRadius: 140, alpha: 1.0, text: '팡!!!!!!' });
-                                    updateAllHpBars(); checkGameWinner();
-                                }
-                            });
-                            return !triggered;
-                        });
-                    }
-                });
-
-                allPlayers.forEach(player => {
-                    let enemyTeamBalls = player.team === 1 ? team2Players : team1Players;
-                    player.skeletons.forEach(skel => {
-                        enemyTeamBalls.forEach(enemy => {
-                            if (enemy.hp > 0) {
-                                let dx = enemy.x - skel.x, dy = enemy.y - skel.y, dist = Math.hypot(dx, dy);
-                                if (dist < enemy.radius + skel.radius) {
-                                    let lastHit = skel.lastHitTime || 0;
-                                    if (nowTimestamp - lastHit >= 1000) {
-                                        let oldHp = enemy.hp;
-                                        enemy.hp = Math.max(0, enemy.hp - 4);
-                                        if (enemy.hp < oldHp) {
-                                            playMinusDamageSound();
-                                            let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                            showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 4);
-                                        }
-                                        skel.lastHitTime = nowTimestamp;
-                                        playHitSound(); updateAllHpBars(); checkGameWinner();
-                                    }
-                                }
-                            }
-                        });
-                    });
-                });
-
-                allPlayers.forEach(player => {
-                    player.explosionVisuals.forEach(ev => {
-                        ev.radius += 5;
-                        ev.alpha -= 0.025;
-                    });
-                    player.explosionVisuals = player.explosionVisuals.filter(ev => ev.alpha > 0);
-
-                    player.comboPopups.forEach(cp => {
-                        let elapsed = (Date.now() - cp.startTime) / 1000;
-                        cp.y -= 0.6;
-                        cp.alpha = Math.max(0, 1.0 - (elapsed / 2.5));
-                    });
-                    player.comboPopups = player.comboPopups.filter(cp => cp.alpha > 0);
-                });
-
-                allPlayers.forEach(caster => {
-                    let enemyBalls = caster.team === 1 ? team2Players : team1Players;
-                    for (let i = caster.bombs.length - 1; i >= 0; i--) {
-                        let bomb = caster.bombs[i];
-                        if (bomb.progress < 1) {
-                            bomb.progress += 0.03;
-                            bomb.x = bomb.startX + (bomb.destX - bomb.startX) * bomb.progress;
-                            bomb.y = bomb.startY + (bomb.destY - bomb.startY) * bomb.progress;
-                        } else {
-                            if (!bomb.startTime) {
-                                bomb.startTime = nowTimestamp;
-                                playBoniBombSound();
-                            }
-                            enemyBalls.forEach(enemy => {
-                                if (enemy.hp <= 0) return;
-                                if (Math.hypot(enemy.x - bomb.destX, enemy.y - bomb.destY) <= bomb.radius + enemy.radius) {
-                                    let oldHp = enemy.hp;
-                                    enemy.hp = Math.max(0, enemy.hp - 15);
-                                    if (enemy.hp < oldHp) {
-                                        playMinusDamageSound();
-                                        let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                        showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 15);
-                                    }
-                                    
-                                    let kbAngle = Math.atan2(enemy.y - bomb.destY, enemy.x - bomb.destX);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.5);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.5);
-
-                                    updateAllHpBars(); 
-                                    playBoniBombSound(); 
-                                    checkGameWinner();
-                                    caster.bombs.splice(i, 1);
-                                }
-                            });
-                            if (nowTimestamp - bomb.startTime >= 3000) {
-                                caster.bombs.splice(i, 1);
-                            }
-                        }
-                    }
-                });
-
-                for (let i = moneyItems.length - 1; i >= 0; i--) {
-                    let m = moneyItems[i];
-                    
-                    if (m.isHangeulLetter) {
-                        if (nowTimestamp - m.spawnTime > 12000) { moneyItems.splice(i, 1); continue; }
-                        let eaten = false;
-                        let enemyBalls = m.ownerTeam === 1 ? team2Players : team1Players;
-
-                        allPlayers.forEach(player => {
-                            if (eaten || player.hp <= 0) return;
-                            let dist = Math.hypot(player.x - m.x, player.y - m.y);
-                            if (dist < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam) {
-                                    playHealSound();
-                                    let aliveEnemies = enemyBalls.filter(e => e.hp > 0);
-                                    if (aliveEnemies.length > 0) {
-                                        let targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-                                        let oldHp = targetEnemy.hp;
-                                        targetEnemy.hp = Math.max(0, targetEnemy.hp - m.damage);
-                                        if (targetEnemy.hp < oldHp) {
-                                            playMinusDamageSound();
-                                            let tIdx = targetEnemy.team === 1 ? team1Players : team2Players;
-                                            showMinusDamageAnimationCard(targetEnemy.team, tIdx.indexOf(targetEnemy), m.damage);
-                                        }
-                                    }
-                                    player.hp = Math.min(player.maxHp, player.hp + m.healAmount);
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), m.healAmount);
-                                    
-                                    eaten = true; updateAllHpBars(); checkGameWinner();
-                                } else {
-                                    eaten = true;
-                                }
-                            }
-                        });
-                        if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isChocolateItem) {
-                        if (nowTimestamp - m.spawnTime > 5000) { moneyItems.splice(i, 1); continue; }
-                        let eaten = false;
-                        let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
-
-                        allPlayers.forEach(player => {
-                            if (eaten || player.hp <= 0) return;
-                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
-                                    playHealSound();
-                                    player.hp = Math.min(player.maxHp, player.hp + 10);
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 10);
-
-                                    enemyTeamBalls.forEach(enemy => {
-                                        if (enemy.hp > 0) {
-                                            enemy.poisonTimer = 2;
-                                            enemy.poisonTickTimer = 0;
-                                        }
-                                    });
-
-                                    eaten = true; updateAllHpBars();
-                                }
-                            }
-                        });
-                        if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isMoneyBag) {
-                        if (nowTimestamp - m.spawnTime > 4000) { moneyItems.splice(i, 1); continue; }
-                        let eaten = false;
-                        allPlayers.forEach(player => {
-                            if (eaten || player.hp <= 0) return;
-                            if (Math.hypot(player.x - m.x, player.y - m.y) < player.radius + m.radius) {
-                                if (player.team === m.ownerTeam && player.name === '미스터비스트') {
-                                    playHealSound();
-                                    let teamIdx = player.team === 1 ? team1Players : team2Players;
-                                    player.hp = Math.min(player.maxHp, player.hp + 25);
-                                    showHealingAnimationCard(player.team, teamIdx.indexOf(player), 25);
-                                    
-                                    const spd = 4.5;
-                                    const dirs8 = [
-                                        {vx: 0, vy: -spd},
-                                        {vx: 0, vy: spd},
-                                        {vx: -spd, vy: 0},
-                                        {vx: spd, vy: 0},
-                                        {vx: spd, vy: spd},
-                                        {vx: -spd, vy: spd},
-                                        {vx: spd, vy: -spd},
-                                        {vx: -spd, vy: -spd}
-                                    ];
-
-                                    dirs8.forEach(dir => {
-                                        moneyItems.push({
-                                            x: player.x, y: player.y,
-                                            vx: dir.vx, vy: dir.vy,
-                                            radius: 20, damage: 20, isMoneyBullet: true,
-                                            ownerTeam: player.team, caster: player, spawnTime: Date.now()
-                                        });
-                                    });
-
-                                    playCoinSound();
-                                    eaten = true; updateAllHpBars(); checkGameWinner();
-                                }
-                            }
-                        });
-                        if (eaten) moneyItems.splice(i, 1);
-                    } else if (m.isMoneyBullet) {
-                        m.x += m.vx; m.y += m.vy;
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) {
-                            playJiroExplosionSound();
-                            if (m.caster) {
-                                m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 80, alpha: 1.0, text: '펑!' });
-                            }
-                            moneyItems.splice(i, 1);
-                            continue;
-                        }
-                        let hitEnemy = false;
-                        let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
-                        enemyTeamBalls.forEach(enemy => {
-                            if (enemy.hp <= 0) return;
-                            if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
-                                let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - 20);
-                                if (enemy.hp < oldHp) {
-                                    playMinusDamageSound();
-                                    let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), 20);
-                                }
-                                playJiroExplosionSound();
-                                if (m.caster) {
-                                    m.caster.explosionVisuals.push({ x: m.x, y: m.y, radius: 10, maxRadius: 100, alpha: 1.0, text: '펑! (-20)' });
-                                }
-                                updateAllHpBars(); checkGameWinner();
-                                hitEnemy = true;
-                            }
-                        });
-                        if (hitEnemy) {
-                            moneyItems.splice(i, 1);
-                        }
-                    } else if (m.isArrow || m.isBaconProjectile) {
-                        m.x += m.vx; m.y += m.vy;
-                        if (m.x < 0 || m.x > canvas.width || m.y < 0 || m.y > canvas.height) { moneyItems.splice(i, 1); continue; }
-                        let enemyTeamBalls = m.ownerTeam === 1 ? team2Players : team1Players;
-                        enemyTeamBalls.forEach(enemy => {
-                            if (enemy.hp <= 0) return;
-                            if (Math.hypot(enemy.x - m.x, enemy.y - m.y) < m.radius + enemy.radius) {
-                                let oldHp = enemy.hp;
-                                enemy.hp = Math.max(0, enemy.hp - m.damage);
-                                if (enemy.hp < oldHp) {
-                                    playMinusDamageSound();
-                                    let tIdx = enemy.team === 1 ? team1Players : team2Players;
-                                    showMinusDamageAnimationCard(enemy.team, tIdx.indexOf(enemy), m.damage);
-                                }
-                                if (m.isBaconProjectile && !m.isFemaleProj) {
-                                    enemy.slowTimer = nowTimestamp + 3000;
-                                } else if (m.isBaconProjectile && m.isFemaleProj) {
-                                    let kbAngle = Math.atan2(enemy.y - m.y, enemy.x - m.x);
-                                    enemy.vx = Math.cos(kbAngle) * (FIXED_SPEED * 3.2);
-                                    enemy.vy = Math.sin(kbAngle) * (FIXED_SPEED * 3.2);
-                                }
-                                playHitSound(); updateAllHpBars(); checkGameWinner();
-                                moneyItems.splice(i, 1);
-                            }
-                        });
-                    }
-                }
-            }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 로비 화면일 때 선택한 볼 미리보기 렌더링
-            if (!isGaming && !isCountingDown) {
-                selectedTeam1Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(1, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, BALL_RADIUS, b, "rgba(30, 144, 255, 0.15)");
-                    }
-                });
-                selectedTeam2Balls.forEach((b, idx) => {
-                    if (b) {
-                        let pos = calculateMultiPositions(2, idx, currentMatchMode);
-                        drawBall(pos.x, pos.y, BALL_RADIUS, b, "rgba(231, 76, 60, 0.15)");
-                    }
-                });
-            }
-
-            allPlayers.forEach(player => {
-                let teamColorHex = player.team === 1 ? '#1e90ff' : '#e74c3c';
-
-                player.mines.forEach(mine => {
-                    ctx.save();
-                    let elapsed = Date.now() - mine.spawnTime;
-                    let alpha = elapsed > 2000 ? 0.3 : 0.92;
-                    ctx.beginPath(); ctx.arc(mine.x, mine.y, mine.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = teamColorHex; ctx.stroke();
-                    
-                    ctx.font = "bold 16px sans-serif"; ctx.fillStyle = teamColorHex;
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText("지뢰", mine.x, mine.y);
-                    ctx.restore();
-                });
-
-                player.explosionVisuals.forEach(ev => {
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(ev.x, ev.y, ev.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(231, 76, 60, ${ev.alpha * 0.4})`; ctx.fill();
-                    ctx.lineWidth = 4; ctx.strokeStyle = `rgba(241, 196, 15, ${ev.alpha})`; ctx.stroke();
-                    ctx.font = "bold 24px sans-serif"; ctx.fillStyle = `rgba(255, 255, 255, ${ev.alpha})`; ctx.strokeStyle = `rgba(0,0,0,${ev.alpha})`; ctx.lineWidth = 4;
-                    ctx.textAlign = "center"; ctx.strokeText(ev.text, ev.x, ev.y - 30); ctx.fillText(ev.text, ev.x, ev.y - 30);
-                    ctx.restore();
-                });
-
-                player.comboPopups.forEach(cp => {
-                    ctx.save();
-                    ctx.font = "bold 20px sans-serif";
-                    ctx.fillStyle = `rgba(241, 196, 15, ${cp.alpha})`;
-                    ctx.strokeStyle = `rgba(0, 0, 0, ${cp.alpha})`;
-                    ctx.lineWidth = 4;
-                    ctx.textAlign = "center";
-                    ctx.strokeText(cp.text, cp.x, cp.y);
-                    ctx.fillText(cp.text, cp.x, cp.y);
-                    ctx.restore();
-                });
-
-                player.minions.forEach(m => {
-                    m.orbitAngle += 0.05;
-                    m.x = player.x + Math.cos(m.orbitAngle) * m.orbitDist;
-                    m.y = player.y + Math.sin(m.orbitAngle) * m.orbitDist;
-
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 8, 0, Math.PI * 2);
-                    ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-
-                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-                    ctx.save(); 
-                    ctx.clip();
-                    if (m.img && m.img.complete && m.img.naturalWidth !== 0) {
-                        ctx.drawImage(m.img, m.x - m.radius, m.y - m.radius, m.radius * 2, m.radius * 2);
-                    } else {
-                        ctx.fillStyle = m.isFemale ? '#e74c3c' : '#3498db'; ctx.fill();
-                    }
-                    ctx.restore();
-                    ctx.lineWidth = 3; ctx.strokeStyle = "#000000"; ctx.stroke();
-                    ctx.restore();
-                });
-
-                player.skeletons.forEach(skel => {
-                    ctx.save();
-                    if (skeletonImg.complete && skeletonImg.naturalWidth !== 0) {
-                        ctx.drawImage(skeletonImg, skel.x - 24, skel.y - 32, 48, 64);
-                    } else {
-                        ctx.fillStyle = '#bdc3c7'; ctx.fillRect(skel.x - 18, skel.y - 28, 36, 56);
-                    }
-                    ctx.restore();
-                });
-
-                player.bombs.forEach(bomb => {
-                    ctx.save();
-                    ctx.beginPath(); ctx.arc(bomb.destX, bomb.destY, bomb.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(231, 76, 60, 0.22)"; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = teamColorHex; ctx.stroke();
-                    ctx.font = "30px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💣", bomb.x, bomb.y);
-                    if (bomb.startTime) {
-                        let remainSec = Math.max(0, Math.ceil(3 - (Date.now() - bomb.startTime) / 1000));
-                        ctx.font = "bold 16px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
-                        ctx.fillText(`${remainSec}초`, bomb.destX, bomb.destY - bomb.radius - 10);
-                    }
-                    ctx.restore();
-                });
-
-                if (player.rouletteAnim) {
-                    ctx.save();
-                    ctx.font = "bold 20px sans-serif";
-                    ctx.fillStyle = "#f1c40f";
-                    ctx.strokeStyle = "#000";
-                    ctx.lineWidth = 4;
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "bottom";
-                    ctx.strokeText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
-                    ctx.fillText(`🎰 ${player.rouletteAnim.text}`, player.x, player.y - player.radius - 10);
-                    ctx.restore();
-                }
-            });
-
-            moneyItems.forEach(m => {
-                ctx.save();
-                let teamColorHex = m.ownerTeam === 1 ? '#1e90ff' : '#e74c3c';
-
-                if (m.isHangeulLetter) {
-                    ctx.font = "bold 26px sans-serif"; 
-                    ctx.fillStyle = "#e74c3c";
-                    ctx.textAlign = "center"; 
-                    ctx.textBaseline = "middle"; 
-                    ctx.fillText(m.char, m.x, m.y);
-                } else {
-                    if (m.isChocolateItem) {
-                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 10, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(155, 89, 182, 0.45)'; ctx.fill();
-                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 5, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(142, 68, 173, 0.65)'; ctx.fill();
-                    } else {
-                        ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 6, 0, Math.PI * 2);
-                        ctx.strokeStyle = teamColorHex; ctx.lineWidth = 3; ctx.stroke();
-                    }
-
-                    if (m.isChocolateItem) {
-                        let remainTime = Math.max(0, Math.ceil(5 - (Date.now() - m.spawnTime) / 1000));
-                        ctx.font = "26px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🍫", m.x, m.y);
-                        ctx.font = "bold 12px sans-serif"; ctx.fillStyle = "#c0392b"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 18); ctx.fillText(`${remainTime}초`, m.x, m.y - 18);
-                    } else if (m.isMoneyBag) {
-                        let remainTime = Math.max(0, Math.ceil(4 - (Date.now() - m.spawnTime) / 1000));
-                        ctx.font = "28px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💰", m.x, m.y);
-                        ctx.font = "bold 13px sans-serif"; ctx.fillStyle = "#e67e22"; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-                        ctx.strokeText(`${remainTime}초`, m.x, m.y - 20); ctx.fillText(`${remainTime}초`, m.x, m.y - 20);
-                    } else if (m.isMoneyBullet) {
-                        ctx.font = "24px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("💸", m.x, m.y);
-                    } else if (m.isArrow) {
-                        ctx.save();
-                        ctx.translate(m.x, m.y);
-                        ctx.rotate(m.angle);
-                        if (arrowImg.complete && arrowImg.naturalWidth !== 0) {
-                            ctx.drawImage(arrowImg, -36, -20, 72, 40);
-                        } else {
-                            ctx.fillStyle = '#8b4513'; ctx.fillRect(-28, -6, 56, 12);
-                        }
-                        ctx.restore();
-                    } else if (m.isBaconProjectile) {
-                        if (m.isFemaleProj) {
-                            ctx.font = "36px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                            ctx.fillText("💣", m.x, m.y);
-                        } else {
-                            ctx.font = "32px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                            ctx.fillText("🥓", m.x, m.y);
-                        }
-                    }
-                }
-                ctx.restore();
-            });
-
-            allPlayers.forEach(player => {
-                if (player.hp > 0) drawBall(player.x, player.y, player.radius, player.ballData, player.team === 1 ? "rgba(30, 144, 255, 0.15)" : "rgba(231, 76, 60, 0.15)");
-            });
-
-            if (matchEnded) {
-                ctx.save();
-                ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "bold 45px sans-serif"; ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.fillText(winnerText, canvas.width / 2, canvas.height / 2);
-                ctx.restore();
-            }
-
-            requestAnimationFrame(runGameLoop);
-        }
-
-        requestAnimationFrame(runGameLoop);
-    </script>
+        ctx.globalAlpha = Math.min(1, ft.life / 15);
+        ctx.font = '800 15px sans-serif';
+        ctx.fillStyle = ft.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x, ft.y);
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.restore();
+    }
+
+    // 초기화 및 실행
+    renderRoster();
+    startBattle();
+    loop();
+  </script>
 </body>
 </html>
